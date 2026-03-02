@@ -68,7 +68,7 @@ a) If you do not yet have external dependencies installed, you can install all t
 python -m pip install -r requirements.txt
 ```
 
-b) If you already have the needed external dependencies but want to install only the project packages under `src/`, you can do this by running
+b) If you already have the needed external dependencies and want to install only the project packages under `src/`, you can do this by running
 ```
 python -m pip install -e .
 ```
