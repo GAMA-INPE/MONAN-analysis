@@ -89,21 +89,21 @@ this is a function imported from the stats.py module.
 ____________
 
 ## Quick user & developer guide
-The core idea of this project is that analysis scripts, although developed with the aim of performing a particular type of investigation of simulations, involve also many repetitive tasks that can be organized in general routines to be reused in the future.
+The core idea behind the infrastructure of this project is that analysis scripts, although developed for performing a particular type of investigation, involve also many repetitive tasks that can be organized in general routines to be reused in the future.
 
-To account for this, the suggested workflow for performing analyses in this repository is the following:
+To account for this, the suggested workflow for performing analyses with this repository is the following:
 1) In `exploratory/`, develop your initial analysis scripts and generate your results without worrying too much about organization. 
 
-2) As the scripts developed in 1) get more mature, start working in `analyses/`. Here, the goal is to have well tested and documented analysis pipelines that can be readily understood and applied by other users. For a clear code, try to organize the main analysis script here as a wrapper (e.g., `analyses/analysis1/run.py`) that calls functions for each task performed. Functions that are specific to that kind of analysis can be locally defined under `analyses/` (e.g. `analyses/analysis1/aux.py`). Functions of a more general nature should be defined under `src/monan_analysis` in one of the available modules, depending on its purpose (utils, io, plotting, stats, etc.).
+2) As the scripts developed in 1. get more mature, start working in `analyses/`. Here, the goal is to have well tested and documented analysis pipelines that can readily be understood and applied by other users. For a clear code, try to organize the main analysis script here as a wrapper (e.g., `analyses/analysis1/run.py`) that calls functions for each task performed. Functions that are specific to that analysis can be locally defined under `analyses/` (e.g. `analyses/analysis1/aux.py`). Functions of a more general nature should be defined under `src/monan_analysis` in one of the available modules, depending on its purpose (utils, io, plotting, stats, etc.).
 
-In both steps 1) and 2) the user can take advantage of the already defined functions in our packages under `src/`. To call them, one just needs to import the respective package as usually done in python, e.g.
+In both steps 1) and 2) the user can take advantage of the already defined functions in our packages under `src/`. To call them, one just needs to import the respective package as usually done in python, e.g., to import plotting functions do
 
 ```
 from monan_analysis.plots import example_function_plots
 ```
 
-For developing the project and modifying or adding code either to `exploratory/`, `analyses/` or `src/`, please follow the workflow
+For developing the project and modifying or adding code to either `exploratory/`, `analyses/` or `src/`, please follow the workflow
 
-new branch (name abbreviation/feature, e.g. gtm/repo-organization) --> code modifications -->  open pull request and assign reviewers --> merge to `main` branch.
+new branch (name abbreviation/feature, e.g. gtm/repo-organization) --> code modifications -->  open pull request and assign reviewers --> after reviewers' approval, merge into `main` branch.
 
 
