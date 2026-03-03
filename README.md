@@ -32,8 +32,8 @@ ____________
 ### 1. Clone the repository
 
 ```
-git clone https://github.com/GAMA-INPE/monan_analysis.git
-cd monan_analysis
+git clone https://github.com/GAMA-INPE/MONAN-analysis.git
+cd MONAN-analysis
 ```
 
 ### 2. Set up conda environment
