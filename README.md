@@ -22,7 +22,7 @@ monan_analysis/
 │   │   └── aux1.py        # exemplary auxiliary script for analysis1
 │   └── analysis2/
 │       ├── run2.py        # exemplary main script for analysis2
-│       └── aux2.sh        # exemplary auxiliary script for analysis2
+│       └── aux2.py        # exemplary auxiliary script for analysis2
 └── exploratory/          # exploratory (preliminary) scripts
 ```
 ____________
