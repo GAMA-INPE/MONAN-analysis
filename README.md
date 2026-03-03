@@ -1,4 +1,4 @@
-# MONAN analysis
+# MONAN-analysis
 
 Project to centralize code for analyses of simulations with the MONAN model.
 
