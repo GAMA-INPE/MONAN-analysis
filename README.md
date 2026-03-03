@@ -4,7 +4,7 @@ Project to centralize code for analyses of simulations with the MONAN model.
 
 ## Structure
 ```
-monan_analysis/
+MONAN-analysis/
 ├── README.md             
 ├── pyproject.toml        # makes packages inside src/ installable
 ├── requirements.txt      # lists libraries needed to run repo
