@@ -1,0 +1,11 @@
+# setuptools / editable install artifacts
+*.egg-info/
+*.egg-link
+
+# pip cache / build directories
+build/
+dist/
+
+# other python stuff
+*.pyc
+__pycache__/

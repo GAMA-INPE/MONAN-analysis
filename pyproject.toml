@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "monan-analysis"
+version = "0.1.0"
+description = "Analysis tools for MONAN"
+authors = [
+    { name = "Andre Lyra", email = "andre.lyra@inpe.br" },
+    { name = "Eduardo Eras", email = "eduardo.eras@inpe.br" },
+    { name = "Guilherme Torres Mendonça", email = "guilherme.mendonca@inpe.br" },
+    { name = "Lianet Hernandez", email = "lianet.hernandez@inpe.br" },
+    { name = "Madeleine Gacita", email = "madeleine.gacita@inpe.br" },
+    { name = "Paulo Kubota", email = "paulo.kubota@inpe.br" },
+    { name = "Saulo Freitas", email = "saulo.freitas@inpe.br" }
+]
+readme = "README.md"
+requires-python = ">=3.9"
+
+[tool.setuptools.packages.find]
+where = ["src"]
