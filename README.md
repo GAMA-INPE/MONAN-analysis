@@ -14,7 +14,7 @@ monan_analysis/
 │       ├── __init__.py   # python looks for this file when importing modules
 │       ├── utils.py      # reusable general-purpose routines
 │       ├── io.py         # reusable routines for reading input and saving output
-│       ├── plots.py   # reusable routines for plotting
+│       ├── plots.py      # reusable routines for plotting
 │       └── stats.py      # reusable routines for calculating statistics
 ├── analyses/             # ready-to-use analysis code
 │   ├── analysis1/
