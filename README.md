@@ -18,11 +18,11 @@ monan_analysis/
 │       └── stats.py      # reusable routines for calculating statistics
 ├── analyses/             # ready-to-use analysis code
 │   ├── analysis1/
-│   │   ├── run.py        # exemplary main script for analysis1
-│   │   └── run.sh        # exemplary helper shell script for analysis1
+│   │   ├── run1.py        # exemplary main script for analysis1
+│   │   └── aux1.py        # exemplary auxiliary script for analysis1
 │   └── analysis2/
-│       ├── run.py        # exemplary main script for analysis2
-│       └── run.sh        # exemplary helper shell script for analysis2
+│       ├── run2.py        # exemplary main script for analysis2
+│       └── aux2.sh        # exemplary auxiliary script for analysis2
 └── exploratory/          # exploratory (preliminary) scripts
 ```
 ____________
