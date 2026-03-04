@@ -12,11 +12,11 @@ export LD_LIBRARY_PATH="$HOME/libfix_netcdf:/opt/cray/pe/netcdf-hdf5parallel/4.9
 
 WGRIB2="/p/app/wgrib2/3.8.0/bin/wgrib2"
 BASE_IN="/p/projetos/monan_adm/monan/CIs/GFS"
-
+   
 ANO="2026"
 MES="02"
 
-DIR_OUT="/lustre/projetos/monan_gam/andre.lyra/Scripts/Scripts_GFS_levelsvar/GFS_NETCDF_struct/${ANO}${MES}"
+DIR_OUT="/lustre/projetos/monan_gam/andre.lyra/NetCDFs/vert_struct/GFS/${ANO}${MES}"
 mkdir -p "${DIR_OUT}"
 
 # Selectcting variables and levels for analysis time (anl)
