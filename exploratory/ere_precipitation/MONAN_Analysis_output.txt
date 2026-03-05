@@ -1,0 +1,81 @@
+
+################################################################
+* * *              MONAN Analysis starting...              * * *
+################################################################
+
+
+##############################################
+  _____   _______    ___    _____    _______  
+ / ____| |__   __|  /   \  |  __ \  |__   __| 
+| (___      | |    /  ^  \ | |__) |    | |    
+ \___ \     | |   /  /_\  \|  _  /     | |    
+ ____) |    | |  /  _____  \ | \ \     | |    
+|_____/     |_| /__/     \__\|  \_\    |_|    
+##############################################
+
+
+----------------------------------------------------------------
+Mean bias, MAE, RMSE and skill score across all lead times
+----------------------------------------------------------------
+
+Gerando figura para prazo 024 h - GLB
+Gerando figura para prazo 048 h - GLB
+Gerando figura para prazo 072 h - GLB
+Gerando figura para prazo 096 h - GLB
+Gerando figura para prazo 120 h - GLB
+Gerando figura para prazo 024 h - GLB
+Gerando figura para prazo 048 h - GLB
+Gerando figura para prazo 072 h - GLB
+Gerando figura para prazo 096 h - GLB
+Gerando figura para prazo 120 h - GLB
+Gerando figura para prazo 024 h - GLB
+Gerando figura para prazo 048 h - GLB
+Gerando figura para prazo 072 h - GLB
+Gerando figura para prazo 096 h - GLB
+Gerando figura para prazo 120 h - GLB
+Gerando figura para prazo 024 h - AMS
+Gerando figura para prazo 048 h - AMS
+Gerando figura para prazo 072 h - AMS
+Gerando figura para prazo 096 h - AMS
+Gerando figura para prazo 120 h - AMS
+Gerando figura para prazo 024 h - AMS
+Gerando figura para prazo 048 h - AMS
+Gerando figura para prazo 072 h - AMS
+Gerando figura para prazo 096 h - AMS
+Gerando figura para prazo 120 h - AMS
+Gerando figura para prazo 024 h - AMS
+Gerando figura para prazo 048 h - AMS
+Gerando figura para prazo 072 h - AMS
+Gerando figura para prazo 096 h - AMS
+Gerando figura para prazo 120 h - AMS
+Gerando figura para prazo 024 h - ACC
+Gerando figura para prazo 048 h - ACC
+Gerando figura para prazo 072 h - ACC
+Gerando figura para prazo 096 h - ACC
+Gerando figura para prazo 120 h - ACC
+Gerando figura para prazo 024 h - ACC
+Gerando figura para prazo 048 h - ACC
+Gerando figura para prazo 072 h - ACC
+Gerando figura para prazo 096 h - ACC
+Gerando figura para prazo 120 h - ACC
+Gerando figura para prazo 024 h - ACC
+Gerando figura para prazo 048 h - ACC
+Gerando figura para prazo 072 h - ACC
+Gerando figura para prazo 096 h - ACC
+Gerando figura para prazo 120 h - ACC
+
+################################################################
+* * *               MONAN Analysis finished.               * * *
+################################################################
+
+Total runtime: 00:05:45
+
+############################################
+ ______  _____  _   _  _____  _____  _    _ 
+|  ____||_   _|| \ | ||_   _|/ ____|| |  | |
+| |__     | |  |  \| |  | | | (___  | |__| |
+|  __|    | |  | .   |  | |  \___ \ |  __  |
+| |      _| |_ | |\  | _| |_ ____) || |  | |
+|_|     |_____||_| \_||_____||_____/|_|  |_|
+############################################
+

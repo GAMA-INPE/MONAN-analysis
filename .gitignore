@@ -20,3 +20,6 @@ output/
 # other python stuff
 *.pyc
 __pycache__/
+
+/exploratory/ere_precipitation/output/
+/exploratory/ere_precipitation/listas_medias/
