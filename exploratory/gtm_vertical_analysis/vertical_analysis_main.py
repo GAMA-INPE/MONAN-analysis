@@ -39,14 +39,27 @@ import vertical_analysis_aux as va_aux
 import monan_analysis.config as config
 import monan_analysis.io as io
 import monan_analysis.utils as utils
-import datetime
+import xarray as xr
+import vertical_analysis_config as vac
 
 if __name__ == "__main__":
+    # Get input arguments
     args = va_aux.setup_parser()
 
-    date_in_datetime = utils.date_as_datetime(args.year, args.month, args.day, args.hour)
-    date_in_string = utils.date_as_YYYYMMDDHH_str(args.year, args.month, args.day, args.hour)
-    date_final_in_datetime = utils.get_final_date_from_initial_date(date_in_datetime, args.time_window)
+    # Get filename for reading MONAN data
+    ## Date for initial conditions
+    date_init_in_datetime = utils.date_as_datetime(args.year, args.month, args.day, args.hour)
+    date_init_in_string = utils.date_as_YYYYMMDDHH_str(args.year, args.month, args.day, args.hour)
+    ## Date for end of time window
+    date_final_in_datetime = utils.get_final_date_from_initial_date(date_init_in_datetime, args.time_window)
     date_final_in_string = date_final_in_datetime.strftime(config.DATE_FORMAT)
-    filename = io.get_MONAN_DIAG_filename(date_in_string,date_final_in_string)
+    ## MONAN output filename
+    filename = io.get_MONAN_DIAG_filename(date_init_in_string,date_final_in_string)
     print (filename)
+
+    # Read data from MONAN
+    ## Get complete path
+    filepath = f"{vac.MONAN_PREOP}/{date_init_in_string}/{filename}"
+    print (filepath)
+    ds_monan = xr.open_dataset(filepath, engine="netcdf4")
+    print (ds_monan)
