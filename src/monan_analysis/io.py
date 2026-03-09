@@ -30,6 +30,8 @@ def example_function_io():
 def get_MONAN_DIAG_filename(date_in_string_init, date_in_string_final,grid_spec='10km_uniform'):
     if grid_spec == '10km_uniform':
         GRID_STRING = config.GRID_10KM_UNIFORM_STRING
+    elif grid_spec == '24km_uniform':
+        GRID_STRING = config.GRID_24KM_UNIFORM_STRING
     else:
         raise ValueError(f"Grid '{grid_spec}' is not recognized. Please choose a valid grid.")
     filename = (f"{config.PREFIX_STRING}_{date_in_string_init}_{date_in_string_final}.00.00."
