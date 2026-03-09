@@ -54,7 +54,7 @@ if __name__ == "__main__":
     date_final_in_datetime = utils.get_final_date_from_initial_date(date_init_in_datetime, args.time_window)
     date_final_in_string = date_final_in_datetime.strftime(config.DATE_FORMAT)
     ## MONAN output filename
-    filename = io.get_MONAN_DIAG_filename(date_init_in_string,date_final_in_string)
+    filename = io.get_MONAN_DIAG_filename(date_init_in_string,date_final_in_string,grid_spec=vac.GRID_SPEC)
     print (filename)
 
     # Read data from MONAN
@@ -63,3 +63,4 @@ if __name__ == "__main__":
     print (filepath)
     ds_monan = xr.open_dataset(filepath, engine="netcdf4")
     print (ds_monan)
+
