@@ -35,13 +35,9 @@ Acknowledgments
 This file was created with the assistance of GitHub Copilot. 
 """
 
-import monan_analysis.config as config
-import monan_analysis.io as io
-import monan_analysis.utils as utils
 import monan_analysis.plots as plots
 import vertical_analysis_aux as va_aux
 import vertical_analysis_config as va_config
-import xarray as xr
 
 if __name__ == "__main__":
     #=============================
@@ -49,14 +45,24 @@ if __name__ == "__main__":
     #=============================
     ds_monan = va_aux.read_ds_monan(verbose='n')
 
-    #================
-    # Analysis plots 
-    #================
-    # Plot maps for each variable and level
-    for var in va_config.VARIABLES_TO_ANALYZE:
-        for lev in va_config.VERTICAL_LEVELS_TO_ANALYZE:
-            #plots.plot_var_map(ds_monan, var, lev, va_config.CARTOPY_DATA_DIR)   
-            print (var, lev)
+    #===============================================
+    # Plot maps for each domain, variable and level
+    #===============================================
+    print ("initial plots...")
+    for domain in va_config.DOMAINS_TO_ANALYZE:
+        print ("domain:", domain)
+        for var in va_config.VARIABLES_TO_ANALYZE:
+            print ("variable:", var)
+            for level in va_config.VERTICAL_LEVELS_TO_ANALYZE:
+                print ("level:", level)
+                plots.plot_var_map(
+                    ds=ds_monan, 
+                    var=var, 
+                    cartopy_data_dir=va_config.CARTOPY_DATA_DIR,
+                    level=level, 
+                    domain=domain
+                    )   
+            #print (var, lev)
 
     # Preprocess MONAN data
     #var='temperature'

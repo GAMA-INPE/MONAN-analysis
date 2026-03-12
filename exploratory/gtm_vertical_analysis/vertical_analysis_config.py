@@ -42,7 +42,7 @@ VARIABLES_TO_ANALYZE = [
     ]
 # Vertical levels to analyze
 VERTICAL_LEVELS_TO_ANALYZE = [
-    "100000", #"92500",  "85000",  "70000",  "50000",  "40000",  "25000",  "10000"
+    "92500", # "85000",  "70000",  "50000",  "40000",  "25000",  "10000"
     ]
 # Domains to analyze
 DOMAINS_TO_ANALYZE = [

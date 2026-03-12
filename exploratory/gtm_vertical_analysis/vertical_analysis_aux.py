@@ -53,10 +53,10 @@ def read_ds_monan(verbose='n'):
     """ Read MONAN data and return them as an xarray Dataset."""
     # Get file path for reading MONAN data
     ## Compute date for initial conditions in datetime and string formats
-    date_init_in_datetime = utils.date_as_datetime(
+    date_init_in_datetime = utils.get_date_as_datetime(
         va_config.YEAR, va_config.MONTH, va_config.DAY, va_config.HOUR
         )
-    date_init_in_string = utils.date_as_YYYYMMDDHH_str(
+    date_init_in_string = utils.get_date_as_YYYYMMDDHH_str(
         va_config.YEAR, va_config.MONTH, va_config.DAY, va_config.HOUR
         )
     ## Compute date for end of time window
