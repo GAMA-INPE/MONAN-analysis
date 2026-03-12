@@ -24,3 +24,6 @@ This file was created with the assistance of GitHub Copilot.
 
 def example_function_plots():
     print ("this is a function imported from the plots.py module.")
+
+#def plot_var_map(ds, var, cartopy_data_dir,level=None, domain="global"):
+    

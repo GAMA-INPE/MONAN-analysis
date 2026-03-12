@@ -23,8 +23,8 @@ Input
 
 Output
 ------
-- RMSE values
 - Analysis maps
+- RMSE values
 
 Main variables
 --------------
@@ -35,44 +35,28 @@ Acknowledgments
 This file was created with the assistance of GitHub Copilot. 
 """
 
-import vertical_analysis_aux as va_aux
 import monan_analysis.config as config
 import monan_analysis.io as io
 import monan_analysis.utils as utils
-import xarray as xr
+import monan_analysis.plots as plots
+import vertical_analysis_aux as va_aux
 import vertical_analysis_config as va_config
-import matplotlib.pyplot as plt
-import os
+import xarray as xr
 
 if __name__ == "__main__":
-    # Read data from MONAN
-    ## Get file path for reading MONAN data
-    ### Compute date for initial conditions in datetime and string formats
-    date_init_in_datetime = utils.date_as_datetime(
-        va_config.YEAR, va_config.MONTH, va_config.DAY, va_config.HOUR
-        )
-    date_init_in_string = utils.date_as_YYYYMMDDHH_str(
-        va_config.YEAR, va_config.MONTH, va_config.DAY, va_config.HOUR
-        )
-    ### Compute date for end of time window
-    date_final_in_datetime = utils.get_final_date_from_initial_date(
-        date_init_in_datetime, va_config.TIME_WINDOW
-        )
-    date_final_in_string = date_final_in_datetime.strftime(config.DATE_FORMAT)
-    ### Get MONAN output filename
-    filename = io.get_MONAN_DIAG_filename(
-        date_init_in_string,date_final_in_string,grid_spec=va_config.GRID_SPEC,
-        vertical_level_spec=va_config.VERTICAL_LEVEL_SPEC
-        )
-    print (filename)
-    ### Get complete path
-    filepath = f"{va_config.MONAN_PREOP}/{date_init_in_string}/{filename}"
-    print (filepath)
-    ## Read dataset
-    ds_monan = xr.open_dataset(filepath, engine="netcdf4")
-    print (ds_monan)
+    #=============================
+    # Read output data from MONAN 
+    #=============================
+    ds_monan = va_aux.read_ds_monan(verbose='n')
 
-   # 
+    #================
+    # Analysis plots 
+    #================
+    # Plot maps for each variable and level
+    for var in va_config.VARIABLES_TO_ANALYZE:
+        for lev in va_config.VERTICAL_LEVELS_TO_ANALYZE:
+            #plots.plot_var_map(ds_monan, var, lev, va_config.CARTOPY_DATA_DIR)   
+            print (var, lev)
 
     # Preprocess MONAN data
     #var='temperature'

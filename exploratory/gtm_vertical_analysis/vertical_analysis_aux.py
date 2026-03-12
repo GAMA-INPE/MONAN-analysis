@@ -25,14 +25,14 @@ Acknowledgments
 This file was created with the assistance of GitHub Copilot.    
 """
 
-import argparse
-import datetime
-import os
-import sys
-from pathlib import Path
 import monan_analysis.config as config
-import matplotlib.pyplot as plt
-import numpy as np
+import monan_analysis.io as io
+import monan_analysis.utils as utils
+import monan_analysis.plots as plots
+import monan_analysis.config as config
+import vertical_analysis_config as va_config
+import argparse
+import xarray as xr
 
 def setup_parser():
     """Set up the argument parser with common arguments."""
@@ -49,42 +49,30 @@ def setup_parser():
     args = parser.parse_args()
     return args
 
-def plot_zonal_mean(ds, variable, lat_range=(-55, 20), lon_range=(275, 340)):
-    """
-    Plots the zonal mean of a variable over a specified region.
-
-    Parameters:
-        ds (xarray.Dataset): The input dataset.
-        variable (str): The variable to analyze (e.g., 'temperature').
-        lat_range (tuple): Latitude range (min, max) for the region.
-        lon_range (tuple): Longitude range (min, max) for the region.
-    """
-    # Convert longitude range to -180 to 180 if necessary
-    lon_min = lon_range[0] if lon_range[0] <= 180 else lon_range[0] - 360
-    lon_max = lon_range[1] if lon_range[1] <= 180 else lon_range[1] - 360
-
-    # Select the region
-    region = ds[variable].sel(
-        latitude=slice(lat_range[0], lat_range[1]),
-        longitude=slice(lon_min, lon_max)
-    )
-
-    # Remove the singleton Time dimension
-    region = region.squeeze(dim="Time", drop=True)
-
-    # Calculate the zonal mean (mean over longitudes)
-    zonal_mean = region.mean(dim="longitude")
-
-    # Plot latitude vs vertical levels
-    plt.figure(figsize=(8, 6))
-    levels = zonal_mean.coords["level"]
-    latitudes = zonal_mean.coords["latitude"]
-
-    # Contour plot
-    plt.contourf(latitudes, levels, zonal_mean.T, cmap="coolwarm", extend="both")
-    plt.colorbar(label=f"{variable} (Zonal Mean)")
-    plt.xlabel("Latitude")
-    plt.ylabel("Vertical Levels (hPa)")
-    plt.title(f"Zonal Mean of {variable} (South America)")
-    plt.gca().invert_yaxis()  # Invert vertical levels for pressure coordinates
-    plt.show()
+def read_ds_monan(verbose='n'):
+    """ Read MONAN data and return them as an xarray Dataset."""
+    # Get file path for reading MONAN data
+    ## Compute date for initial conditions in datetime and string formats
+    date_init_in_datetime = utils.date_as_datetime(
+        va_config.YEAR, va_config.MONTH, va_config.DAY, va_config.HOUR
+        )
+    date_init_in_string = utils.date_as_YYYYMMDDHH_str(
+        va_config.YEAR, va_config.MONTH, va_config.DAY, va_config.HOUR
+        )
+    ## Compute date for end of time window
+    date_final_in_datetime = utils.get_final_date_from_initial_date(
+        date_init_in_datetime, va_config.TIME_WINDOW
+        )
+    date_final_in_string = date_final_in_datetime.strftime(config.DATE_FORMAT_STRING)
+    ## Get MONAN output filename
+    filename = io.get_MONAN_DIAG_filename(
+        date_init_in_string,date_final_in_string,grid_spec=va_config.GRID_SPEC,
+        vertical_level_spec=va_config.VERTICAL_LEVEL_SPEC
+        )
+    ## Get complete path
+    filepath = f"{va_config.MONAN_PREOP}/{date_init_in_string}/{filename}"
+    if verbose == 'y':
+        print(f"Reading MONAN output data from file: {filepath}")
+    # Read dataset using complete path
+    ds_monan = xr.open_dataset(filepath, engine="netcdf4")
+    return ds_monan
