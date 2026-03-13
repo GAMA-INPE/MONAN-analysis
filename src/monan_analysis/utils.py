@@ -43,11 +43,3 @@ def get_date_as_YYYYMMDDHH_str(year,month,day,hour):
 def get_final_date_from_initial_date(date_in_datetime, time_window):
     date_final_in_datetime = date_in_datetime + datetime.timedelta(hours=int(time_window))
     return date_final_in_datetime
-
-def get_lon_from_minus_180_to_180(lon_range):
-    if lon_range[0] >= 0 and lon_range[1] > 180:
-       lon_range = (lon_range[0] - 360, lon_range[1] - 360)
-    # Validate longitude and latitude ranges
-    if lon_range[0] == lon_range[1]:
-        raise ValueError(f"Invalid longitude range: {lon_range}. Ensure min_lon != max_lon.")
-    return lon_range

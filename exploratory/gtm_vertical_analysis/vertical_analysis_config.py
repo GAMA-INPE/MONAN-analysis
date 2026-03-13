@@ -21,7 +21,7 @@ Acknowledgments
 This file was created with the assistance of GitHub Copilot.    
 """
 
-# Date for analysis
+# Date and forecast time window for analysis
 YEAR = "2025"
 MONTH = "12"
 DAY = "01"
@@ -47,8 +47,8 @@ VERTICAL_LEVELS_TO_ANALYZE = [
 # Domains to analyze
 DOMAINS_TO_ANALYZE = [
     "global", 
-    # "south_america", 
-    # "central_america_and_caribbean"
+    #"south_america", 
+    #"central_america_and_caribbean"
     ]
 
 # Paths to data files
