@@ -22,8 +22,8 @@ This file was created with the assistance of GitHub Copilot.
 """
 
 # Date and forecast time window for analysis
-YEAR = "2025"
-MONTH = "12"
+YEAR = "2026"
+MONTH = "02"
 DAY = "01"
 HOUR = "00"
 TIME_WINDOW = "48"
@@ -34,15 +34,15 @@ VERTICAL_LEVEL_SPEC = "55"
 # Variables to analyze
 VARIABLES_TO_ANALYZE = [
     "temperature",
-    "relhum",
-    "spechum",
-    "zgeo",
-    "uzonal",
-    "umeridional",
+    #"relhum",
+    #"spechum",
+    #"zgeo",
+    #"uzonal",
+    #"umeridional",
     ]
 # Vertical levels to analyze
 VERTICAL_LEVELS_TO_ANALYZE = [
-    "92500", "85000",  "70000",  "50000",  "40000",  "25000",  "10000"
+    "92500"#, "85000",  "70000",  "50000",  "40000",  "25000",  "10000"
     ]
 # Domains to analyze
 DOMAINS_TO_ANALYZE = [
@@ -52,5 +52,7 @@ DOMAINS_TO_ANALYZE = [
     ]
 
 # Paths to data files
-MONAN_PREOP = "/lustre/projetos/monan_adm/monan/ecf_PREOPER/MONAN-WorkFlow-OPER/MONAN_PRE_OPER/MONAN/scripts_CD-CT/dataout/flushout"
+MONAN_PREOP_DIR = "/lustre/projetos/monan_adm/monan/ecf_PREOPER/MONAN-WorkFlow-OPER/MONAN_PRE_OPER/MONAN/scripts_CD-CT/dataout/flushout"
+GFS_ANALYSIS_DIR = "/lustre/projetos/monan_gam/andre.lyra/NetCDFs/vert_struct/GFS"
 CARTOPY_DATA_DIR = "/lustre/projetos/monan_gam/andre.lyra/cartopy"
+OUTPUT_DIR = "/lustre/projetos/monan_atm/guilherme.mendonca/MONAN-analysis/exploratory/gtm_vertical_analysis/output"

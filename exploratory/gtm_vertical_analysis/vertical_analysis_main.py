@@ -46,7 +46,7 @@ if __name__ == "__main__":
     #=============================
     # Read output data from MONAN 
     #=============================
-    ds_monan = va_aux.read_ds_monan(verbose='n')
+    ds_monan = va_aux.read_ds_monan(verbose='y')
 
     #=====================================================
     # Plot MONAN maps for each domain, variable and level
@@ -68,7 +68,8 @@ if __name__ == "__main__":
     #=============================
     # Read analysis data from GFS 
     #=============================
-    ds_monan = va_aux.read_ds_gfs(verbose='n')
+    ds_gfs = va_aux.read_ds_gfs(verbose='y')
+    print (ds_gfs)
 
     #====================================================
     # Plot GFS maps for each domain, variable and level

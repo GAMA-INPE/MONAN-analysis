@@ -40,6 +40,10 @@ def get_date_as_YYYYMMDDHH_str(year,month,day,hour):
     date_in_string = f"{year}{month}{day}{hour}" 
     return date_in_string
 
+def get_date_as_YYYYMM_str(year,month):
+    date_in_string = f"{year}{month}" 
+    return date_in_string
+
 def get_final_date_from_initial_date(date_in_datetime, time_window):
     date_final_in_datetime = date_in_datetime + datetime.timedelta(hours=int(time_window))
     return date_final_in_datetime

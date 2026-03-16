@@ -40,6 +40,10 @@ def get_MONAN_DIAG_filename(date_in_string_init, date_in_string_final,grid_spec,
         raise ValueError(f"Vertical level configuration '{vertical_level_spec}' is not recognized. " 
                          + "Please choose a valid configuration.")
     
-    filename = (f"{config.PREFIX_STRING}_{date_in_string_init}_{date_in_string_final}.00.00."
+    filename = (f"{config.PREFIX_MONAN_DIAG_STRING}_{date_in_string_init}_{date_in_string_final}.00.00."
                 f"{GRID_STRING}{VERTICAL_LEVEL_STRING}.nc")
+    return filename
+
+def get_GFS_analysis_filename(date_in_string):
+    filename = (f"{config.PREFIX_GFS_ANALYSIS_STRING}_levels_{date_in_string}.nc")
     return filename

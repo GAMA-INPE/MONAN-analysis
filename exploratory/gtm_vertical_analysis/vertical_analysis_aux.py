@@ -70,9 +70,32 @@ def read_ds_monan(verbose='n'):
         vertical_level_spec=va_config.VERTICAL_LEVEL_SPEC
         )
     ## Get complete path
-    filepath = f"{va_config.MONAN_PREOP}/{date_init_in_string}/{filename}"
+    filepath = f"{va_config.MONAN_PREOP_DIR}/{date_init_in_string}/{filename}"
     if verbose == 'y':
         print(f"Reading MONAN output data from file: {filepath}")
     # Read dataset using complete path
     ds_monan = xr.open_dataset(filepath, engine="netcdf4")
     return ds_monan
+
+def read_ds_gfs(verbose='n'):
+    """ Read GFS data and return them as an xarray Dataset."""
+    # Get file path for reading GFS data
+    ## Compute date in string format
+    date_in_string = utils.get_date_as_YYYYMMDDHH_str(
+        va_config.YEAR, va_config.MONTH, va_config.DAY, va_config.HOUR
+        )
+    ## Get GFS output filename
+    filename = io.get_GFS_analysis_filename(
+        date_in_string
+        )
+    ## Compute year and month only
+    date_year_month_in_string = utils.get_date_as_YYYYMM_str(
+        va_config.YEAR, va_config.MONTH
+        )
+    ## Get complete path
+    filepath = f"{va_config.GFS_ANALYSIS_DIR}/{date_year_month_in_string}/{filename}"
+    if verbose == 'y':
+        print(f"Reading GFS analysis data from file: {filepath}")
+    # Read dataset using complete path
+    ds_gfs = xr.open_dataset(filepath, engine="netcdf4")
+    return ds_gfs

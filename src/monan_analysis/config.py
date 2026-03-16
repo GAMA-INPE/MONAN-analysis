@@ -23,9 +23,9 @@ Acknowledgments
 ---------------
 This file was created with the assistance of GitHub Copilot. 
 """
-# Standard strings for MONAN output filenames
-## Standard prefix in output filenames
-PREFIX_STRING = "MONAN_DIAG_G_POS_GFS"
+# Standard settings for MONAN output filenames
+## Standard prefix in MONAN output filenames
+PREFIX_MONAN_DIAG_STRING = "MONAN_DIAG_G_POS_GFS"
 ## Strings for each grid configuration
 GRID_DICT = {
     "10km_uniform": "x5898242",
@@ -36,7 +36,14 @@ VERTICAL_LEVEL_DICT = {
     "30": "L30",
     "55": "L55"
     }
-## Domains
+## Standard date format in MONAN output filenames
+DATE_FORMAT_STRING = "%Y%m%d%H"
+
+# Standard settings for GFS analysis filenames
+## Standard prefix in GFS analysis filenames
+PREFIX_GFS_ANALYSIS_STRING = "GFS_anl"
+
+# Domain definitions
 DOMAIN_DICT = {
     "global": {
         "lat": (-90, 90),
@@ -51,5 +58,3 @@ DOMAIN_DICT = {
         "lon": (242, 335)
     }
 }
-# Standard date format in MONAN output filenames
-DATE_FORMAT_STRING = "%Y%m%d%H"
