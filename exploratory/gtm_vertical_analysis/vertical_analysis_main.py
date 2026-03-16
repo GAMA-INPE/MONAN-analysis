@@ -37,20 +37,22 @@ This file was created with the assistance of GitHub Copilot.
 
 import monan_analysis
 import monan_analysis.plots as plots
+import monan_analysis.utils as utils
 import vertical_analysis_aux as va_aux
 import vertical_analysis_config as va_config
 import subprocess
 import os
+import xarray as xr
 
 if __name__ == "__main__":
     #=============================
     # Read output data from MONAN 
     #=============================
-    ds_monan = va_aux.read_ds_monan(verbose='y')
+    ds_monan, monan_filepath = va_aux.read_ds_monan(verbose='y')
 
-    #=====================================================
-    # Plot MONAN maps for each domain, variable and level
-    #=====================================================
+    #=============================================================
+    # Plot initial MONAN maps for each domain, variable and level
+    #=============================================================
     print ("initial map plots...")
     for domain in va_config.DOMAINS_TO_ANALYZE:
         print ("domain:", domain)
@@ -65,16 +67,36 @@ if __name__ == "__main__":
                     level=level, 
                     domain=domain
                     )
+
     #=============================
     # Read analysis data from GFS 
     #=============================
-    ds_gfs = va_aux.read_ds_gfs(verbose='y')
+    ds_gfs, gfs_filepath = va_aux.read_ds_gfs(verbose='y')
     print (ds_gfs)
 
-    #====================================================
-    # Plot GFS maps for each domain, variable and level
-    #====================================================
+    #===============================
+    # Preprocess MONAN and GFS data
+    #===============================
+    # Remap MONAN data to GFS grid
+    print ("Remapping MONAN data to GFS grid...")
+    utils.remap_cdo(
+        ref_nc=gfs_filepath,
+        input_nc=monan_filepath, 
+        output_nc=f"{va_config.INPUT_INTERMEDIATE_DIR}/monan_remapped.nc"
+        )
+    # Read remapped MONAN data
+    ds_monan_processed = xr.open_dataset(f"{va_config.INPUT_INTERMEDIATE_DIR}/monan_remapped.nc", engine="netcdf4")
+    print ("MONAN remapped:")
+    print (ds_monan_processed)
 
+    #======================
+    # Calculate statistics
+    #======================
+    # Remap MONAN data to GFS grid       
+
+    #==============
+    # Plot results
+    #==============
 
     #============================
     # Copy config files

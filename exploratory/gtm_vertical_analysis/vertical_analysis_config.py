@@ -56,3 +56,6 @@ MONAN_PREOP_DIR = "/lustre/projetos/monan_adm/monan/ecf_PREOPER/MONAN-WorkFlow-O
 GFS_ANALYSIS_DIR = "/lustre/projetos/monan_gam/andre.lyra/NetCDFs/vert_struct/GFS"
 CARTOPY_DATA_DIR = "/lustre/projetos/monan_gam/andre.lyra/cartopy"
 OUTPUT_DIR = "/lustre/projetos/monan_atm/guilherme.mendonca/MONAN-analysis/exploratory/gtm_vertical_analysis/output"
+INPUT_DIR = "/lustre/projetos/monan_atm/guilherme.mendonca/MONAN-analysis/exploratory/gtm_vertical_analysis/input"
+INPUT_INTERMEDIATE_DIR = "/lustre/projetos/monan_atm/guilherme.mendonca/MONAN-analysis/exploratory/gtm_vertical_analysis/input/intermediate"
+INPUT_RAW_DIR = "/lustre/projetos/monan_atm/guilherme.mendonca/MONAN-analysis/exploratory/gtm_vertical_analysis/input/raw"

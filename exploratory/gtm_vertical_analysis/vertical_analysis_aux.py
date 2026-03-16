@@ -75,7 +75,7 @@ def read_ds_monan(verbose='n'):
         print(f"Reading MONAN output data from file: {filepath}")
     # Read dataset using complete path
     ds_monan = xr.open_dataset(filepath, engine="netcdf4")
-    return ds_monan
+    return ds_monan, filepath
 
 def read_ds_gfs(verbose='n'):
     """ Read GFS data and return them as an xarray Dataset."""
@@ -98,4 +98,4 @@ def read_ds_gfs(verbose='n'):
         print(f"Reading GFS analysis data from file: {filepath}")
     # Read dataset using complete path
     ds_gfs = xr.open_dataset(filepath, engine="netcdf4")
-    return ds_gfs
+    return ds_gfs, filepath
