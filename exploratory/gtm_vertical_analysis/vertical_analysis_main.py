@@ -35,9 +35,12 @@ Acknowledgments
 This file was created with the assistance of GitHub Copilot. 
 """
 
+import monan_analysis
 import monan_analysis.plots as plots
 import vertical_analysis_aux as va_aux
 import vertical_analysis_config as va_config
+import subprocess
+import os
 
 if __name__ == "__main__":
     #=============================
@@ -62,3 +65,25 @@ if __name__ == "__main__":
                     level=level, 
                     domain=domain
                     )
+    #=============================
+    # Read analysis data from GFS 
+    #=============================
+    ds_monan = va_aux.read_ds_gfs(verbose='n')
+
+    #====================================================
+    # Plot GFS maps for each domain, variable and level
+    #====================================================
+
+
+    #============================
+    # Copy config files
+    #============================
+    # Analysis-specific config file
+    subprocess.run(["cp", "vertical_analysis_config.py", va_config.OUTPUT_DIR], check=True)
+    # General config file
+    ## Get absolute path to monan_analysis package
+    gen_config_package_dir = os.path.dirname(monan_analysis.__file__)
+    ## Construct path to general config.py file
+    gen_config_file_path = os.path.join(gen_config_package_dir, "config.py")
+    ## Copy general config file
+    subprocess.run(["cp", gen_config_file_path, va_config.OUTPUT_DIR], check=True)
