@@ -24,16 +24,23 @@ This file was created with the assistance of GitHub Copilot.
 import os
 import subprocess
 
-def remap_grid_with_cdo(ref_nc, input_nc, output_nc):
+def map_data_to_different_grid_with_cdo(ref_nc, input_nc, output_nc,
+                                        var_list,level_list):
     """ 
     Remap input_nc to the grid of ref_nc 
     and save the output in output_nc using CDO.
     """
-    if not os.path.exists(output_nc):
-        subprocess.run(
-            ["cdo", "-f", "nc", f"-remapcon,{ref_nc}", input_nc, output_nc],
-            check=True
-        )
+    if os.path.exists(output_nc):
+        print ("Mapped file already exists. Overwriting it...")
+
+    # Run cdo command only for those vars and levels
+    subprocess.run([
+        "bash", "-l", "-c", 
+        f"module load cdo && "
+        f"cdo -f nc -remapcon,{ref_nc} {input_nc} {output_nc}"
+        ],
+    check=True
+    )
 
 def get_gfs_data_in_monan_format(ds_gfs, gfs_to_monan_var_dict):
     """
@@ -52,7 +59,12 @@ def get_gfs_data_in_monan_format(ds_gfs, gfs_to_monan_var_dict):
     """
     # Sort by latitude
     ds_gfs = ds_gfs.sortby('latitude')
-    
+    # Convert GFS levels from hPa to Pa
+    ds_gfs["level"] = (ds_gfs["level"] * 100).astype(float)
+    ds_gfs["level"].attrs["units"] = "Pa"
+    # Sort by level
+    ds_gfs = ds_gfs.sortby('level', ascending=False)
+
     # Rename variables using the mapping dictionary
     ds_gfs_in_monan_format = ds_gfs.rename(gfs_to_monan_var_dict)
     

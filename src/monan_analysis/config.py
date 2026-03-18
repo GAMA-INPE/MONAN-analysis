@@ -42,12 +42,13 @@ VERTICAL_LEVEL_DICT = {
 DATE_FORMAT_STRING = "%Y%m%d%H"
 
 #===================================================================================================
-# Standard settings for GFS data
+# Standard settings for GFS analysis data
 #===================================================================================================
 # Standard prefix in GFS analysis filenames
 PREFIX_GFS_ANALYSIS_STRING = "GFS_anl"
 # Dictionary mapping GFS var names to MONAN var names
 GFS_TO_MONAN_VAR_DICT = {
+    "time": "Time",
     "t": "temperature",
     "q": "spechum",
     "gh": "zgeo",

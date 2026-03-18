@@ -11,6 +11,9 @@ dist/
 *.jpeg
 *.jpg
 
+# nc files
+*.nc
+
 # other python stuff
 *.pyc
 __pycache__/

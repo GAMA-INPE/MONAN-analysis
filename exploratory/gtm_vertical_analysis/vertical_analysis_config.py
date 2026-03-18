@@ -23,6 +23,8 @@ This file was created with the assistance of GitHub Copilot.
 #===================================================================================================
 # Selection of types of analysis to perform
 #===================================================================================================
+# Print details of analysis steps
+SEL_VERBOSE_ANALYSIS_STEPS = "n"
 # Initial maps showing MONAN fields
 SEL_INITIAL_MONAN_MAPS = "n"
 #===================================================================================================
@@ -71,4 +73,5 @@ DIR_CARTOPY_DATA = "/lustre/projetos/monan_gam/andre.lyra/cartopy"
 DIR_OUTPUT = "/lustre/projetos/monan_atm/guilherme.mendonca/MONAN-analysis/exploratory/gtm_vertical_analysis/output"
 DIR_INPUT = "/lustre/projetos/monan_atm/guilherme.mendonca/MONAN-analysis/exploratory/gtm_vertical_analysis/input"
 DIR_INPUT_INTERMEDIATE = "/lustre/projetos/monan_atm/guilherme.mendonca/MONAN-analysis/exploratory/gtm_vertical_analysis/input/intermediate"
+DIR_INPUT_PROCESSED = "/lustre/projetos/monan_atm/guilherme.mendonca/MONAN-analysis/exploratory/gtm_vertical_analysis/input/processed"
 DIR_INPUT_RAW = "/lustre/projetos/monan_atm/guilherme.mendonca/MONAN-analysis/exploratory/gtm_vertical_analysis/input/raw"
