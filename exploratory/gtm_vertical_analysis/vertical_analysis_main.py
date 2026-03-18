@@ -60,6 +60,7 @@ if __name__ == "__main__":
         base_dir=va_config.DIR_MONAN_PREOP,
         verbose='n'
         )
+    print (ds_monan)
 
     #=============================================================
     # Plot initial MONAN maps for each domain, variable and level
@@ -93,60 +94,60 @@ if __name__ == "__main__":
         verbose='n'
         )
     print (ds_gfs)
-    ds_gfs = ds_gfs.sortby('latitude')
-    plots.plot_var_map(
-                ds=ds_gfs, 
-                var="t", 
-                cartopy_data_dir=va_config.DIR_CARTOPY_DATA,
-                level="925", 
-                domain="global",
-                output_filename="gfs"
-                )
+    # ds_gfs = ds_gfs.sortby('latitude')
+    # plots.plot_var_map(
+    #             ds=ds_gfs, 
+    #             var="t", 
+    #             cartopy_data_dir=va_config.DIR_CARTOPY_DATA,
+    #             level="925", 
+    #             domain="global",
+    #             output_filename="gfs"
+    #             )
 
-    #===============================
-    # Preprocess MONAN and GFS data
-    #===============================
-    # Remap MONAN data to GFS grid
-    print ("Remapping MONAN data to GFS grid...")
-    utils.remap_cdo(
-        ref_nc=gfs_filepath,
-        input_nc=monan_filepath, 
-        output_nc=f"{va_config.INPUT_INTERMEDIATE_DIR}/monan_remapped.nc"
-        )
-    # Read remapped MONAN data
-    ds_monan_processed = xr.open_dataset(f"{va_config.INPUT_INTERMEDIATE_DIR}/monan_remapped.nc", engine="netcdf4")
-    print ("MONAN remapped:")
-    print (ds_monan_processed)
-    ds_monan_processed = ds_monan_processed.sortby('latitude')
+    # #===============================
+    # # Preprocess MONAN and GFS data
+    # #===============================
+    # # Remap MONAN data to GFS grid
+    # print ("Remapping MONAN data to GFS grid...")
+    # utils.remap_cdo(
+    #     ref_nc=gfs_filepath,
+    #     input_nc=monan_filepath, 
+    #     output_nc=f"{va_config.INPUT_INTERMEDIATE_DIR}/monan_remapped.nc"
+    #     )
+    # # Read remapped MONAN data
+    # ds_monan_processed = xr.open_dataset(f"{va_config.INPUT_INTERMEDIATE_DIR}/monan_remapped.nc", engine="netcdf4")
+    # print ("MONAN remapped:")
+    # print (ds_monan_processed)
+    # ds_monan_processed = ds_monan_processed.sortby('latitude')
 
-    plots.plot_var_map(
-                    ds=ds_monan_processed, 
-                    var="temperature", 
-                    cartopy_data_dir=va_config.CARTOPY_DATA_DIR,
-                    level="92500", 
-                    domain="global",
-                    output_filename="monan_processed"
-                    )
+    # plots.plot_var_map(
+    #                 ds=ds_monan_processed, 
+    #                 var="temperature", 
+    #                 cartopy_data_dir=va_config.CARTOPY_DATA_DIR,
+    #                 level="92500", 
+    #                 domain="global",
+    #                 output_filename="monan_processed"
+    #                 )
 
-    #======================
-    # Calculate statistics
-    #======================
-    # Remap MONAN data to GFS grid       
+    # #======================
+    # # Calculate statistics
+    # #======================
+    # # Remap MONAN data to GFS grid       
     
 
-    #==============
-    # Plot results
-    #==============
+    # #==============
+    # # Plot results
+    # #==============
 
-    #============================
-    # Copy config files
-    #============================
-    # Analysis-specific config file
-    subprocess.run(["cp", "vertical_analysis_config.py", va_config.OUTPUT_DIR], check=True)
-    # General config file
-    ## Get absolute path to monan_analysis package
-    gen_config_package_dir = os.path.dirname(monan_analysis.__file__)
-    ## Construct path to general config.py file
-    gen_config_file_path = os.path.join(gen_config_package_dir, "config.py")
-    ## Copy general config file
-    subprocess.run(["cp", gen_config_file_path, va_config.OUTPUT_DIR], check=True)
+    # #============================
+    # # Copy config files
+    # #============================
+    # # Analysis-specific config file
+    # subprocess.run(["cp", "vertical_analysis_config.py", va_config.OUTPUT_DIR], check=True)
+    # # General config file
+    # ## Get absolute path to monan_analysis package
+    # gen_config_package_dir = os.path.dirname(monan_analysis.__file__)
+    # ## Construct path to general config.py file
+    # gen_config_file_path = os.path.join(gen_config_package_dir, "config.py")
+    # ## Copy general config file
+    # subprocess.run(["cp", gen_config_file_path, va_config.OUTPUT_DIR], check=True)

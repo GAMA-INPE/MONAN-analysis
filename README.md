@@ -16,6 +16,7 @@ MONAN-analysis/
 │       ├── utils.py              # reusable general-purpose routines
 │       ├── io.py                 # reusable routines for reading input and saving output
 │       ├── plots.py              # reusable routines for plotting
+│       ├── preprocess.py         # reusable routines for data preprocessing
 │       └── stats.py              # reusable routines for calculating statistics
 ├── analyses/                     # ready-to-use analysis code
 │   ├── analysis1/

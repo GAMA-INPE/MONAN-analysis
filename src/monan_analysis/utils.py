@@ -49,14 +49,3 @@ def get_date_as_YYYYMM_str(year,month):
 def get_final_date_from_initial_date(date_in_datetime, time_window):
     date_final_in_datetime = date_in_datetime + datetime.timedelta(hours=int(time_window))
     return date_final_in_datetime
-
-def remap_cdo(ref_nc, input_nc, output_nc):
-    """ 
-    Remap input_nc to the grid of ref_nc 
-    and save the output in output_nc using CDO.
-    """
-    if not os.path.exists(output_nc):
-        subprocess.run(
-            ["cdo", "-f", "nc", f"-remapcon,{ref_nc}", input_nc, output_nc],
-            check=True
-        )
