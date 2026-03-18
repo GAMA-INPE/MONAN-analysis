@@ -61,7 +61,7 @@ def read_and_preprocess_monan_data():
         )
     # Select only data to be used for analysis
     ds_monan_selected = ds_monan[va_config.VARIABLES_TO_ANALYZE].sel(level=va_config.VERTICAL_LEVELS_TO_ANALYZE)
-    # Save preprocessed GFS dataset
+    # Save preprocessed MONAN dataset
     ds_monan_selected_filepath = f"{va_config.DIR_INPUT_INTERMEDIATE}/monan_selected_variables_and_levels.nc"
     ds_monan_selected.to_netcdf(ds_monan_selected_filepath)
     # If needed, print preprocessed dataset
