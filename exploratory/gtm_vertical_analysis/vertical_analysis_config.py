@@ -24,7 +24,7 @@ This file was created with the assistance of GitHub Copilot.
 # Selection of types of analysis to perform
 #===================================================================================================
 # Print details of analysis steps
-SEL_VERBOSE_ANALYSIS_STEPS = "n"
+SEL_VERBOSE_LEVEL = 0
 # Initial maps showing MONAN fields
 SEL_INITIAL_MONAN_MAPS = "n"
 #===================================================================================================

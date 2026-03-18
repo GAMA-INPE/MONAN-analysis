@@ -40,6 +40,7 @@ import monan_analysis.io as io
 import monan_analysis.config as config
 import monan_analysis.preprocess as preprocess
 import monan_analysis.utils as utils
+import vertical_analysis_aux as va_aux
 import vertical_analysis_config as va_config
 import subprocess
 import os
@@ -47,102 +48,31 @@ import xarray as xr
 
 if __name__ == "__main__":
     #===============================================================================================
+    # Initialization: create folder structure if necessary
+    #===============================================================================================
+    print ("\n Initializing folder structure...")
+    va_aux.create_folder_structure()
+
+    #===============================================================================================
     # Read and preprocess MONAN data 
     #===============================================================================================
-    print ("\n Reading MONAN data...")
-    ds_monan, monan_filepath = io.read_ds_monan(
-        year=va_config.YEAR,
-        month=va_config.MONTH,
-        day=va_config.DAY,
-        hour=va_config.HOUR,
-        time_window=va_config.TIME_WINDOW,
-        grid_spec=va_config.GRID_SPEC,
-        vertical_level_spec=va_config.VERTICAL_LEVEL_SPEC,
-        base_dir=va_config.DIR_MONAN_PREOP,
-        verbose='n'
-        )
-    # Select only data to be used for analysis
-    ds_monan_selected = ds_monan[va_config.VARIABLES_TO_ANALYZE].sel(level=va_config.VERTICAL_LEVELS_TO_ANALYZE)
-    # Save preprocessed GFS dataset
-    ds_monan_selected_filepath = f"{va_config.DIR_INPUT_INTERMEDIATE}/monan_selected_variables_and_levels.nc"
-    ds_monan_selected.to_netcdf(ds_monan_selected_filepath)
-    # If needed, print preprocessed dataset
-    if va_config.SEL_VERBOSE_ANALYSIS_STEPS == "y":
-        print ("MONAN dataset with selected variables and levels:")
-        print (ds_monan_selected)
+    print ("\n Reading and selecting MONAN data...")
+    ds_monan_selected_filepath = va_aux.read_and_preprocess_monan_data()
 
     #===============================================================================================
-    # If needed, plot initial MONAN maps for each domain, variable and level
+    # Read and preprocess GFS analysis data
     #===============================================================================================
-    if va_config.SEL_INITIAL_MONAN_MAPS == "y":
-        print ("\n initial MONAN plots...")
-        for domain in va_config.DOMAINS_TO_ANALYZE:
-            print ("domain:", domain)
-            for var in va_config.VARIABLES_TO_ANALYZE:
-                print ("variable:", var)
-                for level in va_config.VERTICAL_LEVELS_TO_ANALYZE:
-                    print ("level:", level)
-                    plots.plot_var_map(
-                        ds=ds_monan, 
-                        var=var, 
-                        cartopy_data_dir=va_config.DIR_CARTOPY_DATA,
-                        level=level, 
-                        domain=domain
-                        )
-
-    #===============================================================================================
-    # Read and preprocess analysis data from GFS 
-    #===============================================================================================
-    # Read GFS analysis dataset
-    print ("\n Reading and preprocessing GFS data...")
-    ds_gfs, gfs_filepath = io.read_ds_gfs(
-        year=va_config.YEAR,
-        month=va_config.MONTH,
-        day=va_config.DAY,
-        hour=va_config.HOUR,
-        base_dir=va_config.DIR_GFS_ANALYSIS,
-        stream_name=va_config.GFS_STREAM_NAME,
-        verbose='n'
-        )
-    # Configure GFS dataset to match MONAN format
-    ds_gfs_in_monan_format = preprocess.get_gfs_data_in_monan_format(
-        ds_gfs, config.GFS_TO_MONAN_VAR_DICT)
-    # Select only data to be used for analysis
-    ds_gfs_in_monan_format = ds_gfs_in_monan_format[va_config.VARIABLES_TO_ANALYZE].sel(
-        level=va_config.VERTICAL_LEVELS_TO_ANALYZE)
-    # Save preprocessed GFS dataset
-    ds_gfs_in_monan_format_filepath = f"{va_config.DIR_INPUT_INTERMEDIATE}/gfs_in_monan_format.nc"
-    ds_gfs_in_monan_format.to_netcdf(ds_gfs_in_monan_format_filepath)
-    # If needed, print preprocessed dataset
-    if va_config.SEL_VERBOSE_ANALYSIS_STEPS == "y":
-        print ("GFS dataset in MONAN data format:")
-        print (ds_gfs_in_monan_format)
+    print ("\n Reading and converting GFS data to MONAN data format...")
+    ds_gfs_in_monan_format_filepath = va_aux.read_and_preprocess_gfs_data()
 
     #===============================================================================================
     # Map MONAN data to GFS grid
     #===============================================================================================
     print ("\n Mapping MONAN data to GFS grid...")
-    # Get date and write it into preprocessed filepath
-    date_init_in_string = utils.get_date_as_YYYYMMDDHH_str(
-    va_config.YEAR, va_config.MONTH, va_config.DAY, va_config.HOUR
-    )
-    ds_monan_mapped_to_gfs_filepath = f"{va_config.DIR_INPUT_PROCESSED}/monan_mapped_to_gfs_{date_init_in_string}.nc"
-    # Check if file already exists
-    if os.path.exists(ds_monan_mapped_to_gfs_filepath):
-        print ("Mapped file already exists. No mapping needed.")
-    else:
-        preprocess.map_data_to_different_grid_with_cdo(
-            ref_nc=ds_gfs_in_monan_format_filepath,
-            input_nc=ds_monan_selected_filepath, 
-            output_nc=ds_monan_mapped_to_gfs_filepath,
-            var_list=va_config.VARIABLES_TO_ANALYZE, 
-            level_list=va_config.VERTICAL_LEVELS_TO_ANALYZE, 
-            )
-    # Read mapped MONAN data
-    ds_monan_mapped_to_gfs = xr.open_dataset(ds_monan_mapped_to_gfs_filepath, engine="netcdf4")
-    if va_config.SEL_VERBOSE_ANALYSIS_STEPS == "y":
-        print ("MONAN data mapped to GFS grid:")
-        print (ds_monan_mapped_to_gfs)
+    va_aux.map_monan_to_gfs_grid(
+        ds_monan_selected_filepath=ds_monan_selected_filepath,
+        ds_gfs_in_monan_format_filepath=ds_gfs_in_monan_format_filepath
+        )
 
     # plots.plot_var_map(
     #                 ds=ds_monan_processed, 
@@ -163,6 +93,24 @@ if __name__ == "__main__":
     # # Plot results
     # #==============
 
+    # #===============================================================================================
+    # # If needed, plot initial MONAN maps for each domain, variable and level
+    # #===============================================================================================
+    # if va_config.SEL_INITIAL_MONAN_MAPS == "y":
+    #     print ("\n initial MONAN plots...")
+    #     for domain in va_config.DOMAINS_TO_ANALYZE:
+    #         print ("domain:", domain)
+    #         for var in va_config.VARIABLES_TO_ANALYZE:
+    #             print ("variable:", var)
+    #             for level in va_config.VERTICAL_LEVELS_TO_ANALYZE:
+    #                 print ("level:", level)
+    #                 plots.plot_var_map(
+    #                     ds=ds_monan, 
+    #                     var=var, 
+    #                     cartopy_data_dir=va_config.DIR_CARTOPY_DATA,
+    #                     level=level, 
+    #                     domain=domain
+    #                     )
     # #============================
     # # Copy config files
     # #============================
