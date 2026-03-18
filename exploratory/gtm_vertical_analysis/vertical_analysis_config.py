@@ -20,7 +20,14 @@ Acknowledgments
 ---------------
 This file was created with the assistance of GitHub Copilot.    
 """
-
+#===================================================================================================
+# Selection of types of analysis to perform
+#===================================================================================================
+# Initial maps showing MONAN fields
+SEL_INITIAL_MONAN_MAPS = "n"
+#===================================================================================================
+# MONAN configurations
+#===================================================================================================
 # Date and forecast time window for analysis
 YEAR = "2026"
 MONTH = "02"
@@ -50,12 +57,18 @@ DOMAINS_TO_ANALYZE = [
     "south_america", 
     "central_america_and_caribbean"
     ]
-
-# Paths to data files
-MONAN_PREOP_DIR = "/lustre/projetos/monan_adm/monan/ecf_PREOPER/MONAN-WorkFlow-OPER/MONAN_PRE_OPER/MONAN/scripts_CD-CT/dataout/flushout"
-GFS_ANALYSIS_DIR = "/lustre/projetos/monan_gam/andre.lyra/NetCDFs/vert_struct/GFS"
-CARTOPY_DATA_DIR = "/lustre/projetos/monan_gam/andre.lyra/cartopy"
-OUTPUT_DIR = "/lustre/projetos/monan_atm/guilherme.mendonca/MONAN-analysis/exploratory/gtm_vertical_analysis/output"
-INPUT_DIR = "/lustre/projetos/monan_atm/guilherme.mendonca/MONAN-analysis/exploratory/gtm_vertical_analysis/input"
-INPUT_INTERMEDIATE_DIR = "/lustre/projetos/monan_atm/guilherme.mendonca/MONAN-analysis/exploratory/gtm_vertical_analysis/input/intermediate"
-INPUT_RAW_DIR = "/lustre/projetos/monan_atm/guilherme.mendonca/MONAN-analysis/exploratory/gtm_vertical_analysis/input/raw"
+#===================================================================================================
+# GFS configurations
+#===================================================================================================
+# Name of data stream from GFS to read (e.g. "levels" or "surface")
+GFS_STREAM_NAME = "levels"
+#===================================================================================================
+# Directory paths
+#===================================================================================================
+DIR_MONAN_PREOP = "/lustre/projetos/monan_adm/monan/ecf_PREOPER/MONAN-WorkFlow-OPER/MONAN_PRE_OPER/MONAN/scripts_CD-CT/dataout/flushout"
+DIR_GFS_ANALYSIS = "/lustre/projetos/monan_gam/andre.lyra/NetCDFs/vert_struct/GFS"
+DIR_CARTOPY_DATA = "/lustre/projetos/monan_gam/andre.lyra/cartopy"
+DIR_OUTPUT = "/lustre/projetos/monan_atm/guilherme.mendonca/MONAN-analysis/exploratory/gtm_vertical_analysis/output"
+DIR_INPUT = "/lustre/projetos/monan_atm/guilherme.mendonca/MONAN-analysis/exploratory/gtm_vertical_analysis/input"
+DIR_INPUT_INTERMEDIATE = "/lustre/projetos/monan_atm/guilherme.mendonca/MONAN-analysis/exploratory/gtm_vertical_analysis/input/intermediate"
+DIR_INPUT_RAW = "/lustre/projetos/monan_atm/guilherme.mendonca/MONAN-analysis/exploratory/gtm_vertical_analysis/input/raw"

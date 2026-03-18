@@ -33,15 +33,15 @@ from cartopy.util import add_cyclic_point
 def example_function_plots():
     print ("this is a function imported from the plots.py module.")
 
-def plot_var_map(ds, var, cartopy_data_dir, level=None, Time=None, domain="global"):
+def plot_var_map(ds, var, cartopy_data_dir, level=None, Time=None, domain="global",
+                 output_filename=None):
     """Plot map of a variable at a given level and domain."""
     # Set the Cartopy data directory
     os.environ["CARTOPY_USER_DATA_DIR"] = cartopy_data_dir
     
     # Select domain
     lat_range = config.DOMAIN_DICT[domain]["lat"]
-    lon_range = config.DOMAIN_DICT[domain]["lon"]
-    print (lon_range)        
+    lon_range = config.DOMAIN_DICT[domain]["lon"]     
 
      # Treat edge case where global domain is defined as 0 to 360 longitude (same point in cartopy)
     if lon_range == (0,360):
@@ -53,20 +53,22 @@ def plot_var_map(ds, var, cartopy_data_dir, level=None, Time=None, domain="globa
     # Handle level selection
     if "level" in ds_subset.sizes:
         if level is None:
-            print("level in data coords, but no value given. Choosing level index 0")
+            print("'level' in data coords, but no value given. Choosing 'level' index 0")
             ds_subset = ds_subset.isel(level=0)
         else:
-            print(f"level in data coords, and input value given. Choosing level={level}")
+            print(f"'level' in data coords, and input value given. Choosing 'level'={level}")
             ds_subset = ds_subset.sel(level=int(level))
 
     # Handle time selection
     if "Time" in ds_subset.sizes:
         if Time is None:
-            print("Time in data coords, but no value given. Choosing Time index 0")
+            print("'Time' in data coords, but no value given. Choosing 'Time' index 0")
             ds_subset = ds_subset.isel(Time=0)
         else:
-            print(f"Time in data coords, and input value given. Choosing Time={Time}")
+            print(f"'Time' in data coords, and input value given. Choosing 'Time'={Time}")
             ds_subset = ds_subset.sel(Time=int(Time))
+    else:
+        raise ValueError("'Time' coordinate not found in dataset. Cannot select time step for plotting.")
 
     # Extract the variable data
     data = ds_subset[var]
@@ -88,6 +90,13 @@ def plot_var_map(ds, var, cartopy_data_dir, level=None, Time=None, domain="globa
     # Use pcolormesh for raw data plotting (no interpolation)
     mesh = ax.pcolormesh(data.longitude, data.latitude, data, transform=ccrs.PlateCarree(), cmap=cmap)
     plt.colorbar(mesh, label=var)
-    plt.title(f"{var} Map")
-    plt.savefig(f"../../exploratory/gtm_vertical_analysis/output/map_var_{var}_level_{level}_domain_{domain}.png")
+    plt.title(f"{var}")
     plt.show()
+
+    # Save figure
+    if output_filename is not None:
+        figure_name = output_filename
+    else:
+        figure_name = "map_var_{var}_level_{level}_domain_{domain}"
+    plt.savefig(f"../../exploratory/gtm_vertical_analysis/output/{figure_name}.png")
+

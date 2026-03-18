@@ -38,6 +38,7 @@ This file was created with the assistance of GitHub Copilot.
 import monan_analysis
 import monan_analysis.plots as plots
 import monan_analysis.utils as utils
+import monan_analysis.io as io
 import vertical_analysis_aux as va_aux
 import vertical_analysis_config as va_config
 import subprocess
@@ -48,31 +49,59 @@ if __name__ == "__main__":
     #=============================
     # Read output data from MONAN 
     #=============================
-    ds_monan, monan_filepath = va_aux.read_ds_monan(verbose='y')
+    ds_monan, monan_filepath = io.read_ds_monan(
+        year=va_config.YEAR,
+        month=va_config.MONTH,
+        day=va_config.DAY,
+        hour=va_config.HOUR,
+        time_window=va_config.TIME_WINDOW,
+        grid_spec=va_config.GRID_SPEC,
+        vertical_level_spec=va_config.VERTICAL_LEVEL_SPEC,
+        base_dir=va_config.DIR_MONAN_PREOP,
+        verbose='n'
+        )
 
     #=============================================================
     # Plot initial MONAN maps for each domain, variable and level
     #=============================================================
-    print ("initial map plots...")
-    for domain in va_config.DOMAINS_TO_ANALYZE:
-        print ("domain:", domain)
-        for var in va_config.VARIABLES_TO_ANALYZE:
-            print ("variable:", var)
-            for level in va_config.VERTICAL_LEVELS_TO_ANALYZE:
-                print ("level:", level)
-                plots.plot_var_map(
-                    ds=ds_monan, 
-                    var=var, 
-                    cartopy_data_dir=va_config.CARTOPY_DATA_DIR,
-                    level=level, 
-                    domain=domain
-                    )
+    if va_config.SEL_INITIAL_MONAN_MAPS == "y":
+        print ("initial MONAN plots...")
+        for domain in va_config.DOMAINS_TO_ANALYZE:
+            print ("domain:", domain)
+            for var in va_config.VARIABLES_TO_ANALYZE:
+                print ("variable:", var)
+                for level in va_config.VERTICAL_LEVELS_TO_ANALYZE:
+                    print ("level:", level)
+                    plots.plot_var_map(
+                        ds=ds_monan, 
+                        var=var, 
+                        cartopy_data_dir=va_config.DIR_CARTOPY_DATA,
+                        level=level, 
+                        domain=domain
+                        )
 
-    #=============================
-    # Read analysis data from GFS 
-    #=============================
-    ds_gfs, gfs_filepath = va_aux.read_ds_gfs(verbose='y')
+    #============================================
+    # Read and preprocess analysis data from GFS 
+    #============================================
+    ds_gfs, gfs_filepath = io.read_ds_gfs(
+        year=va_config.YEAR,
+        month=va_config.MONTH,
+        day=va_config.DAY,
+        hour=va_config.HOUR,
+        base_dir=va_config.DIR_GFS_ANALYSIS,
+        stream_name=va_config.GFS_STREAM_NAME,
+        verbose='n'
+        )
     print (ds_gfs)
+    ds_gfs = ds_gfs.sortby('latitude')
+    plots.plot_var_map(
+                ds=ds_gfs, 
+                var="t", 
+                cartopy_data_dir=va_config.DIR_CARTOPY_DATA,
+                level="925", 
+                domain="global",
+                output_filename="gfs"
+                )
 
     #===============================
     # Preprocess MONAN and GFS data
@@ -88,11 +117,22 @@ if __name__ == "__main__":
     ds_monan_processed = xr.open_dataset(f"{va_config.INPUT_INTERMEDIATE_DIR}/monan_remapped.nc", engine="netcdf4")
     print ("MONAN remapped:")
     print (ds_monan_processed)
+    ds_monan_processed = ds_monan_processed.sortby('latitude')
+
+    plots.plot_var_map(
+                    ds=ds_monan_processed, 
+                    var="temperature", 
+                    cartopy_data_dir=va_config.CARTOPY_DATA_DIR,
+                    level="92500", 
+                    domain="global",
+                    output_filename="monan_processed"
+                    )
 
     #======================
     # Calculate statistics
     #======================
     # Remap MONAN data to GFS grid       
+    
 
     #==============
     # Plot results
