@@ -34,17 +34,7 @@ Acknowledgments
 ---------------
 This file was created with the assistance of GitHub Copilot. 
 """
-import monan_analysis
-import monan_analysis.plots as plots
-import monan_analysis.io as io
-import monan_analysis.config as config
-import monan_analysis.preprocess as preprocess
-import monan_analysis.utils as utils
 import vertical_analysis_aux as va_aux
-import vertical_analysis_config as va_config
-import subprocess
-import os
-import xarray as xr
 
 if __name__ == "__main__":
     #===============================================================================================
