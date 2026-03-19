@@ -30,16 +30,19 @@ import monan_analysis.io as io
 import monan_analysis.utils as utils
 import monan_analysis.config as config
 import monan_analysis.preprocess as preprocess
+import monan_analysis.stats as stats
 import vertical_analysis_config as va_config
 import os
 import xarray as xr
 
 def create_folder_structure():
-    os.makedirs("input", exist_ok=True)
-    os.makedirs("input/raw", exist_ok=True)
-    os.makedirs("input/intermediate", exist_ok=True)
-    os.makedirs("input/processed", exist_ok=True)
-    os.makedirs("output", exist_ok=True)
+    os.makedirs(va_config.DIR_INPUT, exist_ok=True)
+    os.makedirs(va_config.DIR_INPUT_RAW, exist_ok=True)
+    os.makedirs(va_config.DIR_INPUT_INTERMEDIATE, exist_ok=True)
+    os.makedirs(va_config.DIR_INPUT_PROCESSED, exist_ok=True)
+    os.makedirs(va_config.DIR_OUTPUT, exist_ok=True)
+    os.makedirs(va_config.DIR_OUTPUT_DATA, exist_ok=True)
+    os.makedirs(va_config.DIR_OUTPUT_FIGS, exist_ok=True)
 
 def read_and_preprocess_monan_data():
     # Define verbosity
@@ -127,3 +130,39 @@ def map_monan_to_gfs_grid(ds_monan_selected_filepath, ds_gfs_in_monan_format_fil
         print (ds_monan_mapped_to_gfs)
     
     return ds_monan_mapped_to_gfs_filepath
+
+def calculate_statistics(ds_ref_filepath, ds_prediction_filepath):
+    # Read datasets
+    ## GFS reference data
+    ds_ref = xr.open_dataset(ds_ref_filepath, engine="netcdf4")
+    ## MONAN prediction mapped to GFS grid
+    ds_prediction = xr.open_dataset(ds_prediction_filepath, engine="netcdf4")
+
+    # Get date to include in output filenames
+    date_init_in_string = utils.get_date_as_YYYYMMDDHH_str(
+    va_config.YEAR, va_config.MONTH, va_config.DAY, va_config.HOUR
+    )
+    # Initialize list of output filepaths for statistics datasets
+    ds_stats_filepath_list = []
+
+    # Create a dataset for each metric.
+    # Each dataset will contain all selected variables at all selected levels.
+    # We will not care about the domain now: since variables are all in 
+    # the same grid, we can compute each metric for 
+    # the whole grid and then subset it for different domains.
+    if "bias" in va_config.STATS_METRICS_TO_ANALYZE:
+        # Compute bias
+        ds_bias = stats.bias(observations=ds_ref, predictions=ds_prediction)
+        # Save bias dataset in nc file
+        bias_filepath = f"{va_config.DIR_OUTPUT_DATA}/bias_{date_init_in_string}.nc"
+        ds_bias.to_netcdf(bias_filepath)
+        ds_stats_filepath_list.append(bias_filepath)
+    if "absolute_error" in va_config.STATS_METRICS_TO_ANALYZE:
+        # Compute absolute error
+        ds_absolute_error = stats.absolute_error(observations=ds_ref, predictions=ds_prediction)
+        # Save absolute error dataset in nc file
+        absolute_error_filepath = f"{va_config.DIR_OUTPUT_DATA}/absolute_error_{date_init_in_string}.nc"
+        ds_absolute_error.to_netcdf(absolute_error_filepath)
+        ds_stats_filepath_list.append(absolute_error_filepath)
+
+    return ds_stats_filepath_list

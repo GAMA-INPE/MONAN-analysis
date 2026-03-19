@@ -21,7 +21,7 @@ Acknowledgments
 This file was created with the assistance of GitHub Copilot.    
 """
 #===================================================================================================
-# Selection of types of analysis to perform
+# Selection of level of detail in scripts
 #===================================================================================================
 # Print details of analysis steps
 SEL_VERBOSE_LEVEL = 0
@@ -43,15 +43,14 @@ VERTICAL_LEVEL_SPEC = "55"
 # Variables to analyze
 VARIABLES_TO_ANALYZE = [
     "temperature",
-    #"relhum",
-    #"spechum",
+    "spechum",
     #"zgeo",
     #"uzonal",
     #"umeridional",
     ]
 # Vertical levels to analyze
 VERTICAL_LEVELS_TO_ANALYZE = [
-    "92500"#, "85000",  "70000",  "50000",  "40000",  "25000",  "10000"
+    "92500", "85000"#,  "70000",  "50000",  "40000",  "25000",  "10000"
     ]
 # Domains to analyze
 DOMAINS_TO_ANALYZE = [
@@ -65,13 +64,24 @@ DOMAINS_TO_ANALYZE = [
 # Name of data stream from GFS to read (e.g. "levels" or "surface")
 GFS_STREAM_NAME = "levels"
 #===================================================================================================
+# Statistics configurations
+#===================================================================================================
+STATS_METRICS_TO_ANALYZE = [
+    "bias",
+    "absolute_error",
+    #"rmse",
+    #"anomaly_correlation",
+    ]
+#===================================================================================================
 # Directory paths
 #===================================================================================================
 DIR_MONAN_PREOP = "/lustre/projetos/monan_adm/monan/ecf_PREOPER/MONAN-WorkFlow-OPER/MONAN_PRE_OPER/MONAN/scripts_CD-CT/dataout/flushout"
 DIR_GFS_ANALYSIS = "/lustre/projetos/monan_gam/andre.lyra/NetCDFs/vert_struct/GFS"
 DIR_CARTOPY_DATA = "/lustre/projetos/monan_gam/andre.lyra/cartopy"
 DIR_OUTPUT = "/lustre/projetos/monan_atm/guilherme.mendonca/MONAN-analysis/analyses/vertical_structure/output"
+DIR_OUTPUT_FIGS = f"{DIR_OUTPUT}/figs"
+DIR_OUTPUT_DATA = f"{DIR_OUTPUT}/data"
 DIR_INPUT = "/lustre/projetos/monan_atm/guilherme.mendonca/MONAN-analysis/analyses/vertical_structure/input"
-DIR_INPUT_INTERMEDIATE = "/lustre/projetos/monan_atm/guilherme.mendonca/MONAN-analysis/analyses/vertical_structure/input/intermediate"
-DIR_INPUT_PROCESSED = "/lustre/projetos/monan_atm/guilherme.mendonca/MONAN-analysis/analyses/vertical_structure/input/processed"
-DIR_INPUT_RAW = "/lustre/projetos/monan_atm/guilherme.mendonca/MONAN-analysis/analyses/vertical_structure/input/raw"
+DIR_INPUT_INTERMEDIATE = f"{DIR_INPUT}/intermediate"
+DIR_INPUT_PROCESSED = f"{DIR_INPUT}/processed"
+DIR_INPUT_RAW = f"{DIR_INPUT}/raw"

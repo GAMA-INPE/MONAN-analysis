@@ -35,15 +35,13 @@ Acknowledgments
 This file was created with the assistance of GitHub Copilot. 
 """
 import vertical_analysis_aux as va_aux
-import monan_analysis.plots as plots
 import vertical_analysis_config as va_config
-import xarray as xr
 
 if __name__ == "__main__":
     #===============================================================================================
     # Initialization: create folder structure if necessary
     #===============================================================================================
-    print ("\n Initializing folder structure...")
+    print ("\n Initializing folder structure if not already existent...")
     va_aux.create_folder_structure()
 
     #===============================================================================================
@@ -55,42 +53,27 @@ if __name__ == "__main__":
     #===============================================================================================
     # Read and preprocess GFS analysis data
     #===============================================================================================
-    print ("\n Reading and converting GFS data to MONAN data format...")
+    print ("\n Reading and selecting GFS data, and converting it to MONAN data format...")
     ds_gfs_in_monan_format_filepath = va_aux.read_and_preprocess_gfs_data()
 
     #===============================================================================================
     # Map MONAN data to GFS grid
     #===============================================================================================
-    print ("\n Mapping MONAN data to GFS grid...")
+    print ("\n Mapping MONAN data to GFS grid for comparison...")
     ds_monan_mapped_to_gfs_filepath = va_aux.map_monan_to_gfs_grid(
         ds_monan_selected_filepath=ds_monan_selected_filepath,
         ds_gfs_in_monan_format_filepath=ds_gfs_in_monan_format_filepath
         )
-    
-    ds_monan_mapped_to_gfs = xr.open_dataset(ds_monan_mapped_to_gfs_filepath)
-    ds_gfs_in_monan_format = xr.open_dataset(ds_gfs_in_monan_format_filepath)
-    plots.plot_var_map(
-                    ds=ds_monan_mapped_to_gfs, 
-                    var="temperature", 
-                    cartopy_data_dir=va_config.DIR_CARTOPY_DATA,
-                    level="92500", 
-                    domain="global",
-                    output_filepath=f"{va_config.DIR_OUTPUT}/ds_monan_mapped_to_gfs.png"
-                    )
-    plots.plot_var_map(
-                    ds=ds_gfs_in_monan_format, 
-                    var="temperature", 
-                    cartopy_data_dir=va_config.DIR_CARTOPY_DATA,
-                    level="92500", 
-                    domain="global",
-                    output_filepath=f"{va_config.DIR_OUTPUT}/ds_gfs_in_monan_format.png"
-                    )
 
-    # #======================
-    # # Calculate statistics
-    # #======================
-    # # Remap MONAN data to GFS grid       
-    
+    #===============================================================================================
+    # Calculate statistics
+    #===============================================================================================
+    print ("\n Calculating statistics...")
+    ds_stats_filepath_list = va_aux.calculate_statistics(
+        ds_ref_filepath=ds_gfs_in_monan_format_filepath,
+        ds_prediction_filepath=ds_monan_mapped_to_gfs_filepath
+        )
+    print (ds_stats_filepath_list)
 
     # #==============
     # # Plot results
