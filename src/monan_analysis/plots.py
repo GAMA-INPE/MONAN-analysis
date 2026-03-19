@@ -33,8 +33,8 @@ from cartopy.util import add_cyclic_point
 def example_function_plots():
     print ("this is a function imported from the plots.py module.")
 
-def plot_var_map(ds, var, cartopy_data_dir, level=None, Time=None, domain="global",
-                 output_filename=None):
+def plot_var_map(ds, var, cartopy_data_dir, level=None, Time=None, 
+                 domain="global", output_filepath=None):
     """Plot map of a variable at a given level and domain."""
     # Set the Cartopy data directory
     os.environ["CARTOPY_USER_DATA_DIR"] = cartopy_data_dir
@@ -94,9 +94,9 @@ def plot_var_map(ds, var, cartopy_data_dir, level=None, Time=None, domain="globa
     plt.show()
 
     # Save figure
-    if output_filename is not None:
-        figure_name = output_filename
+    if output_filepath is not None:
+        figure_filepath = output_filepath
     else:
-        figure_name = "map_var_{var}_level_{level}_domain_{domain}"
-    plt.savefig(f"../../exploratory/gtm_vertical_analysis/output/{figure_name}.png")
+        figure_filepath = f"output/map_var_{var}_level_{level}_domain_{domain}.png"
+    plt.savefig(figure_filepath)
 

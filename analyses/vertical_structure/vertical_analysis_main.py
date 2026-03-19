@@ -35,6 +35,9 @@ Acknowledgments
 This file was created with the assistance of GitHub Copilot. 
 """
 import vertical_analysis_aux as va_aux
+import monan_analysis.plots as plots
+import vertical_analysis_config as va_config
+import xarray as xr
 
 if __name__ == "__main__":
     #===============================================================================================
@@ -59,19 +62,29 @@ if __name__ == "__main__":
     # Map MONAN data to GFS grid
     #===============================================================================================
     print ("\n Mapping MONAN data to GFS grid...")
-    va_aux.map_monan_to_gfs_grid(
+    ds_monan_mapped_to_gfs_filepath = va_aux.map_monan_to_gfs_grid(
         ds_monan_selected_filepath=ds_monan_selected_filepath,
         ds_gfs_in_monan_format_filepath=ds_gfs_in_monan_format_filepath
         )
-
-    # plots.plot_var_map(
-    #                 ds=ds_monan_processed, 
-    #                 var="temperature", 
-    #                 cartopy_data_dir=va_config.CARTOPY_DATA_DIR,
-    #                 level="92500", 
-    #                 domain="global",
-    #                 output_filename="monan_processed"
-    #                 )
+    
+    ds_monan_mapped_to_gfs = xr.open_dataset(ds_monan_mapped_to_gfs_filepath)
+    ds_gfs_in_monan_format = xr.open_dataset(ds_gfs_in_monan_format_filepath)
+    plots.plot_var_map(
+                    ds=ds_monan_mapped_to_gfs, 
+                    var="temperature", 
+                    cartopy_data_dir=va_config.DIR_CARTOPY_DATA,
+                    level="92500", 
+                    domain="global",
+                    output_filepath=f"{va_config.DIR_OUTPUT}/ds_monan_mapped_to_gfs.png"
+                    )
+    plots.plot_var_map(
+                    ds=ds_gfs_in_monan_format, 
+                    var="temperature", 
+                    cartopy_data_dir=va_config.DIR_CARTOPY_DATA,
+                    level="92500", 
+                    domain="global",
+                    output_filepath=f"{va_config.DIR_OUTPUT}/ds_gfs_in_monan_format.png"
+                    )
 
     # #======================
     # # Calculate statistics
@@ -99,7 +112,8 @@ if __name__ == "__main__":
     #                     var=var, 
     #                     cartopy_data_dir=va_config.DIR_CARTOPY_DATA,
     #                     level=level, 
-    #                     domain=domain
+    #                     domain=domain,
+    #                     output_filepath=f"{va_config.DIR_OUTPUT}/initial_monan_map_{var}_level{level}_{domain}.png"
     #                     )
     # #============================
     # # Copy config files

@@ -125,3 +125,5 @@ def map_monan_to_gfs_grid(ds_monan_selected_filepath, ds_gfs_in_monan_format_fil
     if va_config.SEL_VERBOSE_LEVEL >= 1:
         print ("MONAN data mapped to GFS grid:")
         print (ds_monan_mapped_to_gfs)
+    
+    return ds_monan_mapped_to_gfs_filepath
