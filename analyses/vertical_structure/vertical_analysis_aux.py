@@ -31,18 +31,25 @@ import monan_analysis.utils as utils
 import monan_analysis.config as config
 import monan_analysis.preprocess as preprocess
 import monan_analysis.stats as stats
+import monan_analysis.plots as plots
 import vertical_analysis_config as va_config
 import os
 import xarray as xr
 
 def create_folder_structure():
+    # Get date to include in output filenames
+    date_init_in_string = utils.get_date_as_YYYYMMDDHH_str(
+    va_config.YEAR, va_config.MONTH, va_config.DAY, va_config.HOUR
+    )
     os.makedirs(va_config.DIR_INPUT, exist_ok=True)
     os.makedirs(va_config.DIR_INPUT_RAW, exist_ok=True)
     os.makedirs(va_config.DIR_INPUT_INTERMEDIATE, exist_ok=True)
     os.makedirs(va_config.DIR_INPUT_PROCESSED, exist_ok=True)
     os.makedirs(va_config.DIR_OUTPUT, exist_ok=True)
     os.makedirs(va_config.DIR_OUTPUT_DATA, exist_ok=True)
+    os.makedirs(va_config.DIR_OUTPUT_DATA+f"/{date_init_in_string}", exist_ok=True)
     os.makedirs(va_config.DIR_OUTPUT_FIGS, exist_ok=True)
+    os.makedirs(va_config.DIR_OUTPUT_FIGS+f"/{date_init_in_string}", exist_ok=True)
 
 def read_and_preprocess_monan_data():
     # Define verbosity
@@ -143,7 +150,7 @@ def calculate_statistics(ds_ref_filepath, ds_prediction_filepath):
     va_config.YEAR, va_config.MONTH, va_config.DAY, va_config.HOUR
     )
     # Initialize list of output filepaths for statistics datasets
-    ds_stats_filepath_list = []
+    ds_stats_filepath_dict = {}
 
     # Create a dataset for each metric.
     # Each dataset will contain all selected variables at all selected levels.
@@ -154,15 +161,39 @@ def calculate_statistics(ds_ref_filepath, ds_prediction_filepath):
         # Compute bias
         ds_bias = stats.bias(observations=ds_ref, predictions=ds_prediction)
         # Save bias dataset in nc file
-        bias_filepath = f"{va_config.DIR_OUTPUT_DATA}/bias_{date_init_in_string}.nc"
+        bias_filepath = f"{va_config.DIR_OUTPUT_DATA}/{date_init_in_string}/bias_{date_init_in_string}.nc"
         ds_bias.to_netcdf(bias_filepath)
-        ds_stats_filepath_list.append(bias_filepath)
+        ds_stats_filepath_dict["bias"]=bias_filepath
     if "absolute_error" in va_config.STATS_METRICS_TO_ANALYZE:
         # Compute absolute error
         ds_absolute_error = stats.absolute_error(observations=ds_ref, predictions=ds_prediction)
         # Save absolute error dataset in nc file
-        absolute_error_filepath = f"{va_config.DIR_OUTPUT_DATA}/absolute_error_{date_init_in_string}.nc"
+        absolute_error_filepath = f"{va_config.DIR_OUTPUT_DATA}/{date_init_in_string}/absolute_error_{date_init_in_string}.nc"
         ds_absolute_error.to_netcdf(absolute_error_filepath)
-        ds_stats_filepath_list.append(absolute_error_filepath)
+        ds_stats_filepath_dict["absolute_error"]=absolute_error_filepath
 
-    return ds_stats_filepath_list
+    return ds_stats_filepath_dict
+
+def plot_statistics(ds_stats_filepath_dict):
+    # Get date to include in output filenames
+    date_init_in_string = utils.get_date_as_YYYYMMDDHH_str(
+    va_config.YEAR, va_config.MONTH, va_config.DAY, va_config.HOUR
+    )
+    # Maps of statistics for each metric, domain, variable and level
+    for metric in ds_stats_filepath_dict.keys():
+        print (f"Metric: {metric}")
+        ds_stats = xr.open_dataset(ds_stats_filepath_dict[metric], engine="netcdf4")
+        for domain in va_config.DOMAINS_TO_ANALYZE:
+            print ("domain:", domain)
+            for var in va_config.VARIABLES_TO_ANALYZE:
+                print ("variable:", var)
+                for level in va_config.VERTICAL_LEVELS_TO_ANALYZE:
+                    print ("level:", level)
+                    plots.plot_var_map(
+                        ds=ds_stats, 
+                        var=var, 
+                        cartopy_data_dir=va_config.DIR_CARTOPY_DATA,
+                        level=level, 
+                        domain=domain,
+                        output_filepath=f"{va_config.DIR_OUTPUT_FIGS}/{date_init_in_string}/metric_{metric}_var_{var}_level_{level}_domain_{domain}_{date_init_in_string}.png"
+                        )

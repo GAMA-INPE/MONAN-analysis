@@ -58,6 +58,8 @@ def plot_var_map(ds, var, cartopy_data_dir, level=None, Time=None,
         else:
             print(f"'level' in data coords, and input value given. Choosing 'level'={level}")
             ds_subset = ds_subset.sel(level=int(level))
+    else:
+        print ("'level' coordinate not found in dataset. Proceeding without 'level' selection.")
 
     # Handle time selection
     if "Time" in ds_subset.sizes:
@@ -68,7 +70,7 @@ def plot_var_map(ds, var, cartopy_data_dir, level=None, Time=None,
             print(f"'Time' in data coords, and input value given. Choosing 'Time'={Time}")
             ds_subset = ds_subset.sel(Time=int(Time))
     else:
-        raise ValueError("'Time' coordinate not found in dataset. Cannot select time step for plotting.")
+        print("'Time' coordinate not found in dataset. Proceeding without 'Time' selection.")
 
     # Extract the variable data
     data = ds_subset[var]

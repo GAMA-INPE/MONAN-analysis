@@ -25,8 +25,6 @@ This file was created with the assistance of GitHub Copilot.
 #===================================================================================================
 # Print details of analysis steps
 SEL_VERBOSE_LEVEL = 0
-# Initial maps showing MONAN fields
-SEL_INITIAL_MONAN_MAPS = "n"
 #===================================================================================================
 # MONAN configurations
 #===================================================================================================

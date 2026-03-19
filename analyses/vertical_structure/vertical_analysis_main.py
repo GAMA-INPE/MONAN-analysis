@@ -35,7 +35,6 @@ Acknowledgments
 This file was created with the assistance of GitHub Copilot. 
 """
 import vertical_analysis_aux as va_aux
-import vertical_analysis_config as va_config
 
 if __name__ == "__main__":
     #===============================================================================================
@@ -69,35 +68,16 @@ if __name__ == "__main__":
     # Calculate statistics
     #===============================================================================================
     print ("\n Calculating statistics...")
-    ds_stats_filepath_list = va_aux.calculate_statistics(
+    ds_stats_filepath_dict = va_aux.calculate_statistics(
         ds_ref_filepath=ds_gfs_in_monan_format_filepath,
         ds_prediction_filepath=ds_monan_mapped_to_gfs_filepath
         )
-    print (ds_stats_filepath_list)
 
-    # #==============
-    # # Plot results
-    # #==============
-
-    # #===============================================================================================
-    # # If needed, plot initial MONAN maps for each domain, variable and level
-    # #===============================================================================================
-    # if va_config.SEL_INITIAL_MONAN_MAPS == "y":
-    #     print ("\n initial MONAN plots...")
-    #     for domain in va_config.DOMAINS_TO_ANALYZE:
-    #         print ("domain:", domain)
-    #         for var in va_config.VARIABLES_TO_ANALYZE:
-    #             print ("variable:", var)
-    #             for level in va_config.VERTICAL_LEVELS_TO_ANALYZE:
-    #                 print ("level:", level)
-    #                 plots.plot_var_map(
-    #                     ds=ds_monan, 
-    #                     var=var, 
-    #                     cartopy_data_dir=va_config.DIR_CARTOPY_DATA,
-    #                     level=level, 
-    #                     domain=domain,
-    #                     output_filepath=f"{va_config.DIR_OUTPUT}/initial_monan_map_{var}_level{level}_{domain}.png"
-    #                     )
+    #===============================================================================================
+    # Plot statistics
+    #===============================================================================================
+    print ("\n Plotting statistics...")
+    va_aux.plot_statistics(ds_stats_filepath_dict=ds_stats_filepath_dict)
     # #============================
     # # Copy config files
     # #============================
