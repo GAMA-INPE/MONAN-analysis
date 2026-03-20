@@ -78,15 +78,9 @@ if __name__ == "__main__":
     #===============================================================================================
     print ("\n Plotting statistics...")
     va_aux.plot_statistics(ds_stats_filepath_dict=ds_stats_filepath_dict)
-    # #============================
-    # # Copy config files
-    # #============================
-    # # Analysis-specific config file
-    # subprocess.run(["cp", "vertical_analysis_config.py", va_config.DIR_OUTPUT], check=True)
-    # # General config file
-    # ## Get absolute path to monan_analysis package
-    # gen_config_package_dir = os.path.dirname(monan_analysis.__file__)
-    # ## Construct path to general config.py file
-    # gen_config_file_path = os.path.join(gen_config_package_dir, "config.py")
-    # ## Copy general config file
-    # subprocess.run(["cp", gen_config_file_path, va_config.DIR_OUTPUT], check=True)
+    #============================
+    # Copy config files
+    #============================
+    print ("\n Copying config files...")
+    va_aux.cp_config_files()
+    print("\n Done.")
