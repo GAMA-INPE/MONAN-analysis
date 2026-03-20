@@ -33,7 +33,7 @@ YEAR = "2026"
 MONTH = "02"
 DAY = "01"
 HOUR = "00"
-TIME_WINDOW = "48"
+TIME_WINDOW = "3"
 # Grid specification
 GRID_SPEC = "10km_uniform"
 # Vertical level specification

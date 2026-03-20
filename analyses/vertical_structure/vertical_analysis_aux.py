@@ -195,5 +195,5 @@ def plot_statistics(ds_stats_filepath_dict):
                         cartopy_data_dir=va_config.DIR_CARTOPY_DATA,
                         level=level, 
                         domain=domain,
-                        output_filepath=f"{va_config.DIR_OUTPUT_FIGS}/{date_init_in_string}/metric_{metric}_var_{var}_level_{level}_domain_{domain}_{date_init_in_string}.png"
+                        output_filepath=f"{va_config.DIR_OUTPUT_FIGS}/{date_init_in_string}/metric_{metric}_var_{var}_level_{level}_domain_{domain}_date_{date_init_in_string}.png"
                         )
