@@ -163,14 +163,14 @@ def calculate_statistics(ds_ref_filepath, ds_prediction_filepath):
     # the whole grid and then subset it for different domains.
     if "bias" in va_config.STATS_METRICS_TO_ANALYZE:
         # Compute bias
-        ds_bias = stats.bias(observations=ds_ref, predictions=ds_prediction)
+        ds_bias = stats.bias(predictions=ds_prediction, observations=ds_ref)
         # Save bias dataset in nc file
         bias_filepath = f"{va_config.DIR_OUTPUT_DATA}/{date_in_string}/bias_{date_in_string}.nc"
         ds_bias.to_netcdf(bias_filepath)
         ds_stats_filepath_dict["bias"]=bias_filepath
-    if "absolute_error" in va_config.STATS_METRICS_TO_ANALYZE:
+    if "relative_error" in va_config.STATS_METRICS_TO_ANALYZE:
         # Compute absolute error
-        ds_absolute_error = stats.absolute_error(observations=ds_ref, predictions=ds_prediction)
+        ds_absolute_error = stats.relative_error(predictions=ds_prediction, observations=ds_ref)
         # Save absolute error dataset in nc file
         absolute_error_filepath = f"{va_config.DIR_OUTPUT_DATA}/{date_in_string}/absolute_error_{date_in_string}.nc"
         ds_absolute_error.to_netcdf(absolute_error_filepath)

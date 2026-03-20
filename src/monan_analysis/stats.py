@@ -22,43 +22,66 @@ Acknowledgments
 This file was created with the assistance of GitHub Copilot. 
 """
 
+import xarray as xr
+
 def example_function_stats():
     print ("this is a function imported from the stats.py module.")
 
-def bias(observations, predictions):
-    """Calculate the bias between observations and predictions."""
-    predictions = predictions.squeeze()
-    observations = observations.squeeze()
-    return (predictions - observations)
+def bias(predictions, observations):
+    """Calculate the bias between predictions and observations while preserving dataset structure."""
+    # Ensure inputs are xarray Datasets
+    if not isinstance(predictions, xr.Dataset) or not isinstance(observations, xr.Dataset):
+        raise TypeError("Both predictions and observations must be xarray Datasets.")
+    
+    # Perform the subtraction for each data variable
+    result = predictions.copy()
+    for var in predictions.data_vars:
+        result[var] = predictions[var] - observations[var]
+    
+    return result
 
-def bias_mean(observations, predictions):
-    """Calculate the mean bias between observations and predictions."""
-    predictions = predictions.squeeze()
-    observations = observations.squeeze()
-    return bias(observations, predictions).mean()
+def bias_mean(predictions, observations):
+    """Calculate the mean bias between predictions and observations."""
+    # Ensure inputs are xarray Datasets
+    if not isinstance(predictions, xr.Dataset) or not isinstance(observations, xr.Dataset):
+        raise TypeError("Both predictions and observations must be xarray Datasets.")
+    
+    # Perform the subtraction for each data variable and then take the mean
+    result = predictions.copy()
+    for var in predictions.data_vars:
+        result[var] = (predictions[var] - observations[var]).mean()
+    
+    return result
 
-def absolute_error(observations, predictions):
-    """Calculate the absolute error between observations and predictions."""
-    predictions = predictions.squeeze()
-    observations = observations.squeeze()
-    return abs(predictions - observations)
+def relative_error(predictions, observations):
+    """Calculate the relative error between predictions and observations."""
+    if not isinstance(predictions, xr.Dataset) or not isinstance(observations, xr.Dataset):
+        raise TypeError("Both predictions and observations must be xarray Datasets.")
+    
+    result = predictions.copy()
+    for var in predictions.data_vars:
+        result[var] = (predictions[var] - observations[var]) / observations[var] * 100
+    
+    return result
 
-def absolute_error_mean(observations, predictions):
-    """Calculate the mean absolute error between observations and predictions."""
-    predictions = predictions.squeeze()
-    observations = observations.squeeze()
-    return absolute_error(observations, predictions).mean()
+def relative_error_mean(predictions, observations):
+    """Calculate the mean relative error between predictions and observations."""
+    if not isinstance(predictions, xr.Dataset) or not isinstance(observations, xr.Dataset):
+        raise TypeError("Both predictions and observations must be xarray Datasets.")
+    
+    result = predictions.copy()
+    for var in predictions.data_vars:
+        result[var] = ((predictions[var] - observations[var]) / observations[var] * 100).mean()
+    
+    return result
 
-def rmse(observations, predictions):
-    """Calculate the root mean square error between observations and predictions."""
-    predictions = predictions.squeeze()
-    observations = observations.squeeze()
-    return ((predictions - observations) ** 2).mean() ** 0.5
-
-def anomaly_correlation(observations, predictions):
-    """Calculate the anomaly correlation between observations and predictions."""
-    predictions = predictions.squeeze()
-    observations = observations.squeeze()
-    obs_anomaly = observations - observations.mean()
-    pred_anomaly = predictions - predictions.mean()
-    return (obs_anomaly * pred_anomaly).mean() / ((obs_anomaly ** 2).mean() ** 0.5 * (pred_anomaly ** 2).mean() ** 0.5)
+def rmse(predictions, observations):
+    """Calculate the root mean square error between predictions and observations."""
+    if not isinstance(predictions, xr.Dataset) or not isinstance(observations, xr.Dataset):
+        raise TypeError("Both predictions and observations must be xarray Datasets.")
+    
+    result = predictions.copy()
+    for var in predictions.data_vars:
+        result[var] = (((predictions[var] - observations[var]) ** 2).mean()) ** 0.5
+    
+    return result
