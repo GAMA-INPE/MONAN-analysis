@@ -49,6 +49,10 @@ def get_final_date_from_initial_date(date_in_datetime, time_window):
     date_final_in_datetime = date_in_datetime + datetime.timedelta(hours=int(time_window))
     return date_final_in_datetime
 
+def get_initial_date_from_final_date(date_in_datetime, time_window):
+    date_init_in_datetime = date_in_datetime - datetime.timedelta(hours=int(time_window))
+    return date_init_in_datetime
+
 def setup_parser():
     """Set up the argument parser with common arguments."""
     parser = argparse.ArgumentParser(

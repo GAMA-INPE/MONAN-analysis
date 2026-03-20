@@ -58,18 +58,18 @@ def read_ds_monan(year,month,day,hour,time_window,grid_spec,
     if verbose == 'y':
         print ("Reading MONAN output data...")
     # Get file path for reading MONAN data
-    ## Compute date for initial conditions in datetime and string formats
-    date_init_in_datetime = utils.get_date_as_datetime(
+    ## Compute final prediction date in datetime and string formats
+    date_final_in_datetime = utils.get_date_as_datetime(
         year, month, day, hour
         )
-    date_init_in_string = utils.get_date_as_YYYYMMDDHH_str(
+    date_final_in_string = utils.get_date_as_YYYYMMDDHH_str(
         year, month, day, hour
         )
-    ## Compute date for end of time window
-    date_final_in_datetime = utils.get_final_date_from_initial_date(
-        date_init_in_datetime, time_window
+    ## Compute initial date (final date - time window)
+    date_init_in_datetime = utils.get_initial_date_from_final_date(
+        date_final_in_datetime, time_window
         )
-    date_final_in_string = date_final_in_datetime.strftime(config.DATE_FORMAT_STRING)
+    date_init_in_string = date_init_in_datetime.strftime(config.DATE_FORMAT_STRING)
     ## Get MONAN output filename
     filename = get_MONAN_DIAG_filename(
         date_init_in_string,
