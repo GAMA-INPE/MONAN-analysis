@@ -24,8 +24,7 @@ This file was created with the assistance of GitHub Copilot.
 import os
 import subprocess
 
-def map_data_to_different_grid_with_cdo(ref_nc, input_nc, output_nc,
-                                        var_list,level_list):
+def map_data_to_different_grid_with_cdo(ref_nc, input_nc, output_nc):
     """ 
     Remap input_nc to the grid of ref_nc 
     and save the output in output_nc using CDO.

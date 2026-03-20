@@ -21,10 +21,12 @@ Acknowledgments
 This file was created with the assistance of GitHub Copilot.    
 """
 #===================================================================================================
-# Selection of level of detail in scripts
+# Selection of level of detail of log messages
 #===================================================================================================
-# Print details of analysis steps
-SEL_VERBOSE_LEVEL = 0
+# 0: log messages from vertical_analysis_main.py only
+# 1: log messages from vertical_analysis_main.py + vertical_analysis_aux.py
+# 2: log messages from vertical_analysis_main.py + vertical_analysis_aux.py + monan_analysis modules
+SEL_VERBOSE_LEVEL = 2
 #===================================================================================================
 # MONAN configurations
 #===================================================================================================
@@ -33,7 +35,7 @@ YEAR = "2026"
 MONTH = "02"
 DAY = "01"
 HOUR = "00"
-TIME_WINDOW = "3"
+TIME_WINDOW = "0"
 # Grid specification
 GRID_SPEC = "10km_uniform"
 # Vertical level specification
@@ -41,20 +43,20 @@ VERTICAL_LEVEL_SPEC = "55"
 # Variables to analyze
 VARIABLES_TO_ANALYZE = [
     "temperature",
-    "spechum",
+    #"spechum",
     #"zgeo",
     #"uzonal",
     #"umeridional",
     ]
 # Vertical levels to analyze
 VERTICAL_LEVELS_TO_ANALYZE = [
-    "92500", "85000"#,  "70000",  "50000",  "40000",  "25000",  "10000"
+    "92500"#, "85000",  "70000",  "50000",  "40000",  "25000",  "10000"
     ]
 # Domains to analyze
 DOMAINS_TO_ANALYZE = [
     "global", 
-    "south_america", 
-    "central_america_and_caribbean"
+    #"south_america", 
+    #"central_america_and_caribbean"
     ]
 #===================================================================================================
 # GFS configurations
