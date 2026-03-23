@@ -170,34 +170,13 @@ def calculate_statistics(ds_ref_filepath, ds_prediction_filepath):
         bias_filepath = f"{va_config.DIR_OUTPUT_DATA}/{date_in_string}/bias_{date_in_string}.nc"
         ds_bias.to_netcdf(bias_filepath)
         ds_stats_filepath_dict["bias"]=bias_filepath
-    if "bias_mean" in va_config.STATS_METRICS_TO_ANALYZE:
-        # Compute bias mean
-        ds_bias_mean = stats.bias_mean(predictions=ds_prediction, observations=ds_ref)
-        # Save bias mean dataset in nc file
-        bias_mean_filepath = f"{va_config.DIR_OUTPUT_DATA}/{date_in_string}/bias_mean_{date_in_string}.nc"
-        ds_bias_mean.to_netcdf(bias_mean_filepath)
-        ds_stats_filepath_dict["bias_mean"]=bias_mean_filepath
     if "relative_error" in va_config.STATS_METRICS_TO_ANALYZE:
         # Compute absolute error
-        ds_absolute_error = stats.relative_error(predictions=ds_prediction, observations=ds_ref)
+        ds_relative_error = stats.relative_error(predictions=ds_prediction, observations=ds_ref)
         # Save absolute error dataset in nc file
-        absolute_error_filepath = f"{va_config.DIR_OUTPUT_DATA}/{date_in_string}/absolute_error_{date_in_string}.nc"
-        ds_absolute_error.to_netcdf(absolute_error_filepath)
-        ds_stats_filepath_dict["relative_error"]=absolute_error_filepath
-    if "relative_error_mean" in va_config.STATS_METRICS_TO_ANALYZE:
-        # Compute relative error mean
-        ds_relative_error_mean = stats.relative_error_mean(predictions=ds_prediction, observations=ds_ref)
-        # Save relative error mean dataset in nc file
-        relative_error_mean_filepath = f"{va_config.DIR_OUTPUT_DATA}/{date_in_string}/relative_error_mean_{date_in_string}.nc"
-        ds_relative_error_mean.to_netcdf(relative_error_mean_filepath)
-        ds_stats_filepath_dict["relative_error_mean"]=relative_error_mean_filepath
-    if "rmse" in va_config.STATS_METRICS_TO_ANALYZE:
-        # Compute rmse
-        ds_rmse = stats.rmse(predictions=ds_prediction, observations=ds_ref)
-        # Save rmse dataset in nc file
-        rmse_filepath = f"{va_config.DIR_OUTPUT_DATA}/{date_in_string}/rmse_{date_in_string}.nc"
-        ds_rmse.to_netcdf(rmse_filepath)
-        ds_stats_filepath_dict["rmse"]=rmse_filepath
+        relative_error_filepath = f"{va_config.DIR_OUTPUT_DATA}/{date_in_string}/absolute_error_{date_in_string}.nc"
+        ds_relative_error.to_netcdf(relative_error_filepath)
+        ds_stats_filepath_dict["relative_error"]=relative_error_filepath
 
     return ds_stats_filepath_dict
 

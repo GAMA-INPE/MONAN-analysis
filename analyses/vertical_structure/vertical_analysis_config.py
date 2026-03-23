@@ -35,7 +35,7 @@ YEAR = "2026"
 MONTH = "02"
 DAY = "01"
 HOUR = "00"
-TIME_WINDOW = "24"
+TIME_WINDOW = "00"
 # Grid specification
 GRID_SPEC = "10km_uniform"
 # Vertical level specification
@@ -68,10 +68,8 @@ GFS_STREAM_NAME = "levels"
 #===================================================================================================
 STATS_METRICS_TO_ANALYZE = [
     "bias",
-    "bias_mean",
     "relative_error",
-    "relative_error_mean",
-    "rmse",
+    #"rmse",
     #"anomaly_correlation",
     ]
 #===================================================================================================

@@ -60,7 +60,7 @@ def relative_error(predictions, observations):
     
     result = predictions.copy()
     for var in predictions.data_vars:
-        result[var] = (predictions[var] - observations[var]) / observations[var] * 100
+        result[var] = (predictions[var] - observations[var]) / observations[var]
     
     return result
 
@@ -71,7 +71,7 @@ def relative_error_mean(predictions, observations):
     
     result = predictions.copy()
     for var in predictions.data_vars:
-        result[var] = ((predictions[var] - observations[var]) / observations[var] * 100).mean()
+        result[var] = ((predictions[var] - observations[var]) / observations[var]).mean()
     
     return result
 
