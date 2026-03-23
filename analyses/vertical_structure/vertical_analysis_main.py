@@ -78,6 +78,7 @@ if __name__ == "__main__":
     #===============================================================================================
     print ("\n Plotting statistics...")
     va_aux.plot_statistics(ds_stats_filepath_dict=ds_stats_filepath_dict)
+    
     #============================
     # Copy config files
     #============================
