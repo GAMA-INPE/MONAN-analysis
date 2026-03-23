@@ -134,7 +134,7 @@ def rmse(predictions, observations):
     """
     Calculate the root mean square error between predictions and observations.
     
-    The root mean squared error is here defined as the root of the mean squared error as defined in (1), i.e.
+    The root mean square error is here defined as the root of the mean squared error as defined in (1), i.e.
 
     RMSE = sqrt(1/n sum_{i=1}^{n} (prediction_i - observation_i)**2) 
 
@@ -156,19 +156,20 @@ def anomaly_correlation_coefficient(predictions, observations):
     
     The anomaly correlation coefficient is here defined as the mean of the product of the anomalies 
     of the predictions and observations, divided by the product of the standard deviations of the 
-    anomalies of the predictions and observations. This definition follows roughly that of (1), except
-    that in (1) the anomalies are calculated by subtracting the climatological mean of the variable
-    and then again its spatial mean, while here we subtract only the mean of the variable over the
-    whole array. The user is expected to calculate the anomalies as she/he sees fit before calling 
-    this function.
+    anomalies of the predictions and observations times the number of components in the field. 
+    This definition follows roughly that of (1), except that in (1) the anomalies are calculated by 
+    subtracting the climatological mean of the variable and then again its spatial mean, while here 
+    we subtract only the mean of the variable over the whole array. The user is expected to calculate 
+    the anomalies as she/he sees fit before calling this function.
 
     Mathematically, we define
 
-    ACC = (pred_anom * obs_anom).mean() / ((pred_anom ** 2).mean() ** 0.5 * (obs_anom ** 2).mean() ** 0.5),
+    ACC = (pred_anom * obs_anom).mean() / (n*(pred_anom ** 2).mean() ** 0.5 * (obs_anom ** 2).mean() ** 0.5),
 
     where
     pred_anom = predictions - predictions.mean()
     obs_anom = observations - observations.mean()
+    n = number of components in the field
 
     Reference:
     1. Jolliffe and Stephenson, Forecast Verification: A Practitioner's Guide in Atmospheric Science, 2003
@@ -180,6 +181,6 @@ def anomaly_correlation_coefficient(predictions, observations):
     for var in predictions.data_vars:
         pred_anom = predictions[var] - predictions[var].mean()
         obs_anom = observations[var] - observations[var].mean()
-        result[var] = (pred_anom * obs_anom).mean() / ((pred_anom ** 2).mean() ** 0.5 * (obs_anom ** 2).mean() ** 0.5)
+        result[var] = (pred_anom * obs_anom).mean() / (len(predictions[var])*(pred_anom ** 2).mean() ** 0.5 * (obs_anom ** 2).mean() ** 0.5)
     
     return result
