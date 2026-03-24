@@ -6,24 +6,28 @@ Project to centralize code for analyses of simulations with the MONAN model.
 ```
 MONAN-analysis/
 ├── README.md             
-├── pyproject.toml        # makes packages inside src/ installable
-├── requirements.txt      # lists libraries needed to run repo
-├── .gitignore            # lists files to be ignored by git
-├── src/                  # source code (installable packages)
-│   └── monan_analysis/   # namespace for monan_analysis package
-│       ├── __init__.py   # python looks for this file when importing modules
-│       ├── utils.py      # reusable general-purpose routines
-│       ├── io.py         # reusable routines for reading input and saving output
-│       ├── plots.py      # reusable routines for plotting
-│       └── stats.py      # reusable routines for calculating statistics
-├── analyses/             # ready-to-use analysis code
+├── pyproject.toml                # makes packages inside src/ installable
+├── requirements.txt              # lists libraries needed to run repo
+├── .gitignore                    # lists files to be ignored by git
+├── src/                          # source code (installable packages)
+│   └── monan_analysis/           # namespace for monan_analysis package
+│       ├── __init__.py           # python looks for this file when importing modules
+│       ├── config.py             # general settings shared across multiple analyses
+│       ├── utils.py              # reusable general-purpose routines
+│       ├── io.py                 # reusable routines for reading input and saving output
+│       ├── plots.py              # reusable routines for plotting
+│       ├── preprocess.py         # reusable routines for data preprocessing
+│       └── stats.py              # reusable routines for calculating statistics
+├── analyses/                     # ready-to-use analysis code
 │   ├── analysis1/
-│   │   ├── run1.py        # exemplary main script for analysis1
-│   │   └── aux1.py        # exemplary auxiliary script for analysis1
+│   │   ├── analysis1_main.py     # exemplary main script for analysis1
+│   │   ├── analysis1_aux.py      # exemplary auxiliary script for analysis1
+│   │   └── analysis1_config.py   # exemplary config with settings specific to analysis1
 │   └── analysis2/
-│       ├── run2.py        # exemplary main script for analysis2
-│       └── aux2.py        # exemplary auxiliary script for analysis2
-└── exploratory/          # exploratory (preliminary) scripts
+│       ├── analysis2_main.py.py  # exemplary main script for analysis2
+│       ├── analysis2_aux.py      # exemplary auxiliary script for analysis2
+│       └── analysis2_config.py   # exemplary config with settings specific to analysis2
+└── exploratory/                  # exploratory (preliminary) scripts
 ```
 ____________
 
@@ -92,11 +96,15 @@ ____________
 The core idea behind this project is that analysis scripts, although developed for performing a particular type of investigation, involve also many repetitive tasks that can be organized in general routines to be reused in the future.
 
 To account for this, the suggested workflow for performing analyses in this repository is the following:
-1) In `exploratory/`, develop your initial analysis scripts and generate your results without worrying too much about organization. 
+1) Before starting your analysis, check out the general functions and settings already available in our packages under `src/`. They may be useful for your particular purposes.
 
-2) As the scripts developed in 1. get more mature, transfer them to `analyses/`. Here, the goal is to have well tested and documented analysis pipelines that can be readily understood and employed by other users. For a clean code, try to organize the main analysis script as a wrapper (https://en.wikipedia.org/wiki/Wrapper_function; it could be e.g. `analyses/analysis1/run1.py`) that calls subroutines for each task performed. Subroutines that are specific to that particular analysis can be locally defined under `analyses/` (e.g. `analyses/analysis1/aux1.py`). Subroutines of a more general nature should be defined under `src/monan_analysis` in one of the available modules depending on its purpose (utils, io, plotting, stats, etc.). The goal is to integrate them into our `src/` packages, thereby facilitating future reuse.
+2) In `exploratory/`, develop your initial analysis scripts and generate your results without worrying too much about organization. 
 
-In both steps 1) and 2) the user can take advantage of the already defined functions in our packages under `src/`. To call them, one just needs to import the respective package as usually done in python, e.g., to import a plotting function do
+3) As the scripts developed in 2. get more mature, transfer them to `analyses/`. Here, the goal is to have well tested and documented analysis pipelines that can be readily understood and employed by other users. For a clean code, try to organize the main analysis script as a wrapper (https://en.wikipedia.org/wiki/Wrapper_function; it could be e.g. `analyses/analysis1/amalysis1_main.py`) that calls subroutines for each task performed. Subroutines that are specific to that particular analysis can be locally defined under `analyses/` (e.g. `analyses/analysis1/analysis1_aux.py`). Subroutines of a more general nature should be defined under `src/monan_analysis` in one of the available modules depending on its purpose (`utils.py`, `io.py`, `plots.py`, `stats.py`, etc.). A similar procedure can be employed for analysis settings: in defining the parameters/paths/any user configuration for the analysis, try using separate config files (settings specific to the analysis under e.g. `analyses/analysis1/amalysis1_config.py`, and general settings under `src/monan_analysis/config.py`). Such files have the advantage that they can be saved together with the analysis results, so that one has easily at hand all user input employed for obtaining them. 
+
+The goal of all this is to integrate the created general functions and settings into our `src/` packages, which are installable, and will therefore be readily available for any future analysis script.
+
+As explained in 1), during steps 2) and 3) the user can take advantage of the already defined functions and settings in our packages under `src/`. To call them, one just needs to import the respective package as usually done in python, e.g., to import a plotting function do
 
 ```
 from monan_analysis.plots import example_function_plots
@@ -105,5 +113,3 @@ from monan_analysis.plots import example_function_plots
 For developing the project please follow the workflow
 
 new branch (name abbreviation/feature, e.g. gtm/repo-organization) --> code modifications -->  open pull request and assign reviewers --> after reviewers' approval, merge into `main` branch.
-
-

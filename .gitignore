@@ -6,6 +6,17 @@
 build/
 dist/
 
+# figures
+*.png
+*.jpeg
+*.jpg
+
+# nc files
+*.nc
+
+# output
+output/
+
 # other python stuff
 *.pyc
 __pycache__/
