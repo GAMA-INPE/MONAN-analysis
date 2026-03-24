@@ -93,7 +93,6 @@ def plot_var_map(ds, var, cartopy_data_dir, level=None, Time=None,
     mesh = ax.pcolormesh(data.longitude, data.latitude, data, transform=ccrs.PlateCarree(), cmap=cmap)
     plt.colorbar(mesh, label=var)
     plt.title(f"{var}")
-    plt.show()
 
     # Save figure
     if output_filepath is not None:

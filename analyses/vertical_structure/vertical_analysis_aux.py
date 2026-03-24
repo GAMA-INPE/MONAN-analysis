@@ -29,7 +29,6 @@ import monan_analysis
 import monan_analysis.config as config
 import monan_analysis.io as io
 import monan_analysis.utils as utils
-import monan_analysis.config as config
 import monan_analysis.preprocess as preprocess
 import monan_analysis.stats as stats
 import monan_analysis.plots as plots
