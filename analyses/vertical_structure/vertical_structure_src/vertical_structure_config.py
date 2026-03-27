@@ -26,7 +26,7 @@ This file was created with the assistance of GitHub Copilot.
 # 0: log messages from vertical_analysis_main.py only
 # 1: log messages from vertical_analysis_main.py + vertical_analysis_aux.py
 # 2: log messages from vertical_analysis_main.py + vertical_analysis_aux.py + monan_analysis modules
-SEL_VERBOSE_LEVEL = 2
+SEL_VERBOSE_LEVEL = 0
 #===================================================================================================
 # MONAN configurations
 #===================================================================================================
@@ -50,7 +50,7 @@ VARIABLES_TO_ANALYZE = [
     ]
 # Vertical levels to analyze
 VERTICAL_LEVELS_TO_ANALYZE = [
-    "92500", "85000",  "70000",  "50000",  "40000",  "25000",  "10000"
+    "92500"#, "85000",  "70000",  "50000",  "40000",  "25000",  "10000"
     ]
 # Domains to analyze
 DOMAINS_TO_ANALYZE = [

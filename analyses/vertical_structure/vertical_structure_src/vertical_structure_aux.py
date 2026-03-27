@@ -32,7 +32,7 @@ import monan_analysis.utils as utils
 import monan_analysis.preprocess as preprocess
 import monan_analysis.stats as stats
 import monan_analysis.plots as plots
-import vertical_analysis_config as va_config
+from . import vertical_structure_config as vs_config
 import os
 import xarray as xr
 import subprocess
@@ -40,47 +40,47 @@ import subprocess
 def create_folder_structure():
     # Get date to include in output filenames
     date_in_string = utils.get_date_as_YYYYMMDDHH_str(
-    va_config.YEAR, va_config.MONTH, va_config.DAY, va_config.HOUR
+    vs_config.YEAR, vs_config.MONTH, vs_config.DAY, vs_config.HOUR
     )
-    os.makedirs(va_config.DIR_INPUT, exist_ok=True)
-    os.makedirs(va_config.DIR_INPUT_RAW, exist_ok=True)
-    os.makedirs(va_config.DIR_INPUT_INTERMEDIATE, exist_ok=True)
-    os.makedirs(va_config.DIR_INPUT_PROCESSED, exist_ok=True)
-    os.makedirs(va_config.DIR_OUTPUT, exist_ok=True)
-    os.makedirs(va_config.DIR_OUTPUT_DATA, exist_ok=True)
-    os.makedirs(va_config.DIR_OUTPUT_DATA+f"/date_{date_in_string}_time_window_{va_config.TIME_WINDOW}", exist_ok=True)
-    os.makedirs(va_config.DIR_OUTPUT_FIGS, exist_ok=True)
-    os.makedirs(va_config.DIR_OUTPUT_FIGS+f"/date_{date_in_string}_time_window_{va_config.TIME_WINDOW}", exist_ok=True)
+    os.makedirs(vs_config.DIR_INPUT, exist_ok=True)
+    os.makedirs(vs_config.DIR_INPUT_RAW, exist_ok=True)
+    os.makedirs(vs_config.DIR_INPUT_INTERMEDIATE, exist_ok=True)
+    os.makedirs(vs_config.DIR_INPUT_PROCESSED, exist_ok=True)
+    os.makedirs(vs_config.DIR_OUTPUT, exist_ok=True)
+    os.makedirs(vs_config.DIR_OUTPUT_DATA, exist_ok=True)
+    os.makedirs(vs_config.DIR_OUTPUT_DATA+f"/date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}", exist_ok=True)
+    os.makedirs(vs_config.DIR_OUTPUT_FIGS, exist_ok=True)
+    os.makedirs(vs_config.DIR_OUTPUT_FIGS+f"/date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}", exist_ok=True)
 
 def read_and_preprocess_monan_data():
     # Get date and write it into preprocessed filepath
     date_in_string = utils.get_date_as_YYYYMMDDHH_str(
-    va_config.YEAR, va_config.MONTH, va_config.DAY, va_config.HOUR
+    vs_config.YEAR, vs_config.MONTH, vs_config.DAY, vs_config.HOUR
     )
     # Define verbosity
-    if va_config.SEL_VERBOSE_LEVEL >= 2:
+    if vs_config.SEL_VERBOSE_LEVEL >= 2:
         verbose = 'y'
     else:
         verbose = 'n'
     # Read dataset
     ds_monan, monan_filepath = io.read_ds_monan(
-        year=va_config.YEAR,
-        month=va_config.MONTH,
-        day=va_config.DAY,
-        hour=va_config.HOUR,
-        time_window=va_config.TIME_WINDOW,
-        grid_spec=va_config.GRID_SPEC,
-        vertical_level_spec=va_config.VERTICAL_LEVEL_SPEC,
-        base_dir=va_config.DIR_MONAN_PREOP,
+        year=vs_config.YEAR,
+        month=vs_config.MONTH,
+        day=vs_config.DAY,
+        hour=vs_config.HOUR,
+        time_window=vs_config.TIME_WINDOW,
+        grid_spec=vs_config.GRID_SPEC,
+        vertical_level_spec=vs_config.VERTICAL_LEVEL_SPEC,
+        base_dir=vs_config.DIR_MONAN_PREOP,
         verbose=verbose
         )
     # Select only data to be used for analysis
-    ds_monan_selected = ds_monan[va_config.VARIABLES_TO_ANALYZE].sel(level=va_config.VERTICAL_LEVELS_TO_ANALYZE)
+    ds_monan_selected = ds_monan[vs_config.VARIABLES_TO_ANALYZE].sel(level=vs_config.VERTICAL_LEVELS_TO_ANALYZE)
     # Save preprocessed MONAN dataset
-    ds_monan_selected_filepath = f"{va_config.DIR_INPUT_INTERMEDIATE}/monan_selected_variables_and_levels_date_{date_in_string}_time_window_{va_config.TIME_WINDOW}.nc"
+    ds_monan_selected_filepath = f"{vs_config.DIR_INPUT_INTERMEDIATE}/monan_selected_variables_and_levels_date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}.nc"
     ds_monan_selected.to_netcdf(ds_monan_selected_filepath)
     # If needed, print preprocessed dataset
-    if va_config.SEL_VERBOSE_LEVEL >= 1:
+    if vs_config.SEL_VERBOSE_LEVEL >= 1:
         print ("MONAN dataset with selected variables and levels:")
         print (ds_monan_selected)
 
@@ -89,34 +89,34 @@ def read_and_preprocess_monan_data():
 def read_and_preprocess_gfs_data():
     # Get date and write it into preprocessed filepath
     date_in_string = utils.get_date_as_YYYYMMDDHH_str(
-    va_config.YEAR, va_config.MONTH, va_config.DAY, va_config.HOUR
+    vs_config.YEAR, vs_config.MONTH, vs_config.DAY, vs_config.HOUR
     )
     # Define verbosity
-    if va_config.SEL_VERBOSE_LEVEL >= 2:
+    if vs_config.SEL_VERBOSE_LEVEL >= 2:
         verbose = 'y'
     else:
         verbose = 'n'
     # Read dataset
     ds_gfs, gfs_filepath = io.read_ds_gfs(
-        year=va_config.YEAR,
-        month=va_config.MONTH,
-        day=va_config.DAY,
-        hour=va_config.HOUR,
-        base_dir=va_config.DIR_GFS_ANALYSIS,
-        stream_name=va_config.GFS_STREAM_NAME,
+        year=vs_config.YEAR,
+        month=vs_config.MONTH,
+        day=vs_config.DAY,
+        hour=vs_config.HOUR,
+        base_dir=vs_config.DIR_GFS_ANALYSIS,
+        stream_name=vs_config.GFS_STREAM_NAME,
         verbose=verbose
         )
     # Configure GFS dataset to match MONAN format
     ds_gfs_in_monan_format = preprocess.get_gfs_data_in_monan_format(
         ds_gfs, config.GFS_TO_MONAN_VAR_DICT)
     # Select only data to be used for analysis
-    ds_gfs_in_monan_format = ds_gfs_in_monan_format[va_config.VARIABLES_TO_ANALYZE].sel(
-        level=va_config.VERTICAL_LEVELS_TO_ANALYZE)
+    ds_gfs_in_monan_format = ds_gfs_in_monan_format[vs_config.VARIABLES_TO_ANALYZE].sel(
+        level=vs_config.VERTICAL_LEVELS_TO_ANALYZE)
     # Save preprocessed GFS dataset
-    ds_gfs_in_monan_format_filepath = f"{va_config.DIR_INPUT_INTERMEDIATE}/gfs_in_monan_format_date_{date_in_string}_time_window_{va_config.TIME_WINDOW}.nc"
+    ds_gfs_in_monan_format_filepath = f"{vs_config.DIR_INPUT_INTERMEDIATE}/gfs_in_monan_format_date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}.nc"
     ds_gfs_in_monan_format.to_netcdf(ds_gfs_in_monan_format_filepath)
     # If needed, print preprocessed dataset
-    if va_config.SEL_VERBOSE_LEVEL >= 1:
+    if vs_config.SEL_VERBOSE_LEVEL >= 1:
         print ("GFS dataset in MONAN data format:")
         print (ds_gfs_in_monan_format)
     
@@ -125,9 +125,9 @@ def read_and_preprocess_gfs_data():
 def map_monan_to_gfs_grid(ds_monan_selected_filepath, ds_gfs_in_monan_format_filepath):
     # Get date and write it into preprocessed filepath
     date_in_string = utils.get_date_as_YYYYMMDDHH_str(
-    va_config.YEAR, va_config.MONTH, va_config.DAY, va_config.HOUR
+    vs_config.YEAR, vs_config.MONTH, vs_config.DAY, vs_config.HOUR
     )
-    ds_monan_mapped_to_gfs_filepath = f"{va_config.DIR_INPUT_PROCESSED}/monan_mapped_to_gfs_date_{date_in_string}_time_window_{va_config.TIME_WINDOW}.nc"
+    ds_monan_mapped_to_gfs_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/monan_mapped_to_gfs_date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}.nc"
     # Map MONAN data to GFS grid
     preprocess.map_data_to_different_grid_with_cdo(
         ref_nc=ds_gfs_in_monan_format_filepath,
@@ -136,7 +136,7 @@ def map_monan_to_gfs_grid(ds_monan_selected_filepath, ds_gfs_in_monan_format_fil
         )
     # Read mapped MONAN data
     ds_monan_mapped_to_gfs = xr.open_dataset(ds_monan_mapped_to_gfs_filepath, engine="netcdf4")
-    if va_config.SEL_VERBOSE_LEVEL >= 1:
+    if vs_config.SEL_VERBOSE_LEVEL >= 1:
         print ("MONAN data mapped to GFS grid:")
         print (ds_monan_mapped_to_gfs)
     
@@ -145,7 +145,7 @@ def map_monan_to_gfs_grid(ds_monan_selected_filepath, ds_gfs_in_monan_format_fil
 def calculate_statistics(ds_ref_filepath, ds_prediction_filepath):
     # Get date to include in output filenames
     date_in_string = utils.get_date_as_YYYYMMDDHH_str(
-    va_config.YEAR, va_config.MONTH, va_config.DAY, va_config.HOUR
+    vs_config.YEAR, vs_config.MONTH, vs_config.DAY, vs_config.HOUR
     )
 
     # Read datasets
@@ -162,18 +162,18 @@ def calculate_statistics(ds_ref_filepath, ds_prediction_filepath):
     # We will not care about the domain now: since variables are all in 
     # the same grid, we can compute each metric for 
     # the whole grid and then subset it for different domains.
-    if "bias" in va_config.STATS_METRICS_TO_ANALYZE:
+    if "bias" in vs_config.STATS_METRICS_TO_ANALYZE:
         # Compute bias
         ds_bias = stats.bias(predictions=ds_prediction, observations=ds_ref)
         # Save bias dataset in nc file
-        bias_filepath = f"{va_config.DIR_OUTPUT_DATA}/date_{date_in_string}_time_window_{va_config.TIME_WINDOW}/bias_date_{date_in_string}_time_window_{va_config.TIME_WINDOW}.nc"
+        bias_filepath = f"{vs_config.DIR_OUTPUT_DATA}/date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}/bias_date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}.nc"
         ds_bias.to_netcdf(bias_filepath)
         ds_stats_filepath_dict["bias"]=bias_filepath
-    if "relative_error" in va_config.STATS_METRICS_TO_ANALYZE:
+    if "relative_error" in vs_config.STATS_METRICS_TO_ANALYZE:
         # Compute relative error
         ds_relative_error = stats.relative_error(predictions=ds_prediction, observations=ds_ref)
         # Save relative error dataset in nc file
-        relative_error_filepath = f"{va_config.DIR_OUTPUT_DATA}/date_{date_in_string}_time_window_{va_config.TIME_WINDOW}/relative_error_date_{date_in_string}_time_window_{va_config.TIME_WINDOW}.nc"
+        relative_error_filepath = f"{vs_config.DIR_OUTPUT_DATA}/date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}/relative_error_date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}.nc"
         ds_relative_error.to_netcdf(relative_error_filepath)
         ds_stats_filepath_dict["relative_error"]=relative_error_filepath
 
@@ -182,38 +182,43 @@ def calculate_statistics(ds_ref_filepath, ds_prediction_filepath):
 def plot_statistics(ds_stats_filepath_dict):
     # Get date to include in output filenames
     date_in_string = utils.get_date_as_YYYYMMDDHH_str(
-    va_config.YEAR, va_config.MONTH, va_config.DAY, va_config.HOUR
+    vs_config.YEAR, vs_config.MONTH, vs_config.DAY, vs_config.HOUR
     )
     # Maps of statistics for each metric, domain, variable and level
     for metric in ds_stats_filepath_dict.keys():
         print (f"Metric: {metric}")
         ds_stats = xr.open_dataset(ds_stats_filepath_dict[metric], engine="netcdf4")
-        for domain in va_config.DOMAINS_TO_ANALYZE:
+        for domain in vs_config.DOMAINS_TO_ANALYZE:
             print ("domain:", domain)
-            for var in va_config.VARIABLES_TO_ANALYZE:
+            for var in vs_config.VARIABLES_TO_ANALYZE:
                 print ("variable:", var)
-                for level in va_config.VERTICAL_LEVELS_TO_ANALYZE:
+                for level in vs_config.VERTICAL_LEVELS_TO_ANALYZE:
                     print ("level:", level)
                     plots.plot_var_map(
                         ds=ds_stats, 
                         var=var, 
-                        cartopy_data_dir=va_config.DIR_CARTOPY_DATA,
+                        cartopy_data_dir=vs_config.DIR_CARTOPY_DATA,
                         level=level, 
                         domain=domain,
-                        output_filepath=f"{va_config.DIR_OUTPUT_FIGS}/date_{date_in_string}_time_window_{va_config.TIME_WINDOW}/metric_{metric}_var_{var}_level_{level}_domain_{domain}_date_{date_in_string}_time_window_{va_config.TIME_WINDOW}.png"
+                        output_filepath=f"{vs_config.DIR_OUTPUT_FIGS}/date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}/metric_{metric}_var_{var}_level_{level}_domain_{domain}_date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}.png"
                         )
 
 def cp_config_files():
     # Get date to include in output filenames
     date_in_string = utils.get_date_as_YYYYMMDDHH_str(
-    va_config.YEAR, va_config.MONTH, va_config.DAY, va_config.HOUR
+    vs_config.YEAR, vs_config.MONTH, vs_config.DAY, vs_config.HOUR
     )
     # Analysis-specific config file
-    subprocess.run(["cp", "vertical_analysis_config.py", va_config.DIR_OUTPUT_DATA+f"/date_{date_in_string}_time_window_{va_config.TIME_WINDOW}"], check=True)
+    ## Get absolute path to vertical_structure_src/, where vertical_structure_config.py is located
+    vs_config_dir = os.path.dirname(os.path.abspath(__file__))
+    ## Construct path to analysis-specific config file
+    vs_config_file_path = os.path.join(vs_config_dir, "vertical_structure_config.py")
+    ## Copy analysis-specifig config file
+    subprocess.run(["cp", vs_config_file_path, vs_config.DIR_OUTPUT_DATA+f"/date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}"], check=True)
     # General config file
-    ## Get absolute path to monan_analysis package
+    ## Get absolute path to monan_analysis/, where config.py is located
     gen_config_package_dir = os.path.dirname(monan_analysis.__file__)
     ## Construct path to general config.py file
     gen_config_file_path = os.path.join(gen_config_package_dir, "config.py")
     ## Copy general config file
-    subprocess.run(["cp", gen_config_file_path, va_config.DIR_OUTPUT_DATA+f"/date_{date_in_string}_time_window_{va_config.TIME_WINDOW}"], check=True)
+    subprocess.run(["cp", gen_config_file_path, vs_config.DIR_OUTPUT_DATA+f"/date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}"], check=True)
