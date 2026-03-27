@@ -122,6 +122,6 @@ For developing the project, the following workflow is suggested.
 
 4) Work on the code in that branch.
 
-5) Once the code is ready for merging, open a pull request with a basic description of the implementation, and assign reviewers.
+5) Once the code is ready for merging, open a pull request with a basic description of the implementation (mentioning the issue it addresses, if any), and assign reviewers.
 
 6) After reviewer's approval, and if the unit tests are passing, merge into `main` branch.
