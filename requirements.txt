@@ -2,4 +2,9 @@
 -e .
 
 # External packages
-matplotlib>=3.8.0
+jupyter
+xarray
+netcdf4
+matplotlib
+cartopy
+pytest

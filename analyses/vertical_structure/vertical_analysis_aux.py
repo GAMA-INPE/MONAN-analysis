@@ -48,9 +48,9 @@ def create_folder_structure():
     os.makedirs(va_config.DIR_INPUT_PROCESSED, exist_ok=True)
     os.makedirs(va_config.DIR_OUTPUT, exist_ok=True)
     os.makedirs(va_config.DIR_OUTPUT_DATA, exist_ok=True)
-    os.makedirs(va_config.DIR_OUTPUT_DATA+f"/{date_in_string}", exist_ok=True)
+    os.makedirs(va_config.DIR_OUTPUT_DATA+f"/date_{date_in_string}_time_window_{va_config.TIME_WINDOW}", exist_ok=True)
     os.makedirs(va_config.DIR_OUTPUT_FIGS, exist_ok=True)
-    os.makedirs(va_config.DIR_OUTPUT_FIGS+f"/{date_in_string}", exist_ok=True)
+    os.makedirs(va_config.DIR_OUTPUT_FIGS+f"/date_{date_in_string}_time_window_{va_config.TIME_WINDOW}", exist_ok=True)
 
 def read_and_preprocess_monan_data():
     # Get date and write it into preprocessed filepath
@@ -77,7 +77,7 @@ def read_and_preprocess_monan_data():
     # Select only data to be used for analysis
     ds_monan_selected = ds_monan[va_config.VARIABLES_TO_ANALYZE].sel(level=va_config.VERTICAL_LEVELS_TO_ANALYZE)
     # Save preprocessed MONAN dataset
-    ds_monan_selected_filepath = f"{va_config.DIR_INPUT_INTERMEDIATE}/monan_selected_variables_and_levels_{date_in_string}.nc"
+    ds_monan_selected_filepath = f"{va_config.DIR_INPUT_INTERMEDIATE}/monan_selected_variables_and_levels_date_{date_in_string}_time_window_{va_config.TIME_WINDOW}.nc"
     ds_monan_selected.to_netcdf(ds_monan_selected_filepath)
     # If needed, print preprocessed dataset
     if va_config.SEL_VERBOSE_LEVEL >= 1:
@@ -113,7 +113,7 @@ def read_and_preprocess_gfs_data():
     ds_gfs_in_monan_format = ds_gfs_in_monan_format[va_config.VARIABLES_TO_ANALYZE].sel(
         level=va_config.VERTICAL_LEVELS_TO_ANALYZE)
     # Save preprocessed GFS dataset
-    ds_gfs_in_monan_format_filepath = f"{va_config.DIR_INPUT_INTERMEDIATE}/gfs_in_monan_format_{date_in_string}.nc"
+    ds_gfs_in_monan_format_filepath = f"{va_config.DIR_INPUT_INTERMEDIATE}/gfs_in_monan_format_date_{date_in_string}_time_window_{va_config.TIME_WINDOW}.nc"
     ds_gfs_in_monan_format.to_netcdf(ds_gfs_in_monan_format_filepath)
     # If needed, print preprocessed dataset
     if va_config.SEL_VERBOSE_LEVEL >= 1:
@@ -127,7 +127,7 @@ def map_monan_to_gfs_grid(ds_monan_selected_filepath, ds_gfs_in_monan_format_fil
     date_in_string = utils.get_date_as_YYYYMMDDHH_str(
     va_config.YEAR, va_config.MONTH, va_config.DAY, va_config.HOUR
     )
-    ds_monan_mapped_to_gfs_filepath = f"{va_config.DIR_INPUT_PROCESSED}/monan_mapped_to_gfs_{date_in_string}.nc"
+    ds_monan_mapped_to_gfs_filepath = f"{va_config.DIR_INPUT_PROCESSED}/monan_mapped_to_gfs_date_{date_in_string}_time_window_{va_config.TIME_WINDOW}.nc"
     # Map MONAN data to GFS grid
     preprocess.map_data_to_different_grid_with_cdo(
         ref_nc=ds_gfs_in_monan_format_filepath,
@@ -166,14 +166,14 @@ def calculate_statistics(ds_ref_filepath, ds_prediction_filepath):
         # Compute bias
         ds_bias = stats.bias(predictions=ds_prediction, observations=ds_ref)
         # Save bias dataset in nc file
-        bias_filepath = f"{va_config.DIR_OUTPUT_DATA}/{date_in_string}/bias_{date_in_string}.nc"
+        bias_filepath = f"{va_config.DIR_OUTPUT_DATA}/date_{date_in_string}_time_window_{va_config.TIME_WINDOW}/bias_date_{date_in_string}_time_window_{va_config.TIME_WINDOW}.nc"
         ds_bias.to_netcdf(bias_filepath)
         ds_stats_filepath_dict["bias"]=bias_filepath
     if "relative_error" in va_config.STATS_METRICS_TO_ANALYZE:
-        # Compute absolute error
+        # Compute relative error
         ds_relative_error = stats.relative_error(predictions=ds_prediction, observations=ds_ref)
-        # Save absolute error dataset in nc file
-        relative_error_filepath = f"{va_config.DIR_OUTPUT_DATA}/{date_in_string}/absolute_error_{date_in_string}.nc"
+        # Save relative error dataset in nc file
+        relative_error_filepath = f"{va_config.DIR_OUTPUT_DATA}/date_{date_in_string}_time_window_{va_config.TIME_WINDOW}/relative_error_date_{date_in_string}_time_window_{va_config.TIME_WINDOW}.nc"
         ds_relative_error.to_netcdf(relative_error_filepath)
         ds_stats_filepath_dict["relative_error"]=relative_error_filepath
 
@@ -200,7 +200,7 @@ def plot_statistics(ds_stats_filepath_dict):
                         cartopy_data_dir=va_config.DIR_CARTOPY_DATA,
                         level=level, 
                         domain=domain,
-                        output_filepath=f"{va_config.DIR_OUTPUT_FIGS}/{date_in_string}/metric_{metric}_var_{var}_level_{level}_domain_{domain}_date_{date_in_string}.png"
+                        output_filepath=f"{va_config.DIR_OUTPUT_FIGS}/date_{date_in_string}_time_window_{va_config.TIME_WINDOW}/metric_{metric}_var_{var}_level_{level}_domain_{domain}_date_{date_in_string}_time_window_{va_config.TIME_WINDOW}.png"
                         )
 
 def cp_config_files():
@@ -209,11 +209,11 @@ def cp_config_files():
     va_config.YEAR, va_config.MONTH, va_config.DAY, va_config.HOUR
     )
     # Analysis-specific config file
-    subprocess.run(["cp", "vertical_analysis_config.py", va_config.DIR_OUTPUT_DATA+f"/{date_in_string}"], check=True)
+    subprocess.run(["cp", "vertical_analysis_config.py", va_config.DIR_OUTPUT_DATA+f"/date_{date_in_string}_time_window_{va_config.TIME_WINDOW}"], check=True)
     # General config file
     ## Get absolute path to monan_analysis package
     gen_config_package_dir = os.path.dirname(monan_analysis.__file__)
     ## Construct path to general config.py file
     gen_config_file_path = os.path.join(gen_config_package_dir, "config.py")
     ## Copy general config file
-    subprocess.run(["cp", gen_config_file_path, va_config.DIR_OUTPUT_DATA+f"/{date_in_string}"], check=True)
+    subprocess.run(["cp", gen_config_file_path, va_config.DIR_OUTPUT_DATA+f"/date_{date_in_string}_time_window_{va_config.TIME_WINDOW}"], check=True)
