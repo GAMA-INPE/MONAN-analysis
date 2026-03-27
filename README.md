@@ -27,7 +27,9 @@ MONAN-analysis/
 │       ├── analysis2_main.py.py  # exemplary main script for analysis2
 │       ├── analysis2_aux.py      # exemplary auxiliary script for analysis2
 │       └── analysis2_config.py   # exemplary config with settings specific to analysis2
-└── exploratory/                  # exploratory (preliminary) scripts
+├── exploratory/                  # exploratory (preliminary) scripts
+└── unittests/                    # unit tests to ensure code is behaving as expected
+    └── test_monan_analysis/      # unit tests for monan_analysis package
 ```
 ____________
 
