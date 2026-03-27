@@ -110,6 +110,16 @@ As explained in 1), during steps 2) and 3) the user can take advantage of the al
 from monan_analysis.plots import example_function_plots
 ```
 
-For developing the project please follow the workflow
+For developing the project, the following workflow is suggested.
 
-new branch (name abbreviation/feature, e.g. gtm/repo-organization) --> code modifications -->  open pull request and assign reviewers --> after reviewers' approval, merge into `main` branch.
+1) Preferably, new ideas for implementations should be added to issues (https://github.com/GAMA-INPE/MONAN-analysis/issues), where they can be discussed with the team.
+
+2) Once you plan to implement one of those ideas, assign the issue to yourself and comment something like "I'm taking up this issue" in the respective issue page to avoid different people working on the same issue.
+
+3) Open new branch (name abbreviation/feature, e.g. gtm/repo-organization) for working on that implementation.
+
+4) Work on the code in that branch.
+
+5) Once the code is ready for merging, open a pull request with a basic description of the implementation, and assign reviewers.
+
+6) After reviewer's approval, and if the unit tests are passing, merge into `main` branch.
