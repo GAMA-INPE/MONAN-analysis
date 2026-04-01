@@ -37,7 +37,6 @@ This file was created with the assistance of GitHub Copilot.
 from . import vertical_structure_aux as vs_aux
 
 def main():
-
     #===============================================================================================
     # Initialization: create folder structure if necessary
     #===============================================================================================

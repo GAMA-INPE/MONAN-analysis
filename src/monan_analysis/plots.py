@@ -74,8 +74,6 @@ def plot_var_map(ds, var, cartopy_data_dir, level=None, Time=None,
 
     # Extract the variable data
     data = ds_subset[var]
-    print("data:")
-    print(data)
 
     # Choose colormap based on variable
     if "temp" in var.lower():  # For temperature variables

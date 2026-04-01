@@ -26,16 +26,16 @@ This file was created with the assistance of GitHub Copilot.
 # 0: log messages from vertical_analysis_main.py only
 # 1: log messages from vertical_analysis_main.py + vertical_analysis_aux.py
 # 2: log messages from vertical_analysis_main.py + vertical_analysis_aux.py + monan_analysis modules
-SEL_VERBOSE_LEVEL = 0
+SEL_VERBOSE_LEVEL = 2
 #===================================================================================================
 # MONAN configurations
 #===================================================================================================
 # Date and forecast time window for analysis
 YEAR = "2026"
 MONTH = "02"
-DAY = "01"
+DAY = "02"
 HOUR = "00"
-TIME_WINDOW = "00"
+TIME_WINDOW = "24"
 # Grid specification
 GRID_SPEC = "10km_uniform"
 # Vertical level specification
