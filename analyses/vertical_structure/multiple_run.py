@@ -46,6 +46,13 @@ if __name__ == "__main__":
             importlib.reload(vs_config)
             print ("\n --------------------------------------------------------------------------")
             vs_main.main()
-
+    #===============================================================================================
+    # Concatenate resulting datasets to prepare for calculations
+    #===============================================================================================
+    print ("\n ==========================================================================")
+    print ("\n Concatenating resulting datasets to prepare for calculations...")
+    for time_window in vs_config.TIME_WINDOWS_TO_ANALYZE:
+        print (f"\n Time window: {time_window}")
+        vs_aux.concatenate_datasets(date_list=DATES_TO_ANALYZE, time_window=time_window)
     
     

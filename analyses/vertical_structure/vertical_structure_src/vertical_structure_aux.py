@@ -276,3 +276,28 @@ def update_config_file(config_file_path, date, time_window):
     # Write the updated content back to the config file
     with open(config_file_path, 'w') as file:
         file.writelines(updated_lines)
+
+def concatenate_datasets(date_list,time_window):
+    # Create folder to save concatenated datasets
+    os.makedirs(vs_config.DIR_OUTPUT_DATA+f"/date_multiple_time_window_{time_window}", exist_ok=True)
+    # Get date to include in output filenames
+    date_in_string = utils.get_date_as_YYYYMMDDHH_str(
+    vs_config.YEAR, vs_config.MONTH, vs_config.DAY, vs_config.HOUR
+    )
+    # Construct filepaths for stats datasets to be concatenated
+    for stat in vs_config.STATS_METRICS_TO_ANALYZE:
+        stat_filepaths = []
+        for date in date_list:
+            date_in_string = utils.get_date_as_YYYYMMDDHH_str(
+                year=date[:4], 
+                month=date[4:6], 
+                day=date[6:8], 
+                hour=date[8:10]
+            )
+            stat_filepath = f"{vs_config.DIR_OUTPUT_DATA}/date_{date_in_string}_time_window_{time_window}/{stat}_date_{date_in_string}_time_window_{time_window}.nc"
+            stat_filepaths.append(stat_filepath)
+        # Concatenate stat datasets along "Time" dimension
+        ds_stat_concat = xr.open_mfdataset(stat_filepaths, combine="nested", concat_dim="Time")
+        # Save concatenated dataset in nc file
+        stat_concat_filepath = f"{vs_config.DIR_OUTPUT_DATA}/date_multiple_time_window_{time_window}/{stat}_date_concat_from_{date_list[0]}_to_{date_list[-1]}_time_window_{time_window}.nc"
+        ds_stat_concat.to_netcdf(stat_concat_filepath)

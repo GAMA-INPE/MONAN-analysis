@@ -61,10 +61,10 @@ def get_date_list(date_init, date_final, time_step):
     Args:
         date_init (str): Initial date in the format "%Y%m%d%H".
         date_final (str): Final date in the format "%Y%m%d%H".
-        time_step (int): Time step in hours.
+        time_step (str): Time step in hours.
 
     Returns:
-        list: List of dates as strings in the format "%Y%m%d%H".
+        date_list: List of dates as strings in the format "%Y%m%d%H".
     """
 
     # Parse initial and final dates
@@ -72,13 +72,13 @@ def get_date_list(date_init, date_final, time_step):
     end_date = datetime.datetime.strptime(date_final, config.DATE_FORMAT_STRING)
 
     # Create list of dates
-    dates = []
+    date_list = []
     current_date = start_date
     while current_date <= end_date:
-        dates.append(current_date.strftime(config.DATE_FORMAT_STRING))
+        date_list.append(current_date.strftime(config.DATE_FORMAT_STRING))
         current_date += datetime.timedelta(hours=int(time_step))
 
-    return dates
+    return date_list
 
 def setup_parser():
     """Set up the argument parser with common arguments."""
