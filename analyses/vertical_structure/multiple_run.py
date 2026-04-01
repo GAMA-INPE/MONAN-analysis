@@ -54,5 +54,19 @@ if __name__ == "__main__":
     for time_window in vs_config.TIME_WINDOWS_TO_ANALYZE:
         print (f"\n Time window: {time_window}")
         vs_aux.concatenate_datasets(date_list=DATES_TO_ANALYZE, time_window=time_window)
-    
-    
+    #===============================================================================================
+    # Calculate mean values of stats metrics across all dates for each time window
+    #===============================================================================================
+    print ("\n Calculating mean values of stats metrics across all dates for each time window...")
+    for time_window in vs_config.TIME_WINDOWS_TO_ANALYZE:
+        print (f"\n Time window: {time_window}")
+        vs_aux.calculate_mean_stats_across_dates(time_window=time_window)
+    #===============================================================================================
+    # Plot mean values of stats metrics across all dates for each time window
+    #===============================================================================================
+    print ("\n Plotting mean values of stats metrics across all dates for each time window...")
+    for time_window in vs_config.TIME_WINDOWS_TO_ANALYZE:
+        print (f"\n Time window: {time_window}")
+        vs_aux.plot_mean_stats_across_dates(time_window=time_window)
+    print ("\n ==========================================================================")
+

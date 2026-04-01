@@ -4,6 +4,7 @@ vertical_analysis_aux.py
 
 Based on a script by Andre Lyra (andre.lyra@inpe.br)
 Last update: Feb 2026 by Guilherme Torres Mendonça (guilherme.mendonca@inpe.br)
+Last update: Apr 2026 by Guilherme Torres Mendonça (guilherme.mendonca@inpe.br)
 
 Description
 -----------
@@ -301,3 +302,41 @@ def concatenate_datasets(date_list,time_window):
         # Save concatenated dataset in nc file
         stat_concat_filepath = f"{vs_config.DIR_OUTPUT_DATA}/date_multiple_time_window_{time_window}/{stat}_date_concat_from_{date_list[0]}_to_{date_list[-1]}_time_window_{time_window}.nc"
         ds_stat_concat.to_netcdf(stat_concat_filepath)
+
+def calculate_mean_stats_across_dates(time_window):
+    # Create folder to save mean stats metrics datasets
+    os.makedirs(vs_config.DIR_OUTPUT_DATA+f"/date_multiple_time_window_{time_window}", exist_ok=True)
+    # Construct filepaths for concatenated stats datasets
+    for stat in vs_config.STATS_METRICS_TO_ANALYZE:
+        stat_concat_filepath = f"{vs_config.DIR_OUTPUT_DATA}/date_multiple_time_window_{time_window}/{stat}_date_concat_from_{vs_config.DATE_INIT}_to_{vs_config.DATE_FINAL}_time_window_{time_window}.nc"
+        # Read concatenated dataset
+        ds_stat_concat = xr.open_dataset(stat_concat_filepath, engine="netcdf4")
+        # Calculate mean value of stat metric across all dates for each variable, level and domain
+        ds_stat_mean = ds_stat_concat.mean(dim="Time")
+        # Save dataset with mean values in nc file
+        stat_mean_filepath = f"{vs_config.DIR_OUTPUT_DATA}/date_multiple_time_window_{time_window}/mean_{stat}_date_from_{vs_config.DATE_INIT}_to_{vs_config.DATE_FINAL}_time_window_{time_window}.nc"
+        ds_stat_mean.to_netcdf(stat_mean_filepath)
+
+def plot_mean_stats_across_dates(time_window):
+    # Create folder to save mean stats metrics plots
+    os.makedirs(vs_config.DIR_OUTPUT_FIGS+f"/date_multiple_time_window_{time_window}", exist_ok=True)
+    # Construct filepaths for mean stats metrics datasets
+    for stat in vs_config.STATS_METRICS_TO_ANALYZE:
+        stat_mean_filepath = f"{vs_config.DIR_OUTPUT_DATA}/date_multiple_time_window_{time_window}/mean_{stat}_date_from_{vs_config.DATE_INIT}_to_{vs_config.DATE_FINAL}_time_window_{time_window}.nc"
+        # Read dataset with mean values of stat metric across all dates for each variable, level and domain
+        ds_stat_mean = xr.open_dataset(stat_mean_filepath, engine="netcdf4")
+        # Plot maps of mean values of stat metric for each domain, variable and level
+        for domain in vs_config.DOMAINS_TO_ANALYZE:
+            print ("domain:", domain)
+            for var in vs_config.VARIABLES_TO_ANALYZE:
+                print ("variable:", var)
+                for level in vs_config.VERTICAL_LEVELS_TO_ANALYZE:
+                    print ("level:", level)
+                    plots.plot_var_map(
+                        ds=ds_stat_mean, 
+                        var=var, 
+                        cartopy_data_dir=vs_config.DIR_CARTOPY_DATA,
+                        level=level, 
+                        domain=domain,
+                        output_filepath=f"{vs_config.DIR_OUTPUT_FIGS}/date_multiple_time_window_{time_window}/metric_mean_{stat}_var_{var}_level_{level}_domain_{domain}_date_from_{vs_config.DATE_INIT}_to_{vs_config.DATE_FINAL}_time_window_{time_window}.png"
+                        )
