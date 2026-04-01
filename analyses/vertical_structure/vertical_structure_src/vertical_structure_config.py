@@ -85,3 +85,20 @@ DIR_INPUT = "/lustre/projetos/monan_atm/guilherme.mendonca/MONAN-analysis/analys
 DIR_INPUT_INTERMEDIATE = f"{DIR_INPUT}/intermediate"
 DIR_INPUT_PROCESSED = f"{DIR_INPUT}/processed"
 DIR_INPUT_RAW = f"{DIR_INPUT}/raw"
+#===================================================================================================
+# For analysis of mutiple dates and time windows only
+#===================================================================================================
+# Initial date
+DATE_INIT = "2026020100"
+# Final date
+DATE_FINAL = "2026020200"
+# Date time step in hours
+DATE_TIME_STEP = "24"
+# Time windows to analyze
+TIME_WINDOWS_TO_ANALYZE = [
+    #"00",
+    #"06",
+    #"12",
+    #"18",
+    "24"
+    ]
