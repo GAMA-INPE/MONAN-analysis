@@ -296,7 +296,7 @@ def update_config_file(config_file_path, date, time_window):
     with open(config_file_path, 'w') as file:
         file.writelines(updated_lines)
 
-def concatenate_datasets(date_list,time_window):
+def concatenate_stats_datasets(date_list,time_window):
     # Create folder to save concatenated datasets
     os.makedirs(vs_config.DIR_OUTPUT_DATA+f"/date_multiple_time_window_{time_window}", exist_ok=True)
     # Get date to include in output filenames
@@ -320,6 +320,37 @@ def concatenate_datasets(date_list,time_window):
         # Save concatenated dataset in nc file
         stat_concat_filepath = f"{vs_config.DIR_OUTPUT_DATA}/date_multiple_time_window_{time_window}/{stat}_date_concat_from_{date_list[0]}_to_{date_list[-1]}_time_window_{time_window}.nc"
         ds_stat_concat.to_netcdf(stat_concat_filepath)
+
+def concatenate_var_datasets(date_list,time_window):
+    # Create folder to save concatenated datasets
+    os.makedirs(vs_config.DIR_OUTPUT_DATA+f"/date_multiple_time_window_{time_window}", exist_ok=True)
+    # Get date to include in output filenames
+    date_in_string = utils.get_date_as_YYYYMMDDHH_str(
+    vs_config.YEAR, vs_config.MONTH, vs_config.DAY, vs_config.HOUR
+    )
+    # Construct filepaths for variable datasets to be concatenated
+    for var in vs_config.VARIABLES_TO_ANALYZE:
+        var_monan_filepaths = []
+        var_gfs_filepaths = []
+        for date in date_list:
+            date_in_string = utils.get_date_as_YYYYMMDDHH_str(
+                year=date[:4], 
+                month=date[4:6], 
+                day=date[6:8], 
+                hour=date[8:10]
+            )
+            var_monan_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/monan_mapped_to_gfs_date_{date_in_string}_time_window_{time_window}.nc"
+            var_monan_filepaths.append(var_monan_filepath)
+            var_gfs_filepath = f"{vs_config.DIR_INPUT_INTERMEDIATE}/gfs_in_monan_format_date_{date_in_string}_time_window_{time_window}.nc"
+            var_gfs_filepaths.append(var_gfs_filepath)
+    # Concatenate variable datasets along "Time" dimension
+    ds_var_monan_concat = xr.open_mfdataset(var_monan_filepaths, combine="nested", concat_dim="Time")
+    ds_var_gfs_concat = xr.open_mfdataset(var_gfs_filepaths, combine="nested", concat_dim="Time")
+    # Save concatenated datasets in nc file
+    var_monan_concat_filepath = f"{vs_config.DIR_OUTPUT_DATA}/date_multiple_time_window_{time_window}/monan_mapped_to_gfs_date_concat_from_{date_list[0]}_to_{date_list[-1]}_time_window_{time_window}.nc"
+    ds_var_monan_concat.to_netcdf(var_monan_concat_filepath)
+    var_gfs_concat_filepath = f"{vs_config.DIR_OUTPUT_DATA}/date_multiple_time_window_{time_window}/gfs_in_monan_format_date_concat_from_{date_list[0]}_to_{date_list[-1]}_time_window_{time_window}.nc"
+    ds_var_gfs_concat.to_netcdf(var_gfs_concat_filepath)
 
 def calculate_mean_stats_across_dates(time_window):
     # Create folder to save mean stats metrics datasets
