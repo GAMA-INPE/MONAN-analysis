@@ -74,6 +74,20 @@ def test_relative_error_pred_positive_obs_negative():
     # Test if calculated and correct results match
     xr.testing.assert_equal(calculated_result, correct_result)
 
+def test_relative_error_pred_negative_obs_positive():
+    # Dataset for observations containing only values 1
+    observations = create_test_dataset(data=5*np.ones((2, 2, 3, 3)))
+    # Dataset for predictions containing only values 3
+    predictions = create_test_dataset(data=-10*np.ones((2, 2, 3, 3)))
+    # Correct result from relative error operation: dataset containing only values 200%
+    correct_result = create_test_dataset(data=-300*np.ones((2, 2, 3, 3)))
+    calculated_result = stats.relative_error(
+        predictions=predictions,
+        observations=observations
+        )
+    # Test if calculated and correct results match
+    xr.testing.assert_equal(calculated_result, correct_result)
+
 def test_relative_error_mean_all_positive():
     # Dataset for observations containing only values 1
     observations = create_test_dataset(data=np.ones((2, 2, 3, 3)))
@@ -99,6 +113,22 @@ def test_relative_error_mean_pred_positive_obs_negative():
     # containing only a scalar 200%
     correct_result = create_test_dataset() 
     correct_result["var"] = 400.
+    calculated_result = stats.relative_error_mean(
+        predictions=predictions,
+        observations=observations
+        )
+    # Test if calculated and correct results match
+    xr.testing.assert_equal(calculated_result, correct_result)
+
+def test_relative_error_mean_pred_negative_obs_positive():
+    # Dataset for observations containing only values 1
+    observations = create_test_dataset(data=2*np.ones((2, 2, 3, 3)))
+    # Dataset for predictions containing only values 3
+    predictions = create_test_dataset(data=-3*np.ones((2, 2, 3, 3)))
+    # Correct result from relative error mean operation: dataset 
+    # containing only a scalar 200%
+    correct_result = create_test_dataset() 
+    correct_result["var"] = -250.
     calculated_result = stats.relative_error_mean(
         predictions=predictions,
         observations=observations
