@@ -204,6 +204,8 @@ def anomaly_correlation_coefficient(predictions, observations, dim):
 def get_stats_metric_units(var_units_dict,var,metric):
     metric_units_dict = {
         "bias": var_units_dict[var],
-        "relative_error": "%"
+        "relative_error": "%",
+        "rmse": var_units_dict[var],
+        "anomaly_correlation_coefficient": " "
     }
     return metric_units_dict[metric]

@@ -54,24 +54,31 @@ if __name__ == "__main__":
     for time_window in vs_config.TIME_WINDOWS_TO_ANALYZE:
         print (f"\n Time window: {time_window}")
         # First, concatenate datasets for statistical metrics calculated for each date
+        print (f"\n Stats datasets... {time_window}")
         vs_aux.concatenate_stats_datasets(date_list=DATES_TO_ANALYZE, time_window=time_window)
         # Second, concatenate datasets for the variables analyzed for each date (they will be used
         # to calculate metrics that involve time averages)
+        print (f"\n Vars datasets... {time_window}")
         vs_aux.concatenate_var_datasets(date_list=DATES_TO_ANALYZE, time_window=time_window)
 
     #===============================================================================================
-    # Calculate mean values of stats metrics across all dates for each time window
+    # Calculate metrics across all dates for each time window
     #===============================================================================================
-    print ("\n Calculating mean values of stats metrics across all dates for each time window...")
+    print ("\n Calculating mean metrics across all dates for each time window...")
     for time_window in vs_config.TIME_WINDOWS_TO_ANALYZE:
         print (f"\n Time window: {time_window}")
-        vs_aux.calculate_mean_stats_across_dates(time_window=time_window)
+        # First, mean of metrics that can be calculated for each time instant independently
+        # (e.g., bias, relative error)
+        vs_aux.calculate_mean_single_time_metrics(time_window=time_window)
+        # Second, metrics that require multiple time instants for their definition
+        # (e.g., RMSE, anomaly correlation coefficient)
+        vs_aux.calculate_multi_time_metrics(time_window=time_window)
     #===============================================================================================
     # Plot mean values of stats metrics across all dates for each time window
     #===============================================================================================
     print ("\n Plotting mean values of stats metrics across all dates for each time window...")
     for time_window in vs_config.TIME_WINDOWS_TO_ANALYZE:
         print (f"\n Time window: {time_window}")
-        vs_aux.plot_mean_stats_across_dates(time_window=time_window)
+        vs_aux.plot_mean_metrics(time_window=time_window)
     print ("\n ==========================================================================")
 

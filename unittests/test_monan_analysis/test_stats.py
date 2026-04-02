@@ -215,3 +215,60 @@ def test_anomaly_correlation_perfect_anti_correlation():
     
     # Test if calculated and correct results match
     xr.testing.assert_allclose(calculated_result, correct_result)
+
+def test_anomaly_correlation_perfect_anti_correlation_with_offset():
+    # Create sine wave data for predictions and observations
+    time = np.linspace(0, 2 * np.pi, 10)  # 10 time steps
+    sine_wave = np.sin(time)  # Sine wave for the time dimension
+    
+    # Expand sine wave to match the test_dataset shape (10, 2, 3, 3)
+    ## Reshape to (10, 1, 1, 1)
+    sine_wave = sine_wave[:, np.newaxis, np.newaxis, np.newaxis]  
+    ## Tile to (10, 2, 3, 3)
+    sine_wave = np.tile(sine_wave, (1, 2, 3, 3))
+    # Create data with correct dimensions
+    predictions_data = 2 * sine_wave + 5
+    observations_data = -4 * sine_wave - 2
+    
+    # Use create_test_dataset to generate datasets
+    predictions = create_test_dataset(data=predictions_data)
+    observations = create_test_dataset(data=observations_data)
+    
+    # Correct result: perfect anti-correlation (-1.0)
+    correct_result = create_test_dataset_without_Time(data=-1.0*np.ones((2, 3, 3)))
+    
+    # Calculate anomaly correlation
+    calculated_result = stats.anomaly_correlation_coefficient(predictions=predictions, observations=observations, dim="Time")
+    
+    # Test if calculated and correct results match
+    xr.testing.assert_allclose(calculated_result, correct_result)
+
+def test_anomaly_correlation_zero_correlation_with_offset():
+    # Create sine wave data for predictions and observations
+    time = np.linspace(0, 2 * np.pi, 10)  # 10 time steps
+    sine_wave = np.sin(time)  # Sine wave for the time dimension
+    cos_wave = np.cos(time)  # Cosine wave for the time dimension (orthogonal to sine wave)
+    
+    # Expand sine and cos wave to match the test_dataset shape (10, 2, 3, 3)
+    ## Reshape to (10, 1, 1, 1)
+    sine_wave = sine_wave[:, np.newaxis, np.newaxis, np.newaxis]  
+    cos_wave = cos_wave[:, np.newaxis, np.newaxis, np.newaxis]
+    ## Tile to (10, 2, 3, 3)
+    sine_wave = np.tile(sine_wave, (1, 2, 3, 3))
+    cos_wave = np.tile(cos_wave, (1, 2, 3, 3))
+    # Create data with correct dimensions
+    predictions_data = 2 * cos_wave + 5
+    observations_data = -4 * sine_wave - 2
+    
+    # Use create_test_dataset to generate datasets
+    predictions = create_test_dataset(data=predictions_data)
+    observations = create_test_dataset(data=observations_data)
+    
+    # Correct result: perfect anti-correlation (-1.0)
+    correct_result = create_test_dataset_without_Time(data=np.zeros((2, 3, 3)))
+    
+    # Calculate anomaly correlation
+    calculated_result = stats.anomaly_correlation_coefficient(predictions=predictions, observations=observations, dim="Time")
+    
+    # Test if calculated and correct results match
+    xr.testing.assert_allclose(calculated_result, correct_result)

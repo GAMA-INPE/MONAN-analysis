@@ -44,7 +44,7 @@ VERTICAL_LEVEL_SPEC = "55"
 VARIABLES_TO_ANALYZE = [
     "temperature",
     #"spechum",
-    "zgeo",
+    #"zgeo",
     #"uzonal",
     #"umeridional",
     ]
@@ -55,7 +55,7 @@ VERTICAL_LEVELS_TO_ANALYZE = [
 # Domains to analyze
 DOMAINS_TO_ANALYZE = [
     "global", 
-    "south_america", 
+    #"south_america", 
     #"central_america_and_caribbean"
     ]
 #===================================================================================================
@@ -107,4 +107,9 @@ DATE_TIME_STEP = "24"
 TIME_WINDOWS_TO_ANALYZE = [
     #"00",
     "24"
+    ]
+# Multi-time stats metrics (metrics that need multiple time instants for their definition, e.g. RMSE, anomaly correlation coefficient)
+MULTI_TIME_STATS_METRICS_TO_ANALYZE = [
+    "rmse",
+    "anomaly_correlation_coefficient"
     ]

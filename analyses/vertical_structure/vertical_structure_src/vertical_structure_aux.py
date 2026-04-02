@@ -318,10 +318,24 @@ def concatenate_stats_datasets(date_list,time_window):
         # Concatenate stat datasets along "Time" dimension
         ds_stat_concat = xr.open_mfdataset(stat_filepaths, combine="nested", concat_dim="Time")
         # Save concatenated dataset in nc file
-        stat_concat_filepath = f"{vs_config.DIR_OUTPUT_DATA}/date_multiple_time_window_{time_window}/{stat}_date_concat_from_{date_list[0]}_to_{date_list[-1]}_time_window_{time_window}.nc"
+        stat_concat_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/{stat}_date_concat_from_{date_list[0]}_to_{date_list[-1]}_time_window_{time_window}.nc"
         ds_stat_concat.to_netcdf(stat_concat_filepath)
 
-def concatenate_var_datasets(date_list,time_window):
+def calculate_mean_single_time_metrics(time_window):
+    # Create folder to save mean stats metrics datasets
+    os.makedirs(vs_config.DIR_OUTPUT_DATA+f"/date_multiple_time_window_{time_window}", exist_ok=True)
+    # Construct filepaths for concatenated stats datasets
+    for stat in vs_config.STATS_METRICS_TO_ANALYZE:
+        stat_concat_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/{stat}_date_concat_from_{vs_config.DATE_INIT}_to_{vs_config.DATE_FINAL}_time_window_{time_window}.nc"
+        # Read concatenated dataset
+        ds_stat_concat = xr.open_dataset(stat_concat_filepath, engine="netcdf4")
+        # Calculate mean value of stat metric across all dates for each variable, level and domain
+        ds_stat_mean = ds_stat_concat.mean(dim="Time")
+        # Save dataset with mean values in nc file
+        stat_mean_filepath = f"{vs_config.DIR_OUTPUT_DATA}/date_multiple_time_window_{time_window}/mean_{stat}_date_from_{vs_config.DATE_INIT}_to_{vs_config.DATE_FINAL}_time_window_{time_window}.nc"
+        ds_stat_mean.to_netcdf(stat_mean_filepath)
+
+def concatenate_var_datasets(date_list,time_window,verbose='y'):
     # Create folder to save concatenated datasets
     os.makedirs(vs_config.DIR_OUTPUT_DATA+f"/date_multiple_time_window_{time_window}", exist_ok=True)
     # Get date to include in output filenames
@@ -344,29 +358,40 @@ def concatenate_var_datasets(date_list,time_window):
             var_gfs_filepath = f"{vs_config.DIR_INPUT_INTERMEDIATE}/gfs_in_monan_format_date_{date_in_string}_time_window_{time_window}.nc"
             var_gfs_filepaths.append(var_gfs_filepath)
     # Concatenate variable datasets along "Time" dimension
+    if verbose == 'y':
+        print ("Concatenating variable datasets for variable", var, "and time window", time_window)
     ds_var_monan_concat = xr.open_mfdataset(var_monan_filepaths, combine="nested", concat_dim="Time")
     ds_var_gfs_concat = xr.open_mfdataset(var_gfs_filepaths, combine="nested", concat_dim="Time")
+    if verbose == 'y':
+        print ("Done concatenating variable datasets for variable", var, "and time window", time_window)
     # Save concatenated datasets in nc file
-    var_monan_concat_filepath = f"{vs_config.DIR_OUTPUT_DATA}/date_multiple_time_window_{time_window}/monan_mapped_to_gfs_date_concat_from_{date_list[0]}_to_{date_list[-1]}_time_window_{time_window}.nc"
+    var_monan_concat_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/monan_mapped_to_gfs_date_concat_from_{date_list[0]}_to_{date_list[-1]}_time_window_{time_window}.nc"
     ds_var_monan_concat.to_netcdf(var_monan_concat_filepath)
-    var_gfs_concat_filepath = f"{vs_config.DIR_OUTPUT_DATA}/date_multiple_time_window_{time_window}/gfs_in_monan_format_date_concat_from_{date_list[0]}_to_{date_list[-1]}_time_window_{time_window}.nc"
+    var_gfs_concat_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/gfs_in_monan_format_date_concat_from_{date_list[0]}_to_{date_list[-1]}_time_window_{time_window}.nc"
     ds_var_gfs_concat.to_netcdf(var_gfs_concat_filepath)
 
-def calculate_mean_stats_across_dates(time_window):
-    # Create folder to save mean stats metrics datasets
+def calculate_multi_time_metrics(time_window):
+    # Create folder to save multi-time stats metrics datasets
     os.makedirs(vs_config.DIR_OUTPUT_DATA+f"/date_multiple_time_window_{time_window}", exist_ok=True)
-    # Construct filepaths for concatenated stats datasets
-    for stat in vs_config.STATS_METRICS_TO_ANALYZE:
-        stat_concat_filepath = f"{vs_config.DIR_OUTPUT_DATA}/date_multiple_time_window_{time_window}/{stat}_date_concat_from_{vs_config.DATE_INIT}_to_{vs_config.DATE_FINAL}_time_window_{time_window}.nc"
-        # Read concatenated dataset
-        ds_stat_concat = xr.open_dataset(stat_concat_filepath, engine="netcdf4")
-        # Calculate mean value of stat metric across all dates for each variable, level and domain
-        ds_stat_mean = ds_stat_concat.mean(dim="Time")
-        # Save dataset with mean values in nc file
-        stat_mean_filepath = f"{vs_config.DIR_OUTPUT_DATA}/date_multiple_time_window_{time_window}/mean_{stat}_date_from_{vs_config.DATE_INIT}_to_{vs_config.DATE_FINAL}_time_window_{time_window}.nc"
-        ds_stat_mean.to_netcdf(stat_mean_filepath)
+    # Construct filepaths for concatenated variable datasets
+    var_monan_concat_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/monan_mapped_to_gfs_date_concat_from_{vs_config.DATE_INIT}_to_{vs_config.DATE_FINAL}_time_window_{time_window}.nc"
+    var_gfs_concat_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/gfs_in_monan_format_date_concat_from_{vs_config.DATE_INIT}_to_{vs_config.DATE_FINAL}_time_window_{time_window}.nc"
+    # Read concatenated variable datasets
+    ds_var_monan_concat = xr.open_dataset(var_monan_concat_filepath, engine="netcdf4")
+    ds_var_gfs_concat = xr.open_dataset(var_gfs_concat_filepath, engine="netcdf4")
+    # Calculate and save multi-time metrics across all dates for each variable, level and domain
+    ## Here we could calculate any metric that involves time averages, such as anomaly correlation coefficient or rmse
+    for multi_time_metric in vs_config.MULTI_TIME_STATS_METRICS_TO_ANALYZE:
+        if multi_time_metric == "rmse":
+            ds_rmse = stats.rmse(predictions=ds_var_monan_concat, observations=ds_var_gfs_concat, dim="Time")
+            rmse_filepath = f"{vs_config.DIR_OUTPUT_DATA}/date_multiple_time_window_{time_window}/{multi_time_metric}_date_from_{vs_config.DATE_INIT}_to_{vs_config.DATE_FINAL}_time_window_{time_window}.nc"
+            ds_rmse.to_netcdf(rmse_filepath)
+        elif multi_time_metric == "anomaly_correlation_coefficient":
+            ds_acc = stats.anomaly_correlation_coefficient(predictions=ds_var_monan_concat, observations=ds_var_gfs_concat, dim="Time")
+            acc_filepath = f"{vs_config.DIR_OUTPUT_DATA}/date_multiple_time_window_{time_window}/{multi_time_metric}_date_from_{vs_config.DATE_INIT}_to_{vs_config.DATE_FINAL}_time_window_{time_window}.nc"
+            ds_acc.to_netcdf(acc_filepath)
 
-def plot_mean_stats_across_dates(time_window):
+def plot_mean_metrics(time_window):
     # Define verbosity
     if vs_config.SEL_VERBOSE_LEVEL >= 2:
         verbose = 'y'
@@ -379,8 +404,11 @@ def plot_mean_stats_across_dates(time_window):
         for domain in vs_config.DOMAINS_TO_ANALYZE:
             os.makedirs(vs_config.DIR_OUTPUT_FIGS+f"/date_multiple_time_window_{time_window}/var_{var}/domain_{domain}", exist_ok=True)
     # Construct filepaths for mean stats metrics datasets
-    for metric in vs_config.STATS_METRICS_TO_ANALYZE:
-        stat_mean_filepath = f"{vs_config.DIR_OUTPUT_DATA}/date_multiple_time_window_{time_window}/mean_{metric}_date_from_{vs_config.DATE_INIT}_to_{vs_config.DATE_FINAL}_time_window_{time_window}.nc"
+    for metric in (vs_config.STATS_METRICS_TO_ANALYZE+vs_config.MULTI_TIME_STATS_METRICS_TO_ANALYZE):        
+        if metric in vs_config.STATS_METRICS_TO_ANALYZE:
+            stat_mean_filepath = f"{vs_config.DIR_OUTPUT_DATA}/date_multiple_time_window_{time_window}/mean_{metric}_date_from_{vs_config.DATE_INIT}_to_{vs_config.DATE_FINAL}_time_window_{time_window}.nc"
+        elif metric in vs_config.MULTI_TIME_STATS_METRICS_TO_ANALYZE:
+            stat_mean_filepath = f"{vs_config.DIR_OUTPUT_DATA}/date_multiple_time_window_{time_window}/{metric}_date_from_{vs_config.DATE_INIT}_to_{vs_config.DATE_FINAL}_time_window_{time_window}.nc"
         # Read dataset with mean values of stat metric across all dates for each variable, level and domain
         ds_stat_mean = xr.open_dataset(stat_mean_filepath, engine="netcdf4")
         # Plot maps of mean values of stat metric for each domain, variable and level
@@ -390,18 +418,27 @@ def plot_mean_stats_across_dates(time_window):
                 print ("variable:", var)
                 for level in vs_config.VERTICAL_LEVELS_TO_ANALYZE:
                     print ("level:", level)
+                    if metric in vs_config.STATS_METRICS_TO_ANALYZE:
+                        output_filepath = (f"{vs_config.DIR_OUTPUT_FIGS}/date_multiple_"+
+                                         f"time_window_{time_window}/"+
+                                         f"var_{var}/domain_{domain}/"+
+                                         f"metric_mean_{metric}_var_{var}_level_{level}_"+
+                                         f"domain_{domain}_date_from_{vs_config.DATE_INIT}_to_{vs_config.DATE_FINAL}_"+
+                                         f"time_window_{vs_config.TIME_WINDOW}.png")
+                    elif metric in vs_config.MULTI_TIME_STATS_METRICS_TO_ANALYZE:
+                        output_filepath = (f"{vs_config.DIR_OUTPUT_FIGS}/date_multiple_"+
+                                         f"time_window_{time_window}/"+
+                                         f"var_{var}/domain_{domain}/"+
+                                         f"metric_{metric}_var_{var}_level_{level}_"+
+                                         f"domain_{domain}_date_from_{vs_config.DATE_INIT}_to_{vs_config.DATE_FINAL}_"+
+                                         f"time_window_{vs_config.TIME_WINDOW}.png")
                     plots.plot_var_map(
                         ds=ds_stat_mean, 
                         var=var, 
                         cartopy_data_dir=vs_config.DIR_CARTOPY_DATA,
                         level=level, 
                         domain=domain,
-                        output_filepath=(f"{vs_config.DIR_OUTPUT_FIGS}/date_multiple_"+
-                                         f"time_window_{time_window}/"+
-                                         f"var_{var}/domain_{domain}/"+
-                                         f"metric_mean_{metric}_var_{var}_level_{level}_"+
-                                         f"domain_{domain}_date_from_{vs_config.DATE_INIT}_to_{vs_config.DATE_FINAL}_"+
-                                         f"time_window_{vs_config.TIME_WINDOW}.png"),
+                        output_filepath=output_filepath,
                         verbose=verbose,
                         cmap_dict=vs_config.COLORMAP_DIVERGING_BY_VAR_DICT,
                         metric_name=metric
