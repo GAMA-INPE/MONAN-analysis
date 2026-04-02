@@ -4,7 +4,7 @@ stats.py
 
 Description
 -----------
-This module contains functions for calculations of statistics of analyses.
+This module contains functions for calculations and settings of analysis statistics.
 
 Usage
 -----
@@ -103,7 +103,7 @@ def relative_error(predictions, observations):
     
     result = predictions.copy()
     for var in predictions.data_vars:
-        result[var] = (predictions[var] - observations[var]) / observations[var]
+        result[var] = 100*(predictions[var] - observations[var]) / observations[var]
     
     return result
 
@@ -126,7 +126,7 @@ def relative_error_mean(predictions, observations):
     
     result = predictions.copy()
     for var in predictions.data_vars:
-        result[var] = ((predictions[var] - observations[var]) / observations[var]).mean()
+        result[var] = 100*((predictions[var] - observations[var]) / observations[var]).mean()
     
     return result
 
@@ -184,3 +184,10 @@ def anomaly_correlation_coefficient(predictions, observations):
         result[var] = (pred_anom * obs_anom).mean() / (len(predictions[var])*(pred_anom ** 2).mean() ** 0.5 * (obs_anom ** 2).mean() ** 0.5)
     
     return result
+
+def get_stats_metric_units(var_units_dict,var,metric):
+    metric_units_dict = {
+        "bias": var_units_dict[var],
+        "relative_error": "%"
+    }
+    return metric_units_dict[metric]

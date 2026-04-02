@@ -52,6 +52,10 @@ def create_folder_structure():
     os.makedirs(vs_config.DIR_OUTPUT_DATA+f"/date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}", exist_ok=True)
     os.makedirs(vs_config.DIR_OUTPUT_FIGS, exist_ok=True)
     os.makedirs(vs_config.DIR_OUTPUT_FIGS+f"/date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}", exist_ok=True)
+    for var in vs_config.VARIABLES_TO_ANALYZE:
+        os.makedirs(vs_config.DIR_OUTPUT_FIGS+f"/date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}/var_{var}", exist_ok=True)
+        for domain in vs_config.DOMAINS_TO_ANALYZE:
+            os.makedirs(vs_config.DIR_OUTPUT_FIGS+f"/date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}/var_{var}/domain_{domain}", exist_ok=True)
 
 def read_and_preprocess_monan_data():
     # Get date and write it into preprocessed filepath
@@ -185,6 +189,12 @@ def plot_statistics(ds_stats_filepath_dict):
     date_in_string = utils.get_date_as_YYYYMMDDHH_str(
     vs_config.YEAR, vs_config.MONTH, vs_config.DAY, vs_config.HOUR
     )
+    # Define verbosity
+    if vs_config.SEL_VERBOSE_LEVEL >= 2:
+        verbose = 'y'
+    else:
+        verbose = 'n'
+
     # Maps of statistics for each metric, domain, variable and level
     for metric in ds_stats_filepath_dict.keys():
         print (f"Metric: {metric}")
@@ -201,7 +211,15 @@ def plot_statistics(ds_stats_filepath_dict):
                         cartopy_data_dir=vs_config.DIR_CARTOPY_DATA,
                         level=level, 
                         domain=domain,
-                        output_filepath=f"{vs_config.DIR_OUTPUT_FIGS}/date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}/metric_{metric}_var_{var}_level_{level}_domain_{domain}_date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}.png"
+                        output_filepath=(f"{vs_config.DIR_OUTPUT_FIGS}/date_{date_in_string}_"+
+                                         f"time_window_{vs_config.TIME_WINDOW}/"+
+                                         f"var_{var}/domain_{domain}/"+
+                                         f"metric_{metric}_var_{var}_level_{level}_"+
+                                         f"domain_{domain}_date_{date_in_string}_"+
+                                         f"time_window_{vs_config.TIME_WINDOW}.png"),
+                        verbose=verbose,
+                        cmap_dict=vs_config.COLORMAP_DIVERGING_BY_VAR_DICT,
+                        metric_name=metric
                         )
 
 def cp_config_files():
@@ -318,11 +336,20 @@ def calculate_mean_stats_across_dates(time_window):
         ds_stat_mean.to_netcdf(stat_mean_filepath)
 
 def plot_mean_stats_across_dates(time_window):
-    # Create folder to save mean stats metrics plots
+    # Define verbosity
+    if vs_config.SEL_VERBOSE_LEVEL >= 2:
+        verbose = 'y'
+    else:
+        verbose = 'n'
+    # Create folders to save mean stats metrics plots
     os.makedirs(vs_config.DIR_OUTPUT_FIGS+f"/date_multiple_time_window_{time_window}", exist_ok=True)
+    for var in vs_config.VARIABLES_TO_ANALYZE:
+        os.makedirs(vs_config.DIR_OUTPUT_FIGS+f"/date_multiple_time_window_{time_window}/var_{var}", exist_ok=True)
+        for domain in vs_config.DOMAINS_TO_ANALYZE:
+            os.makedirs(vs_config.DIR_OUTPUT_FIGS+f"/date_multiple_time_window_{time_window}/var_{var}/domain_{domain}", exist_ok=True)
     # Construct filepaths for mean stats metrics datasets
-    for stat in vs_config.STATS_METRICS_TO_ANALYZE:
-        stat_mean_filepath = f"{vs_config.DIR_OUTPUT_DATA}/date_multiple_time_window_{time_window}/mean_{stat}_date_from_{vs_config.DATE_INIT}_to_{vs_config.DATE_FINAL}_time_window_{time_window}.nc"
+    for metric in vs_config.STATS_METRICS_TO_ANALYZE:
+        stat_mean_filepath = f"{vs_config.DIR_OUTPUT_DATA}/date_multiple_time_window_{time_window}/mean_{metric}_date_from_{vs_config.DATE_INIT}_to_{vs_config.DATE_FINAL}_time_window_{time_window}.nc"
         # Read dataset with mean values of stat metric across all dates for each variable, level and domain
         ds_stat_mean = xr.open_dataset(stat_mean_filepath, engine="netcdf4")
         # Plot maps of mean values of stat metric for each domain, variable and level
@@ -338,5 +365,13 @@ def plot_mean_stats_across_dates(time_window):
                         cartopy_data_dir=vs_config.DIR_CARTOPY_DATA,
                         level=level, 
                         domain=domain,
-                        output_filepath=f"{vs_config.DIR_OUTPUT_FIGS}/date_multiple_time_window_{time_window}/metric_mean_{stat}_var_{var}_level_{level}_domain_{domain}_date_from_{vs_config.DATE_INIT}_to_{vs_config.DATE_FINAL}_time_window_{time_window}.png"
+                        output_filepath=(f"{vs_config.DIR_OUTPUT_FIGS}/date_multiple_"+
+                                         f"time_window_{time_window}/"+
+                                         f"var_{var}/domain_{domain}/"+
+                                         f"metric_mean_{metric}_var_{var}_level_{level}_"+
+                                         f"domain_{domain}_date_from_{vs_config.DATE_INIT}_to_{vs_config.DATE_FINAL}_"+
+                                         f"time_window_{vs_config.TIME_WINDOW}.png"),
+                        verbose=verbose,
+                        cmap_dict=vs_config.COLORMAP_DIVERGING_BY_VAR_DICT,
+                        metric_name=metric
                         )

@@ -44,19 +44,19 @@ VERTICAL_LEVEL_SPEC = "55"
 VARIABLES_TO_ANALYZE = [
     "temperature",
     #"spechum",
-    #"zgeo",
+    "zgeo",
     #"uzonal",
     #"umeridional",
     ]
 # Vertical levels to analyze
 VERTICAL_LEVELS_TO_ANALYZE = [
-    "92500", "85000",  "70000",  "50000",  "40000",  "25000",  "10000"
+    "92500", #"85000",  #"70000",  "50000",  "40000",  "25000",  "10000"
     ]
 # Domains to analyze
 DOMAINS_TO_ANALYZE = [
     "global", 
     "south_america", 
-    "central_america_and_caribbean"
+    #"central_america_and_caribbean"
     ]
 #===================================================================================================
 # GFS configurations
@@ -70,6 +70,17 @@ STATS_METRICS_TO_ANALYZE = [
     "bias",
     "relative_error"
     ]
+#===================================================================================================
+# Plot configurations
+#===================================================================================================
+# Divergin colormaps to use for each variable in plotting
+COLORMAP_DIVERGING_BY_VAR_DICT = {
+    "temperature": "coolwarm",
+    "spechum": "managua",
+    "zgeo": "PiYG",
+    "uzonal": "PuOr",
+    "umeridional": "PuOr"
+}
 #===================================================================================================
 # Directory paths
 #===================================================================================================
@@ -89,11 +100,11 @@ DIR_INPUT_RAW = f"{DIR_INPUT}/raw"
 # Initial date
 DATE_INIT = "2026020100"
 # Final date
-DATE_FINAL = "2026022800"
+DATE_FINAL = "2026020200"
 # Date time step in hours
 DATE_TIME_STEP = "24"
 # Time windows to analyze
 TIME_WINDOWS_TO_ANALYZE = [
-    "00",
+    #"00",
     "24"
     ]

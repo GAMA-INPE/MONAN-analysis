@@ -40,7 +40,14 @@ VERTICAL_LEVEL_DICT = {
     }
 # Standard date format in MONAN output filenames
 DATE_FORMAT_STRING = "%Y%m%d%H"
-
+# Variable units
+VAR_UNITS_DICT = {
+    "temperature": "K",
+    "spechum": "kg/kg",
+    "zgeo": "m",
+    "uzonal": "m/s",
+    "umeridional": "m/s"
+}
 #===================================================================================================
 # Standard settings for GFS analysis data
 #===================================================================================================
@@ -55,7 +62,6 @@ GFS_TO_MONAN_VAR_DICT = {
     "u": "uzonal",
     "v": "umeridional"
 }
-
 #===================================================================================================
 # Domain definitions
 #===================================================================================================

@@ -52,7 +52,7 @@ def test_relative_error():
     # Dataset for predictions containing only values 3
     predictions = create_test_dataset(data=3*np.ones((2, 2, 3, 3)))
     # Correct result from relative error operation: dataset containing only values 200%
-    correct_result = create_test_dataset(data=2*np.ones((2, 2, 3, 3)))
+    correct_result = create_test_dataset(data=200*np.ones((2, 2, 3, 3)))
     calculated_result = stats.relative_error(
         predictions=predictions,
         observations=observations
@@ -68,7 +68,7 @@ def test_relative_error_mean():
     # Correct result from relative error mean operation: dataset 
     # containing only a scalar 200%
     correct_result = create_test_dataset() 
-    correct_result["var"] = 2.
+    correct_result["var"] = 200.
     calculated_result = stats.relative_error_mean(
         predictions=predictions,
         observations=observations
