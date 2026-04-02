@@ -65,7 +65,7 @@ def test_relative_error_pred_positive_obs_negative():
     observations = create_test_dataset(data=-np.ones((2, 2, 3, 3)))
     # Dataset for predictions containing only values 3
     predictions = create_test_dataset(data=3*np.ones((2, 2, 3, 3)))
-    # Correct result from relative error operation: dataset containing only values 200%
+    # Correct result from relative error operation: dataset containing only values 400%
     correct_result = create_test_dataset(data=400*np.ones((2, 2, 3, 3)))
     calculated_result = stats.relative_error(
         predictions=predictions,
@@ -79,7 +79,7 @@ def test_relative_error_pred_negative_obs_positive():
     observations = create_test_dataset(data=5*np.ones((2, 2, 3, 3)))
     # Dataset for predictions containing only values 3
     predictions = create_test_dataset(data=-10*np.ones((2, 2, 3, 3)))
-    # Correct result from relative error operation: dataset containing only values 200%
+    # Correct result from relative error operation: dataset containing only values -300%
     correct_result = create_test_dataset(data=-300*np.ones((2, 2, 3, 3)))
     calculated_result = stats.relative_error(
         predictions=predictions,
@@ -110,7 +110,7 @@ def test_relative_error_mean_pred_positive_obs_negative():
     # Dataset for predictions containing only values 3
     predictions = create_test_dataset(data=3*np.ones((2, 2, 3, 3)))
     # Correct result from relative error mean operation: dataset 
-    # containing only a scalar 200%
+    # containing only a scalar 400%
     correct_result = create_test_dataset() 
     correct_result["var"] = 400.
     calculated_result = stats.relative_error_mean(
@@ -126,7 +126,7 @@ def test_relative_error_mean_pred_negative_obs_positive():
     # Dataset for predictions containing only values 3
     predictions = create_test_dataset(data=-3*np.ones((2, 2, 3, 3)))
     # Correct result from relative error mean operation: dataset 
-    # containing only a scalar 200%
+    # containing only a scalar -250%
     correct_result = create_test_dataset() 
     correct_result["var"] = -250.
     calculated_result = stats.relative_error_mean(
