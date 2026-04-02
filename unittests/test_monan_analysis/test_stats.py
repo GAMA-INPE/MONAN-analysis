@@ -3,7 +3,6 @@ import xarray as xr
 import numpy as np
 import monan_analysis.stats as stats
 
-# Helper function to create a synthetic xarray.Dataset
 def create_test_dataset(data=np.ones((10, 2, 3, 3)), dims=("Time", "level", "latitude", "longitude")):
     shape = (10, 2, 3, 3)
     coords = {
