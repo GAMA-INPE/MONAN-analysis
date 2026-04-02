@@ -91,9 +91,11 @@ def relative_error(predictions, observations):
     
     Relative error is here defined as
 
-    relative_error = |predictions - observations| / |observations|,
+    relative_error = (predictions - observations) / |observations|,
 
-    assuming observations are the true value of the variable, and predictions are an approximation (1).
+    assuming observations are the true value of the variable, and predictions are an approximation.
+    This is roughly the definition given in (1), except that here we do not take the absolute value
+    of the numerator so that the direction of the error is taken into account.
 
     Reference:
     1. Burden and Faires, Numerical Analysis, 9th edition, 2011
@@ -103,7 +105,7 @@ def relative_error(predictions, observations):
     
     result = predictions.copy()
     for var in predictions.data_vars:
-        result[var] = 100*(predictions[var] - observations[var]) / observations[var]
+        result[var] = 100*(predictions[var] - observations[var]) / abs(observations[var])
     
     return result
 
@@ -126,15 +128,15 @@ def relative_error_mean(predictions, observations):
     
     result = predictions.copy()
     for var in predictions.data_vars:
-        result[var] = 100*((predictions[var] - observations[var]) / observations[var]).mean()
+        result[var] = 100*((predictions[var] - observations[var]) / abs(observations[var])).mean()
     
     return result
 
 def rmse(predictions, observations):
     """
-    Calculate the root mean square error between predictions and observations.
+    Calculate the root mean square error (rmse) between predictions and observations.
     
-    The root mean square error is here defined as the root of the mean squared error as defined in (1), i.e.
+    Rmse is here defined as the root of the mean squared error as defined in (1), i.e.
 
     RMSE = sqrt(1/n sum_{i=1}^{n} (prediction_i - observation_i)**2) 
 

@@ -46,7 +46,7 @@ def test_bias_mean():
     # Test if calculated and correct results match
     xr.testing.assert_equal(calculated_result, correct_result)
 
-def test_relative_error():
+def test_relative_error_all_positive():
     # Dataset for observations containing only values 1
     observations = create_test_dataset(data=np.ones((2, 2, 3, 3)))
     # Dataset for predictions containing only values 3
@@ -60,7 +60,21 @@ def test_relative_error():
     # Test if calculated and correct results match
     xr.testing.assert_equal(calculated_result, correct_result)
 
-def test_relative_error_mean():
+def test_relative_error_pred_positive_obs_negative():
+    # Dataset for observations containing only values 1
+    observations = create_test_dataset(data=-np.ones((2, 2, 3, 3)))
+    # Dataset for predictions containing only values 3
+    predictions = create_test_dataset(data=3*np.ones((2, 2, 3, 3)))
+    # Correct result from relative error operation: dataset containing only values 200%
+    correct_result = create_test_dataset(data=400*np.ones((2, 2, 3, 3)))
+    calculated_result = stats.relative_error(
+        predictions=predictions,
+        observations=observations
+        )
+    # Test if calculated and correct results match
+    xr.testing.assert_equal(calculated_result, correct_result)
+
+def test_relative_error_mean_all_positive():
     # Dataset for observations containing only values 1
     observations = create_test_dataset(data=np.ones((2, 2, 3, 3)))
     # Dataset for predictions containing only values 3
@@ -69,6 +83,22 @@ def test_relative_error_mean():
     # containing only a scalar 200%
     correct_result = create_test_dataset() 
     correct_result["var"] = 200.
+    calculated_result = stats.relative_error_mean(
+        predictions=predictions,
+        observations=observations
+        )
+    # Test if calculated and correct results match
+    xr.testing.assert_equal(calculated_result, correct_result)
+
+def test_relative_error_mean_pred_positive_obs_negative():
+    # Dataset for observations containing only values 1
+    observations = create_test_dataset(data=-np.ones((2, 2, 3, 3)))
+    # Dataset for predictions containing only values 3
+    predictions = create_test_dataset(data=3*np.ones((2, 2, 3, 3)))
+    # Correct result from relative error mean operation: dataset 
+    # containing only a scalar 200%
+    correct_result = create_test_dataset() 
+    correct_result["var"] = 400.
     calculated_result = stats.relative_error_mean(
         predictions=predictions,
         observations=observations
