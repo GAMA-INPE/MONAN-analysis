@@ -12,8 +12,11 @@ import vertical_structure_src.vertical_structure_config as vs_config
 import vertical_structure_src.vertical_structure_main as vs_main
 import vertical_structure_src.vertical_structure_aux as vs_aux
 import importlib
+import time
 
 if __name__ == "__main__":
+    start_time = time.time()
+
     print ("\n ==========================================================================")
     print ("\n Running analysis in 'multiple' mode: multiple dates and/or time windows...")
     #===============================================================================================
@@ -81,4 +84,7 @@ if __name__ == "__main__":
         print (f"\n Time window: {time_window}")
         vs_aux.plot_mean_metrics(time_window=time_window)
     print ("\n ==========================================================================")
+
+    end_time = time.time()  # Record the end time
+    print(f"\n Done. Total execution time: {end_time - start_time:.2f} seconds")
 
