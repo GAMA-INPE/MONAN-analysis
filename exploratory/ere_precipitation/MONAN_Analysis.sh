@@ -35,10 +35,10 @@ HEATMAP="MONAN_Heatmap.py"              # Plot_Series_Heatmap_skill_score_MONAN_
 # SUFIXO_ARQ: Suffix for the MONAN output files                     #
 #####################################################################
 
-NETCDF_PATH="/home2/eduardo.eras/workspace/NetCDFs/"
+NETCDF_PATH="/p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs"
 MONAN_PATH="/p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/"
-OUTPUT_PATH="/home2/eduardo.eras/workspace/python/output/"
-LISTA_PATH="/home2/eduardo.eras/workspace/python/listas_medias"
+OUTPUT_PATH="/p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output"
+LISTA_PATH="/p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/listas_medias"
 PREFIXO_ARQ="MONAN_DIAG_G_POS_GFS_"
 SUFIXO_ARQ=".00.00.x655362L55.nc"
 
@@ -53,16 +53,16 @@ rm -rf ${LISTA_PATH}/*
 ##########################################################
 
 #Full range simulation
-START_DATE="2025-12-01" 
-END_DATE="2025-12-30"
+#START_DATE="2025-12-01" 
+#END_DATE="2025-12-30"
 
 #Short range simulation
 #START_DATE="2025-12-10" 
 #END_DATE="2025-12-19"
 
 #Test simulation
-#START_DATE="2025-12-10" 
-#END_DATE="2025-12-11"
+START_DATE="2025-12-10" 
+END_DATE="2025-12-11"
 
 ###################################################
 # Simulation span in hours (e.g., 120 for 5 days) #
@@ -79,7 +79,9 @@ THRESHOLD=(1 2 5 10 20 50)
 ######################################
 # Analysis name for output directory #
 ######################################
-ANALYSIS_NAME="30_days_mean" # e.g., "full_range", "short_test", etc.
+# e.g., "full_range", "short_test", etc.
+#ANALYSIS_NAME="30_days_mean"
+ANALYSIS_NAME="test_new_directory"
 
 ##################################
 # Generate Plot Maps?            #
@@ -91,10 +93,10 @@ GENERATE_MAPS=0
 # Select Analysis to run (1 for True, 0 for False) #
 ####################################################
 RUN_BASE_ANALYSIS=1
-RUN_MONTHLY_ANALYSIS=1
-RUN_MEAN_ANALYSIS=1
-RUN_SKILL_ANALYSIS=1
-RUN_HEATMAP_ANALYSIS=1
+RUN_MONTHLY_ANALYSIS=0
+RUN_MEAN_ANALYSIS=0
+RUN_SKILL_ANALYSIS=0
+RUN_HEATMAP_ANALYSIS=0
 
 #################################################################################
 #                                                                               #

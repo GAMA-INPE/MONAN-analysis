@@ -1,0 +1,303 @@
+January 13, 2026
+    GRADS Basics:
+        grads -b                        batch mode
+        grads -c "command"              run a command
+        grads -b -c "script.gs"         run a script in bach mode
+
+        quit                            exit grads
+        reinit                          reset everithing (close files)
+        reset                           reset settings (don't close files)
+        clear                           clear plot canvas
+
+        open file.clt                   opens a Control file 
+        sdfopen file.nc                 opens a NetCDF file
+        set dfile 1                     set default file as file 1
+        close 1                         close file 1
+
+        display var                     plot var to canvas
+        gxprint file.png y1080 x1920    export png output
+
+January 19, 2026
+    Git commands (on synchronized directory):
+        git status          Fundamental current status of git synchronization
+        git pull            Download remote changes and merge
+
+        git add <file>
+        git commit -m <message>
+        git push
+
+        git restore --source=origin/develop /file_to_be_restored
+        git checkout        change branch
+
+        git remote -v       Show remote repositories
+        git diff            List unsychronized changes
+        git log             Show full commit history
+        git log --oneline   Show short commit history
+        git rm <file>       Remove tracked file
+
+    Conda:
+        module load anaconda/24.1.2     Load Conda module
+        which python                    Sanity check
+        conda init                      Start Conda
+        conda activate workspace        Switch to user environment
+
+    Bash:
+        file <file>         Gives inside information about the the file type.    
+
+    To Do:
+        Use the Wi-Fi
+
+    Parameterization:
+        Implement Taylor based on Yonsei University
+        Main goal: Run the YU twice, as two differente parameterization options
+        Focus on run the parameterizations offline
+        Attention: parameter call order is not linear, need to figure out how it works
+
+January 27, 2026
+    MONAN 1.4.3-rc
+        ./1.install_monan.bash https://github.com/eduardoeras/MONAN-Model.git 1.4.3-rc 1.2.0
+        
+        git clone https://github.com/monanadmin/scripts_CD-CT.git
+        
+        git clone https://github.com/eduardoeras/scripts_CD-CT.git
+
+
+    MONAN Namelist Variables Cheat Sheet:
+        initial_time
+        xtime
+        Time
+        t_iso_levels
+        zgeo_isobaric
+        lonCell
+        latCell
+        temperature_isobaric
+        spechum_isobaric
+        relhum_isobaric
+        uzonal_isobaric
+        umeridional_isobaric
+        w_isobaric
+        surface_pressure
+        mslp
+        precipw
+        precipci
+        rainnc
+        rainc
+        qv_isobaric
+        qi_isobaric
+        qc_isobaric
+        qs_isobaric
+        cape
+        cin
+        acswdnb
+        acswdnbc
+        aclwupb
+        aclwupt
+        aclwuptc
+        u10
+        v10
+        q2
+        t2m
+        hfx
+        lh
+        cldfrac_tot_UPP
+        ter
+        landmask
+        omega_isobaric
+        radlw3d1
+        radsw3d1
+
+January 28, 2026
+    Spider Day
+
+    /p/projetos/monan atm/eduardo.eras
+        =>MONAN
+            Pre     [OK]
+            Model   [OK]
+        =>SandBox
+            Pre     [OK]
+            Model   [OK]
+    
+January 30, 2026
+
+    Scripts André:
+    /lustre/projetos/monan_gam/Scripts/Scripts_MONAN/
+
+    "Fazer alterações nos diretórios onde estão os dados e onde
+    ele vai escrever as figuras e o dado netcdf. As variáveis 
+    são essas: CAMINHO_BASE, caminho_out e caminho_netcdf"
+
+    "Eu rodo ele assim, passando alguns parâmetros na linha de 
+    comando: ano, mês, dia, hora inicial e o prazo: 
+    python  MONAN_nc_24h_acum_newcolorbar.py 2025 12 01 00 120"
+
+    "Eu carreguei um ambiente virtual do python para carregar
+    essas bibliotecas dessa forma: 
+    python -m venv ~/python_env
+    source ~/python_env/bin/activate
+    pip install h5py numpy matplotlib cartopy  ..."
+
+    "Figuras e os netcdfs da precipitação observada geradas aqui:
+    /pesq/share/monan/monan_gam/precip_24h/GPM_IMERG
+    /pesq/share/monan/monan_gam/precip_24h/MSWEP
+    /pesq/share/monan/monan_gam/precip_24h/GSMAP"
+
+    Condições iniciais:
+    /lustre/projetos/monan_adm/monan/CIs/GFS
+
+February 2, 2026
+
+    "A variável  monan_nc deve apontar para os arquivos da sua rodada. 
+    Alterar também:  fig_dir , caminho_netcdf"
+
+    "Os arquivos netcdf (acumulados de 24h) do GPM, GSMAP e MSWEP eu já
+    tenho gerado desde 202511250000. Se o seu periodo das rodadas estiver
+    compreendido nesse mesmo período você pode usar eles mesmo."
+
+    "Como o script usa o CDO para compatibilizar as grades, vai precisar
+    carregar o módulo do CDO na JACI: module load cdo"
+
+    "Variáveis: BASE_MONAN, BASE_BIAS e DIR_OUT"
+
+February 3, 2026
+    Classic MONAN tutorial:
+        1 - Entrar na jaci no seu diretorio de trabalho ( /p/projetos/monan_atm/madeleine.gacita)
+        (aqui  você pode criar um diretório para realizar o teste)
+
+        2 - Download dos scripts ( git clone https://github.com/monanadmin/scripts_CD-CT.git)
+
+        3 - Entrar no diretório scripts_CD-CT e mudar para versão develop ( "cd scripts_CD-CT/"
+        e depois "git checkout develop"). Após isso entrar no diretório "scripts"
+
+        4 - Compilar o Monan  ( ./1.install_monan.bash
+        https://github.com/monanadmin/MONAN-Model.git 1.4.3-rc 1.2.0 )
+        --> instala o monan do github na versão 1.4.3 utilizando o convert_mpas 1.2.0
+
+        Se tudo der certo, voce ja compilou o Monan na jaci. Pode verificar o executável no
+        diretório execs (ls -l  ../execs).
+
+        5 - Execução do Pre  ( ./2.pre_processing.bash ${EXP} ${RES} ${YYYYMMDDHHi} ${FCST} ).
+        Exemplo resolução 10km e 24 horas forecast (  ./2.pre_processing.bash GFS  5898242
+        2025102500  24 )
+
+        5 - Execução do Model ( ./3.run_model.bash ${EXP} ${RES} ${YYYYMMDDHHi} ${FCST}).
+        Exemplo resolução 10km e 24 horas forecast ( ./3.run_model.bash GFS  5898242
+        2025102500  24 )
+
+        6 - Execução do Post ( ./4.run_post.bash ${EXP} ${RES} ${YYYYMMDDHHi} ${FCST}).
+        Exemplo resolução 10km e 24 horas forecast ( ./4.run_post.bash GFS  5898242  2025102500  24 )
+
+        Voce pode verificar as saídas em dataout ( ls -l ../dataout)
+    
+    ./1.install_monan.bash https://github.com/eduardoeras/MONAN-Model.git 1.4.3-rc 1.2.0
+        
+    git clone https://github.com/monanadmin/scripts_CD-CT.git
+        
+    git clone https://github.com/eduardoeras/scripts_CD-CT.git
+
+    Where things happens insid MONAN:
+    scripts_CD-CT/scripts/namelists
+
+    To Do:
+    Debug output is dumping garbage or not writting at all.
+
+February 4, 2026
+    /home2/eduardo.eras/workspace/python/output/GPM_IMERG/202511270000/GPM_IMERG_Precipitation_24h_accum_202511270000.nc
+    
+February 5, 2026
+    GitHub Dark Default - Color Theme
+
+
+        '/home2/eduardo.eras/workspace/NetCDFs/MONAN/2025112600/MONAN_Precipitation_24h_acum_2025112600_2025112700_024h.nc'
+    /home2/eduardo.eras/workspace/python/output/MONAN/2025112600/MONAN_Precipitation_24h_acum_2025112600_2025112700_024h.nc
+
+February 6, 2026
+    
+    To mandatory repertoire:
+        Odeon
+        Scott Joplin
+
+    BASH LOOPS:
+    for i in {1..5}; do
+        echo "$i"
+    done
+    echo "---------"
+
+    a=1
+    b=5
+    for (( i = a; i <= b; i++ )); do
+        echo "C style $i"
+    done
+    echo "---------"
+
+    a=1
+    b=5
+    while [ "$a" -le "$b" ]; do
+        echo "While $a"
+        a=$((a+1))
+    done
+
+February 10, 2026
+
+    '/home2/eduardo.eras/workspace/python/output/MONAN/2025112600/MONAN_Precipitation_24h_acum_2025112600_2025112800_048h.nc'
+    '/home2/eduardo.eras/workspace/python/output/MONAN/2025112600/MONAN_Precipitation_24h_acum_2025112600_2025112700_024h.nc'
+
+    '/p/projetos/monan_atm/eduardo.eras/                    dataout/2025112700     /MONAN_DIAG_G_POS_GFS_2025112700_2025112700.00.00.x655362L55.nc'
+    '/p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025112700/Post/MONAN_DIAG_G_POS_GFS_2025112700_2025112700.00.00.x655362L55.nc
+
+February 13, 2026
+
+    /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121600/Post/MONAN_DIAG_G_POS_GFS_2025121600_2025121600.00.00.x655362L55.nc
+
+    ./MONAN_Analysis.sh 1 2>&1 | tee MONAN_Analysis_output.txt
+
+    To Do:
+        Plot Taylor and YSU on different directories to proper compare them. Currently, I'm using MYNN.
+
+February 20, 2026
+    /h2mnt/home/eduardo.eras/workspace/python/output/monthly_means/202512/202512_mean/202512/202512_mean/BIAS_202512_GLB_p024h.png
+         /home2/eduardo.eras/workspace/python/output/monthly_means/202512/202512_mean
+
+    Still missing something....
+    Perhaps "MONAN_nc_24h_acum_newcolorbar" or "Skill_score_MONAN_x_GPM_x_GSMAP_x_MSWEP"?
+
+February 23, 2026
+
+    Threshold: 1.0 2.0 5.0 10.0 20.0 50.0
+
+    To Do:
+    Fix output path concatenation. [OK]
+
+February 24, 2026
+
+    To Do:
+    Run the full current analysis.
+
+February 26, 2026
+
+    To Do:
+    MONAN_mean_Skill.py
+    
+February 27, 2026
+    To Do:  
+    Change "GENERATE_FIGURES" to "GENERATE_MAPS" [OK]
+    Find where the graphs are generated, perhaps in the "not used" function of the original scripts? [OK]
+
+March 2, 2026
+
+    /p/projetos/monan_atm/eduardo.eras/output/30_days
+
+    To Do:
+    Encapsulate everithing in the master script into the header.
+
+#####################################################################
+April 6, 2026
+
+    Rebase project to a neu directory:
+    /p/projetos/monan_atm/eduardo.eras/MONAN-analysis
+
+    Web repository: https://dataserver.cptec.inpe.br
+    /pesq/share/monan/eduardo.eras
+
+    GitHub two factor autentication:
+    iPhone's "Password" app
+    
