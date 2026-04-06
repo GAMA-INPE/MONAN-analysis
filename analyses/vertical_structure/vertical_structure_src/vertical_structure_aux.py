@@ -343,27 +343,26 @@ def concatenate_var_datasets(date_list,time_window,verbose='y'):
     vs_config.YEAR, vs_config.MONTH, vs_config.DAY, vs_config.HOUR
     )
     # Construct filepaths for variable datasets to be concatenated
-    for var in vs_config.VARIABLES_TO_ANALYZE:
-        var_monan_filepaths = []
-        var_gfs_filepaths = []
-        for date in date_list:
-            date_in_string = utils.get_date_as_YYYYMMDDHH_str(
+    var_monan_filepaths = []
+    var_gfs_filepaths = []
+    for date in date_list:
+        date_in_string = utils.get_date_as_YYYYMMDDHH_str(
                 year=date[:4], 
                 month=date[4:6], 
                 day=date[6:8], 
                 hour=date[8:10]
             )
-            var_monan_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/monan_mapped_to_gfs_date_{date_in_string}_time_window_{time_window}.nc"
-            var_monan_filepaths.append(var_monan_filepath)
-            var_gfs_filepath = f"{vs_config.DIR_INPUT_INTERMEDIATE}/gfs_in_monan_format_date_{date_in_string}_time_window_{time_window}.nc"
-            var_gfs_filepaths.append(var_gfs_filepath)
+        var_monan_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/monan_mapped_to_gfs_date_{date_in_string}_time_window_{time_window}.nc"
+        var_monan_filepaths.append(var_monan_filepath)
+        var_gfs_filepath = f"{vs_config.DIR_INPUT_INTERMEDIATE}/gfs_in_monan_format_date_{date_in_string}_time_window_{time_window}.nc"
+        var_gfs_filepaths.append(var_gfs_filepath)
     # Concatenate variable datasets along "Time" dimension
     if verbose == 'y':
-        print ("Concatenating variable datasets for variable", var, "and time window", time_window)
+        print ("Concatenating variable datasets for time window", time_window)
     ds_var_monan_concat = xr.open_mfdataset(var_monan_filepaths, combine="nested", concat_dim="Time")
     ds_var_gfs_concat = xr.open_mfdataset(var_gfs_filepaths, combine="nested", concat_dim="Time")
     if verbose == 'y':
-        print ("Done concatenating variable datasets for variable", var, "and time window", time_window)
+        print ("Done concatenating variable datasets for time window", time_window)
     # Save concatenated datasets in nc file
     var_monan_concat_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/monan_mapped_to_gfs_date_concat_from_{date_list[0]}_to_{date_list[-1]}_time_window_{time_window}.nc"
     ds_var_monan_concat.to_netcdf(var_monan_concat_filepath)
@@ -424,14 +423,14 @@ def plot_mean_metrics(time_window):
                                          f"var_{var}/domain_{domain}/"+
                                          f"metric_mean_{metric}_var_{var}_level_{level}_"+
                                          f"domain_{domain}_date_from_{vs_config.DATE_INIT}_to_{vs_config.DATE_FINAL}_"+
-                                         f"time_window_{vs_config.TIME_WINDOW}.png")
+                                         f"time_window_{time_window}.png")
                     elif metric in vs_config.MULTI_TIME_STATS_METRICS_TO_ANALYZE:
                         output_filepath = (f"{vs_config.DIR_OUTPUT_FIGS}/date_multiple_"+
                                          f"time_window_{time_window}/"+
                                          f"var_{var}/domain_{domain}/"+
                                          f"metric_{metric}_var_{var}_level_{level}_"+
                                          f"domain_{domain}_date_from_{vs_config.DATE_INIT}_to_{vs_config.DATE_FINAL}_"+
-                                         f"time_window_{vs_config.TIME_WINDOW}.png")
+                                         f"time_window_{time_window}.png")
                     plots.plot_var_map(
                         ds=ds_stat_mean, 
                         var=var, 
