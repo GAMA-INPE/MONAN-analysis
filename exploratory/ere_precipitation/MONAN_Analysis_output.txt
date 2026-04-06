@@ -14,61 +14,2388 @@
 ##############################################
 
 
+################################################################
+* * * Simulation for date: 2025 12 10 with span: 120 hours * * *
+################################################################
+
+
 ----------------------------------------------------------------
-Mean bias, MAE, RMSE and skill score across all lead times
+24 hours precipitation accumulation
 ----------------------------------------------------------------
 
-Gerando figura para prazo 024 h - GLB
-Gerando figura para prazo 048 h - GLB
-Gerando figura para prazo 072 h - GLB
-Gerando figura para prazo 096 h - GLB
-Gerando figura para prazo 120 h - GLB
-Gerando figura para prazo 024 h - GLB
-Gerando figura para prazo 048 h - GLB
-Gerando figura para prazo 072 h - GLB
-Gerando figura para prazo 096 h - GLB
-Gerando figura para prazo 120 h - GLB
-Gerando figura para prazo 024 h - GLB
-Gerando figura para prazo 048 h - GLB
-Gerando figura para prazo 072 h - GLB
-Gerando figura para prazo 096 h - GLB
-Gerando figura para prazo 120 h - GLB
-Gerando figura para prazo 024 h - AMS
-Gerando figura para prazo 048 h - AMS
-Gerando figura para prazo 072 h - AMS
-Gerando figura para prazo 096 h - AMS
-Gerando figura para prazo 120 h - AMS
-Gerando figura para prazo 024 h - AMS
-Gerando figura para prazo 048 h - AMS
-Gerando figura para prazo 072 h - AMS
-Gerando figura para prazo 096 h - AMS
-Gerando figura para prazo 120 h - AMS
-Gerando figura para prazo 024 h - AMS
-Gerando figura para prazo 048 h - AMS
-Gerando figura para prazo 072 h - AMS
-Gerando figura para prazo 096 h - AMS
-Gerando figura para prazo 120 h - AMS
-Gerando figura para prazo 024 h - ACC
-Gerando figura para prazo 048 h - ACC
-Gerando figura para prazo 072 h - ACC
-Gerando figura para prazo 096 h - ACC
-Gerando figura para prazo 120 h - ACC
-Gerando figura para prazo 024 h - ACC
-Gerando figura para prazo 048 h - ACC
-Gerando figura para prazo 072 h - ACC
-Gerando figura para prazo 096 h - ACC
-Gerando figura para prazo 120 h - ACC
-Gerando figura para prazo 024 h - ACC
-Gerando figura para prazo 048 h - ACC
-Gerando figura para prazo 072 h - ACC
-Gerando figura para prazo 096 h - ACC
-Gerando figura para prazo 120 h - ACC
+
+============================================================
+PROCESSAMENTO DE 5 PERIODOS DE 24 HORAS
+============================================================
+--- Acumulado 1 --- Previsao 024h ---
+Data Inicial: 2025-12-10 00:00:00
+Data Final:   2025-12-11 00:00:00
+Arquivo I: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121000/Post/MONAN_DIAG_G_POS_GFS_2025121000_2025121000.00.00.x655362L55.nc
+Arquivo E: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121000/Post/MONAN_DIAG_G_POS_GFS_2025121000_2025121100.00.00.x655362L55.nc
+============================================================
+--- Acumulado 2 --- Previsao 048h ---
+Data Inicial: 2025-12-11 00:00:00
+Data Final:   2025-12-12 00:00:00
+Arquivo I: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121000/Post/MONAN_DIAG_G_POS_GFS_2025121000_2025121100.00.00.x655362L55.nc
+Arquivo E: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121000/Post/MONAN_DIAG_G_POS_GFS_2025121000_2025121200.00.00.x655362L55.nc
+============================================================
+--- Acumulado 3 --- Previsao 072h ---
+Data Inicial: 2025-12-12 00:00:00
+Data Final:   2025-12-13 00:00:00
+Arquivo I: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121000/Post/MONAN_DIAG_G_POS_GFS_2025121000_2025121200.00.00.x655362L55.nc
+Arquivo E: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121000/Post/MONAN_DIAG_G_POS_GFS_2025121000_2025121300.00.00.x655362L55.nc
+============================================================
+--- Acumulado 4 --- Previsao 096h ---
+Data Inicial: 2025-12-13 00:00:00
+Data Final:   2025-12-14 00:00:00
+Arquivo I: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121000/Post/MONAN_DIAG_G_POS_GFS_2025121000_2025121300.00.00.x655362L55.nc
+Arquivo E: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121000/Post/MONAN_DIAG_G_POS_GFS_2025121000_2025121400.00.00.x655362L55.nc
+============================================================
+--- Acumulado 5 --- Previsao 120h ---
+Data Inicial: 2025-12-14 00:00:00
+Data Final:   2025-12-15 00:00:00
+Arquivo I: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121000/Post/MONAN_DIAG_G_POS_GFS_2025121000_2025121400.00.00.x655362L55.nc
+Arquivo E: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121000/Post/MONAN_DIAG_G_POS_GFS_2025121000_2025121500.00.00.x655362L55.nc
+============================================================
+
+----------------------------------------------------------------
+Bias analysis
+----------------------------------------------------------------
+
+============================================================
+Model file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/MONAN/2025121000/MONAN_Precipitation_24h_acum_2025121000_2025121100_024h.nc
+GPM file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GPM_IMERG/202512110000/GPM_IMERG_Precipitation_24h_accum_202512110000.nc
+GSMAP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GSMAP/202512110000/GSMAP_Precipitation_24h_accum_202512110000.nc
+MSWEP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/MSWEP/202512110000/MSWEP_Precipitation_24h_accum_202512110000.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GPM_IMERG/202512110000/GPM_IMERG_Precipitation_24h_accum_202512110000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GSMAP/202512110000/GSMAP_Precipitation_24h_accum_202512110000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/MSWEP/202512110000/MSWEP_Precipitation_24h_accum_202512110000_MONAN_30km.nc
+Netcdf: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Bias/2025121000/Bias_MONAN_Prec_2025121000_024h.nc
+============================================================
+Model file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/MONAN/2025121000/MONAN_Precipitation_24h_acum_2025121000_2025121200_048h.nc
+GPM file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GPM_IMERG/202512120000/GPM_IMERG_Precipitation_24h_accum_202512120000.nc
+GSMAP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GSMAP/202512120000/GSMAP_Precipitation_24h_accum_202512120000.nc
+MSWEP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/MSWEP/202512120000/MSWEP_Precipitation_24h_accum_202512120000.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GPM_IMERG/202512120000/GPM_IMERG_Precipitation_24h_accum_202512120000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GSMAP/202512120000/GSMAP_Precipitation_24h_accum_202512120000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/MSWEP/202512120000/MSWEP_Precipitation_24h_accum_202512120000_MONAN_30km.nc
+Netcdf: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Bias/2025121000/Bias_MONAN_Prec_2025121000_048h.nc
+============================================================
+Model file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/MONAN/2025121000/MONAN_Precipitation_24h_acum_2025121000_2025121300_072h.nc
+GPM file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GPM_IMERG/202512130000/GPM_IMERG_Precipitation_24h_accum_202512130000.nc
+GSMAP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GSMAP/202512130000/GSMAP_Precipitation_24h_accum_202512130000.nc
+MSWEP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/MSWEP/202512130000/MSWEP_Precipitation_24h_accum_202512130000.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GPM_IMERG/202512130000/GPM_IMERG_Precipitation_24h_accum_202512130000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GSMAP/202512130000/GSMAP_Precipitation_24h_accum_202512130000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/MSWEP/202512130000/MSWEP_Precipitation_24h_accum_202512130000_MONAN_30km.nc
+Netcdf: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Bias/2025121000/Bias_MONAN_Prec_2025121000_072h.nc
+============================================================
+Model file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/MONAN/2025121000/MONAN_Precipitation_24h_acum_2025121000_2025121400_096h.nc
+GPM file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GPM_IMERG/202512140000/GPM_IMERG_Precipitation_24h_accum_202512140000.nc
+GSMAP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GSMAP/202512140000/GSMAP_Precipitation_24h_accum_202512140000.nc
+MSWEP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/MSWEP/202512140000/MSWEP_Precipitation_24h_accum_202512140000.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GPM_IMERG/202512140000/GPM_IMERG_Precipitation_24h_accum_202512140000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GSMAP/202512140000/GSMAP_Precipitation_24h_accum_202512140000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/MSWEP/202512140000/MSWEP_Precipitation_24h_accum_202512140000_MONAN_30km.nc
+Netcdf: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Bias/2025121000/Bias_MONAN_Prec_2025121000_096h.nc
+============================================================
+Model file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/MONAN/2025121000/MONAN_Precipitation_24h_acum_2025121000_2025121500_120h.nc
+GPM file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GPM_IMERG/202512150000/GPM_IMERG_Precipitation_24h_accum_202512150000.nc
+GSMAP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GSMAP/202512150000/GSMAP_Precipitation_24h_accum_202512150000.nc
+MSWEP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/MSWEP/202512150000/MSWEP_Precipitation_24h_accum_202512150000.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GPM_IMERG/202512150000/GPM_IMERG_Precipitation_24h_accum_202512150000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GSMAP/202512150000/GSMAP_Precipitation_24h_accum_202512150000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/MSWEP/202512150000/MSWEP_Precipitation_24h_accum_202512150000_MONAN_30km.nc
+Netcdf: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Bias/2025121000/Bias_MONAN_Prec_2025121000_120h.nc
+
+----------------------------------------------------------------
+MAE analysis
+----------------------------------------------------------------
+
+Processando lead time: 24 horas
+Processando lead time: 48 horas
+Processando lead time: 72 horas
+Processando lead time: 96 horas
+Processando lead time: 120 horas
+
+----------------------------------------------------------------
+Skill score analysis
+----------------------------------------------------------------
+
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 1 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 2 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 5 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 10 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 20 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 50 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+################################################################
+* * * Simulation for date: 2025 12 11 with span: 120 hours * * *
+################################################################
+
+
+----------------------------------------------------------------
+24 hours precipitation accumulation
+----------------------------------------------------------------
+
+
+============================================================
+PROCESSAMENTO DE 5 PERIODOS DE 24 HORAS
+============================================================
+--- Acumulado 1 --- Previsao 024h ---
+Data Inicial: 2025-12-11 00:00:00
+Data Final:   2025-12-12 00:00:00
+Arquivo I: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121100/Post/MONAN_DIAG_G_POS_GFS_2025121100_2025121100.00.00.x655362L55.nc
+Arquivo E: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121100/Post/MONAN_DIAG_G_POS_GFS_2025121100_2025121200.00.00.x655362L55.nc
+============================================================
+--- Acumulado 2 --- Previsao 048h ---
+Data Inicial: 2025-12-12 00:00:00
+Data Final:   2025-12-13 00:00:00
+Arquivo I: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121100/Post/MONAN_DIAG_G_POS_GFS_2025121100_2025121200.00.00.x655362L55.nc
+Arquivo E: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121100/Post/MONAN_DIAG_G_POS_GFS_2025121100_2025121300.00.00.x655362L55.nc
+============================================================
+--- Acumulado 3 --- Previsao 072h ---
+Data Inicial: 2025-12-13 00:00:00
+Data Final:   2025-12-14 00:00:00
+Arquivo I: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121100/Post/MONAN_DIAG_G_POS_GFS_2025121100_2025121300.00.00.x655362L55.nc
+Arquivo E: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121100/Post/MONAN_DIAG_G_POS_GFS_2025121100_2025121400.00.00.x655362L55.nc
+============================================================
+--- Acumulado 4 --- Previsao 096h ---
+Data Inicial: 2025-12-14 00:00:00
+Data Final:   2025-12-15 00:00:00
+Arquivo I: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121100/Post/MONAN_DIAG_G_POS_GFS_2025121100_2025121400.00.00.x655362L55.nc
+Arquivo E: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121100/Post/MONAN_DIAG_G_POS_GFS_2025121100_2025121500.00.00.x655362L55.nc
+============================================================
+--- Acumulado 5 --- Previsao 120h ---
+Data Inicial: 2025-12-15 00:00:00
+Data Final:   2025-12-16 00:00:00
+Arquivo I: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121100/Post/MONAN_DIAG_G_POS_GFS_2025121100_2025121500.00.00.x655362L55.nc
+Arquivo E: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121100/Post/MONAN_DIAG_G_POS_GFS_2025121100_2025121600.00.00.x655362L55.nc
+============================================================
+
+----------------------------------------------------------------
+Bias analysis
+----------------------------------------------------------------
+
+============================================================
+Model file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/MONAN/2025121100/MONAN_Precipitation_24h_acum_2025121100_2025121200_024h.nc
+GPM file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GPM_IMERG/202512120000/GPM_IMERG_Precipitation_24h_accum_202512120000.nc
+GSMAP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GSMAP/202512120000/GSMAP_Precipitation_24h_accum_202512120000.nc
+MSWEP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/MSWEP/202512120000/MSWEP_Precipitation_24h_accum_202512120000.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GPM_IMERG/202512120000/GPM_IMERG_Precipitation_24h_accum_202512120000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GSMAP/202512120000/GSMAP_Precipitation_24h_accum_202512120000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/MSWEP/202512120000/MSWEP_Precipitation_24h_accum_202512120000_MONAN_30km.nc
+Netcdf: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Bias/2025121100/Bias_MONAN_Prec_2025121100_024h.nc
+============================================================
+Model file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/MONAN/2025121100/MONAN_Precipitation_24h_acum_2025121100_2025121300_048h.nc
+GPM file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GPM_IMERG/202512130000/GPM_IMERG_Precipitation_24h_accum_202512130000.nc
+GSMAP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GSMAP/202512130000/GSMAP_Precipitation_24h_accum_202512130000.nc
+MSWEP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/MSWEP/202512130000/MSWEP_Precipitation_24h_accum_202512130000.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GPM_IMERG/202512130000/GPM_IMERG_Precipitation_24h_accum_202512130000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GSMAP/202512130000/GSMAP_Precipitation_24h_accum_202512130000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/MSWEP/202512130000/MSWEP_Precipitation_24h_accum_202512130000_MONAN_30km.nc
+Netcdf: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Bias/2025121100/Bias_MONAN_Prec_2025121100_048h.nc
+============================================================
+Model file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/MONAN/2025121100/MONAN_Precipitation_24h_acum_2025121100_2025121400_072h.nc
+GPM file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GPM_IMERG/202512140000/GPM_IMERG_Precipitation_24h_accum_202512140000.nc
+GSMAP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GSMAP/202512140000/GSMAP_Precipitation_24h_accum_202512140000.nc
+MSWEP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/MSWEP/202512140000/MSWEP_Precipitation_24h_accum_202512140000.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GPM_IMERG/202512140000/GPM_IMERG_Precipitation_24h_accum_202512140000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GSMAP/202512140000/GSMAP_Precipitation_24h_accum_202512140000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/MSWEP/202512140000/MSWEP_Precipitation_24h_accum_202512140000_MONAN_30km.nc
+Netcdf: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Bias/2025121100/Bias_MONAN_Prec_2025121100_072h.nc
+============================================================
+Model file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/MONAN/2025121100/MONAN_Precipitation_24h_acum_2025121100_2025121500_096h.nc
+GPM file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GPM_IMERG/202512150000/GPM_IMERG_Precipitation_24h_accum_202512150000.nc
+GSMAP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GSMAP/202512150000/GSMAP_Precipitation_24h_accum_202512150000.nc
+MSWEP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/MSWEP/202512150000/MSWEP_Precipitation_24h_accum_202512150000.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GPM_IMERG/202512150000/GPM_IMERG_Precipitation_24h_accum_202512150000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GSMAP/202512150000/GSMAP_Precipitation_24h_accum_202512150000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/MSWEP/202512150000/MSWEP_Precipitation_24h_accum_202512150000_MONAN_30km.nc
+Netcdf: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Bias/2025121100/Bias_MONAN_Prec_2025121100_096h.nc
+============================================================
+Model file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/MONAN/2025121100/MONAN_Precipitation_24h_acum_2025121100_2025121600_120h.nc
+GPM file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GPM_IMERG/202512160000/GPM_IMERG_Precipitation_24h_accum_202512160000.nc
+GSMAP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GSMAP/202512160000/GSMAP_Precipitation_24h_accum_202512160000.nc
+MSWEP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/MSWEP/202512160000/MSWEP_Precipitation_24h_accum_202512160000.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GPM_IMERG/202512160000/GPM_IMERG_Precipitation_24h_accum_202512160000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GSMAP/202512160000/GSMAP_Precipitation_24h_accum_202512160000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/MSWEP/202512160000/MSWEP_Precipitation_24h_accum_202512160000_MONAN_30km.nc
+Netcdf: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Bias/2025121100/Bias_MONAN_Prec_2025121100_120h.nc
+
+----------------------------------------------------------------
+MAE analysis
+----------------------------------------------------------------
+
+Processando lead time: 24 horas
+Processando lead time: 48 horas
+Processando lead time: 72 horas
+Processando lead time: 96 horas
+Processando lead time: 120 horas
+
+----------------------------------------------------------------
+Skill score analysis
+----------------------------------------------------------------
+
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 1 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 2 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 5 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 10 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 20 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 50 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+################################################################
+* * * Simulation for date: 2025 12 12 with span: 120 hours * * *
+################################################################
+
+
+----------------------------------------------------------------
+24 hours precipitation accumulation
+----------------------------------------------------------------
+
+
+============================================================
+PROCESSAMENTO DE 5 PERIODOS DE 24 HORAS
+============================================================
+--- Acumulado 1 --- Previsao 024h ---
+Data Inicial: 2025-12-12 00:00:00
+Data Final:   2025-12-13 00:00:00
+Arquivo I: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121200/Post/MONAN_DIAG_G_POS_GFS_2025121200_2025121200.00.00.x655362L55.nc
+Arquivo E: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121200/Post/MONAN_DIAG_G_POS_GFS_2025121200_2025121300.00.00.x655362L55.nc
+============================================================
+--- Acumulado 2 --- Previsao 048h ---
+Data Inicial: 2025-12-13 00:00:00
+Data Final:   2025-12-14 00:00:00
+Arquivo I: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121200/Post/MONAN_DIAG_G_POS_GFS_2025121200_2025121300.00.00.x655362L55.nc
+Arquivo E: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121200/Post/MONAN_DIAG_G_POS_GFS_2025121200_2025121400.00.00.x655362L55.nc
+============================================================
+--- Acumulado 3 --- Previsao 072h ---
+Data Inicial: 2025-12-14 00:00:00
+Data Final:   2025-12-15 00:00:00
+Arquivo I: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121200/Post/MONAN_DIAG_G_POS_GFS_2025121200_2025121400.00.00.x655362L55.nc
+Arquivo E: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121200/Post/MONAN_DIAG_G_POS_GFS_2025121200_2025121500.00.00.x655362L55.nc
+============================================================
+--- Acumulado 4 --- Previsao 096h ---
+Data Inicial: 2025-12-15 00:00:00
+Data Final:   2025-12-16 00:00:00
+Arquivo I: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121200/Post/MONAN_DIAG_G_POS_GFS_2025121200_2025121500.00.00.x655362L55.nc
+Arquivo E: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121200/Post/MONAN_DIAG_G_POS_GFS_2025121200_2025121600.00.00.x655362L55.nc
+============================================================
+--- Acumulado 5 --- Previsao 120h ---
+Data Inicial: 2025-12-16 00:00:00
+Data Final:   2025-12-17 00:00:00
+Arquivo I: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121200/Post/MONAN_DIAG_G_POS_GFS_2025121200_2025121600.00.00.x655362L55.nc
+Arquivo E: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121200/Post/MONAN_DIAG_G_POS_GFS_2025121200_2025121700.00.00.x655362L55.nc
+============================================================
+
+----------------------------------------------------------------
+Bias analysis
+----------------------------------------------------------------
+
+============================================================
+Model file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/MONAN/2025121200/MONAN_Precipitation_24h_acum_2025121200_2025121300_024h.nc
+GPM file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GPM_IMERG/202512130000/GPM_IMERG_Precipitation_24h_accum_202512130000.nc
+GSMAP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GSMAP/202512130000/GSMAP_Precipitation_24h_accum_202512130000.nc
+MSWEP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/MSWEP/202512130000/MSWEP_Precipitation_24h_accum_202512130000.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GPM_IMERG/202512130000/GPM_IMERG_Precipitation_24h_accum_202512130000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GSMAP/202512130000/GSMAP_Precipitation_24h_accum_202512130000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/MSWEP/202512130000/MSWEP_Precipitation_24h_accum_202512130000_MONAN_30km.nc
+Netcdf: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Bias/2025121200/Bias_MONAN_Prec_2025121200_024h.nc
+============================================================
+Model file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/MONAN/2025121200/MONAN_Precipitation_24h_acum_2025121200_2025121400_048h.nc
+GPM file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GPM_IMERG/202512140000/GPM_IMERG_Precipitation_24h_accum_202512140000.nc
+GSMAP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GSMAP/202512140000/GSMAP_Precipitation_24h_accum_202512140000.nc
+MSWEP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/MSWEP/202512140000/MSWEP_Precipitation_24h_accum_202512140000.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GPM_IMERG/202512140000/GPM_IMERG_Precipitation_24h_accum_202512140000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GSMAP/202512140000/GSMAP_Precipitation_24h_accum_202512140000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/MSWEP/202512140000/MSWEP_Precipitation_24h_accum_202512140000_MONAN_30km.nc
+Netcdf: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Bias/2025121200/Bias_MONAN_Prec_2025121200_048h.nc
+============================================================
+Model file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/MONAN/2025121200/MONAN_Precipitation_24h_acum_2025121200_2025121500_072h.nc
+GPM file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GPM_IMERG/202512150000/GPM_IMERG_Precipitation_24h_accum_202512150000.nc
+GSMAP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GSMAP/202512150000/GSMAP_Precipitation_24h_accum_202512150000.nc
+MSWEP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/MSWEP/202512150000/MSWEP_Precipitation_24h_accum_202512150000.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GPM_IMERG/202512150000/GPM_IMERG_Precipitation_24h_accum_202512150000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GSMAP/202512150000/GSMAP_Precipitation_24h_accum_202512150000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/MSWEP/202512150000/MSWEP_Precipitation_24h_accum_202512150000_MONAN_30km.nc
+Netcdf: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Bias/2025121200/Bias_MONAN_Prec_2025121200_072h.nc
+============================================================
+Model file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/MONAN/2025121200/MONAN_Precipitation_24h_acum_2025121200_2025121600_096h.nc
+GPM file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GPM_IMERG/202512160000/GPM_IMERG_Precipitation_24h_accum_202512160000.nc
+GSMAP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GSMAP/202512160000/GSMAP_Precipitation_24h_accum_202512160000.nc
+MSWEP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/MSWEP/202512160000/MSWEP_Precipitation_24h_accum_202512160000.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GPM_IMERG/202512160000/GPM_IMERG_Precipitation_24h_accum_202512160000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GSMAP/202512160000/GSMAP_Precipitation_24h_accum_202512160000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/MSWEP/202512160000/MSWEP_Precipitation_24h_accum_202512160000_MONAN_30km.nc
+Netcdf: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Bias/2025121200/Bias_MONAN_Prec_2025121200_096h.nc
+============================================================
+Model file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/MONAN/2025121200/MONAN_Precipitation_24h_acum_2025121200_2025121700_120h.nc
+GPM file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GPM_IMERG/202512170000/GPM_IMERG_Precipitation_24h_accum_202512170000.nc
+GSMAP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GSMAP/202512170000/GSMAP_Precipitation_24h_accum_202512170000.nc
+MSWEP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/MSWEP/202512170000/MSWEP_Precipitation_24h_accum_202512170000.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GPM_IMERG/202512170000/GPM_IMERG_Precipitation_24h_accum_202512170000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GSMAP/202512170000/GSMAP_Precipitation_24h_accum_202512170000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/MSWEP/202512170000/MSWEP_Precipitation_24h_accum_202512170000_MONAN_30km.nc
+Netcdf: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Bias/2025121200/Bias_MONAN_Prec_2025121200_120h.nc
+
+----------------------------------------------------------------
+MAE analysis
+----------------------------------------------------------------
+
+Processando lead time: 24 horas
+Processando lead time: 48 horas
+Processando lead time: 72 horas
+Processando lead time: 96 horas
+Processando lead time: 120 horas
+
+----------------------------------------------------------------
+Skill score analysis
+----------------------------------------------------------------
+
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 1 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 2 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 5 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 10 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 20 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 50 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+################################################################
+* * * Simulation for date: 2025 12 13 with span: 120 hours * * *
+################################################################
+
+
+----------------------------------------------------------------
+24 hours precipitation accumulation
+----------------------------------------------------------------
+
+
+============================================================
+PROCESSAMENTO DE 5 PERIODOS DE 24 HORAS
+============================================================
+--- Acumulado 1 --- Previsao 024h ---
+Data Inicial: 2025-12-13 00:00:00
+Data Final:   2025-12-14 00:00:00
+Arquivo I: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121300/Post/MONAN_DIAG_G_POS_GFS_2025121300_2025121300.00.00.x655362L55.nc
+Arquivo E: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121300/Post/MONAN_DIAG_G_POS_GFS_2025121300_2025121400.00.00.x655362L55.nc
+============================================================
+--- Acumulado 2 --- Previsao 048h ---
+Data Inicial: 2025-12-14 00:00:00
+Data Final:   2025-12-15 00:00:00
+Arquivo I: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121300/Post/MONAN_DIAG_G_POS_GFS_2025121300_2025121400.00.00.x655362L55.nc
+Arquivo E: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121300/Post/MONAN_DIAG_G_POS_GFS_2025121300_2025121500.00.00.x655362L55.nc
+============================================================
+--- Acumulado 3 --- Previsao 072h ---
+Data Inicial: 2025-12-15 00:00:00
+Data Final:   2025-12-16 00:00:00
+Arquivo I: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121300/Post/MONAN_DIAG_G_POS_GFS_2025121300_2025121500.00.00.x655362L55.nc
+Arquivo E: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121300/Post/MONAN_DIAG_G_POS_GFS_2025121300_2025121600.00.00.x655362L55.nc
+============================================================
+--- Acumulado 4 --- Previsao 096h ---
+Data Inicial: 2025-12-16 00:00:00
+Data Final:   2025-12-17 00:00:00
+Arquivo I: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121300/Post/MONAN_DIAG_G_POS_GFS_2025121300_2025121600.00.00.x655362L55.nc
+Arquivo E: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121300/Post/MONAN_DIAG_G_POS_GFS_2025121300_2025121700.00.00.x655362L55.nc
+============================================================
+--- Acumulado 5 --- Previsao 120h ---
+Data Inicial: 2025-12-17 00:00:00
+Data Final:   2025-12-18 00:00:00
+Arquivo I: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121300/Post/MONAN_DIAG_G_POS_GFS_2025121300_2025121700.00.00.x655362L55.nc
+Arquivo E: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121300/Post/MONAN_DIAG_G_POS_GFS_2025121300_2025121800.00.00.x655362L55.nc
+============================================================
+
+----------------------------------------------------------------
+Bias analysis
+----------------------------------------------------------------
+
+============================================================
+Model file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/MONAN/2025121300/MONAN_Precipitation_24h_acum_2025121300_2025121400_024h.nc
+GPM file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GPM_IMERG/202512140000/GPM_IMERG_Precipitation_24h_accum_202512140000.nc
+GSMAP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GSMAP/202512140000/GSMAP_Precipitation_24h_accum_202512140000.nc
+MSWEP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/MSWEP/202512140000/MSWEP_Precipitation_24h_accum_202512140000.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GPM_IMERG/202512140000/GPM_IMERG_Precipitation_24h_accum_202512140000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GSMAP/202512140000/GSMAP_Precipitation_24h_accum_202512140000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/MSWEP/202512140000/MSWEP_Precipitation_24h_accum_202512140000_MONAN_30km.nc
+Netcdf: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Bias/2025121300/Bias_MONAN_Prec_2025121300_024h.nc
+============================================================
+Model file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/MONAN/2025121300/MONAN_Precipitation_24h_acum_2025121300_2025121500_048h.nc
+GPM file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GPM_IMERG/202512150000/GPM_IMERG_Precipitation_24h_accum_202512150000.nc
+GSMAP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GSMAP/202512150000/GSMAP_Precipitation_24h_accum_202512150000.nc
+MSWEP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/MSWEP/202512150000/MSWEP_Precipitation_24h_accum_202512150000.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GPM_IMERG/202512150000/GPM_IMERG_Precipitation_24h_accum_202512150000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GSMAP/202512150000/GSMAP_Precipitation_24h_accum_202512150000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/MSWEP/202512150000/MSWEP_Precipitation_24h_accum_202512150000_MONAN_30km.nc
+Netcdf: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Bias/2025121300/Bias_MONAN_Prec_2025121300_048h.nc
+============================================================
+Model file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/MONAN/2025121300/MONAN_Precipitation_24h_acum_2025121300_2025121600_072h.nc
+GPM file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GPM_IMERG/202512160000/GPM_IMERG_Precipitation_24h_accum_202512160000.nc
+GSMAP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GSMAP/202512160000/GSMAP_Precipitation_24h_accum_202512160000.nc
+MSWEP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/MSWEP/202512160000/MSWEP_Precipitation_24h_accum_202512160000.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GPM_IMERG/202512160000/GPM_IMERG_Precipitation_24h_accum_202512160000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GSMAP/202512160000/GSMAP_Precipitation_24h_accum_202512160000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/MSWEP/202512160000/MSWEP_Precipitation_24h_accum_202512160000_MONAN_30km.nc
+Netcdf: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Bias/2025121300/Bias_MONAN_Prec_2025121300_072h.nc
+============================================================
+Model file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/MONAN/2025121300/MONAN_Precipitation_24h_acum_2025121300_2025121700_096h.nc
+GPM file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GPM_IMERG/202512170000/GPM_IMERG_Precipitation_24h_accum_202512170000.nc
+GSMAP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GSMAP/202512170000/GSMAP_Precipitation_24h_accum_202512170000.nc
+MSWEP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/MSWEP/202512170000/MSWEP_Precipitation_24h_accum_202512170000.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GPM_IMERG/202512170000/GPM_IMERG_Precipitation_24h_accum_202512170000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GSMAP/202512170000/GSMAP_Precipitation_24h_accum_202512170000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/MSWEP/202512170000/MSWEP_Precipitation_24h_accum_202512170000_MONAN_30km.nc
+Netcdf: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Bias/2025121300/Bias_MONAN_Prec_2025121300_096h.nc
+============================================================
+Model file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/MONAN/2025121300/MONAN_Precipitation_24h_acum_2025121300_2025121800_120h.nc
+GPM file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GPM_IMERG/202512180000/GPM_IMERG_Precipitation_24h_accum_202512180000.nc
+GSMAP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GSMAP/202512180000/GSMAP_Precipitation_24h_accum_202512180000.nc
+MSWEP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/MSWEP/202512180000/MSWEP_Precipitation_24h_accum_202512180000.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GPM_IMERG/202512180000/GPM_IMERG_Precipitation_24h_accum_202512180000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GSMAP/202512180000/GSMAP_Precipitation_24h_accum_202512180000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/MSWEP/202512180000/MSWEP_Precipitation_24h_accum_202512180000_MONAN_30km.nc
+Netcdf: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Bias/2025121300/Bias_MONAN_Prec_2025121300_120h.nc
+
+----------------------------------------------------------------
+MAE analysis
+----------------------------------------------------------------
+
+Processando lead time: 24 horas
+Processando lead time: 48 horas
+Processando lead time: 72 horas
+Processando lead time: 96 horas
+Processando lead time: 120 horas
+
+----------------------------------------------------------------
+Skill score analysis
+----------------------------------------------------------------
+
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 1 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 2 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 5 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 10 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 20 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 50 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+################################################################
+* * * Simulation for date: 2025 12 14 with span: 120 hours * * *
+################################################################
+
+
+----------------------------------------------------------------
+24 hours precipitation accumulation
+----------------------------------------------------------------
+
+
+============================================================
+PROCESSAMENTO DE 5 PERIODOS DE 24 HORAS
+============================================================
+--- Acumulado 1 --- Previsao 024h ---
+Data Inicial: 2025-12-14 00:00:00
+Data Final:   2025-12-15 00:00:00
+Arquivo I: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121400/Post/MONAN_DIAG_G_POS_GFS_2025121400_2025121400.00.00.x655362L55.nc
+Arquivo E: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121400/Post/MONAN_DIAG_G_POS_GFS_2025121400_2025121500.00.00.x655362L55.nc
+============================================================
+--- Acumulado 2 --- Previsao 048h ---
+Data Inicial: 2025-12-15 00:00:00
+Data Final:   2025-12-16 00:00:00
+Arquivo I: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121400/Post/MONAN_DIAG_G_POS_GFS_2025121400_2025121500.00.00.x655362L55.nc
+Arquivo E: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121400/Post/MONAN_DIAG_G_POS_GFS_2025121400_2025121600.00.00.x655362L55.nc
+============================================================
+--- Acumulado 3 --- Previsao 072h ---
+Data Inicial: 2025-12-16 00:00:00
+Data Final:   2025-12-17 00:00:00
+Arquivo I: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121400/Post/MONAN_DIAG_G_POS_GFS_2025121400_2025121600.00.00.x655362L55.nc
+Arquivo E: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121400/Post/MONAN_DIAG_G_POS_GFS_2025121400_2025121700.00.00.x655362L55.nc
+============================================================
+--- Acumulado 4 --- Previsao 096h ---
+Data Inicial: 2025-12-17 00:00:00
+Data Final:   2025-12-18 00:00:00
+Arquivo I: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121400/Post/MONAN_DIAG_G_POS_GFS_2025121400_2025121700.00.00.x655362L55.nc
+Arquivo E: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121400/Post/MONAN_DIAG_G_POS_GFS_2025121400_2025121800.00.00.x655362L55.nc
+============================================================
+--- Acumulado 5 --- Previsao 120h ---
+Data Inicial: 2025-12-18 00:00:00
+Data Final:   2025-12-19 00:00:00
+Arquivo I: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121400/Post/MONAN_DIAG_G_POS_GFS_2025121400_2025121800.00.00.x655362L55.nc
+Arquivo E: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121400/Post/MONAN_DIAG_G_POS_GFS_2025121400_2025121900.00.00.x655362L55.nc
+============================================================
+
+----------------------------------------------------------------
+Bias analysis
+----------------------------------------------------------------
+
+============================================================
+Model file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/MONAN/2025121400/MONAN_Precipitation_24h_acum_2025121400_2025121500_024h.nc
+GPM file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GPM_IMERG/202512150000/GPM_IMERG_Precipitation_24h_accum_202512150000.nc
+GSMAP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GSMAP/202512150000/GSMAP_Precipitation_24h_accum_202512150000.nc
+MSWEP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/MSWEP/202512150000/MSWEP_Precipitation_24h_accum_202512150000.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GPM_IMERG/202512150000/GPM_IMERG_Precipitation_24h_accum_202512150000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GSMAP/202512150000/GSMAP_Precipitation_24h_accum_202512150000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/MSWEP/202512150000/MSWEP_Precipitation_24h_accum_202512150000_MONAN_30km.nc
+Netcdf: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Bias/2025121400/Bias_MONAN_Prec_2025121400_024h.nc
+============================================================
+Model file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/MONAN/2025121400/MONAN_Precipitation_24h_acum_2025121400_2025121600_048h.nc
+GPM file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GPM_IMERG/202512160000/GPM_IMERG_Precipitation_24h_accum_202512160000.nc
+GSMAP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GSMAP/202512160000/GSMAP_Precipitation_24h_accum_202512160000.nc
+MSWEP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/MSWEP/202512160000/MSWEP_Precipitation_24h_accum_202512160000.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GPM_IMERG/202512160000/GPM_IMERG_Precipitation_24h_accum_202512160000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GSMAP/202512160000/GSMAP_Precipitation_24h_accum_202512160000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/MSWEP/202512160000/MSWEP_Precipitation_24h_accum_202512160000_MONAN_30km.nc
+Netcdf: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Bias/2025121400/Bias_MONAN_Prec_2025121400_048h.nc
+============================================================
+Model file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/MONAN/2025121400/MONAN_Precipitation_24h_acum_2025121400_2025121700_072h.nc
+GPM file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GPM_IMERG/202512170000/GPM_IMERG_Precipitation_24h_accum_202512170000.nc
+GSMAP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GSMAP/202512170000/GSMAP_Precipitation_24h_accum_202512170000.nc
+MSWEP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/MSWEP/202512170000/MSWEP_Precipitation_24h_accum_202512170000.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GPM_IMERG/202512170000/GPM_IMERG_Precipitation_24h_accum_202512170000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GSMAP/202512170000/GSMAP_Precipitation_24h_accum_202512170000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/MSWEP/202512170000/MSWEP_Precipitation_24h_accum_202512170000_MONAN_30km.nc
+Netcdf: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Bias/2025121400/Bias_MONAN_Prec_2025121400_072h.nc
+============================================================
+Model file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/MONAN/2025121400/MONAN_Precipitation_24h_acum_2025121400_2025121800_096h.nc
+GPM file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GPM_IMERG/202512180000/GPM_IMERG_Precipitation_24h_accum_202512180000.nc
+GSMAP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GSMAP/202512180000/GSMAP_Precipitation_24h_accum_202512180000.nc
+MSWEP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/MSWEP/202512180000/MSWEP_Precipitation_24h_accum_202512180000.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GPM_IMERG/202512180000/GPM_IMERG_Precipitation_24h_accum_202512180000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GSMAP/202512180000/GSMAP_Precipitation_24h_accum_202512180000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/MSWEP/202512180000/MSWEP_Precipitation_24h_accum_202512180000_MONAN_30km.nc
+Netcdf: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Bias/2025121400/Bias_MONAN_Prec_2025121400_096h.nc
+============================================================
+Model file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/MONAN/2025121400/MONAN_Precipitation_24h_acum_2025121400_2025121900_120h.nc
+GPM file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GPM_IMERG/202512190000/GPM_IMERG_Precipitation_24h_accum_202512190000.nc
+GSMAP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GSMAP/202512190000/GSMAP_Precipitation_24h_accum_202512190000.nc
+MSWEP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/MSWEP/202512190000/MSWEP_Precipitation_24h_accum_202512190000.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GPM_IMERG/202512190000/GPM_IMERG_Precipitation_24h_accum_202512190000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GSMAP/202512190000/GSMAP_Precipitation_24h_accum_202512190000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/MSWEP/202512190000/MSWEP_Precipitation_24h_accum_202512190000_MONAN_30km.nc
+Netcdf: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Bias/2025121400/Bias_MONAN_Prec_2025121400_120h.nc
+
+----------------------------------------------------------------
+MAE analysis
+----------------------------------------------------------------
+
+Processando lead time: 24 horas
+Processando lead time: 48 horas
+Processando lead time: 72 horas
+Processando lead time: 96 horas
+Processando lead time: 120 horas
+
+----------------------------------------------------------------
+Skill score analysis
+----------------------------------------------------------------
+
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 1 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 2 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 5 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 10 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 20 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 50 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+################################################################
+* * * Simulation for date: 2025 12 15 with span: 120 hours * * *
+################################################################
+
+
+----------------------------------------------------------------
+24 hours precipitation accumulation
+----------------------------------------------------------------
+
+
+============================================================
+PROCESSAMENTO DE 5 PERIODOS DE 24 HORAS
+============================================================
+--- Acumulado 1 --- Previsao 024h ---
+Data Inicial: 2025-12-15 00:00:00
+Data Final:   2025-12-16 00:00:00
+Arquivo I: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121500/Post/MONAN_DIAG_G_POS_GFS_2025121500_2025121500.00.00.x655362L55.nc
+Arquivo E: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121500/Post/MONAN_DIAG_G_POS_GFS_2025121500_2025121600.00.00.x655362L55.nc
+============================================================
+--- Acumulado 2 --- Previsao 048h ---
+Data Inicial: 2025-12-16 00:00:00
+Data Final:   2025-12-17 00:00:00
+Arquivo I: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121500/Post/MONAN_DIAG_G_POS_GFS_2025121500_2025121600.00.00.x655362L55.nc
+Arquivo E: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121500/Post/MONAN_DIAG_G_POS_GFS_2025121500_2025121700.00.00.x655362L55.nc
+============================================================
+--- Acumulado 3 --- Previsao 072h ---
+Data Inicial: 2025-12-17 00:00:00
+Data Final:   2025-12-18 00:00:00
+Arquivo I: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121500/Post/MONAN_DIAG_G_POS_GFS_2025121500_2025121700.00.00.x655362L55.nc
+Arquivo E: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121500/Post/MONAN_DIAG_G_POS_GFS_2025121500_2025121800.00.00.x655362L55.nc
+============================================================
+--- Acumulado 4 --- Previsao 096h ---
+Data Inicial: 2025-12-18 00:00:00
+Data Final:   2025-12-19 00:00:00
+Arquivo I: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121500/Post/MONAN_DIAG_G_POS_GFS_2025121500_2025121800.00.00.x655362L55.nc
+Arquivo E: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121500/Post/MONAN_DIAG_G_POS_GFS_2025121500_2025121900.00.00.x655362L55.nc
+============================================================
+--- Acumulado 5 --- Previsao 120h ---
+Data Inicial: 2025-12-19 00:00:00
+Data Final:   2025-12-20 00:00:00
+Arquivo I: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121500/Post/MONAN_DIAG_G_POS_GFS_2025121500_2025121900.00.00.x655362L55.nc
+Arquivo E: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121500/Post/MONAN_DIAG_G_POS_GFS_2025121500_2025122000.00.00.x655362L55.nc
+============================================================
+
+----------------------------------------------------------------
+Bias analysis
+----------------------------------------------------------------
+
+============================================================
+Model file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/MONAN/2025121500/MONAN_Precipitation_24h_acum_2025121500_2025121600_024h.nc
+GPM file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GPM_IMERG/202512160000/GPM_IMERG_Precipitation_24h_accum_202512160000.nc
+GSMAP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GSMAP/202512160000/GSMAP_Precipitation_24h_accum_202512160000.nc
+MSWEP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/MSWEP/202512160000/MSWEP_Precipitation_24h_accum_202512160000.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GPM_IMERG/202512160000/GPM_IMERG_Precipitation_24h_accum_202512160000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GSMAP/202512160000/GSMAP_Precipitation_24h_accum_202512160000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/MSWEP/202512160000/MSWEP_Precipitation_24h_accum_202512160000_MONAN_30km.nc
+Netcdf: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Bias/2025121500/Bias_MONAN_Prec_2025121500_024h.nc
+============================================================
+Model file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/MONAN/2025121500/MONAN_Precipitation_24h_acum_2025121500_2025121700_048h.nc
+GPM file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GPM_IMERG/202512170000/GPM_IMERG_Precipitation_24h_accum_202512170000.nc
+GSMAP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GSMAP/202512170000/GSMAP_Precipitation_24h_accum_202512170000.nc
+MSWEP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/MSWEP/202512170000/MSWEP_Precipitation_24h_accum_202512170000.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GPM_IMERG/202512170000/GPM_IMERG_Precipitation_24h_accum_202512170000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GSMAP/202512170000/GSMAP_Precipitation_24h_accum_202512170000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/MSWEP/202512170000/MSWEP_Precipitation_24h_accum_202512170000_MONAN_30km.nc
+Netcdf: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Bias/2025121500/Bias_MONAN_Prec_2025121500_048h.nc
+============================================================
+Model file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/MONAN/2025121500/MONAN_Precipitation_24h_acum_2025121500_2025121800_072h.nc
+GPM file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GPM_IMERG/202512180000/GPM_IMERG_Precipitation_24h_accum_202512180000.nc
+GSMAP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GSMAP/202512180000/GSMAP_Precipitation_24h_accum_202512180000.nc
+MSWEP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/MSWEP/202512180000/MSWEP_Precipitation_24h_accum_202512180000.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GPM_IMERG/202512180000/GPM_IMERG_Precipitation_24h_accum_202512180000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GSMAP/202512180000/GSMAP_Precipitation_24h_accum_202512180000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/MSWEP/202512180000/MSWEP_Precipitation_24h_accum_202512180000_MONAN_30km.nc
+Netcdf: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Bias/2025121500/Bias_MONAN_Prec_2025121500_072h.nc
+============================================================
+Model file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/MONAN/2025121500/MONAN_Precipitation_24h_acum_2025121500_2025121900_096h.nc
+GPM file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GPM_IMERG/202512190000/GPM_IMERG_Precipitation_24h_accum_202512190000.nc
+GSMAP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GSMAP/202512190000/GSMAP_Precipitation_24h_accum_202512190000.nc
+MSWEP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/MSWEP/202512190000/MSWEP_Precipitation_24h_accum_202512190000.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GPM_IMERG/202512190000/GPM_IMERG_Precipitation_24h_accum_202512190000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GSMAP/202512190000/GSMAP_Precipitation_24h_accum_202512190000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/MSWEP/202512190000/MSWEP_Precipitation_24h_accum_202512190000_MONAN_30km.nc
+Netcdf: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Bias/2025121500/Bias_MONAN_Prec_2025121500_096h.nc
+============================================================
+Model file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/MONAN/2025121500/MONAN_Precipitation_24h_acum_2025121500_2025122000_120h.nc
+GPM file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GPM_IMERG/202512200000/GPM_IMERG_Precipitation_24h_accum_202512200000.nc
+GSMAP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GSMAP/202512200000/GSMAP_Precipitation_24h_accum_202512200000.nc
+MSWEP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/MSWEP/202512200000/MSWEP_Precipitation_24h_accum_202512200000.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GPM_IMERG/202512200000/GPM_IMERG_Precipitation_24h_accum_202512200000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GSMAP/202512200000/GSMAP_Precipitation_24h_accum_202512200000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/MSWEP/202512200000/MSWEP_Precipitation_24h_accum_202512200000_MONAN_30km.nc
+Netcdf: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Bias/2025121500/Bias_MONAN_Prec_2025121500_120h.nc
+
+----------------------------------------------------------------
+MAE analysis
+----------------------------------------------------------------
+
+Processando lead time: 24 horas
+Processando lead time: 48 horas
+Processando lead time: 72 horas
+Processando lead time: 96 horas
+Processando lead time: 120 horas
+
+----------------------------------------------------------------
+Skill score analysis
+----------------------------------------------------------------
+
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 1 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 2 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 5 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 10 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 20 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 50 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+################################################################
+* * * Simulation for date: 2025 12 16 with span: 120 hours * * *
+################################################################
+
+
+----------------------------------------------------------------
+24 hours precipitation accumulation
+----------------------------------------------------------------
+
+
+============================================================
+PROCESSAMENTO DE 5 PERIODOS DE 24 HORAS
+============================================================
+--- Acumulado 1 --- Previsao 024h ---
+Data Inicial: 2025-12-16 00:00:00
+Data Final:   2025-12-17 00:00:00
+Arquivo I: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121600/Post/MONAN_DIAG_G_POS_GFS_2025121600_2025121600.00.00.x655362L55.nc
+Arquivo E: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121600/Post/MONAN_DIAG_G_POS_GFS_2025121600_2025121700.00.00.x655362L55.nc
+============================================================
+--- Acumulado 2 --- Previsao 048h ---
+Data Inicial: 2025-12-17 00:00:00
+Data Final:   2025-12-18 00:00:00
+Arquivo I: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121600/Post/MONAN_DIAG_G_POS_GFS_2025121600_2025121700.00.00.x655362L55.nc
+Arquivo E: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121600/Post/MONAN_DIAG_G_POS_GFS_2025121600_2025121800.00.00.x655362L55.nc
+============================================================
+--- Acumulado 3 --- Previsao 072h ---
+Data Inicial: 2025-12-18 00:00:00
+Data Final:   2025-12-19 00:00:00
+Arquivo I: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121600/Post/MONAN_DIAG_G_POS_GFS_2025121600_2025121800.00.00.x655362L55.nc
+Arquivo E: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121600/Post/MONAN_DIAG_G_POS_GFS_2025121600_2025121900.00.00.x655362L55.nc
+============================================================
+--- Acumulado 4 --- Previsao 096h ---
+Data Inicial: 2025-12-19 00:00:00
+Data Final:   2025-12-20 00:00:00
+Arquivo I: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121600/Post/MONAN_DIAG_G_POS_GFS_2025121600_2025121900.00.00.x655362L55.nc
+Arquivo E: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121600/Post/MONAN_DIAG_G_POS_GFS_2025121600_2025122000.00.00.x655362L55.nc
+============================================================
+--- Acumulado 5 --- Previsao 120h ---
+Data Inicial: 2025-12-20 00:00:00
+Data Final:   2025-12-21 00:00:00
+Arquivo I: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121600/Post/MONAN_DIAG_G_POS_GFS_2025121600_2025122000.00.00.x655362L55.nc
+Arquivo E: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121600/Post/MONAN_DIAG_G_POS_GFS_2025121600_2025122100.00.00.x655362L55.nc
+============================================================
+
+----------------------------------------------------------------
+Bias analysis
+----------------------------------------------------------------
+
+============================================================
+Model file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/MONAN/2025121600/MONAN_Precipitation_24h_acum_2025121600_2025121700_024h.nc
+GPM file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GPM_IMERG/202512170000/GPM_IMERG_Precipitation_24h_accum_202512170000.nc
+GSMAP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GSMAP/202512170000/GSMAP_Precipitation_24h_accum_202512170000.nc
+MSWEP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/MSWEP/202512170000/MSWEP_Precipitation_24h_accum_202512170000.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GPM_IMERG/202512170000/GPM_IMERG_Precipitation_24h_accum_202512170000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GSMAP/202512170000/GSMAP_Precipitation_24h_accum_202512170000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/MSWEP/202512170000/MSWEP_Precipitation_24h_accum_202512170000_MONAN_30km.nc
+Netcdf: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Bias/2025121600/Bias_MONAN_Prec_2025121600_024h.nc
+============================================================
+Model file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/MONAN/2025121600/MONAN_Precipitation_24h_acum_2025121600_2025121800_048h.nc
+GPM file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GPM_IMERG/202512180000/GPM_IMERG_Precipitation_24h_accum_202512180000.nc
+GSMAP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GSMAP/202512180000/GSMAP_Precipitation_24h_accum_202512180000.nc
+MSWEP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/MSWEP/202512180000/MSWEP_Precipitation_24h_accum_202512180000.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GPM_IMERG/202512180000/GPM_IMERG_Precipitation_24h_accum_202512180000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GSMAP/202512180000/GSMAP_Precipitation_24h_accum_202512180000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/MSWEP/202512180000/MSWEP_Precipitation_24h_accum_202512180000_MONAN_30km.nc
+Netcdf: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Bias/2025121600/Bias_MONAN_Prec_2025121600_048h.nc
+============================================================
+Model file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/MONAN/2025121600/MONAN_Precipitation_24h_acum_2025121600_2025121900_072h.nc
+GPM file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GPM_IMERG/202512190000/GPM_IMERG_Precipitation_24h_accum_202512190000.nc
+GSMAP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GSMAP/202512190000/GSMAP_Precipitation_24h_accum_202512190000.nc
+MSWEP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/MSWEP/202512190000/MSWEP_Precipitation_24h_accum_202512190000.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GPM_IMERG/202512190000/GPM_IMERG_Precipitation_24h_accum_202512190000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GSMAP/202512190000/GSMAP_Precipitation_24h_accum_202512190000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/MSWEP/202512190000/MSWEP_Precipitation_24h_accum_202512190000_MONAN_30km.nc
+Netcdf: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Bias/2025121600/Bias_MONAN_Prec_2025121600_072h.nc
+============================================================
+Model file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/MONAN/2025121600/MONAN_Precipitation_24h_acum_2025121600_2025122000_096h.nc
+GPM file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GPM_IMERG/202512200000/GPM_IMERG_Precipitation_24h_accum_202512200000.nc
+GSMAP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GSMAP/202512200000/GSMAP_Precipitation_24h_accum_202512200000.nc
+MSWEP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/MSWEP/202512200000/MSWEP_Precipitation_24h_accum_202512200000.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GPM_IMERG/202512200000/GPM_IMERG_Precipitation_24h_accum_202512200000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GSMAP/202512200000/GSMAP_Precipitation_24h_accum_202512200000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/MSWEP/202512200000/MSWEP_Precipitation_24h_accum_202512200000_MONAN_30km.nc
+Netcdf: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Bias/2025121600/Bias_MONAN_Prec_2025121600_096h.nc
+============================================================
+Model file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/MONAN/2025121600/MONAN_Precipitation_24h_acum_2025121600_2025122100_120h.nc
+GPM file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GPM_IMERG/202512210000/GPM_IMERG_Precipitation_24h_accum_202512210000.nc
+GSMAP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GSMAP/202512210000/GSMAP_Precipitation_24h_accum_202512210000.nc
+MSWEP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/MSWEP/202512210000/MSWEP_Precipitation_24h_accum_202512210000.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GPM_IMERG/202512210000/GPM_IMERG_Precipitation_24h_accum_202512210000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GSMAP/202512210000/GSMAP_Precipitation_24h_accum_202512210000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/MSWEP/202512210000/MSWEP_Precipitation_24h_accum_202512210000_MONAN_30km.nc
+Netcdf: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Bias/2025121600/Bias_MONAN_Prec_2025121600_120h.nc
+
+----------------------------------------------------------------
+MAE analysis
+----------------------------------------------------------------
+
+Processando lead time: 24 horas
+Processando lead time: 48 horas
+Processando lead time: 72 horas
+Processando lead time: 96 horas
+Processando lead time: 120 horas
+
+----------------------------------------------------------------
+Skill score analysis
+----------------------------------------------------------------
+
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 1 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 2 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 5 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 10 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 20 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 50 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+################################################################
+* * * Simulation for date: 2025 12 17 with span: 120 hours * * *
+################################################################
+
+
+----------------------------------------------------------------
+24 hours precipitation accumulation
+----------------------------------------------------------------
+
+
+============================================================
+PROCESSAMENTO DE 5 PERIODOS DE 24 HORAS
+============================================================
+--- Acumulado 1 --- Previsao 024h ---
+Data Inicial: 2025-12-17 00:00:00
+Data Final:   2025-12-18 00:00:00
+Arquivo I: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121700/Post/MONAN_DIAG_G_POS_GFS_2025121700_2025121700.00.00.x655362L55.nc
+Arquivo E: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121700/Post/MONAN_DIAG_G_POS_GFS_2025121700_2025121800.00.00.x655362L55.nc
+============================================================
+--- Acumulado 2 --- Previsao 048h ---
+Data Inicial: 2025-12-18 00:00:00
+Data Final:   2025-12-19 00:00:00
+Arquivo I: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121700/Post/MONAN_DIAG_G_POS_GFS_2025121700_2025121800.00.00.x655362L55.nc
+Arquivo E: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121700/Post/MONAN_DIAG_G_POS_GFS_2025121700_2025121900.00.00.x655362L55.nc
+============================================================
+--- Acumulado 3 --- Previsao 072h ---
+Data Inicial: 2025-12-19 00:00:00
+Data Final:   2025-12-20 00:00:00
+Arquivo I: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121700/Post/MONAN_DIAG_G_POS_GFS_2025121700_2025121900.00.00.x655362L55.nc
+Arquivo E: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121700/Post/MONAN_DIAG_G_POS_GFS_2025121700_2025122000.00.00.x655362L55.nc
+============================================================
+--- Acumulado 4 --- Previsao 096h ---
+Data Inicial: 2025-12-20 00:00:00
+Data Final:   2025-12-21 00:00:00
+Arquivo I: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121700/Post/MONAN_DIAG_G_POS_GFS_2025121700_2025122000.00.00.x655362L55.nc
+Arquivo E: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121700/Post/MONAN_DIAG_G_POS_GFS_2025121700_2025122100.00.00.x655362L55.nc
+============================================================
+--- Acumulado 5 --- Previsao 120h ---
+Data Inicial: 2025-12-21 00:00:00
+Data Final:   2025-12-22 00:00:00
+Arquivo I: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121700/Post/MONAN_DIAG_G_POS_GFS_2025121700_2025122100.00.00.x655362L55.nc
+Arquivo E: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121700/Post/MONAN_DIAG_G_POS_GFS_2025121700_2025122200.00.00.x655362L55.nc
+============================================================
+
+----------------------------------------------------------------
+Bias analysis
+----------------------------------------------------------------
+
+============================================================
+Model file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/MONAN/2025121700/MONAN_Precipitation_24h_acum_2025121700_2025121800_024h.nc
+GPM file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GPM_IMERG/202512180000/GPM_IMERG_Precipitation_24h_accum_202512180000.nc
+GSMAP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GSMAP/202512180000/GSMAP_Precipitation_24h_accum_202512180000.nc
+MSWEP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/MSWEP/202512180000/MSWEP_Precipitation_24h_accum_202512180000.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GPM_IMERG/202512180000/GPM_IMERG_Precipitation_24h_accum_202512180000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GSMAP/202512180000/GSMAP_Precipitation_24h_accum_202512180000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/MSWEP/202512180000/MSWEP_Precipitation_24h_accum_202512180000_MONAN_30km.nc
+Netcdf: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Bias/2025121700/Bias_MONAN_Prec_2025121700_024h.nc
+============================================================
+Model file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/MONAN/2025121700/MONAN_Precipitation_24h_acum_2025121700_2025121900_048h.nc
+GPM file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GPM_IMERG/202512190000/GPM_IMERG_Precipitation_24h_accum_202512190000.nc
+GSMAP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GSMAP/202512190000/GSMAP_Precipitation_24h_accum_202512190000.nc
+MSWEP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/MSWEP/202512190000/MSWEP_Precipitation_24h_accum_202512190000.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GPM_IMERG/202512190000/GPM_IMERG_Precipitation_24h_accum_202512190000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GSMAP/202512190000/GSMAP_Precipitation_24h_accum_202512190000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/MSWEP/202512190000/MSWEP_Precipitation_24h_accum_202512190000_MONAN_30km.nc
+Netcdf: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Bias/2025121700/Bias_MONAN_Prec_2025121700_048h.nc
+============================================================
+Model file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/MONAN/2025121700/MONAN_Precipitation_24h_acum_2025121700_2025122000_072h.nc
+GPM file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GPM_IMERG/202512200000/GPM_IMERG_Precipitation_24h_accum_202512200000.nc
+GSMAP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GSMAP/202512200000/GSMAP_Precipitation_24h_accum_202512200000.nc
+MSWEP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/MSWEP/202512200000/MSWEP_Precipitation_24h_accum_202512200000.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GPM_IMERG/202512200000/GPM_IMERG_Precipitation_24h_accum_202512200000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GSMAP/202512200000/GSMAP_Precipitation_24h_accum_202512200000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/MSWEP/202512200000/MSWEP_Precipitation_24h_accum_202512200000_MONAN_30km.nc
+Netcdf: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Bias/2025121700/Bias_MONAN_Prec_2025121700_072h.nc
+============================================================
+Model file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/MONAN/2025121700/MONAN_Precipitation_24h_acum_2025121700_2025122100_096h.nc
+GPM file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GPM_IMERG/202512210000/GPM_IMERG_Precipitation_24h_accum_202512210000.nc
+GSMAP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GSMAP/202512210000/GSMAP_Precipitation_24h_accum_202512210000.nc
+MSWEP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/MSWEP/202512210000/MSWEP_Precipitation_24h_accum_202512210000.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GPM_IMERG/202512210000/GPM_IMERG_Precipitation_24h_accum_202512210000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GSMAP/202512210000/GSMAP_Precipitation_24h_accum_202512210000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/MSWEP/202512210000/MSWEP_Precipitation_24h_accum_202512210000_MONAN_30km.nc
+Netcdf: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Bias/2025121700/Bias_MONAN_Prec_2025121700_096h.nc
+============================================================
+Model file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/MONAN/2025121700/MONAN_Precipitation_24h_acum_2025121700_2025122200_120h.nc
+GPM file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GPM_IMERG/202512220000/GPM_IMERG_Precipitation_24h_accum_202512220000.nc
+GSMAP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GSMAP/202512220000/GSMAP_Precipitation_24h_accum_202512220000.nc
+MSWEP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/MSWEP/202512220000/MSWEP_Precipitation_24h_accum_202512220000.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GPM_IMERG/202512220000/GPM_IMERG_Precipitation_24h_accum_202512220000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GSMAP/202512220000/GSMAP_Precipitation_24h_accum_202512220000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/MSWEP/202512220000/MSWEP_Precipitation_24h_accum_202512220000_MONAN_30km.nc
+Netcdf: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Bias/2025121700/Bias_MONAN_Prec_2025121700_120h.nc
+
+----------------------------------------------------------------
+MAE analysis
+----------------------------------------------------------------
+
+Processando lead time: 24 horas
+Processando lead time: 48 horas
+Processando lead time: 72 horas
+Processando lead time: 96 horas
+Processando lead time: 120 horas
+
+----------------------------------------------------------------
+Skill score analysis
+----------------------------------------------------------------
+
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 1 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 2 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 5 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 10 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 20 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 50 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+################################################################
+* * * Simulation for date: 2025 12 18 with span: 120 hours * * *
+################################################################
+
+
+----------------------------------------------------------------
+24 hours precipitation accumulation
+----------------------------------------------------------------
+
+
+============================================================
+PROCESSAMENTO DE 5 PERIODOS DE 24 HORAS
+============================================================
+--- Acumulado 1 --- Previsao 024h ---
+Data Inicial: 2025-12-18 00:00:00
+Data Final:   2025-12-19 00:00:00
+Arquivo I: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121800/Post/MONAN_DIAG_G_POS_GFS_2025121800_2025121800.00.00.x655362L55.nc
+Arquivo E: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121800/Post/MONAN_DIAG_G_POS_GFS_2025121800_2025121900.00.00.x655362L55.nc
+============================================================
+--- Acumulado 2 --- Previsao 048h ---
+Data Inicial: 2025-12-19 00:00:00
+Data Final:   2025-12-20 00:00:00
+Arquivo I: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121800/Post/MONAN_DIAG_G_POS_GFS_2025121800_2025121900.00.00.x655362L55.nc
+Arquivo E: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121800/Post/MONAN_DIAG_G_POS_GFS_2025121800_2025122000.00.00.x655362L55.nc
+============================================================
+--- Acumulado 3 --- Previsao 072h ---
+Data Inicial: 2025-12-20 00:00:00
+Data Final:   2025-12-21 00:00:00
+Arquivo I: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121800/Post/MONAN_DIAG_G_POS_GFS_2025121800_2025122000.00.00.x655362L55.nc
+Arquivo E: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121800/Post/MONAN_DIAG_G_POS_GFS_2025121800_2025122100.00.00.x655362L55.nc
+============================================================
+--- Acumulado 4 --- Previsao 096h ---
+Data Inicial: 2025-12-21 00:00:00
+Data Final:   2025-12-22 00:00:00
+Arquivo I: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121800/Post/MONAN_DIAG_G_POS_GFS_2025121800_2025122100.00.00.x655362L55.nc
+Arquivo E: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121800/Post/MONAN_DIAG_G_POS_GFS_2025121800_2025122200.00.00.x655362L55.nc
+============================================================
+--- Acumulado 5 --- Previsao 120h ---
+Data Inicial: 2025-12-22 00:00:00
+Data Final:   2025-12-23 00:00:00
+Arquivo I: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121800/Post/MONAN_DIAG_G_POS_GFS_2025121800_2025122200.00.00.x655362L55.nc
+Arquivo E: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121800/Post/MONAN_DIAG_G_POS_GFS_2025121800_2025122300.00.00.x655362L55.nc
+============================================================
+
+----------------------------------------------------------------
+Bias analysis
+----------------------------------------------------------------
+
+============================================================
+Model file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/MONAN/2025121800/MONAN_Precipitation_24h_acum_2025121800_2025121900_024h.nc
+GPM file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GPM_IMERG/202512190000/GPM_IMERG_Precipitation_24h_accum_202512190000.nc
+GSMAP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GSMAP/202512190000/GSMAP_Precipitation_24h_accum_202512190000.nc
+MSWEP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/MSWEP/202512190000/MSWEP_Precipitation_24h_accum_202512190000.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GPM_IMERG/202512190000/GPM_IMERG_Precipitation_24h_accum_202512190000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GSMAP/202512190000/GSMAP_Precipitation_24h_accum_202512190000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/MSWEP/202512190000/MSWEP_Precipitation_24h_accum_202512190000_MONAN_30km.nc
+Netcdf: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Bias/2025121800/Bias_MONAN_Prec_2025121800_024h.nc
+============================================================
+Model file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/MONAN/2025121800/MONAN_Precipitation_24h_acum_2025121800_2025122000_048h.nc
+GPM file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GPM_IMERG/202512200000/GPM_IMERG_Precipitation_24h_accum_202512200000.nc
+GSMAP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GSMAP/202512200000/GSMAP_Precipitation_24h_accum_202512200000.nc
+MSWEP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/MSWEP/202512200000/MSWEP_Precipitation_24h_accum_202512200000.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GPM_IMERG/202512200000/GPM_IMERG_Precipitation_24h_accum_202512200000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GSMAP/202512200000/GSMAP_Precipitation_24h_accum_202512200000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/MSWEP/202512200000/MSWEP_Precipitation_24h_accum_202512200000_MONAN_30km.nc
+Netcdf: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Bias/2025121800/Bias_MONAN_Prec_2025121800_048h.nc
+============================================================
+Model file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/MONAN/2025121800/MONAN_Precipitation_24h_acum_2025121800_2025122100_072h.nc
+GPM file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GPM_IMERG/202512210000/GPM_IMERG_Precipitation_24h_accum_202512210000.nc
+GSMAP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GSMAP/202512210000/GSMAP_Precipitation_24h_accum_202512210000.nc
+MSWEP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/MSWEP/202512210000/MSWEP_Precipitation_24h_accum_202512210000.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GPM_IMERG/202512210000/GPM_IMERG_Precipitation_24h_accum_202512210000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GSMAP/202512210000/GSMAP_Precipitation_24h_accum_202512210000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/MSWEP/202512210000/MSWEP_Precipitation_24h_accum_202512210000_MONAN_30km.nc
+Netcdf: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Bias/2025121800/Bias_MONAN_Prec_2025121800_072h.nc
+============================================================
+Model file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/MONAN/2025121800/MONAN_Precipitation_24h_acum_2025121800_2025122200_096h.nc
+GPM file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GPM_IMERG/202512220000/GPM_IMERG_Precipitation_24h_accum_202512220000.nc
+GSMAP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GSMAP/202512220000/GSMAP_Precipitation_24h_accum_202512220000.nc
+MSWEP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/MSWEP/202512220000/MSWEP_Precipitation_24h_accum_202512220000.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GPM_IMERG/202512220000/GPM_IMERG_Precipitation_24h_accum_202512220000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GSMAP/202512220000/GSMAP_Precipitation_24h_accum_202512220000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/MSWEP/202512220000/MSWEP_Precipitation_24h_accum_202512220000_MONAN_30km.nc
+Netcdf: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Bias/2025121800/Bias_MONAN_Prec_2025121800_096h.nc
+============================================================
+Model file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/MONAN/2025121800/MONAN_Precipitation_24h_acum_2025121800_2025122300_120h.nc
+GPM file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GPM_IMERG/202512230000/GPM_IMERG_Precipitation_24h_accum_202512230000.nc
+GSMAP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GSMAP/202512230000/GSMAP_Precipitation_24h_accum_202512230000.nc
+MSWEP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/MSWEP/202512230000/MSWEP_Precipitation_24h_accum_202512230000.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GPM_IMERG/202512230000/GPM_IMERG_Precipitation_24h_accum_202512230000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GSMAP/202512230000/GSMAP_Precipitation_24h_accum_202512230000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/MSWEP/202512230000/MSWEP_Precipitation_24h_accum_202512230000_MONAN_30km.nc
+Netcdf: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Bias/2025121800/Bias_MONAN_Prec_2025121800_120h.nc
+
+----------------------------------------------------------------
+MAE analysis
+----------------------------------------------------------------
+
+Processando lead time: 24 horas
+Processando lead time: 48 horas
+Processando lead time: 72 horas
+Processando lead time: 96 horas
+Processando lead time: 120 horas
+
+----------------------------------------------------------------
+Skill score analysis
+----------------------------------------------------------------
+
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 1 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 2 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 5 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 10 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 20 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 50 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+################################################################
+* * * Simulation for date: 2025 12 19 with span: 120 hours * * *
+################################################################
+
+
+----------------------------------------------------------------
+24 hours precipitation accumulation
+----------------------------------------------------------------
+
+
+============================================================
+PROCESSAMENTO DE 5 PERIODOS DE 24 HORAS
+============================================================
+--- Acumulado 1 --- Previsao 024h ---
+Data Inicial: 2025-12-19 00:00:00
+Data Final:   2025-12-20 00:00:00
+Arquivo I: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121900/Post/MONAN_DIAG_G_POS_GFS_2025121900_2025121900.00.00.x655362L55.nc
+Arquivo E: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121900/Post/MONAN_DIAG_G_POS_GFS_2025121900_2025122000.00.00.x655362L55.nc
+============================================================
+--- Acumulado 2 --- Previsao 048h ---
+Data Inicial: 2025-12-20 00:00:00
+Data Final:   2025-12-21 00:00:00
+Arquivo I: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121900/Post/MONAN_DIAG_G_POS_GFS_2025121900_2025122000.00.00.x655362L55.nc
+Arquivo E: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121900/Post/MONAN_DIAG_G_POS_GFS_2025121900_2025122100.00.00.x655362L55.nc
+============================================================
+--- Acumulado 3 --- Previsao 072h ---
+Data Inicial: 2025-12-21 00:00:00
+Data Final:   2025-12-22 00:00:00
+Arquivo I: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121900/Post/MONAN_DIAG_G_POS_GFS_2025121900_2025122100.00.00.x655362L55.nc
+Arquivo E: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121900/Post/MONAN_DIAG_G_POS_GFS_2025121900_2025122200.00.00.x655362L55.nc
+============================================================
+--- Acumulado 4 --- Previsao 096h ---
+Data Inicial: 2025-12-22 00:00:00
+Data Final:   2025-12-23 00:00:00
+Arquivo I: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121900/Post/MONAN_DIAG_G_POS_GFS_2025121900_2025122200.00.00.x655362L55.nc
+Arquivo E: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121900/Post/MONAN_DIAG_G_POS_GFS_2025121900_2025122300.00.00.x655362L55.nc
+============================================================
+--- Acumulado 5 --- Previsao 120h ---
+Data Inicial: 2025-12-23 00:00:00
+Data Final:   2025-12-24 00:00:00
+Arquivo I: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121900/Post/MONAN_DIAG_G_POS_GFS_2025121900_2025122300.00.00.x655362L55.nc
+Arquivo E: /p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/2025121900/Post/MONAN_DIAG_G_POS_GFS_2025121900_2025122400.00.00.x655362L55.nc
+============================================================
+
+----------------------------------------------------------------
+Bias analysis
+----------------------------------------------------------------
+
+============================================================
+Model file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/MONAN/2025121900/MONAN_Precipitation_24h_acum_2025121900_2025122000_024h.nc
+GPM file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GPM_IMERG/202512200000/GPM_IMERG_Precipitation_24h_accum_202512200000.nc
+GSMAP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GSMAP/202512200000/GSMAP_Precipitation_24h_accum_202512200000.nc
+MSWEP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/MSWEP/202512200000/MSWEP_Precipitation_24h_accum_202512200000.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GPM_IMERG/202512200000/GPM_IMERG_Precipitation_24h_accum_202512200000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GSMAP/202512200000/GSMAP_Precipitation_24h_accum_202512200000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/MSWEP/202512200000/MSWEP_Precipitation_24h_accum_202512200000_MONAN_30km.nc
+Netcdf: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Bias/2025121900/Bias_MONAN_Prec_2025121900_024h.nc
+============================================================
+Model file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/MONAN/2025121900/MONAN_Precipitation_24h_acum_2025121900_2025122100_048h.nc
+GPM file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GPM_IMERG/202512210000/GPM_IMERG_Precipitation_24h_accum_202512210000.nc
+GSMAP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GSMAP/202512210000/GSMAP_Precipitation_24h_accum_202512210000.nc
+MSWEP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/MSWEP/202512210000/MSWEP_Precipitation_24h_accum_202512210000.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GPM_IMERG/202512210000/GPM_IMERG_Precipitation_24h_accum_202512210000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GSMAP/202512210000/GSMAP_Precipitation_24h_accum_202512210000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/MSWEP/202512210000/MSWEP_Precipitation_24h_accum_202512210000_MONAN_30km.nc
+Netcdf: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Bias/2025121900/Bias_MONAN_Prec_2025121900_048h.nc
+============================================================
+Model file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/MONAN/2025121900/MONAN_Precipitation_24h_acum_2025121900_2025122200_072h.nc
+GPM file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GPM_IMERG/202512220000/GPM_IMERG_Precipitation_24h_accum_202512220000.nc
+GSMAP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GSMAP/202512220000/GSMAP_Precipitation_24h_accum_202512220000.nc
+MSWEP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/MSWEP/202512220000/MSWEP_Precipitation_24h_accum_202512220000.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GPM_IMERG/202512220000/GPM_IMERG_Precipitation_24h_accum_202512220000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GSMAP/202512220000/GSMAP_Precipitation_24h_accum_202512220000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/MSWEP/202512220000/MSWEP_Precipitation_24h_accum_202512220000_MONAN_30km.nc
+Netcdf: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Bias/2025121900/Bias_MONAN_Prec_2025121900_072h.nc
+============================================================
+Model file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/MONAN/2025121900/MONAN_Precipitation_24h_acum_2025121900_2025122300_096h.nc
+GPM file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GPM_IMERG/202512230000/GPM_IMERG_Precipitation_24h_accum_202512230000.nc
+GSMAP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GSMAP/202512230000/GSMAP_Precipitation_24h_accum_202512230000.nc
+MSWEP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/MSWEP/202512230000/MSWEP_Precipitation_24h_accum_202512230000.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GPM_IMERG/202512230000/GPM_IMERG_Precipitation_24h_accum_202512230000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GSMAP/202512230000/GSMAP_Precipitation_24h_accum_202512230000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/MSWEP/202512230000/MSWEP_Precipitation_24h_accum_202512230000_MONAN_30km.nc
+Netcdf: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Bias/2025121900/Bias_MONAN_Prec_2025121900_096h.nc
+============================================================
+Model file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/MONAN/2025121900/MONAN_Precipitation_24h_acum_2025121900_2025122400_120h.nc
+GPM file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GPM_IMERG/202512240000/GPM_IMERG_Precipitation_24h_accum_202512240000.nc
+GSMAP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GSMAP/202512240000/GSMAP_Precipitation_24h_accum_202512240000.nc
+MSWEP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/MSWEP/202512240000/MSWEP_Precipitation_24h_accum_202512240000.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GPM_IMERG/202512240000/GPM_IMERG_Precipitation_24h_accum_202512240000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GSMAP/202512240000/GSMAP_Precipitation_24h_accum_202512240000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/MSWEP/202512240000/MSWEP_Precipitation_24h_accum_202512240000_MONAN_30km.nc
+Netcdf: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Bias/2025121900/Bias_MONAN_Prec_2025121900_120h.nc
+
+----------------------------------------------------------------
+MAE analysis
+----------------------------------------------------------------
+
+Processando lead time: 24 horas
+Processando lead time: 48 horas
+Processando lead time: 72 horas
+Processando lead time: 96 horas
+Processando lead time: 120 horas
+
+----------------------------------------------------------------
+Skill score analysis
+----------------------------------------------------------------
+
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 1 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 2 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 5 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 10 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 20 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 50 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+----------------------------------------------------------------
+Computing monthly mean for process: bias
+----------------------------------------------------------------
+
+Dir base: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Bias
+Output dir: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/test_new_directory
+Processo: bias
+Processando rodada 2025121000, prazo 24h, data válida 2025121100
+Processando rodada 2025121100, prazo 24h, data válida 2025121200
+Processando rodada 2025121200, prazo 24h, data válida 2025121300
+Processando rodada 2025121300, prazo 24h, data válida 2025121400
+Processando rodada 2025121400, prazo 24h, data válida 2025121500
+Processando rodada 2025121500, prazo 24h, data válida 2025121600
+Processando rodada 2025121600, prazo 24h, data válida 2025121700
+Processando rodada 2025121700, prazo 24h, data válida 2025121800
+Processando rodada 2025121800, prazo 24h, data válida 2025121900
+Processando rodada 2025121900, prazo 24h, data válida 2025122000
+Ano 2025, mes 12, prazo 24h, total de arquivos: 9
+Processando rodada 2025121000, prazo 48h, data válida 2025121200
+Processando rodada 2025121100, prazo 48h, data válida 2025121300
+Processando rodada 2025121200, prazo 48h, data válida 2025121400
+Processando rodada 2025121300, prazo 48h, data válida 2025121500
+Processando rodada 2025121400, prazo 48h, data válida 2025121600
+Processando rodada 2025121500, prazo 48h, data válida 2025121700
+Processando rodada 2025121600, prazo 48h, data válida 2025121800
+Processando rodada 2025121700, prazo 48h, data válida 2025121900
+Processando rodada 2025121800, prazo 48h, data válida 2025122000
+Processando rodada 2025121900, prazo 48h, data válida 2025122100
+Ano 2025, mes 12, prazo 48h, total de arquivos: 8
+Processando rodada 2025121000, prazo 72h, data válida 2025121300
+Processando rodada 2025121100, prazo 72h, data válida 2025121400
+Processando rodada 2025121200, prazo 72h, data válida 2025121500
+Processando rodada 2025121300, prazo 72h, data válida 2025121600
+Processando rodada 2025121400, prazo 72h, data válida 2025121700
+Processando rodada 2025121500, prazo 72h, data válida 2025121800
+Processando rodada 2025121600, prazo 72h, data válida 2025121900
+Processando rodada 2025121700, prazo 72h, data válida 2025122000
+Processando rodada 2025121800, prazo 72h, data válida 2025122100
+Processando rodada 2025121900, prazo 72h, data válida 2025122200
+Ano 2025, mes 12, prazo 72h, total de arquivos: 7
+Processando rodada 2025121000, prazo 96h, data válida 2025121400
+Processando rodada 2025121100, prazo 96h, data válida 2025121500
+Processando rodada 2025121200, prazo 96h, data válida 2025121600
+Processando rodada 2025121300, prazo 96h, data válida 2025121700
+Processando rodada 2025121400, prazo 96h, data válida 2025121800
+Processando rodada 2025121500, prazo 96h, data válida 2025121900
+Processando rodada 2025121600, prazo 96h, data válida 2025122000
+Processando rodada 2025121700, prazo 96h, data válida 2025122100
+Processando rodada 2025121800, prazo 96h, data válida 2025122200
+Processando rodada 2025121900, prazo 96h, data válida 2025122300
+Ano 2025, mes 12, prazo 96h, total de arquivos: 6
+Processando rodada 2025121000, prazo 120h, data válida 2025121500
+Processando rodada 2025121100, prazo 120h, data válida 2025121600
+Processando rodada 2025121200, prazo 120h, data válida 2025121700
+Processando rodada 2025121300, prazo 120h, data válida 2025121800
+Processando rodada 2025121400, prazo 120h, data válida 2025121900
+Processando rodada 2025121500, prazo 120h, data válida 2025122000
+Processando rodada 2025121600, prazo 120h, data válida 2025122100
+Processando rodada 2025121700, prazo 120h, data válida 2025122200
+Processando rodada 2025121800, prazo 120h, data válida 2025122300
+Processando rodada 2025121900, prazo 120h, data válida 2025122400
+Ano 2025, mes 12, prazo 120h, total de arquivos: 5
+
+----------------------------------------------------------------
+Computing monthly mean for process: rmse
+----------------------------------------------------------------
+
+Dir base: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/precip_24h/RMSE
+Output dir: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/test_new_directory
+Processo: rmse
+Processando rodada 2025121000, prazo 24h, data válida 2025121100
+Processando rodada 2025121100, prazo 24h, data válida 2025121200
+Processando rodada 2025121200, prazo 24h, data válida 2025121300
+Processando rodada 2025121300, prazo 24h, data válida 2025121400
+Processando rodada 2025121400, prazo 24h, data válida 2025121500
+Processando rodada 2025121500, prazo 24h, data válida 2025121600
+Processando rodada 2025121600, prazo 24h, data válida 2025121700
+Processando rodada 2025121700, prazo 24h, data válida 2025121800
+Processando rodada 2025121800, prazo 24h, data válida 2025121900
+Processando rodada 2025121900, prazo 24h, data válida 2025122000
+Ano 2025, mes 12, prazo 24h, total de arquivos: 9
+Processando rodada 2025121000, prazo 48h, data válida 2025121200
+Processando rodada 2025121100, prazo 48h, data válida 2025121300
+Processando rodada 2025121200, prazo 48h, data válida 2025121400
+Processando rodada 2025121300, prazo 48h, data válida 2025121500
+Processando rodada 2025121400, prazo 48h, data válida 2025121600
+Processando rodada 2025121500, prazo 48h, data válida 2025121700
+Processando rodada 2025121600, prazo 48h, data válida 2025121800
+Processando rodada 2025121700, prazo 48h, data válida 2025121900
+Processando rodada 2025121800, prazo 48h, data válida 2025122000
+Processando rodada 2025121900, prazo 48h, data válida 2025122100
+Ano 2025, mes 12, prazo 48h, total de arquivos: 8
+Processando rodada 2025121000, prazo 72h, data válida 2025121300
+Processando rodada 2025121100, prazo 72h, data válida 2025121400
+Processando rodada 2025121200, prazo 72h, data válida 2025121500
+Processando rodada 2025121300, prazo 72h, data válida 2025121600
+Processando rodada 2025121400, prazo 72h, data válida 2025121700
+Processando rodada 2025121500, prazo 72h, data válida 2025121800
+Processando rodada 2025121600, prazo 72h, data válida 2025121900
+Processando rodada 2025121700, prazo 72h, data válida 2025122000
+Processando rodada 2025121800, prazo 72h, data válida 2025122100
+Processando rodada 2025121900, prazo 72h, data válida 2025122200
+Ano 2025, mes 12, prazo 72h, total de arquivos: 7
+Processando rodada 2025121000, prazo 96h, data válida 2025121400
+Processando rodada 2025121100, prazo 96h, data válida 2025121500
+Processando rodada 2025121200, prazo 96h, data válida 2025121600
+Processando rodada 2025121300, prazo 96h, data válida 2025121700
+Processando rodada 2025121400, prazo 96h, data válida 2025121800
+Processando rodada 2025121500, prazo 96h, data válida 2025121900
+Processando rodada 2025121600, prazo 96h, data válida 2025122000
+Processando rodada 2025121700, prazo 96h, data válida 2025122100
+Processando rodada 2025121800, prazo 96h, data válida 2025122200
+Processando rodada 2025121900, prazo 96h, data válida 2025122300
+Ano 2025, mes 12, prazo 96h, total de arquivos: 6
+Processando rodada 2025121000, prazo 120h, data válida 2025121500
+Processando rodada 2025121100, prazo 120h, data válida 2025121600
+Processando rodada 2025121200, prazo 120h, data válida 2025121700
+Processando rodada 2025121300, prazo 120h, data válida 2025121800
+Processando rodada 2025121400, prazo 120h, data válida 2025121900
+Processando rodada 2025121500, prazo 120h, data válida 2025122000
+Processando rodada 2025121600, prazo 120h, data válida 2025122100
+Processando rodada 2025121700, prazo 120h, data válida 2025122200
+Processando rodada 2025121800, prazo 120h, data válida 2025122300
+Processando rodada 2025121900, prazo 120h, data válida 2025122400
+Ano 2025, mes 12, prazo 120h, total de arquivos: 5
+
+----------------------------------------------------------------
+Computing monthly mean for process: skill
+----------------------------------------------------------------
+
+
+----------------------------------------------------------------
+Computing monthly mean for skill score with threshold: 1 mm
+----------------------------------------------------------------
+
+Dir base: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/precip_24h/CONTINGENCIA
+Output dir: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/test_new_directory
+Processo: skill, limiar: thr1mm
+Processando rodada 2025121000, prazo 24h, data válida 2025121100
+Processando rodada 2025121100, prazo 24h, data válida 2025121200
+Processando rodada 2025121200, prazo 24h, data válida 2025121300
+Processando rodada 2025121300, prazo 24h, data válida 2025121400
+Processando rodada 2025121400, prazo 24h, data válida 2025121500
+Processando rodada 2025121500, prazo 24h, data válida 2025121600
+Processando rodada 2025121600, prazo 24h, data válida 2025121700
+Processando rodada 2025121700, prazo 24h, data válida 2025121800
+Processando rodada 2025121800, prazo 24h, data válida 2025121900
+Processando rodada 2025121900, prazo 24h, data válida 2025122000
+Ano 2025, mes 12, prazo 24h, total de arquivos: 9
+Processando rodada 2025121000, prazo 48h, data válida 2025121200
+Processando rodada 2025121100, prazo 48h, data válida 2025121300
+Processando rodada 2025121200, prazo 48h, data válida 2025121400
+Processando rodada 2025121300, prazo 48h, data válida 2025121500
+Processando rodada 2025121400, prazo 48h, data válida 2025121600
+Processando rodada 2025121500, prazo 48h, data válida 2025121700
+Processando rodada 2025121600, prazo 48h, data válida 2025121800
+Processando rodada 2025121700, prazo 48h, data válida 2025121900
+Processando rodada 2025121800, prazo 48h, data válida 2025122000
+Processando rodada 2025121900, prazo 48h, data válida 2025122100
+Ano 2025, mes 12, prazo 48h, total de arquivos: 8
+Processando rodada 2025121000, prazo 72h, data válida 2025121300
+Processando rodada 2025121100, prazo 72h, data válida 2025121400
+Processando rodada 2025121200, prazo 72h, data válida 2025121500
+Processando rodada 2025121300, prazo 72h, data válida 2025121600
+Processando rodada 2025121400, prazo 72h, data válida 2025121700
+Processando rodada 2025121500, prazo 72h, data válida 2025121800
+Processando rodada 2025121600, prazo 72h, data válida 2025121900
+Processando rodada 2025121700, prazo 72h, data válida 2025122000
+Processando rodada 2025121800, prazo 72h, data válida 2025122100
+Processando rodada 2025121900, prazo 72h, data válida 2025122200
+Ano 2025, mes 12, prazo 72h, total de arquivos: 7
+Processando rodada 2025121000, prazo 96h, data válida 2025121400
+Processando rodada 2025121100, prazo 96h, data válida 2025121500
+Processando rodada 2025121200, prazo 96h, data válida 2025121600
+Processando rodada 2025121300, prazo 96h, data válida 2025121700
+Processando rodada 2025121400, prazo 96h, data válida 2025121800
+Processando rodada 2025121500, prazo 96h, data válida 2025121900
+Processando rodada 2025121600, prazo 96h, data válida 2025122000
+Processando rodada 2025121700, prazo 96h, data válida 2025122100
+Processando rodada 2025121800, prazo 96h, data válida 2025122200
+Processando rodada 2025121900, prazo 96h, data válida 2025122300
+Ano 2025, mes 12, prazo 96h, total de arquivos: 6
+Processando rodada 2025121000, prazo 120h, data válida 2025121500
+Processando rodada 2025121100, prazo 120h, data válida 2025121600
+Processando rodada 2025121200, prazo 120h, data válida 2025121700
+Processando rodada 2025121300, prazo 120h, data válida 2025121800
+Processando rodada 2025121400, prazo 120h, data válida 2025121900
+Processando rodada 2025121500, prazo 120h, data válida 2025122000
+Processando rodada 2025121600, prazo 120h, data válida 2025122100
+Processando rodada 2025121700, prazo 120h, data válida 2025122200
+Processando rodada 2025121800, prazo 120h, data válida 2025122300
+Processando rodada 2025121900, prazo 120h, data válida 2025122400
+Ano 2025, mes 12, prazo 120h, total de arquivos: 5
+
+----------------------------------------------------------------
+Computing monthly mean for skill score with threshold: 2 mm
+----------------------------------------------------------------
+
+Dir base: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/precip_24h/CONTINGENCIA
+Output dir: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/test_new_directory
+Processo: skill, limiar: thr2mm
+Processando rodada 2025121000, prazo 24h, data válida 2025121100
+Processando rodada 2025121100, prazo 24h, data válida 2025121200
+Processando rodada 2025121200, prazo 24h, data válida 2025121300
+Processando rodada 2025121300, prazo 24h, data válida 2025121400
+Processando rodada 2025121400, prazo 24h, data válida 2025121500
+Processando rodada 2025121500, prazo 24h, data válida 2025121600
+Processando rodada 2025121600, prazo 24h, data válida 2025121700
+Processando rodada 2025121700, prazo 24h, data válida 2025121800
+Processando rodada 2025121800, prazo 24h, data válida 2025121900
+Processando rodada 2025121900, prazo 24h, data válida 2025122000
+Ano 2025, mes 12, prazo 24h, total de arquivos: 9
+Processando rodada 2025121000, prazo 48h, data válida 2025121200
+Processando rodada 2025121100, prazo 48h, data válida 2025121300
+Processando rodada 2025121200, prazo 48h, data válida 2025121400
+Processando rodada 2025121300, prazo 48h, data válida 2025121500
+Processando rodada 2025121400, prazo 48h, data válida 2025121600
+Processando rodada 2025121500, prazo 48h, data válida 2025121700
+Processando rodada 2025121600, prazo 48h, data válida 2025121800
+Processando rodada 2025121700, prazo 48h, data válida 2025121900
+Processando rodada 2025121800, prazo 48h, data válida 2025122000
+Processando rodada 2025121900, prazo 48h, data válida 2025122100
+Ano 2025, mes 12, prazo 48h, total de arquivos: 8
+Processando rodada 2025121000, prazo 72h, data válida 2025121300
+Processando rodada 2025121100, prazo 72h, data válida 2025121400
+Processando rodada 2025121200, prazo 72h, data válida 2025121500
+Processando rodada 2025121300, prazo 72h, data válida 2025121600
+Processando rodada 2025121400, prazo 72h, data válida 2025121700
+Processando rodada 2025121500, prazo 72h, data válida 2025121800
+Processando rodada 2025121600, prazo 72h, data válida 2025121900
+Processando rodada 2025121700, prazo 72h, data válida 2025122000
+Processando rodada 2025121800, prazo 72h, data válida 2025122100
+Processando rodada 2025121900, prazo 72h, data válida 2025122200
+Ano 2025, mes 12, prazo 72h, total de arquivos: 7
+Processando rodada 2025121000, prazo 96h, data válida 2025121400
+Processando rodada 2025121100, prazo 96h, data válida 2025121500
+Processando rodada 2025121200, prazo 96h, data válida 2025121600
+Processando rodada 2025121300, prazo 96h, data válida 2025121700
+Processando rodada 2025121400, prazo 96h, data válida 2025121800
+Processando rodada 2025121500, prazo 96h, data válida 2025121900
+Processando rodada 2025121600, prazo 96h, data válida 2025122000
+Processando rodada 2025121700, prazo 96h, data válida 2025122100
+Processando rodada 2025121800, prazo 96h, data válida 2025122200
+Processando rodada 2025121900, prazo 96h, data válida 2025122300
+Ano 2025, mes 12, prazo 96h, total de arquivos: 6
+Processando rodada 2025121000, prazo 120h, data válida 2025121500
+Processando rodada 2025121100, prazo 120h, data válida 2025121600
+Processando rodada 2025121200, prazo 120h, data válida 2025121700
+Processando rodada 2025121300, prazo 120h, data válida 2025121800
+Processando rodada 2025121400, prazo 120h, data válida 2025121900
+Processando rodada 2025121500, prazo 120h, data válida 2025122000
+Processando rodada 2025121600, prazo 120h, data válida 2025122100
+Processando rodada 2025121700, prazo 120h, data válida 2025122200
+Processando rodada 2025121800, prazo 120h, data válida 2025122300
+Processando rodada 2025121900, prazo 120h, data válida 2025122400
+Ano 2025, mes 12, prazo 120h, total de arquivos: 5
+
+----------------------------------------------------------------
+Computing monthly mean for skill score with threshold: 5 mm
+----------------------------------------------------------------
+
+Dir base: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/precip_24h/CONTINGENCIA
+Output dir: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/test_new_directory
+Processo: skill, limiar: thr5mm
+Processando rodada 2025121000, prazo 24h, data válida 2025121100
+Processando rodada 2025121100, prazo 24h, data válida 2025121200
+Processando rodada 2025121200, prazo 24h, data válida 2025121300
+Processando rodada 2025121300, prazo 24h, data válida 2025121400
+Processando rodada 2025121400, prazo 24h, data válida 2025121500
+Processando rodada 2025121500, prazo 24h, data válida 2025121600
+Processando rodada 2025121600, prazo 24h, data válida 2025121700
+Processando rodada 2025121700, prazo 24h, data válida 2025121800
+Processando rodada 2025121800, prazo 24h, data válida 2025121900
+Processando rodada 2025121900, prazo 24h, data válida 2025122000
+Ano 2025, mes 12, prazo 24h, total de arquivos: 9
+Processando rodada 2025121000, prazo 48h, data válida 2025121200
+Processando rodada 2025121100, prazo 48h, data válida 2025121300
+Processando rodada 2025121200, prazo 48h, data válida 2025121400
+Processando rodada 2025121300, prazo 48h, data válida 2025121500
+Processando rodada 2025121400, prazo 48h, data válida 2025121600
+Processando rodada 2025121500, prazo 48h, data válida 2025121700
+Processando rodada 2025121600, prazo 48h, data válida 2025121800
+Processando rodada 2025121700, prazo 48h, data válida 2025121900
+Processando rodada 2025121800, prazo 48h, data válida 2025122000
+Processando rodada 2025121900, prazo 48h, data válida 2025122100
+Ano 2025, mes 12, prazo 48h, total de arquivos: 8
+Processando rodada 2025121000, prazo 72h, data válida 2025121300
+Processando rodada 2025121100, prazo 72h, data válida 2025121400
+Processando rodada 2025121200, prazo 72h, data válida 2025121500
+Processando rodada 2025121300, prazo 72h, data válida 2025121600
+Processando rodada 2025121400, prazo 72h, data válida 2025121700
+Processando rodada 2025121500, prazo 72h, data válida 2025121800
+Processando rodada 2025121600, prazo 72h, data válida 2025121900
+Processando rodada 2025121700, prazo 72h, data válida 2025122000
+Processando rodada 2025121800, prazo 72h, data válida 2025122100
+Processando rodada 2025121900, prazo 72h, data válida 2025122200
+Ano 2025, mes 12, prazo 72h, total de arquivos: 7
+Processando rodada 2025121000, prazo 96h, data válida 2025121400
+Processando rodada 2025121100, prazo 96h, data válida 2025121500
+Processando rodada 2025121200, prazo 96h, data válida 2025121600
+Processando rodada 2025121300, prazo 96h, data válida 2025121700
+Processando rodada 2025121400, prazo 96h, data válida 2025121800
+Processando rodada 2025121500, prazo 96h, data válida 2025121900
+Processando rodada 2025121600, prazo 96h, data válida 2025122000
+Processando rodada 2025121700, prazo 96h, data válida 2025122100
+Processando rodada 2025121800, prazo 96h, data válida 2025122200
+Processando rodada 2025121900, prazo 96h, data válida 2025122300
+Ano 2025, mes 12, prazo 96h, total de arquivos: 6
+Processando rodada 2025121000, prazo 120h, data válida 2025121500
+Processando rodada 2025121100, prazo 120h, data válida 2025121600
+Processando rodada 2025121200, prazo 120h, data válida 2025121700
+Processando rodada 2025121300, prazo 120h, data válida 2025121800
+Processando rodada 2025121400, prazo 120h, data válida 2025121900
+Processando rodada 2025121500, prazo 120h, data válida 2025122000
+Processando rodada 2025121600, prazo 120h, data válida 2025122100
+Processando rodada 2025121700, prazo 120h, data válida 2025122200
+Processando rodada 2025121800, prazo 120h, data válida 2025122300
+Processando rodada 2025121900, prazo 120h, data válida 2025122400
+Ano 2025, mes 12, prazo 120h, total de arquivos: 5
+
+----------------------------------------------------------------
+Computing monthly mean for skill score with threshold: 10 mm
+----------------------------------------------------------------
+
+Dir base: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/precip_24h/CONTINGENCIA
+Output dir: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/test_new_directory
+Processo: skill, limiar: thr10mm
+Processando rodada 2025121000, prazo 24h, data válida 2025121100
+Processando rodada 2025121100, prazo 24h, data válida 2025121200
+Processando rodada 2025121200, prazo 24h, data válida 2025121300
+Processando rodada 2025121300, prazo 24h, data válida 2025121400
+Processando rodada 2025121400, prazo 24h, data válida 2025121500
+Processando rodada 2025121500, prazo 24h, data válida 2025121600
+Processando rodada 2025121600, prazo 24h, data válida 2025121700
+Processando rodada 2025121700, prazo 24h, data válida 2025121800
+Processando rodada 2025121800, prazo 24h, data válida 2025121900
+Processando rodada 2025121900, prazo 24h, data válida 2025122000
+Ano 2025, mes 12, prazo 24h, total de arquivos: 9
+Processando rodada 2025121000, prazo 48h, data válida 2025121200
+Processando rodada 2025121100, prazo 48h, data válida 2025121300
+Processando rodada 2025121200, prazo 48h, data válida 2025121400
+Processando rodada 2025121300, prazo 48h, data válida 2025121500
+Processando rodada 2025121400, prazo 48h, data válida 2025121600
+Processando rodada 2025121500, prazo 48h, data válida 2025121700
+Processando rodada 2025121600, prazo 48h, data válida 2025121800
+Processando rodada 2025121700, prazo 48h, data válida 2025121900
+Processando rodada 2025121800, prazo 48h, data válida 2025122000
+Processando rodada 2025121900, prazo 48h, data válida 2025122100
+Ano 2025, mes 12, prazo 48h, total de arquivos: 8
+Processando rodada 2025121000, prazo 72h, data válida 2025121300
+Processando rodada 2025121100, prazo 72h, data válida 2025121400
+Processando rodada 2025121200, prazo 72h, data válida 2025121500
+Processando rodada 2025121300, prazo 72h, data válida 2025121600
+Processando rodada 2025121400, prazo 72h, data válida 2025121700
+Processando rodada 2025121500, prazo 72h, data válida 2025121800
+Processando rodada 2025121600, prazo 72h, data válida 2025121900
+Processando rodada 2025121700, prazo 72h, data válida 2025122000
+Processando rodada 2025121800, prazo 72h, data válida 2025122100
+Processando rodada 2025121900, prazo 72h, data válida 2025122200
+Ano 2025, mes 12, prazo 72h, total de arquivos: 7
+Processando rodada 2025121000, prazo 96h, data válida 2025121400
+Processando rodada 2025121100, prazo 96h, data válida 2025121500
+Processando rodada 2025121200, prazo 96h, data válida 2025121600
+Processando rodada 2025121300, prazo 96h, data válida 2025121700
+Processando rodada 2025121400, prazo 96h, data válida 2025121800
+Processando rodada 2025121500, prazo 96h, data válida 2025121900
+Processando rodada 2025121600, prazo 96h, data válida 2025122000
+Processando rodada 2025121700, prazo 96h, data válida 2025122100
+Processando rodada 2025121800, prazo 96h, data válida 2025122200
+Processando rodada 2025121900, prazo 96h, data válida 2025122300
+Ano 2025, mes 12, prazo 96h, total de arquivos: 6
+Processando rodada 2025121000, prazo 120h, data válida 2025121500
+Processando rodada 2025121100, prazo 120h, data válida 2025121600
+Processando rodada 2025121200, prazo 120h, data válida 2025121700
+Processando rodada 2025121300, prazo 120h, data válida 2025121800
+Processando rodada 2025121400, prazo 120h, data válida 2025121900
+Processando rodada 2025121500, prazo 120h, data válida 2025122000
+Processando rodada 2025121600, prazo 120h, data válida 2025122100
+Processando rodada 2025121700, prazo 120h, data válida 2025122200
+Processando rodada 2025121800, prazo 120h, data válida 2025122300
+Processando rodada 2025121900, prazo 120h, data válida 2025122400
+Ano 2025, mes 12, prazo 120h, total de arquivos: 5
+
+----------------------------------------------------------------
+Computing monthly mean for skill score with threshold: 20 mm
+----------------------------------------------------------------
+
+Dir base: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/precip_24h/CONTINGENCIA
+Output dir: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/test_new_directory
+Processo: skill, limiar: thr20mm
+Processando rodada 2025121000, prazo 24h, data válida 2025121100
+Processando rodada 2025121100, prazo 24h, data válida 2025121200
+Processando rodada 2025121200, prazo 24h, data válida 2025121300
+Processando rodada 2025121300, prazo 24h, data válida 2025121400
+Processando rodada 2025121400, prazo 24h, data válida 2025121500
+Processando rodada 2025121500, prazo 24h, data válida 2025121600
+Processando rodada 2025121600, prazo 24h, data válida 2025121700
+Processando rodada 2025121700, prazo 24h, data válida 2025121800
+Processando rodada 2025121800, prazo 24h, data válida 2025121900
+Processando rodada 2025121900, prazo 24h, data válida 2025122000
+Ano 2025, mes 12, prazo 24h, total de arquivos: 9
+Processando rodada 2025121000, prazo 48h, data válida 2025121200
+Processando rodada 2025121100, prazo 48h, data válida 2025121300
+Processando rodada 2025121200, prazo 48h, data válida 2025121400
+Processando rodada 2025121300, prazo 48h, data válida 2025121500
+Processando rodada 2025121400, prazo 48h, data válida 2025121600
+Processando rodada 2025121500, prazo 48h, data válida 2025121700
+Processando rodada 2025121600, prazo 48h, data válida 2025121800
+Processando rodada 2025121700, prazo 48h, data válida 2025121900
+Processando rodada 2025121800, prazo 48h, data válida 2025122000
+Processando rodada 2025121900, prazo 48h, data válida 2025122100
+Ano 2025, mes 12, prazo 48h, total de arquivos: 8
+Processando rodada 2025121000, prazo 72h, data válida 2025121300
+Processando rodada 2025121100, prazo 72h, data válida 2025121400
+Processando rodada 2025121200, prazo 72h, data válida 2025121500
+Processando rodada 2025121300, prazo 72h, data válida 2025121600
+Processando rodada 2025121400, prazo 72h, data válida 2025121700
+Processando rodada 2025121500, prazo 72h, data válida 2025121800
+Processando rodada 2025121600, prazo 72h, data válida 2025121900
+Processando rodada 2025121700, prazo 72h, data válida 2025122000
+Processando rodada 2025121800, prazo 72h, data válida 2025122100
+Processando rodada 2025121900, prazo 72h, data válida 2025122200
+Ano 2025, mes 12, prazo 72h, total de arquivos: 7
+Processando rodada 2025121000, prazo 96h, data válida 2025121400
+Processando rodada 2025121100, prazo 96h, data válida 2025121500
+Processando rodada 2025121200, prazo 96h, data válida 2025121600
+Processando rodada 2025121300, prazo 96h, data válida 2025121700
+Processando rodada 2025121400, prazo 96h, data válida 2025121800
+Processando rodada 2025121500, prazo 96h, data válida 2025121900
+Processando rodada 2025121600, prazo 96h, data válida 2025122000
+Processando rodada 2025121700, prazo 96h, data válida 2025122100
+Processando rodada 2025121800, prazo 96h, data válida 2025122200
+Processando rodada 2025121900, prazo 96h, data válida 2025122300
+Ano 2025, mes 12, prazo 96h, total de arquivos: 6
+Processando rodada 2025121000, prazo 120h, data válida 2025121500
+Processando rodada 2025121100, prazo 120h, data válida 2025121600
+Processando rodada 2025121200, prazo 120h, data válida 2025121700
+Processando rodada 2025121300, prazo 120h, data válida 2025121800
+Processando rodada 2025121400, prazo 120h, data válida 2025121900
+Processando rodada 2025121500, prazo 120h, data válida 2025122000
+Processando rodada 2025121600, prazo 120h, data válida 2025122100
+Processando rodada 2025121700, prazo 120h, data válida 2025122200
+Processando rodada 2025121800, prazo 120h, data válida 2025122300
+Processando rodada 2025121900, prazo 120h, data válida 2025122400
+Ano 2025, mes 12, prazo 120h, total de arquivos: 5
+
+----------------------------------------------------------------
+Computing monthly mean for skill score with threshold: 50 mm
+----------------------------------------------------------------
+
+Dir base: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/precip_24h/CONTINGENCIA
+Output dir: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/test_new_directory
+Processo: skill, limiar: thr50mm
+Processando rodada 2025121000, prazo 24h, data válida 2025121100
+Processando rodada 2025121100, prazo 24h, data válida 2025121200
+Processando rodada 2025121200, prazo 24h, data válida 2025121300
+Processando rodada 2025121300, prazo 24h, data válida 2025121400
+Processando rodada 2025121400, prazo 24h, data válida 2025121500
+Processando rodada 2025121500, prazo 24h, data válida 2025121600
+Processando rodada 2025121600, prazo 24h, data válida 2025121700
+Processando rodada 2025121700, prazo 24h, data válida 2025121800
+Processando rodada 2025121800, prazo 24h, data válida 2025121900
+Processando rodada 2025121900, prazo 24h, data válida 2025122000
+Ano 2025, mes 12, prazo 24h, total de arquivos: 9
+Processando rodada 2025121000, prazo 48h, data válida 2025121200
+Processando rodada 2025121100, prazo 48h, data válida 2025121300
+Processando rodada 2025121200, prazo 48h, data válida 2025121400
+Processando rodada 2025121300, prazo 48h, data válida 2025121500
+Processando rodada 2025121400, prazo 48h, data válida 2025121600
+Processando rodada 2025121500, prazo 48h, data válida 2025121700
+Processando rodada 2025121600, prazo 48h, data válida 2025121800
+Processando rodada 2025121700, prazo 48h, data válida 2025121900
+Processando rodada 2025121800, prazo 48h, data válida 2025122000
+Processando rodada 2025121900, prazo 48h, data válida 2025122100
+Ano 2025, mes 12, prazo 48h, total de arquivos: 8
+Processando rodada 2025121000, prazo 72h, data válida 2025121300
+Processando rodada 2025121100, prazo 72h, data válida 2025121400
+Processando rodada 2025121200, prazo 72h, data válida 2025121500
+Processando rodada 2025121300, prazo 72h, data válida 2025121600
+Processando rodada 2025121400, prazo 72h, data válida 2025121700
+Processando rodada 2025121500, prazo 72h, data válida 2025121800
+Processando rodada 2025121600, prazo 72h, data válida 2025121900
+Processando rodada 2025121700, prazo 72h, data válida 2025122000
+Processando rodada 2025121800, prazo 72h, data válida 2025122100
+Processando rodada 2025121900, prazo 72h, data válida 2025122200
+Ano 2025, mes 12, prazo 72h, total de arquivos: 7
+Processando rodada 2025121000, prazo 96h, data válida 2025121400
+Processando rodada 2025121100, prazo 96h, data válida 2025121500
+Processando rodada 2025121200, prazo 96h, data válida 2025121600
+Processando rodada 2025121300, prazo 96h, data válida 2025121700
+Processando rodada 2025121400, prazo 96h, data válida 2025121800
+Processando rodada 2025121500, prazo 96h, data válida 2025121900
+Processando rodada 2025121600, prazo 96h, data válida 2025122000
+Processando rodada 2025121700, prazo 96h, data válida 2025122100
+Processando rodada 2025121800, prazo 96h, data válida 2025122200
+Processando rodada 2025121900, prazo 96h, data válida 2025122300
+Ano 2025, mes 12, prazo 96h, total de arquivos: 6
+Processando rodada 2025121000, prazo 120h, data válida 2025121500
+Processando rodada 2025121100, prazo 120h, data válida 2025121600
+Processando rodada 2025121200, prazo 120h, data válida 2025121700
+Processando rodada 2025121300, prazo 120h, data válida 2025121800
+Processando rodada 2025121400, prazo 120h, data válida 2025121900
+Processando rodada 2025121500, prazo 120h, data válida 2025122000
+Processando rodada 2025121600, prazo 120h, data válida 2025122100
+Processando rodada 2025121700, prazo 120h, data válida 2025122200
+Processando rodada 2025121800, prazo 120h, data válida 2025122300
+Processando rodada 2025121900, prazo 120h, data válida 2025122400
+Ano 2025, mes 12, prazo 120h, total de arquivos: 5
+
+----------------------------------------------------------------
+Mean skill score across all lead times for different thresholds
+----------------------------------------------------------------
+
+Processando lead time 24h...
+Processando lead time 48h...
+Processando lead time 72h...
+Processando lead time 96h...
+Processando lead time 120h...
+Processando lead time 24h...
+Processando lead time 48h...
+Processando lead time 72h...
+Processando lead time 96h...
+Processando lead time 120h...
+Processando lead time 24h...
+Processando lead time 48h...
+Processando lead time 72h...
+Processando lead time 96h...
+Processando lead time 120h...
+Processando lead time 24h...
+Processando lead time 48h...
+Processando lead time 72h...
+Processando lead time 96h...
+Processando lead time 120h...
+Processando lead time 24h...
+Processando lead time 48h...
+Processando lead time 72h...
+Processando lead time 96h...
+Processando lead time 120h...
+Processando lead time 24h...
+Processando lead time 48h...
+Processando lead time 72h...
+Processando lead time 96h...
+Processando lead time 120h...
+
+----------------------------------------------------------------
+Generating heatmaps for skill scores
+----------------------------------------------------------------
+
+Searching in: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Skill/test_new_directory
+PERIODO: 202512
+Number of TXT files found: 54
+
+Skill versus prazo - Processing metric: ETS
+
+Skill versus prazo - Processing metric: CSI
+
+Skill versus prazo - Processing metric: POD
+
+Skill versus prazo - Processing metric: F1
+
+Skill versus prazo - Processing metric: F05
+
+Skill versus limiar - Processing metric: ETS
+
+Skill versus limiar - Processing metric: CSI
+
+Skill versus limiar - Processing metric: POD
+
+Skill versus limiar - Processing metric: F1
+
+Skill versus limiar - Processing metric: F05
+
+Heatmaps - Processing metric: ETS
+
+Heatmaps - Processing metric: CSI
+
+Heatmaps - Processing metric: POD
+
+Heatmaps - Processing metric: F1
+
+Heatmaps - Processing metric: F05
+
+Skill versus limiar com todas as referências - Processing metric: ETS
+
+Skill versus limiar com todas as referências - Processing metric: CSI
+
+Skill versus limiar com todas as referências - Processing metric: POD
+
+Skill versus limiar com todas as referências - Processing metric: F1
+
+Skill versus limiar com todas as referências - Processing metric: F05
+
+Fim do Script.
+
+Searching in: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Skill/test_new_directory
+PERIODO: 202512
+Number of TXT files found: 54
+
+Skill versus prazo - Processing metric: ETS
+
+Skill versus prazo - Processing metric: CSI
+
+Skill versus prazo - Processing metric: POD
+
+Skill versus prazo - Processing metric: F1
+
+Skill versus prazo - Processing metric: F05
+
+Skill versus limiar - Processing metric: ETS
+
+Skill versus limiar - Processing metric: CSI
+
+Skill versus limiar - Processing metric: POD
+
+Skill versus limiar - Processing metric: F1
+
+Skill versus limiar - Processing metric: F05
+
+Heatmaps - Processing metric: ETS
+
+Heatmaps - Processing metric: CSI
+
+Heatmaps - Processing metric: POD
+
+Heatmaps - Processing metric: F1
+
+Heatmaps - Processing metric: F05
+
+Skill versus limiar com todas as referências - Processing metric: ETS
+
+Skill versus limiar com todas as referências - Processing metric: CSI
+
+Skill versus limiar com todas as referências - Processing metric: POD
+
+Skill versus limiar com todas as referências - Processing metric: F1
+
+Skill versus limiar com todas as referências - Processing metric: F05
+
+Fim do Script.
+
+Searching in: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Skill/test_new_directory
+PERIODO: 202512
+Number of TXT files found: 54
+
+Skill versus prazo - Processing metric: ETS
+
+Skill versus prazo - Processing metric: CSI
+
+Skill versus prazo - Processing metric: POD
+
+Skill versus prazo - Processing metric: F1
+
+Skill versus prazo - Processing metric: F05
+
+Skill versus limiar - Processing metric: ETS
+
+Skill versus limiar - Processing metric: CSI
+
+Skill versus limiar - Processing metric: POD
+
+Skill versus limiar - Processing metric: F1
+
+Skill versus limiar - Processing metric: F05
+
+Heatmaps - Processing metric: ETS
+
+Heatmaps - Processing metric: CSI
+
+Heatmaps - Processing metric: POD
+
+Heatmaps - Processing metric: F1
+
+Heatmaps - Processing metric: F05
+
+Skill versus limiar com todas as referências - Processing metric: ETS
+
+Skill versus limiar com todas as referências - Processing metric: CSI
+
+Skill versus limiar com todas as referências - Processing metric: POD
+
+Skill versus limiar com todas as referências - Processing metric: F1
+
+Skill versus limiar com todas as referências - Processing metric: F05
+
+Fim do Script.
+
 
 ################################################################
 * * *               MONAN Analysis finished.               * * *
 ################################################################
 
-Total runtime: 00:05:45
+Total runtime: 00:04:45
 
 ############################################
  ______  _____  _   _  _____  _____  _    _ 
