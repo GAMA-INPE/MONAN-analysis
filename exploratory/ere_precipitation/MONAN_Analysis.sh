@@ -35,9 +35,9 @@ HEATMAP="MONAN_Heatmap.py"              # Plot_Series_Heatmap_skill_score_MONAN_
 # SUFIXO_ARQ: Suffix for the MONAN output files                     #
 #####################################################################
 
-NETCDF_PATH="/p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/"
-MONAN_PATH="/p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout/"
-OUTPUT_PATH="/p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/"
+NETCDF_PATH="/p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs"
+MONAN_PATH="/p/projetos/monan_atm/eduardo.eras/MONAN/scripts_CD-CT/dataout"
+OUTPUT_PATH="/p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output"
 LISTA_PATH="/p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/listas_medias"
 PREFIXO_ARQ="MONAN_DIAG_G_POS_GFS_"
 SUFIXO_ARQ=".00.00.x655362L55.nc"
@@ -45,8 +45,7 @@ SUFIXO_ARQ=".00.00.x655362L55.nc"
 #####################################################################
 # Erase old output files to avoid confusion (optional, be careful!) #
 #####################################################################
-rm -rf ${OUTPUT_PATH}/*
-rm -rf ${LISTA_PATH}/*
+ERASE=1
 
 ##########################################################
 # Date range for the simulations (Minimum range: 5 days) #
@@ -259,6 +258,19 @@ echo -e "##############################################\n"
 
 # Record the start time for runtime calculation
 START_TIME=$(date +%s)
+
+#Normalize paths by ensuring they end with a slash
+NETCDF_PATH=${NETCDF_PATH%/}/
+MONAN_PATH=${MONAN_PATH%/}/
+OUTPUT_PATH=${OUTPUT_PATH%/}/
+#Mean lists path have no trailing slash
+LISTA_PATH=${LISTA_PATH%/}
+
+#Erase old output files if the flag is set
+if [ $ERASE -eq 1 ]; then
+    rm -rf ${OUTPUT_PATH}/*
+    rm -rf ${LISTA_PATH}/*
+fi
 
 # Run the analysis functions in sequence ###################################
 if [ $RUN_BASE_ANALYSIS -eq 1 ]; then
