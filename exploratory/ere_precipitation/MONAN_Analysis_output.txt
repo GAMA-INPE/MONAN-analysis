@@ -1709,7 +1709,7 @@ Computing monthly mean for process: bias
 ----------------------------------------------------------------
 
 Dir base: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Bias
-Output dir: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/test_new_directory
+Output dir: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Test_Mosaic
 Processo: bias
 Processando rodada 2025121000, prazo 24h, data válida 2025121100
 Processando rodada 2025121100, prazo 24h, data válida 2025121200
@@ -1772,7 +1772,7 @@ Computing monthly mean for process: rmse
 ----------------------------------------------------------------
 
 Dir base: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/precip_24h/RMSE
-Output dir: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/test_new_directory
+Output dir: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Test_Mosaic
 Processo: rmse
 Processando rodada 2025121000, prazo 24h, data válida 2025121100
 Processando rodada 2025121100, prazo 24h, data válida 2025121200
@@ -1840,7 +1840,7 @@ Computing monthly mean for skill score with threshold: 1 mm
 ----------------------------------------------------------------
 
 Dir base: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/precip_24h/CONTINGENCIA
-Output dir: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/test_new_directory
+Output dir: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Test_Mosaic
 Processo: skill, limiar: thr1mm
 Processando rodada 2025121000, prazo 24h, data válida 2025121100
 Processando rodada 2025121100, prazo 24h, data válida 2025121200
@@ -1903,7 +1903,7 @@ Computing monthly mean for skill score with threshold: 2 mm
 ----------------------------------------------------------------
 
 Dir base: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/precip_24h/CONTINGENCIA
-Output dir: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/test_new_directory
+Output dir: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Test_Mosaic
 Processo: skill, limiar: thr2mm
 Processando rodada 2025121000, prazo 24h, data válida 2025121100
 Processando rodada 2025121100, prazo 24h, data válida 2025121200
@@ -1966,7 +1966,7 @@ Computing monthly mean for skill score with threshold: 5 mm
 ----------------------------------------------------------------
 
 Dir base: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/precip_24h/CONTINGENCIA
-Output dir: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/test_new_directory
+Output dir: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Test_Mosaic
 Processo: skill, limiar: thr5mm
 Processando rodada 2025121000, prazo 24h, data válida 2025121100
 Processando rodada 2025121100, prazo 24h, data válida 2025121200
@@ -2029,7 +2029,7 @@ Computing monthly mean for skill score with threshold: 10 mm
 ----------------------------------------------------------------
 
 Dir base: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/precip_24h/CONTINGENCIA
-Output dir: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/test_new_directory
+Output dir: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Test_Mosaic
 Processo: skill, limiar: thr10mm
 Processando rodada 2025121000, prazo 24h, data válida 2025121100
 Processando rodada 2025121100, prazo 24h, data válida 2025121200
@@ -2092,7 +2092,7 @@ Computing monthly mean for skill score with threshold: 20 mm
 ----------------------------------------------------------------
 
 Dir base: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/precip_24h/CONTINGENCIA
-Output dir: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/test_new_directory
+Output dir: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Test_Mosaic
 Processo: skill, limiar: thr20mm
 Processando rodada 2025121000, prazo 24h, data válida 2025121100
 Processando rodada 2025121100, prazo 24h, data válida 2025121200
@@ -2155,7 +2155,7 @@ Computing monthly mean for skill score with threshold: 50 mm
 ----------------------------------------------------------------
 
 Dir base: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/precip_24h/CONTINGENCIA
-Output dir: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/test_new_directory
+Output dir: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Test_Mosaic
 Processo: skill, limiar: thr50mm
 Processando rodada 2025121000, prazo 24h, data válida 2025121100
 Processando rodada 2025121100, prazo 24h, data válida 2025121200
@@ -2252,7 +2252,7 @@ Processando lead time 120h...
 Generating heatmaps for skill scores
 ----------------------------------------------------------------
 
-Searching in: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Skill/test_new_directory
+Searching in: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Skill/Test_Mosaic
 PERIODO: 202512
 Number of TXT files found: 54
 
@@ -2298,7 +2298,7 @@ Skill versus limiar com todas as referências - Processing metric: F05
 
 Fim do Script.
 
-Searching in: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Skill/test_new_directory
+Searching in: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Skill/Test_Mosaic
 PERIODO: 202512
 Number of TXT files found: 54
 
@@ -2344,7 +2344,7 @@ Skill versus limiar com todas as referências - Processing metric: F05
 
 Fim do Script.
 
-Searching in: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Skill/test_new_directory
+Searching in: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Skill/Test_Mosaic
 PERIODO: 202512
 Number of TXT files found: 54
 
@@ -2390,12 +2390,28 @@ Skill versus limiar com todas as referências - Processing metric: F05
 
 Fim do Script.
 
+
+----------------------------------------------------------------
+Generating heatmap mosaic for final report
+----------------------------------------------------------------
+
+Dir base: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/
+Analysis name: Test_Mosaic
+Output dir: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/mosaic_Test_Mosaic
+Data dir: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Skill/Test_Mosaic/Skill_fig_mensal/heatmap_lead_threshold/
+Output file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/mosaic_Test_Mosaic/mosaic_Test_Mosaic.png
+Found file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Skill/Test_Mosaic/Skill_fig_mensal/heatmap_lead_threshold/heatmap_CSI_MONAN_AMS_MSWEP.png
+Found file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Skill/Test_Mosaic/Skill_fig_mensal/heatmap_lead_threshold/heatmap_CSI_MONAN_GLB_MSWEP.png
+Found file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Skill/Test_Mosaic/Skill_fig_mensal/heatmap_lead_threshold/heatmap_CSI_BAM_AMS_MSWEP.png
+Found file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Skill/Test_Mosaic/Skill_fig_mensal/heatmap_lead_threshold/heatmap_CSI_BAM_GLB_MSWEP.png
+Found file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Skill/Test_Mosaic/Skill_fig_mensal/heatmap_lead_threshold/heatmap_CSI_GFS_AMS_MSWEP.png
+Found file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Skill/Test_Mosaic/Skill_fig_mensal/heatmap_lead_threshold/heatmap_CSI_GFS_GLB_MSWEP.png
 
 ################################################################
 * * *               MONAN Analysis finished.               * * *
 ################################################################
 
-Total runtime: 00:04:39
+Total runtime: 00:04:44
 
 ############################################
  ______  _____  _   _  _____  _____  _    _ 

@@ -72,7 +72,6 @@ ANALYSIS_NAME = args.ANALYSIS_NAME
 OUTPUT_PATH = Path(args.OUTPUT_PATH)
 
 # Input / Output directories and parameters
-#BASE_SKILL_DIR = "/home2/eduardo.eras/workspace/python/output/Skill/10_days"
 BASE_SKILL_DIR = f"{OUTPUT_PATH}/Skill/{ANALYSIS_NAME}"
 BASE_OUT_DIR = BASE_SKILL_DIR + "/Skill_fig_mensal"
 
@@ -105,6 +104,12 @@ ESTILO_REF = {
 }
 
 ORDEM_MODELOS = ["MONAN", "BAM", "GFS"]
+
+# Fixar valores máximo e mínimo para as barras de cores dos heatmaps
+# (opcional, pode ser ajustado dinamicamente)
+VALOR_FIXO = True
+VALOR_MIN = 0.0
+VALOR_MAX = 0.7
 
 # Leitura da tabelas txt
 arquivos = glob.glob(
@@ -299,9 +304,13 @@ for metrica in METRICAS_PRINCIPAIS:
     if dfm_all.empty:
         continue
 
-    # Limites globais da barra de cores
-    vmin = dfm_all.valor.min()
-    vmax = dfm_all.valor.max()
+    if VALOR_FIXO:
+        vmin = VALOR_MIN
+        vmax = VALOR_MAX
+    else:
+        # Limites globais da barra de cores
+        vmin = dfm_all.valor.min()
+        vmax = dfm_all.valor.max()
 
     # Opcional, arredondar o vmax para facilitar comparação visual
     vmax = np.ceil(vmax * 10) / 10

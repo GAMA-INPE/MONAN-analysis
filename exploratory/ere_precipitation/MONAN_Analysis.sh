@@ -24,6 +24,7 @@ MEAN_MAE="MONAN_mean_Mae.py"            # Mean_MAE_MONAN_BAM_GFS.py
 MEAN_RMSE="MONAN_mean_RMSE.py"          # Mean_RMSE_MONAN_BAM_GFS.py
 MEAN_SKILL="MONAN_mean_Skill.py"        # Mean_Skill_score_MONAN_BAM_GFS.py
 HEATMAP="MONAN_Heatmap.py"              # Plot_Series_Heatmap_skill_score_MONAN_BAM_GFS.py
+MOSAIC="MONAN_heatmap_mosaic.sh"        # Heatmap mosaic for final report
 
 #####################################################################
 # Input and output directories                                      #
@@ -44,6 +45,7 @@ SUFIXO_ARQ=".00.00.x655362L55.nc"
 
 #####################################################################
 # Erase old output files to avoid confusion (optional, be careful!) #
+# Set ERASE=1 to enable, ERASE=0 to disable                         #
 #####################################################################
 ERASE=1
 
@@ -80,7 +82,7 @@ THRESHOLD=(1 2 5 10 20 50)
 ######################################
 # e.g., "full_range", "short_test", etc.
 #ANALYSIS_NAME="30_days_mean"
-ANALYSIS_NAME="test_new_directory"
+ANALYSIS_NAME="Test_Mosaic"
 
 ##################################
 # Generate Plot Maps?            #
@@ -96,6 +98,7 @@ RUN_MONTHLY_ANALYSIS=1
 RUN_MEAN_ANALYSIS=1
 RUN_SKILL_ANALYSIS=1
 RUN_HEATMAP_ANALYSIS=1
+RUN_MOSAIC_ANALYSIS=1
 
 #################################################################################
 #                                                                               #
@@ -136,8 +139,10 @@ RUN_HEATMAP_ANALYSIS=1
 # Functions, Methods and Imports #
 ##################################
 
-#Load CDO monule for data manipulation
+#Load environment modules and activate conda environment for Python dependencies
 module load cdo
+source /p/app/anaconda/etc/profile.d/conda.sh
+conda activate workspace
 
 #Function to print headers for better readability
 print_header() {
@@ -239,6 +244,11 @@ heatmap_analysis() {
     done
 }
 
+mosaic_analysis() {
+    print_status "Generating heatmap mosaic for final report"
+    bash ${MOSAIC} ${OUTPUT_PATH} ${ANALYSIS_NAME}
+}
+
 #################################################################################
 #                                                                               #
 #                              Main analysis loop                               #
@@ -289,6 +299,9 @@ if [ $RUN_SKILL_ANALYSIS -eq 1 ]; then
 fi
 if [ $RUN_HEATMAP_ANALYSIS -eq 1 ]; then
     heatmap_analysis
+fi
+if [ $RUN_MOSAIC_ANALYSIS -eq 1 ]; then
+    mosaic_analysis
 fi
 #############################################################################
 
