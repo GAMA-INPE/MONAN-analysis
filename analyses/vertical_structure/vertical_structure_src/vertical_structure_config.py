@@ -43,7 +43,7 @@ VERTICAL_LEVEL_SPEC = "55"
 # Variables to analyze
 VARIABLES_TO_ANALYZE = [
     "temperature",
-    "spechum",
+    #"spechum",
     #"zgeo",
     #"uzonal",
     #"umeridional",
@@ -67,7 +67,7 @@ GFS_STREAM_NAME = "levels"
 # Data interpolation configurations
 #===================================================================================================
 # Name of data stream from GFS to read (e.g. "levels" or "surface")
-INTERPOL_TYPE = "gfs_to_monan" # "monan_to_gfs" or "gfs_to_monan"
+INTERPOL_TYPE = "monan_to_gfs" # "monan_to_gfs" or "gfs_to_monan"
 #===================================================================================================
 # Statistics configurations
 #===================================================================================================
@@ -110,7 +110,7 @@ DATE_FINAL = "2026020500"
 DATE_TIME_STEP = "24"
 # Time windows to analyze
 TIME_WINDOWS_TO_ANALYZE = [
-    "00",
+    #"00",
     "24",
     #"48",
     #"72",
