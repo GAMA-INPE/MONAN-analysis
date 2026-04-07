@@ -34,10 +34,15 @@ import monan_analysis.preprocess as preprocess
 import monan_analysis.stats as stats
 import monan_analysis.plots as plots
 from . import vertical_structure_config as vs_config
+from . import vertical_structure_main as vs_main
 import os
 import xarray as xr
 import subprocess
+import importlib
 
+#===================================================================================================
+# Functions for single run
+#===================================================================================================
 def create_folder_structure():
     # Get date to include in output filenames
     date_in_string = utils.get_date_as_YYYYMMDDHH_str(
@@ -262,10 +267,62 @@ def cp_config_files():
     gen_config_file_path = os.path.join(gen_config_package_dir, "config.py")
     ## Copy general config file
     subprocess.run(["cp", gen_config_file_path, vs_config.DIR_OUTPUT_DATA+f"/date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}"], check=True)
+#===================================================================================================
+
+
+#===================================================================================================
+# Functions for multiple run
+#===================================================================================================
+def run_main_for_each_date_and_time_window(date_list):
+    for date in date_list:
+        for time_window in vs_config.TIME_WINDOWS_TO_ANALYZE:
+            print (f"\n Date:{date}; time window: {time_window}")
+            print ("\n Updating analysis-specific config file...")
+            update_config_file(
+                config_file_path="vertical_structure_src/vertical_structure_config.py",
+                date=date, 
+                time_window=time_window
+                )      
+            # Reload the updated config file
+            importlib.reload(vs_config)
+            vs_main.main()
+
+def concatenate_datasets_for_all_dates_and_each_time_window(date_list):
+    for time_window in vs_config.TIME_WINDOWS_TO_ANALYZE:
+        print (f"\n Time window: {time_window}")
+        # First, concatenate datasets for statistical metrics calculated for each date
+        print (f"\n Stats datasets... {time_window}")
+        concatenate_stats_datasets(
+            date_list=date_list, 
+            time_window=time_window
+            )
+        # Second, concatenate datasets for the variables analyzed for each date (they will be used
+        # to calculate metrics that involve time averages)
+        print (f"\n Vars datasets... {time_window}")
+        concatenate_var_datasets(
+            date_list=date_list, 
+            time_window=time_window
+            )
+
+def calculate_mean_metrics_for_all_dates_and_each_time_window():
+    for time_window in vs_config.TIME_WINDOWS_TO_ANALYZE:
+        print (f"\n Time window: {time_window}")
+        # First, mean of metrics that can be calculated for each time instant independently
+        # (e.g., bias, relative error)
+        calculate_mean_single_time_metrics(time_window=time_window)
+        # Second, metrics that require multiple time instants for their definition
+        # (e.g., RMSE, anomaly correlation coefficient)
+        calculate_multi_time_metrics(time_window=time_window)
+
+def plot_mean_metrics_for_all_dates_and_each_time_window():
+    for time_window in vs_config.TIME_WINDOWS_TO_ANALYZE:
+        print (f"\n Time window: {time_window}")
+        plot_mean_metrics(time_window=time_window)
 
 def update_config_file(config_file_path, date, time_window):
     """
-    Updates YEAR, MONTH, DAY, HOUR, and TIME_WINDOW in the config file without changing the order.
+    Updates YEAR, MONTH, DAY, HOUR, and TIME_WINDOW in the config file without changing order
+    of already existing variables.
 
     Args:
         config_file_path (str): Path to the vertical_structure_config.py file.
@@ -327,13 +384,7 @@ def concatenate_stats_datasets(date_list,time_window):
     # Construct filepaths for stats datasets to be concatenated
     for stat in vs_config.STATS_METRICS_TO_ANALYZE:
         stat_filepaths = []
-        for date in date_list:
-            date_in_string = utils.get_date_as_YYYYMMDDHH_str(
-                year=date[:4], 
-                month=date[4:6], 
-                day=date[6:8], 
-                hour=date[8:10]
-            )
+        for date_in_string in date_list:
             stat_filepath = f"{vs_config.DIR_OUTPUT_DATA}/date_{date_in_string}_time_window_{time_window}/{stat}_date_{date_in_string}_time_window_{time_window}.nc"
             stat_filepaths.append(stat_filepath)
         # Concatenate stat datasets along "Time" dimension
@@ -359,24 +410,21 @@ def calculate_mean_single_time_metrics(time_window):
 def concatenate_var_datasets(date_list,time_window,verbose='y'):
     # Create folder to save concatenated datasets
     os.makedirs(vs_config.DIR_OUTPUT_DATA+f"/date_multiple_time_window_{time_window}", exist_ok=True)
-    # Get date to include in output filenames
-    date_in_string = utils.get_date_as_YYYYMMDDHH_str(
-    vs_config.YEAR, vs_config.MONTH, vs_config.DAY, vs_config.HOUR
-    )
     # Construct filepaths for variable datasets to be concatenated
     var_monan_filepaths = []
     var_gfs_filepaths = []
-    for date in date_list:
-        date_in_string = utils.get_date_as_YYYYMMDDHH_str(
-                year=date[:4], 
-                month=date[4:6], 
-                day=date[6:8], 
-                hour=date[8:10]
-            )
-        var_monan_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/monan_mapped_to_gfs_date_{date_in_string}_time_window_{time_window}.nc"
-        var_monan_filepaths.append(var_monan_filepath)
-        var_gfs_filepath = f"{vs_config.DIR_INPUT_INTERMEDIATE}/gfs_in_monan_format_date_{date_in_string}_time_window_{time_window}.nc"
-        var_gfs_filepaths.append(var_gfs_filepath)
+    if vs_config.INTERPOL_TYPE == 'monan_to_gfs':
+        for date_in_string in date_list:
+            var_monan_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/monan_mapped_to_gfs_date_{date_in_string}_time_window_{time_window}.nc"
+            var_monan_filepaths.append(var_monan_filepath)
+            var_gfs_filepath = f"{vs_config.DIR_INPUT_INTERMEDIATE}/gfs_in_monan_format_date_{date_in_string}_time_window_{time_window}.nc"
+            var_gfs_filepaths.append(var_gfs_filepath)
+    elif vs_config.INTERPOL_TYPE == 'gfs_to_monan':
+        for date_in_string in date_list:
+            var_monan_filepath = f"{vs_config.DIR_INPUT_INTERMEDIATE}/monan_selected_variables_and_levels_date_{date_in_string}_time_window_{time_window}.nc"
+            var_monan_filepaths.append(var_monan_filepath)
+            var_gfs_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/gfs_mapped_to_monan_date_{date_in_string}_time_window_{time_window}.nc"
+            var_gfs_filepaths.append(var_gfs_filepath)
     # Concatenate variable datasets along "Time" dimension
     if verbose == 'y':
         print ("Concatenating variable datasets for time window", time_window)
@@ -385,17 +433,17 @@ def concatenate_var_datasets(date_list,time_window,verbose='y'):
     if verbose == 'y':
         print ("Done concatenating variable datasets for time window", time_window)
     # Save concatenated datasets in nc file
-    var_monan_concat_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/monan_mapped_to_gfs_date_concat_from_{date_list[0]}_to_{date_list[-1]}_time_window_{time_window}.nc"
+    var_monan_concat_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/monan_concat_date_from_{date_list[0]}_to_{date_list[-1]}_time_window_{time_window}.nc"
     ds_var_monan_concat.to_netcdf(var_monan_concat_filepath)
-    var_gfs_concat_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/gfs_in_monan_format_date_concat_from_{date_list[0]}_to_{date_list[-1]}_time_window_{time_window}.nc"
+    var_gfs_concat_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/gfs_concat_date_from_{date_list[0]}_to_{date_list[-1]}_time_window_{time_window}.nc"
     ds_var_gfs_concat.to_netcdf(var_gfs_concat_filepath)
 
 def calculate_multi_time_metrics(time_window):
     # Create folder to save multi-time stats metrics datasets
     os.makedirs(vs_config.DIR_OUTPUT_DATA+f"/date_multiple_time_window_{time_window}", exist_ok=True)
     # Construct filepaths for concatenated variable datasets
-    var_monan_concat_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/monan_mapped_to_gfs_date_concat_from_{vs_config.DATE_INIT}_to_{vs_config.DATE_FINAL}_time_window_{time_window}.nc"
-    var_gfs_concat_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/gfs_in_monan_format_date_concat_from_{vs_config.DATE_INIT}_to_{vs_config.DATE_FINAL}_time_window_{time_window}.nc"
+    var_monan_concat_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/monan_concat_date_from_{vs_config.DATE_INIT}_to_{vs_config.DATE_FINAL}_time_window_{time_window}.nc"
+    var_gfs_concat_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/gfs_concat_date_from_{vs_config.DATE_INIT}_to_{vs_config.DATE_FINAL}_time_window_{time_window}.nc"
     # Read concatenated variable datasets
     ds_var_monan_concat = xr.open_dataset(var_monan_concat_filepath, engine="netcdf4")
     ds_var_gfs_concat = xr.open_dataset(var_gfs_concat_filepath, engine="netcdf4")
@@ -463,3 +511,4 @@ def plot_mean_metrics(time_window):
                         cmap_dict=vs_config.COLORMAP_DIVERGING_BY_VAR_DICT,
                         metric_name=metric
                         )
+#===================================================================================================
