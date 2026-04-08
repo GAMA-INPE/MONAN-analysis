@@ -34,32 +34,32 @@ Acknowledgments
 ---------------
 This file was created with the assistance of GitHub Copilot. 
 """
-import vertical_analysis_aux as va_aux
+from . import vertical_structure_aux as vs_aux
 
-if __name__ == "__main__":
+def main():
     #===============================================================================================
     # Initialization: create folder structure if necessary
     #===============================================================================================
     print ("\n Initializing folder structure if not already existent...")
-    va_aux.create_folder_structure()
+    vs_aux.create_folder_structure()
 
     #===============================================================================================
     # Read and preprocess MONAN data 
     #===============================================================================================
     print ("\n Reading and selecting MONAN data...")
-    ds_monan_selected_filepath = va_aux.read_and_preprocess_monan_data()
+    ds_monan_selected_filepath = vs_aux.read_and_preprocess_monan_data()
 
     #===============================================================================================
     # Read and preprocess GFS analysis data
     #===============================================================================================
     print ("\n Reading and selecting GFS data, and converting it to MONAN data format...")
-    ds_gfs_in_monan_format_filepath = va_aux.read_and_preprocess_gfs_data()
+    ds_gfs_in_monan_format_filepath = vs_aux.read_and_preprocess_gfs_data()
 
     #===============================================================================================
-    # Map MONAN data to GFS grid
+    # Interpolate MONAN / GFS data for comparability
     #===============================================================================================
-    print ("\n Mapping MONAN data to GFS grid for comparison...")
-    ds_monan_mapped_to_gfs_filepath = va_aux.map_monan_to_gfs_grid(
+    print ("\n Interpolating MONAN / GFS data for comparability...")
+    ds_ref_filepath, ds_prediction_filepath = vs_aux.interpolate_monan_gfs(
         ds_monan_selected_filepath=ds_monan_selected_filepath,
         ds_gfs_in_monan_format_filepath=ds_gfs_in_monan_format_filepath
         )
@@ -68,20 +68,23 @@ if __name__ == "__main__":
     # Calculate statistics
     #===============================================================================================
     print ("\n Calculating statistics...")
-    ds_stats_filepath_dict = va_aux.calculate_statistics(
-        ds_ref_filepath=ds_gfs_in_monan_format_filepath,
-        ds_prediction_filepath=ds_monan_mapped_to_gfs_filepath
+    ds_stats_filepath_dict = vs_aux.calculate_statistics(
+        ds_ref_filepath=ds_ref_filepath,
+        ds_prediction_filepath=ds_prediction_filepath
         )
 
     #===============================================================================================
     # Plot statistics
     #===============================================================================================
     print ("\n Plotting statistics...")
-    va_aux.plot_statistics(ds_stats_filepath_dict=ds_stats_filepath_dict)
+    vs_aux.plot_statistics(ds_stats_filepath_dict=ds_stats_filepath_dict)
     
     #============================
     # Copy config files
     #============================
     print ("\n Copying config files...")
-    va_aux.cp_config_files()
+    vs_aux.cp_config_files()
     print("\n Done.")
+
+if __name__ == "__main__":
+    main()

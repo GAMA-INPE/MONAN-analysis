@@ -24,6 +24,7 @@ This file was created with the assistance of GitHub Copilot.
 
 import datetime
 import argparse
+import monan_analysis.config as config
 
 def example_function_utils():
     print ("this is a function imported from the utils.py module.")
@@ -52,6 +53,32 @@ def get_final_date_from_initial_date(date_in_datetime, time_window):
 def get_initial_date_from_final_date(date_in_datetime, time_window):
     date_init_in_datetime = date_in_datetime - datetime.timedelta(hours=int(time_window))
     return date_init_in_datetime
+
+def get_date_list(date_init, date_final, time_step):
+    """
+    Generate a list of dates between date_init and date_final with a given time_step.
+
+    Args:
+        date_init (str): Initial date in the format "%Y%m%d%H".
+        date_final (str): Final date in the format "%Y%m%d%H".
+        time_step (str): Time step in hours.
+
+    Returns:
+        date_list: List of dates as strings in the format "%Y%m%d%H".
+    """
+
+    # Parse initial and final dates
+    start_date = datetime.datetime.strptime(date_init, config.DATE_FORMAT_STRING)
+    end_date = datetime.datetime.strptime(date_final, config.DATE_FORMAT_STRING)
+
+    # Create list of dates
+    date_list = []
+    current_date = start_date
+    while current_date <= end_date:
+        date_list.append(current_date.strftime(config.DATE_FORMAT_STRING))
+        current_date += datetime.timedelta(hours=int(time_step))
+
+    return date_list
 
 def setup_parser():
     """Set up the argument parser with common arguments."""

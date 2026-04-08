@@ -97,6 +97,8 @@ ____________
 ## Quick user & developer guide
 The core idea behind this project is that analysis scripts, although developed for performing a particular type of investigation, involve also many repetitive tasks that can be organized in general routines to be reused in the future.
 
+### Workflow for analysis pipelines
+
 To account for this, the suggested workflow for performing analyses in this repository is the following:
 1) Before starting your analysis, check out the general functions and settings already available in our packages under `src/`. They may be useful for your particular purposes.
 
@@ -112,7 +114,9 @@ As explained in 1), during steps 2) and 3) the user can take advantage of the al
 from monan_analysis.plots import example_function_plots
 ```
 
-For developing the project, the following workflow is suggested.
+### Technical workflow for developing the project
+
+For developing the project, the following technical workflow is suggested:
 
 1) Preferably, new ideas for implementations should be added to issues (https://github.com/GAMA-INPE/MONAN-analysis/issues), where they can be discussed with the team.
 

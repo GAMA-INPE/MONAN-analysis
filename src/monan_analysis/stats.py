@@ -4,7 +4,7 @@ stats.py
 
 Description
 -----------
-This module contains functions for calculations of statistics of analyses.
+This module contains functions for calculations and settings of analysis statistics.
 
 Usage
 -----
@@ -91,9 +91,11 @@ def relative_error(predictions, observations):
     
     Relative error is here defined as
 
-    relative_error = |predictions - observations| / |observations|,
+    relative_error = 100*(predictions - observations) / |observations|,
 
-    assuming observations are the true value of the variable, and predictions are an approximation (1).
+    assuming observations are the true value of the variable, and predictions are an approximation.
+    This is roughly the definition given in (1), except that here we do not take the absolute value
+    of the numerator so that the direction of the error is taken into account.
 
     Reference:
     1. Burden and Faires, Numerical Analysis, 9th edition, 2011
@@ -103,7 +105,7 @@ def relative_error(predictions, observations):
     
     result = predictions.copy()
     for var in predictions.data_vars:
-        result[var] = (predictions[var] - observations[var]) / observations[var]
+        result[var] = 100*(predictions[var] - observations[var]) / abs(observations[var])
     
     return result
 
@@ -113,7 +115,7 @@ def relative_error_mean(predictions, observations):
     
     Relative error is here defined as
 
-    relative_error = |predictions - observations| / |observations|,
+    relative_error = 100*(predictions - observations) / |observations|,
 
     assuming observations are the true value of the variable, and predictions are an approximation (1).
     This function calculates the mean of the relative_error array defined above.
@@ -126,17 +128,20 @@ def relative_error_mean(predictions, observations):
     
     result = predictions.copy()
     for var in predictions.data_vars:
-        result[var] = ((predictions[var] - observations[var]) / observations[var]).mean()
+        result[var] = 100*((predictions[var] - observations[var]) / abs(observations[var])).mean()
     
     return result
 
-def rmse(predictions, observations):
+def rmse(predictions, observations, dim):
     """
-    Calculate the root mean square error between predictions and observations.
+    Calculate the root mean square error (rmse) between predictions and observations.
     
-    The root mean square error is here defined as the root of the mean squared error as defined in (1), i.e.
+    Rmse is here defined as the root of the mean squared error as defined in (1), i.e.
 
-    RMSE = sqrt(1/n sum_{i=1}^{n} (prediction_i - observation_i)**2) 
+    RMSE = sqrt(1/n sum_{i=1}^{n} (prediction_i - observation_i)**2),
+
+    where the mean is taken over the dimension(s) specified by the user in the dim argument, 
+    and n is the number of components in the field.
 
     Reference:
     1. Jolliffe and Stephenson, Forecast Verification: A Practitioner's Guide in Atmospheric Science, 2003
@@ -146,25 +151,29 @@ def rmse(predictions, observations):
     
     result = predictions.copy()
     for var in predictions.data_vars:
-        result[var] = (((predictions[var] - observations[var]) ** 2).mean()) ** 0.5
+        result[var] = (((predictions[var] - observations[var]) ** 2).mean(dim=dim)) ** 0.5
+
+    # Explicitly drop the specified dimension from the result dataset
+    if dim in result.dims:
+        result = result.drop_dims(dim)
     
     return result
 
-def anomaly_correlation_coefficient(predictions, observations):
+def anomaly_correlation_coefficient(predictions, observations, dim):
     """
     Calculate the anomaly correlation coefficient between predictions and observations.
     
     The anomaly correlation coefficient is here defined as the mean of the product of the anomalies 
     of the predictions and observations, divided by the product of the standard deviations of the 
-    anomalies of the predictions and observations times the number of components in the field. 
+    anomalies of the predictions and observations. 
     This definition follows roughly that of (1), except that in (1) the anomalies are calculated by 
     subtracting the climatological mean of the variable and then again its spatial mean, while here 
-    we subtract only the mean of the variable over the whole array. The user is expected to calculate 
-    the anomalies as she/he sees fit before calling this function.
+    we subtract only the mean of the variable over the dimension specified by the user in the dim argument. 
+    The user is expected to calculate the anomalies as she/he sees fit.
 
     Mathematically, we define
 
-    ACC = (pred_anom * obs_anom).mean() / (n*(pred_anom ** 2).mean() ** 0.5 * (obs_anom ** 2).mean() ** 0.5),
+    ACC = (pred_anom * obs_anom).mean(dim=dim) / ((pred_anom ** 2).mean() ** 0.5 * (obs_anom ** 2).mean() ** 0.5),
 
     where
     pred_anom = predictions - predictions.mean()
@@ -179,8 +188,24 @@ def anomaly_correlation_coefficient(predictions, observations):
     
     result = predictions.copy()
     for var in predictions.data_vars:
-        pred_anom = predictions[var] - predictions[var].mean()
-        obs_anom = observations[var] - observations[var].mean()
-        result[var] = (pred_anom * obs_anom).mean() / (len(predictions[var])*(pred_anom ** 2).mean() ** 0.5 * (obs_anom ** 2).mean() ** 0.5)
-    
+        pred_anom = predictions[var] - predictions[var].mean(dim=dim)
+        obs_anom = observations[var] - observations[var].mean(dim=dim)
+        result[var] = (pred_anom * obs_anom).mean(dim=dim) / (
+            (pred_anom ** 2).mean(dim=dim) ** 0.5 *
+            (obs_anom ** 2).mean(dim=dim) ** 0.5
+        )
+
+    # Explicitly drop the specified dimension from the result dataset
+    if dim in result.dims:
+        result = result.drop_dims(dim)
+
     return result
+
+def get_stats_metric_units(var_units_dict,var,metric):
+    metric_units_dict = {
+        "bias": var_units_dict[var],
+        "relative_error": "%",
+        "rmse": var_units_dict[var],
+        "anomaly_correlation_coefficient": " "
+    }
+    return metric_units_dict[metric]
