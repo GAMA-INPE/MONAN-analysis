@@ -9,9 +9,7 @@ vertical_structure_src/vertical_structure_config.py.
 """
 import monan_analysis.utils as utils
 import vertical_structure_src.vertical_structure_config as vs_config
-import vertical_structure_src.vertical_structure_main as vs_main
 import vertical_structure_src.vertical_structure_aux as vs_aux
-import importlib
 import time
 
 if __name__ == "__main__":

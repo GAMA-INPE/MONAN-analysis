@@ -91,7 +91,7 @@ def relative_error(predictions, observations):
     
     Relative error is here defined as
 
-    relative_error = (predictions - observations) / |observations|,
+    relative_error = 100*(predictions - observations) / |observations|,
 
     assuming observations are the true value of the variable, and predictions are an approximation.
     This is roughly the definition given in (1), except that here we do not take the absolute value
@@ -115,7 +115,7 @@ def relative_error_mean(predictions, observations):
     
     Relative error is here defined as
 
-    relative_error = |predictions - observations| / |observations|,
+    relative_error = 100*(predictions - observations) / |observations|,
 
     assuming observations are the true value of the variable, and predictions are an approximation (1).
     This function calculates the mean of the relative_error array defined above.
