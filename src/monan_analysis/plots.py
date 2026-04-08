@@ -56,16 +56,19 @@ def plot_var_map(ds, var, cartopy_data_dir, level=None, Time=None,
             if verbose == 'y':
                 print("'level' in data coords, but no value given. Choosing 'level' index 0")
             ds_subset = ds_subset.isel(level=0)
-            level="N/A"
+            level = ds_subset["level"].values.item()
+            level_label = f"{int(float(level)/100)} hPa,"
         else:
             if verbose == 'y':
                 print(f"'level' in data coords, and input value given. Choosing 'level'={level}")
             ds_subset = ds_subset.sel(level=int(level))
             level=int(level)
+            level_label = f"{int(float(level)/100)} hPa,"
     else:
         if verbose == 'y':
             print ("'level' coordinate not found in dataset. Proceeding without 'level' selection.")
-        level="N/A"
+        level=None
+        level_label = ""
     # Handle time selection
     if "Time" in ds_subset.sizes:
         if Time is None:
@@ -114,55 +117,11 @@ def plot_var_map(ds, var, cartopy_data_dir, level=None, Time=None,
     mesh = ax.pcolormesh(data.longitude, data.latitude, data, transform=ccrs.PlateCarree(), 
                          cmap=cmap, vmin=vmin, vmax=vmax)
 
-    def _coerce_float(value):
-        try:
-            return float(value)
-        except (TypeError, ValueError):
-            return None
-
-    def _get_numeric_level(level_value, data_array):
-        numeric_level = _coerce_float(level_value)
-        if numeric_level is not None:
-            return numeric_level, "Pa"
-
-        coords = getattr(data_array, "coords", {})
-        for coord_name, unit in (
-            ("level", "Pa"),
-            ("lev", "Pa"),
-            ("pressure", "hPa"),
-            ("isobaricInPa", "Pa"),
-            ("isobaricInhPa", "hPa"),
-        ):
-            if coord_name in coords:
-                coord = coords[coord_name]
-                coord_values = getattr(coord, "values", coord)
-                if getattr(coord_values, "size", 1) == 0:
-                    continue
-                if getattr(coord_values, "shape", ()) == ():
-                    candidate = coord_values.item() if hasattr(coord_values, "item") else coord_values
-                else:
-                    candidate = coord_values.flat[0] if hasattr(coord_values, "flat") else coord_values[0]
-                numeric_level = _coerce_float(candidate)
-                if numeric_level is not None:
-                    return numeric_level, unit
-
-        return None, None
-
-    numeric_level, numeric_level_unit = _get_numeric_level(level, data)
-    if numeric_level is not None:
-        display_level = int(numeric_level / 100) if numeric_level_unit == "Pa" else int(numeric_level)
-        level_label = f"{display_level} hPa"
-    else:
-        level_label = None
-
     # Define metric units
     metric_units = stats.get_stats_metric_units(var_units_dict=config.VAR_UNITS_DICT, var=var, metric=metric_name) if metric_name is not None else "N/A"
     plt.colorbar(mesh, label=f"{metric_name} [{metric_units}]" if metric_name is not None else f"{var} [{config.VAR_UNITS_DICT[var]}]")
-    if metric_name is not None:
-        title = f"{var} [{config.VAR_UNITS_DICT[var]}], {level_label}, {metric_name} [{metric_units}]" if level_label is not None else f"{var} [{config.VAR_UNITS_DICT[var]}], {metric_name} [{metric_units}]"
-    else:
-        title = f"{var}, {level_label}" if level_label is not None else f"{var}"
-    plt.title(title)
+    plt.title(f"{var} [{config.VAR_UNITS_DICT[var]}], {level_label} {metric_name} [{metric_units}]" 
+              if metric_name is not None else f"{var} {level_label}")
 
     # Save figure
     if output_filepath is not None:
