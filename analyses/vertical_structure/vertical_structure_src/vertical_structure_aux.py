@@ -274,12 +274,14 @@ def cp_config_files():
 # Functions for multiple run
 #===================================================================================================
 def run_main_for_each_date_and_time_window(date_list):
+    vs_config_dir = os.path.dirname(os.path.abspath(__file__))
+    vs_config_file_path = os.path.join(vs_config_dir, "vertical_structure_config.py")
     for date in date_list:
         for time_window in vs_config.TIME_WINDOWS_TO_ANALYZE:
             print (f"\n Date:{date}; time window: {time_window}")
             print ("\n Updating analysis-specific config file...")
             update_config_file(
-                config_file_path="vertical_structure_src/vertical_structure_config.py",
+                config_file_path=vs_config_file_path,
                 date=date, 
                 time_window=time_window
                 )      
@@ -377,15 +379,11 @@ def update_config_file(config_file_path, date, time_window):
 def concatenate_stats_datasets(date_list,time_window):
     # Create folder to save concatenated datasets
     os.makedirs(vs_config.DIR_OUTPUT_DATA+f"/date_multiple_time_window_{time_window}", exist_ok=True)
-    # Get date to include in output filenames
-    date_in_string = utils.get_date_as_YYYYMMDDHH_str(
-    vs_config.YEAR, vs_config.MONTH, vs_config.DAY, vs_config.HOUR
-    )
     # Construct filepaths for stats datasets to be concatenated
     for stat in vs_config.STATS_METRICS_TO_ANALYZE:
         stat_filepaths = []
-        for date_in_string in date_list:
-            stat_filepath = f"{vs_config.DIR_OUTPUT_DATA}/date_{date_in_string}_time_window_{time_window}/{stat}_date_{date_in_string}_time_window_{time_window}.nc"
+        for date_str in date_list:
+            stat_filepath = f"{vs_config.DIR_OUTPUT_DATA}/date_{date_str}_time_window_{time_window}/{stat}_date_{date_str}_time_window_{time_window}.nc"
             stat_filepaths.append(stat_filepath)
         # Concatenate stat datasets along "Time" dimension
         ds_stat_concat = xr.open_mfdataset(stat_filepaths, combine="nested", concat_dim="Time")

@@ -95,10 +95,13 @@ def plot_var_map(ds, var, cartopy_data_dir, level=None, Time=None,
     ax.set_extent([lon_range[0], lon_range[1], lat_range[0], lat_range[1]], crs=ccrs.PlateCarree())
     ax.add_feature(cfeature.COASTLINE)
     ax.add_feature(cfeature.BORDERS, linestyle=':')
+    # Convert reduced xarray values to Python scalars before scalar comparisons
+    data_min = data.min().item()
+    data_max = data.max().item()
     # Determine the maximum absolute value for symmetric colorbar
-    max_abs_value = max(abs(data.min()), abs(data.max()))
+    max_abs_value = max(abs(data_min), abs(data_max))
     # Check if data contains both positive and negative values
-    if data.min() < 0 and data.max() > 0:
+    if data_min < 0 and data_max > 0:
         if verbose == 'y':
             print ("Data contains both positive and negative values. Setting symmetric colorbar limits.")
         vmin, vmax = -max_abs_value, max_abs_value
@@ -110,11 +113,56 @@ def plot_var_map(ds, var, cartopy_data_dir, level=None, Time=None,
     # Use pcolormesh for raw data plotting (no interpolation)
     mesh = ax.pcolormesh(data.longitude, data.latitude, data, transform=ccrs.PlateCarree(), 
                          cmap=cmap, vmin=vmin, vmax=vmax)
+
+    def _coerce_float(value):
+        try:
+            return float(value)
+        except (TypeError, ValueError):
+            return None
+
+    def _get_numeric_level(level_value, data_array):
+        numeric_level = _coerce_float(level_value)
+        if numeric_level is not None:
+            return numeric_level, "Pa"
+
+        coords = getattr(data_array, "coords", {})
+        for coord_name, unit in (
+            ("level", "Pa"),
+            ("lev", "Pa"),
+            ("pressure", "hPa"),
+            ("isobaricInPa", "Pa"),
+            ("isobaricInhPa", "hPa"),
+        ):
+            if coord_name in coords:
+                coord = coords[coord_name]
+                coord_values = getattr(coord, "values", coord)
+                if getattr(coord_values, "size", 1) == 0:
+                    continue
+                if getattr(coord_values, "shape", ()) == ():
+                    candidate = coord_values.item() if hasattr(coord_values, "item") else coord_values
+                else:
+                    candidate = coord_values.flat[0] if hasattr(coord_values, "flat") else coord_values[0]
+                numeric_level = _coerce_float(candidate)
+                if numeric_level is not None:
+                    return numeric_level, unit
+
+        return None, None
+
+    numeric_level, numeric_level_unit = _get_numeric_level(level, data)
+    if numeric_level is not None:
+        display_level = int(numeric_level / 100) if numeric_level_unit == "Pa" else int(numeric_level)
+        level_label = f"{display_level} hPa"
+    else:
+        level_label = None
+
     # Define metric units
     metric_units = stats.get_stats_metric_units(var_units_dict=config.VAR_UNITS_DICT, var=var, metric=metric_name) if metric_name is not None else "N/A"
     plt.colorbar(mesh, label=f"{metric_name} [{metric_units}]" if metric_name is not None else f"{var} [{config.VAR_UNITS_DICT[var]}]")
-    plt.title(f"{var} [{config.VAR_UNITS_DICT[var]}], {int(float(level)/100)} hPa, {metric_name} [{metric_units}]" 
-              if metric_name is not None else f"{var}, {int(float(level)/100)} hPa")
+    if metric_name is not None:
+        title = f"{var} [{config.VAR_UNITS_DICT[var]}], {level_label}, {metric_name} [{metric_units}]" if level_label is not None else f"{var} [{config.VAR_UNITS_DICT[var]}], {metric_name} [{metric_units}]"
+    else:
+        title = f"{var}, {level_label}" if level_label is not None else f"{var}"
+    plt.title(title)
 
     # Save figure
     if output_filepath is not None:

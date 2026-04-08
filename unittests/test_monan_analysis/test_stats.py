@@ -264,7 +264,7 @@ def test_anomaly_correlation_zero_correlation_with_offset():
     predictions = create_test_dataset(data=predictions_data)
     observations = create_test_dataset(data=observations_data)
     
-    # Correct result: perfect anti-correlation (-1.0)
+    # Correct result: zero correlation (0.0)
     correct_result = create_test_dataset_without_Time(data=np.zeros((2, 3, 3)))
     
     # Calculate anomaly correlation
