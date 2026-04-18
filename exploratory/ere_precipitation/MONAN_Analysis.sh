@@ -54,12 +54,12 @@ ERASE=1
 ##########################################################
 
 #Full range simulation
-#START_DATE="2025-12-01" 
-#END_DATE="2025-12-30"
+START_DATE="2025-12-01" 
+END_DATE="2025-12-30"
 
 #Short range simulation
-START_DATE="2025-12-10" 
-END_DATE="2025-12-19"
+#START_DATE="2025-12-10" 
+#END_DATE="2025-12-19"
 
 #Test simulation
 #START_DATE="2025-12-10" 
@@ -81,8 +81,8 @@ THRESHOLD=(1 2 5 10 20 50)
 # Analysis name for output directory #
 ######################################
 # e.g., "full_range", "short_test", etc.
-#ANALYSIS_NAME="30_days_mean"
-ANALYSIS_NAME="Test_Mosaic"
+ANALYSIS_NAME="30_days_mean"
+#ANALYSIS_NAME="Test_Mosaic"
 
 ##################################
 # Generate Plot Maps?            #
@@ -199,14 +199,17 @@ base_analysis() {
 
 monthly_analysis() {
     processes=("bias" "rmse" "skill")
+    skill_models=("MONAN" "BAM" "GFS")
     ini_valid=$(date -d "${START_DATE} 00:00" +%Y%m%d%H)
     fim_valid=$(date -d "${END_DATE} 23:00" +%Y%m%d%H)
     for proc in "${processes[@]}"; do
         print_status "Computing monthly mean for process: ${proc}"
         if [ "${proc}" == "skill" ]; then
             for THR in "${THRESHOLD[@]}"; do
-                print_status "Computing monthly mean for skill score with threshold: ${THR} mm"
-                bash ${MONTHLY_MEAN} ${ini_valid} ${fim_valid} ${proc} ${OUTPUT_PATH} ${ANALYSIS_NAME} ${THR}
+                for model in "${skill_models[@]}"; do
+                    print_status "Computing monthly mean for skill score with threshold: ${THR} mm (${model})"
+                    bash ${MONTHLY_MEAN} ${ini_valid} ${fim_valid} ${proc} ${OUTPUT_PATH} ${ANALYSIS_NAME} ${THR} ${model}
+                done
             done
         else
             bash ${MONTHLY_MEAN} ${ini_valid} ${fim_valid} ${proc} ${OUTPUT_PATH} ${ANALYSIS_NAME} 

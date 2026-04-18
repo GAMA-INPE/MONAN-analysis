@@ -21,6 +21,7 @@ PROCESSO=$3
 OUTPUT_PATH=$4
 ANALYSIS_NAME=$5
 THRESHOLD=$6
+MODEL=${7:-MONAN}
 
 ANO=${INI_VALID:0:4}
 MES=${INI_VALID:4:2}
@@ -33,6 +34,10 @@ elif [ ${PROCESSO} == "rmse" ]; then
 elif [ ${PROCESSO} == "skill" ]; then
     DIR_BASE=${OUTPUT_PATH}precip_24h/CONTINGENCIA
     THR=thr${THRESHOLD}mm
+
+    if [ "${MODEL}" == "BAM" ] || [ "${MODEL}" == "GFS" ]; then
+        DIR_BASE=${OUTPUT_PATH}precip_24h/CONTINGENCIA_${MODEL}
+    fi
 else
     echo "Processo desconhecido: ${PROCESSO}. Use 'bias', 'rmse' ou 'skill'."
     exit 1
@@ -56,7 +61,7 @@ module load cdo
 mkdir -p listas_medias
 
 if [ ${PROCESSO} == "skill" ]; then
-    echo "Processo: ${PROCESSO}, limiar: ${THR}"
+    echo "Processo: ${PROCESSO}, modelo: ${MODEL}, limiar: ${THR}"
     # Loop over forecast lead times
     for PRAZO in 24 48 72 96 120; do
     
@@ -64,7 +69,7 @@ if [ ${PROCESSO} == "skill" ]; then
         PRAZO3=$(printf "%03d" ${PRAZO})
 
         # Path to the list file that will contain all matching netCDF paths
-        LISTA="listas_medias/arquivos_cont_${INI_VALID}_${FIM_VALID}_${PRAZO3}h_${THR}.txt"
+        LISTA="listas_medias/arquivos_cont_${MODEL}_${INI_VALID}_${FIM_VALID}_${PRAZO3}h_${THR}.txt"
 
         # Clear the file if it already exists
         : > ${LISTA}
@@ -85,7 +90,7 @@ if [ ${PROCESSO} == "skill" ]; then
             [ "${DATA_VALID}" -le "${FIM_VALID}" ]; then
 
                 # Construct expected NetCDF filename
-                ARQ="${DIR_BASE}/${DATA_ROD}/CONT_MONAN_${DATA_ROD}_${PRAZO3}h_${THR}.nc"
+                ARQ="${DIR_BASE}/${DATA_ROD}/CONT_${MODEL}_${DATA_ROD}_${PRAZO3}h_${THR}.nc"
 
                 if [ -f "${ARQ}" ]; then
                     # If the file exists, append it to the list to be averaged later
@@ -103,7 +108,7 @@ if [ ${PROCESSO} == "skill" ]; then
         echo "Ano ${ANO}, mes ${MES}, prazo ${PRAZO}h, total de arquivos: ${NARQ}"
 
         # Use CDO to compute the ensemble mean of all the collected files
-        cdo enssum $(cat ${LISTA}) ${OUTPUT_DIR}/CONT_MONAN_${ANO}${MES}_sum_${PRAZO3}h_${THR}.nc
+        cdo enssum $(cat ${LISTA}) ${OUTPUT_DIR}/CONT_${MODEL}_${ANO}${MES}_sum_${PRAZO3}h_${THR}.nc
 
     done
 else

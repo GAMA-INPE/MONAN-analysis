@@ -109,7 +109,7 @@ ORDEM_MODELOS = ["MONAN", "BAM", "GFS"]
 # (opcional, pode ser ajustado dinamicamente)
 VALOR_FIXO = True
 VALOR_MIN = 0.0
-VALOR_MAX = 0.7
+VALOR_MAX = 1.0
 
 # Leitura da tabelas txt
 arquivos = glob.glob(
@@ -339,7 +339,9 @@ for metrica in METRICAS_PRINCIPAIS:
                 origin="lower",
                 aspect="auto",
                 vmin=vmin,
-                vmax=vmax
+                vmax=vmax,
+                #cmap="nipy_spectral"
+                cmap="turbo"
             )
 
             plt.colorbar(im, label=metrica)

@@ -264,7 +264,7 @@ for lead in range(PRAZO_INICIAL, PRAZO_FINAL + 1, PASSO_PRAZO):
 
         for modelo in MODELOS:
 
-            if modelo == "MONAN":
+            if modelo in ["MONAN", "BAM", "GFS"]:
                 nc= (
                     f"{DIR_MONAN}/"
                     f"CONT_{modelo}_{ANO}{MES:02d}_sum_"

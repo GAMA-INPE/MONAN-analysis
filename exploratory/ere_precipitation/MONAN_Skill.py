@@ -202,6 +202,18 @@ for lead in lead_times:
         f"MONAN_Precipitation_24h_acum_{data_ini_str}_{data_fim_str}_{lead:03d}h.nc"
     )
 
+    bam_nc = (
+        f"{NETCDF_PATH}"
+        f"/BAM/{ciclo_str}/"
+        f"BAM_Precipitation_24h_acum_{data_ini_str}_{data_fim_str}_{lead:03d}h.nc"
+    )
+
+    gfs_nc = (
+        f"{NETCDF_PATH}"
+        f"/GFS/{ciclo_str}/"
+        f"GFS_Precipitation_24h_acum_{data_ini_str}_{data_fim_str}_{lead:03d}h.nc"
+    )
+
     gpm_nc = (
         f"{NETCDF_PATH}"
         f"/GPM_IMERG/{data_fim_str}00/"
@@ -220,107 +232,139 @@ for lead in lead_times:
         f"MSWEP_Precipitation_24h_accum_{data_fim_str}00.nc"
     )
 
-    #gpm_remap   = gpm_nc.replace(".nc", "_MONAN_grid.nc")
-    #gsmap_remap = gsmap_nc.replace(".nc", "_MONAN_grid.nc")
-    #mswep_remap = mswep_nc.replace(".nc", "_MONAN_grid.nc")
+    modelos_contingencia = {
+        "MONAN": monan_nc,
+    }
 
-    gpm_remap = (
-        f"{NETCDF_PATH}"
-        f"/Remapped_30km/GPM_IMERG/{data_fim_str}00/"
-        f"GPM_IMERG_Precipitation_24h_accum_{data_fim_str}00_MONAN_30km.nc"
-    )
+    if os.path.exists(bam_nc):
+        modelos_contingencia["BAM"] = bam_nc
+    else:
+        print(f"Aviso: arquivo BAM nao encontrado para este ciclo/prazo: {bam_nc}")
 
-    gsmap_remap = (
-        f"{NETCDF_PATH}"
-        f"/Remapped_30km/GSMAP/{data_fim_str}00/"
-        f"GSMAP_Precipitation_24h_accum_{data_fim_str}00_MONAN_30km.nc"
-    )
+    if os.path.exists(gfs_nc):
+        modelos_contingencia["GFS"] = gfs_nc
+    else:
+        print(f"Aviso: arquivo GFS nao encontrado para este ciclo/prazo: {gfs_nc}")
 
-    mswep_remap = (
-        f"{NETCDF_PATH}"
-        f"/Remapped_30km/MSWEP/{data_fim_str}00/"
-        f"MSWEP_Precipitation_24h_accum_{data_fim_str}00_MONAN_30km.nc"
-    )
+    resultados_modelo = {}
 
-    os.makedirs(os.path.dirname(gpm_remap), exist_ok=True)
-    os.makedirs(os.path.dirname(gsmap_remap), exist_ok=True)
-    os.makedirs(os.path.dirname(mswep_remap), exist_ok=True)
+    for modelo_nome, modelo_nc in modelos_contingencia.items():
+        gpm_remap = (
+            f"{NETCDF_PATH}"
+            f"/Remapped_30km/{modelo_nome}/GPM_IMERG/{data_fim_str}00/"
+            f"GPM_IMERG_Precipitation_24h_accum_{data_fim_str}00_{modelo_nome}_30km.nc"
+        )
 
-    remap_cdo(gpm_nc, gpm_remap, monan_nc)
-    remap_cdo(gsmap_nc, gsmap_remap, monan_nc)
-    remap_cdo(mswep_nc, mswep_remap, monan_nc)
+        gsmap_remap = (
+            f"{NETCDF_PATH}"
+            f"/Remapped_30km/{modelo_nome}/GSMAP/{data_fim_str}00/"
+            f"GSMAP_Precipitation_24h_accum_{data_fim_str}00_{modelo_nome}_30km.nc"
+        )
 
-    monan = xr.open_dataset(monan_nc)["prec"]
-    gpm   = xr.open_dataset(gpm_remap)["prec"]
-    gsmap = xr.open_dataset(gsmap_remap)["prec"]
-    mswep = xr.open_dataset(mswep_remap)["prec"]
+        mswep_remap = (
+            f"{NETCDF_PATH}"
+            f"/Remapped_30km/{modelo_nome}/MSWEP/{data_fim_str}00/"
+            f"MSWEP_Precipitation_24h_accum_{data_fim_str}00_{modelo_nome}_30km.nc"
+        )
 
-    # Contingencia binaria
-    H_gpm,   M_gpm,   F_gpm,   C_gpm   = contingencia_binaria(monan, gpm, THRESHOLD_MM)
-    H_gsmap, M_gsmap, F_gsmap, C_gsmap = contingencia_binaria(monan, gsmap, THRESHOLD_MM)
-    H_mswep, M_mswep, F_mswep, C_mswep = contingencia_binaria(monan, mswep, THRESHOLD_MM)
+        os.makedirs(os.path.dirname(gpm_remap), exist_ok=True)
+        os.makedirs(os.path.dirname(gsmap_remap), exist_ok=True)
+        os.makedirs(os.path.dirname(mswep_remap), exist_ok=True)
+
+        remap_cdo(gpm_nc, gpm_remap, modelo_nc)
+        remap_cdo(gsmap_nc, gsmap_remap, modelo_nc)
+        remap_cdo(mswep_nc, mswep_remap, modelo_nc)
+
+        previsao = xr.open_dataset(modelo_nc)["prec"]
+        gpm = xr.open_dataset(gpm_remap)["prec"]
+        gsmap = xr.open_dataset(gsmap_remap)["prec"]
+        mswep = xr.open_dataset(mswep_remap)["prec"]
+
+        H_gpm, M_gpm, F_gpm, C_gpm = contingencia_binaria(previsao, gpm, THRESHOLD_MM)
+        H_gsmap, M_gsmap, F_gsmap, C_gsmap = contingencia_binaria(previsao, gsmap, THRESHOLD_MM)
+        H_mswep, M_mswep, F_mswep, C_mswep = contingencia_binaria(previsao, mswep, THRESHOLD_MM)
+
+        resultados_modelo[modelo_nome] = {
+            "lat": previsao.lat,
+            "lon": previsao.lon,
+            "H_GPM": H_gpm,
+            "M_GPM": M_gpm,
+            "F_GPM": F_gpm,
+            "C_GPM": C_gpm,
+            "H_GSMAP": H_gsmap,
+            "M_GSMAP": M_gsmap,
+            "F_GSMAP": F_gsmap,
+            "C_GSMAP": C_gsmap,
+            "H_MSWEP": H_mswep,
+            "M_MSWEP": M_mswep,
+            "F_MSWEP": F_mswep,
+            "C_MSWEP": C_mswep,
+        }
 
     # Escrita do TXT
     for reg, info in regioes.items():
 
-       slc = info["slice"]
-       txt_out = info["txt"]
+        slc = info["slice"]
+        txt_out = info["txt"]
 
-       with open(txt_out, "a") as f:
+        with open(txt_out, "a") as f:
+            for ref, H, M, F_, C_ in [
+                ("GPM",   resultados_modelo["MONAN"]["H_GPM"],   resultados_modelo["MONAN"]["M_GPM"],   resultados_modelo["MONAN"]["F_GPM"],   resultados_modelo["MONAN"]["C_GPM"]),
+                ("GSMAP", resultados_modelo["MONAN"]["H_GSMAP"], resultados_modelo["MONAN"]["M_GSMAP"], resultados_modelo["MONAN"]["F_GSMAP"], resultados_modelo["MONAN"]["C_GSMAP"]),
+                ("MSWEP", resultados_modelo["MONAN"]["H_MSWEP"], resultados_modelo["MONAN"]["M_MSWEP"], resultados_modelo["MONAN"]["F_MSWEP"], resultados_modelo["MONAN"]["C_MSWEP"]),
+            ]:
+                acc, pod, pofd, far, csi, f1 = skill_agregado(H, M, F_, C_, slc)
 
-          for ref, H, M, F_, C_ in [
-            ("GPM",   H_gpm,   M_gpm,   F_gpm,   C_gpm),
-            ("GSMAP", H_gsmap, M_gsmap, F_gsmap, C_gsmap),
-            ("MSWEP", H_mswep, M_mswep, F_mswep, C_mswep),
-          ]:
-             acc, pod, pofd, far, csi, f1 = skill_agregado(H, M, F_, C_, slc)
-
-             f.write(
-                f"{str(lead).zfill(3):^6}"
-                f"{ref:^8}"
-                f"{acc:6.2f}"
-                f"{pod:8.2f}"
-                f"{pofd:8.2f}"
-                f"{far:8.2f}"
-                f"{csi:8.2f}"
-                f"{f1:8.2f}\n"
-             )
+                f.write(
+                    f"{str(lead).zfill(3):^6}"
+                    f"{ref:^8}"
+                    f"{acc:6.2f}"
+                    f"{pod:8.2f}"
+                    f"{pofd:8.2f}"
+                    f"{far:8.2f}"
+                    f"{csi:8.2f}"
+                    f"{f1:8.2f}\n"
+                )
             
-    # NetCDF de contingencia
-    ds_out = xr.Dataset(
-        {
-            "H_GPM":    H_gpm.astype("int8"),
-            "M_GPM":    M_gpm.astype("int8"),
-            "F_GPM":    F_gpm.astype("int8"),
-            "C_GPM":    C_gpm.astype("int8"),
+    # NetCDF de contingencia por modelo
+    for modelo_nome, campos in resultados_modelo.items():
+        ds_out = xr.Dataset(
+            {
+                "H_GPM": campos["H_GPM"].astype("int8"),
+                "M_GPM": campos["M_GPM"].astype("int8"),
+                "F_GPM": campos["F_GPM"].astype("int8"),
+                "C_GPM": campos["C_GPM"].astype("int8"),
 
-            "H_GSMAP":  H_gsmap.astype("int8"),
-            "M_GSMAP":  M_gsmap.astype("int8"),
-            "F_GSMAP":  F_gsmap.astype("int8"),
-            "C_GSMAP":  C_gsmap.astype("int8"),
+                "H_GSMAP": campos["H_GSMAP"].astype("int8"),
+                "M_GSMAP": campos["M_GSMAP"].astype("int8"),
+                "F_GSMAP": campos["F_GSMAP"].astype("int8"),
+                "C_GSMAP": campos["C_GSMAP"].astype("int8"),
 
-            "H_MSWEP":  H_mswep.astype("int8"),
-            "M_MSWEP":  M_mswep.astype("int8"),
-            "F_MSWEP":  F_mswep.astype("int8"),
-            "C_MSWEP":  C_mswep.astype("int8"),
-        },
-        coords={
-            "lat": monan.lat,
-            "lon": monan.lon
-        },
-        attrs={
-            "threshold_mm": THRESHOLD_MM,
-            "lead_time_h": lead,
-            "descricao": "Contingencia binaria de precipitacao 24h MONAN"
-        }
-    )
+                "H_MSWEP": campos["H_MSWEP"].astype("int8"),
+                "M_MSWEP": campos["M_MSWEP"].astype("int8"),
+                "F_MSWEP": campos["F_MSWEP"].astype("int8"),
+                "C_MSWEP": campos["C_MSWEP"].astype("int8"),
+            },
+            coords={
+                "lat": campos["lat"],
+                "lon": campos["lon"],
+            },
+            attrs={
+                "modelo": modelo_nome,
+                "threshold_mm": THRESHOLD_MM,
+                "lead_time_h": lead,
+                "descricao": f"Contingencia binaria de precipitacao 24h {modelo_nome}",
+            }
+        )
 
-    out_dir = Path(
-        f"{OUTPUT_PATH}/precip_24h/CONTINGENCIA/{data_ini_str}"
-    )
-    out_dir.mkdir(parents=True, exist_ok=True)
+        if modelo_nome == "MONAN":
+            out_dir = Path(f"{OUTPUT_PATH}/precip_24h/CONTINGENCIA/{data_ini_str}")
+        else:
+            out_dir = Path(f"{OUTPUT_PATH}/precip_24h/CONTINGENCIA_{modelo_nome}/{data_ini_str}")
 
-    ds_out.to_netcdf(
-        out_dir / f"CONT_MONAN_{data_ini_str}_{lead:03d}h_thr{int(THRESHOLD_MM)}mm.nc",
-        format="NETCDF4"
-    )
+        out_dir.mkdir(parents=True, exist_ok=True)
+
+        ds_out.to_netcdf(
+            out_dir / f"CONT_{modelo_nome}_{data_ini_str}_{lead:03d}h_thr{int(THRESHOLD_MM)}mm.nc",
+            format="NETCDF4"
+        )
