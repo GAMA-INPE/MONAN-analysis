@@ -1746,6 +1746,178 @@ Processando lead time: 72 h
 Processando lead time: 96 h
 Processando lead time: 120 h
 
+################################################################
+* * * Simulation for date: 2025 12 20 with span: 120 hours * * *
+################################################################
+
+
+----------------------------------------------------------------
+24 hours precipitation accumulation
+----------------------------------------------------------------
+
+
+============================================================
+PROCESSAMENTO DE 5 PERIODOS DE 24 HORAS
+============================================================
+--- Acumulado 1 --- Previsao 024h ---
+Data Inicial: 2025-12-20 00:00:00
+Data Final:   2025-12-21 00:00:00
+Arquivo I: /p/projetos/monan_atm/eduardo.eras/SandBox/output/taylor/2025122000/Post/MONAN_DIAG_G_POS_GFS_2025122000_2025122000.00.00.x655362L55.nc
+Arquivo E: /p/projetos/monan_atm/eduardo.eras/SandBox/output/taylor/2025122000/Post/MONAN_DIAG_G_POS_GFS_2025122000_2025122100.00.00.x655362L55.nc
+============================================================
+--- Acumulado 2 --- Previsao 048h ---
+Data Inicial: 2025-12-21 00:00:00
+Data Final:   2025-12-22 00:00:00
+Arquivo I: /p/projetos/monan_atm/eduardo.eras/SandBox/output/taylor/2025122000/Post/MONAN_DIAG_G_POS_GFS_2025122000_2025122100.00.00.x655362L55.nc
+Arquivo E: /p/projetos/monan_atm/eduardo.eras/SandBox/output/taylor/2025122000/Post/MONAN_DIAG_G_POS_GFS_2025122000_2025122200.00.00.x655362L55.nc
+============================================================
+--- Acumulado 3 --- Previsao 072h ---
+Data Inicial: 2025-12-22 00:00:00
+Data Final:   2025-12-23 00:00:00
+Arquivo I: /p/projetos/monan_atm/eduardo.eras/SandBox/output/taylor/2025122000/Post/MONAN_DIAG_G_POS_GFS_2025122000_2025122200.00.00.x655362L55.nc
+Arquivo E: /p/projetos/monan_atm/eduardo.eras/SandBox/output/taylor/2025122000/Post/MONAN_DIAG_G_POS_GFS_2025122000_2025122300.00.00.x655362L55.nc
+============================================================
+--- Acumulado 4 --- Previsao 096h ---
+Data Inicial: 2025-12-23 00:00:00
+Data Final:   2025-12-24 00:00:00
+Arquivo I: /p/projetos/monan_atm/eduardo.eras/SandBox/output/taylor/2025122000/Post/MONAN_DIAG_G_POS_GFS_2025122000_2025122300.00.00.x655362L55.nc
+Arquivo E: /p/projetos/monan_atm/eduardo.eras/SandBox/output/taylor/2025122000/Post/MONAN_DIAG_G_POS_GFS_2025122000_2025122400.00.00.x655362L55.nc
+============================================================
+--- Acumulado 5 --- Previsao 120h ---
+Data Inicial: 2025-12-24 00:00:00
+Data Final:   2025-12-25 00:00:00
+Arquivo I: /p/projetos/monan_atm/eduardo.eras/SandBox/output/taylor/2025122000/Post/MONAN_DIAG_G_POS_GFS_2025122000_2025122400.00.00.x655362L55.nc
+Arquivo E: /p/projetos/monan_atm/eduardo.eras/SandBox/output/taylor/2025122000/Post/MONAN_DIAG_G_POS_GFS_2025122000_2025122500.00.00.x655362L55.nc
+============================================================
+
+----------------------------------------------------------------
+Bias analysis
+----------------------------------------------------------------
+
+============================================================
+Model file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/MONAN/2025122000/MONAN_Precipitation_24h_acum_2025122000_2025122100_024h.nc
+GPM file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GPM_IMERG/202512210000/GPM_IMERG_Precipitation_24h_accum_202512210000.nc
+GSMAP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GSMAP/202512210000/GSMAP_Precipitation_24h_accum_202512210000.nc
+MSWEP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/MSWEP/202512210000/MSWEP_Precipitation_24h_accum_202512210000.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GPM_IMERG/202512210000/GPM_IMERG_Precipitation_24h_accum_202512210000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GSMAP/202512210000/GSMAP_Precipitation_24h_accum_202512210000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/MSWEP/202512210000/MSWEP_Precipitation_24h_accum_202512210000_MONAN_30km.nc
+Netcdf: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Bias/2025122000/Bias_MONAN_Prec_2025122000_024h.nc
+============================================================
+Model file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/MONAN/2025122000/MONAN_Precipitation_24h_acum_2025122000_2025122200_048h.nc
+GPM file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GPM_IMERG/202512220000/GPM_IMERG_Precipitation_24h_accum_202512220000.nc
+GSMAP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GSMAP/202512220000/GSMAP_Precipitation_24h_accum_202512220000.nc
+MSWEP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/MSWEP/202512220000/MSWEP_Precipitation_24h_accum_202512220000.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GPM_IMERG/202512220000/GPM_IMERG_Precipitation_24h_accum_202512220000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GSMAP/202512220000/GSMAP_Precipitation_24h_accum_202512220000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/MSWEP/202512220000/MSWEP_Precipitation_24h_accum_202512220000_MONAN_30km.nc
+Netcdf: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Bias/2025122000/Bias_MONAN_Prec_2025122000_048h.nc
+============================================================
+Model file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/MONAN/2025122000/MONAN_Precipitation_24h_acum_2025122000_2025122300_072h.nc
+GPM file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GPM_IMERG/202512230000/GPM_IMERG_Precipitation_24h_accum_202512230000.nc
+GSMAP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GSMAP/202512230000/GSMAP_Precipitation_24h_accum_202512230000.nc
+MSWEP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/MSWEP/202512230000/MSWEP_Precipitation_24h_accum_202512230000.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GPM_IMERG/202512230000/GPM_IMERG_Precipitation_24h_accum_202512230000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GSMAP/202512230000/GSMAP_Precipitation_24h_accum_202512230000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/MSWEP/202512230000/MSWEP_Precipitation_24h_accum_202512230000_MONAN_30km.nc
+Netcdf: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Bias/2025122000/Bias_MONAN_Prec_2025122000_072h.nc
+============================================================
+Model file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/MONAN/2025122000/MONAN_Precipitation_24h_acum_2025122000_2025122400_096h.nc
+GPM file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GPM_IMERG/202512240000/GPM_IMERG_Precipitation_24h_accum_202512240000.nc
+GSMAP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GSMAP/202512240000/GSMAP_Precipitation_24h_accum_202512240000.nc
+MSWEP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/MSWEP/202512240000/MSWEP_Precipitation_24h_accum_202512240000.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GPM_IMERG/202512240000/GPM_IMERG_Precipitation_24h_accum_202512240000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GSMAP/202512240000/GSMAP_Precipitation_24h_accum_202512240000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/MSWEP/202512240000/MSWEP_Precipitation_24h_accum_202512240000_MONAN_30km.nc
+Netcdf: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Bias/2025122000/Bias_MONAN_Prec_2025122000_096h.nc
+============================================================
+Model file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/MONAN/2025122000/MONAN_Precipitation_24h_acum_2025122000_2025122500_120h.nc
+GPM file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GPM_IMERG/202512250000/GPM_IMERG_Precipitation_24h_accum_202512250000.nc
+GSMAP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/GSMAP/202512250000/GSMAP_Precipitation_24h_accum_202512250000.nc
+MSWEP file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/MSWEP/202512250000/MSWEP_Precipitation_24h_accum_202512250000.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GPM_IMERG/202512250000/GPM_IMERG_Precipitation_24h_accum_202512250000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/GSMAP/202512250000/GSMAP_Precipitation_24h_accum_202512250000_MONAN_30km.nc
+Arquivo ja existe: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs/Remapped_30km/MSWEP/202512250000/MSWEP_Precipitation_24h_accum_202512250000_MONAN_30km.nc
+Netcdf: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output/Bias/2025122000/Bias_MONAN_Prec_2025122000_120h.nc
+
+----------------------------------------------------------------
+MAE analysis
+----------------------------------------------------------------
+
+Processando lead time: 24 horas
+Processando lead time: 48 horas
+Processando lead time: 72 horas
+Processando lead time: 96 horas
+Processando lead time: 120 horas
+
+----------------------------------------------------------------
+Skill score analysis
+----------------------------------------------------------------
+
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 1 mm
+----------------------------------------------------------------
+
+cdo    remapcon: YAC first order conservative weights from lonlat (3600x1800) to lonlat (1201x601) grid, with source mask (6433946)
+cdo    remapcon: YAC first order conservative weights from lonlat (3600x1800) to lonlat (1201x601) grid, with source mask (4289696)
+cdo    remapcon: YAC first order conservative weights from lonlat (3600x1800) to lonlat (1201x601) grid
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 2 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 5 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 10 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 20 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
+----------------------------------------------------------------
+Skill score analysis for threshold: 50 mm
+----------------------------------------------------------------
+
+Processando lead time: 24 h
+Processando lead time: 48 h
+Processando lead time: 72 h
+Processando lead time: 96 h
+Processando lead time: 120 h
+
 ----------------------------------------------------------------
 Computing monthly mean for process: bias
 ----------------------------------------------------------------
@@ -1763,7 +1935,8 @@ Processando rodada 2025121600, prazo 24h, data válida 2025121700
 Processando rodada 2025121700, prazo 24h, data válida 2025121800
 Processando rodada 2025121800, prazo 24h, data válida 2025121900
 Processando rodada 2025121900, prazo 24h, data válida 2025122000
-Ano 2025, mes 12, prazo 24h, total de arquivos: 9
+Processando rodada 2025122000, prazo 24h, data válida 2025122100
+Ano 2025, mes 12, prazo 24h, total de arquivos: 10
 Processando rodada 2025121000, prazo 48h, data válida 2025121200
 Processando rodada 2025121100, prazo 48h, data válida 2025121300
 Processando rodada 2025121200, prazo 48h, data válida 2025121400
@@ -1774,7 +1947,8 @@ Processando rodada 2025121600, prazo 48h, data válida 2025121800
 Processando rodada 2025121700, prazo 48h, data válida 2025121900
 Processando rodada 2025121800, prazo 48h, data válida 2025122000
 Processando rodada 2025121900, prazo 48h, data válida 2025122100
-Ano 2025, mes 12, prazo 48h, total de arquivos: 8
+Processando rodada 2025122000, prazo 48h, data válida 2025122200
+Ano 2025, mes 12, prazo 48h, total de arquivos: 9
 Processando rodada 2025121000, prazo 72h, data válida 2025121300
 Processando rodada 2025121100, prazo 72h, data válida 2025121400
 Processando rodada 2025121200, prazo 72h, data válida 2025121500
@@ -1785,7 +1959,8 @@ Processando rodada 2025121600, prazo 72h, data válida 2025121900
 Processando rodada 2025121700, prazo 72h, data válida 2025122000
 Processando rodada 2025121800, prazo 72h, data válida 2025122100
 Processando rodada 2025121900, prazo 72h, data válida 2025122200
-Ano 2025, mes 12, prazo 72h, total de arquivos: 7
+Processando rodada 2025122000, prazo 72h, data válida 2025122300
+Ano 2025, mes 12, prazo 72h, total de arquivos: 8
 Processando rodada 2025121000, prazo 96h, data válida 2025121400
 Processando rodada 2025121100, prazo 96h, data válida 2025121500
 Processando rodada 2025121200, prazo 96h, data válida 2025121600
@@ -1796,7 +1971,8 @@ Processando rodada 2025121600, prazo 96h, data válida 2025122000
 Processando rodada 2025121700, prazo 96h, data válida 2025122100
 Processando rodada 2025121800, prazo 96h, data válida 2025122200
 Processando rodada 2025121900, prazo 96h, data válida 2025122300
-Ano 2025, mes 12, prazo 96h, total de arquivos: 6
+Processando rodada 2025122000, prazo 96h, data válida 2025122400
+Ano 2025, mes 12, prazo 96h, total de arquivos: 7
 Processando rodada 2025121000, prazo 120h, data válida 2025121500
 Processando rodada 2025121100, prazo 120h, data válida 2025121600
 Processando rodada 2025121200, prazo 120h, data válida 2025121700
@@ -1807,7 +1983,8 @@ Processando rodada 2025121600, prazo 120h, data válida 2025122100
 Processando rodada 2025121700, prazo 120h, data válida 2025122200
 Processando rodada 2025121800, prazo 120h, data válida 2025122300
 Processando rodada 2025121900, prazo 120h, data válida 2025122400
-Ano 2025, mes 12, prazo 120h, total de arquivos: 5
+Processando rodada 2025122000, prazo 120h, data válida 2025122500
+Ano 2025, mes 12, prazo 120h, total de arquivos: 6
 
 ----------------------------------------------------------------
 Computing monthly mean for process: rmse
@@ -1826,7 +2003,8 @@ Processando rodada 2025121600, prazo 24h, data válida 2025121700
 Processando rodada 2025121700, prazo 24h, data válida 2025121800
 Processando rodada 2025121800, prazo 24h, data válida 2025121900
 Processando rodada 2025121900, prazo 24h, data válida 2025122000
-Ano 2025, mes 12, prazo 24h, total de arquivos: 9
+Processando rodada 2025122000, prazo 24h, data válida 2025122100
+Ano 2025, mes 12, prazo 24h, total de arquivos: 10
 Processando rodada 2025121000, prazo 48h, data válida 2025121200
 Processando rodada 2025121100, prazo 48h, data válida 2025121300
 Processando rodada 2025121200, prazo 48h, data válida 2025121400
@@ -1837,7 +2015,8 @@ Processando rodada 2025121600, prazo 48h, data válida 2025121800
 Processando rodada 2025121700, prazo 48h, data válida 2025121900
 Processando rodada 2025121800, prazo 48h, data válida 2025122000
 Processando rodada 2025121900, prazo 48h, data válida 2025122100
-Ano 2025, mes 12, prazo 48h, total de arquivos: 8
+Processando rodada 2025122000, prazo 48h, data válida 2025122200
+Ano 2025, mes 12, prazo 48h, total de arquivos: 9
 Processando rodada 2025121000, prazo 72h, data válida 2025121300
 Processando rodada 2025121100, prazo 72h, data válida 2025121400
 Processando rodada 2025121200, prazo 72h, data válida 2025121500
@@ -1848,7 +2027,8 @@ Processando rodada 2025121600, prazo 72h, data válida 2025121900
 Processando rodada 2025121700, prazo 72h, data válida 2025122000
 Processando rodada 2025121800, prazo 72h, data válida 2025122100
 Processando rodada 2025121900, prazo 72h, data válida 2025122200
-Ano 2025, mes 12, prazo 72h, total de arquivos: 7
+Processando rodada 2025122000, prazo 72h, data válida 2025122300
+Ano 2025, mes 12, prazo 72h, total de arquivos: 8
 Processando rodada 2025121000, prazo 96h, data válida 2025121400
 Processando rodada 2025121100, prazo 96h, data válida 2025121500
 Processando rodada 2025121200, prazo 96h, data válida 2025121600
@@ -1859,7 +2039,8 @@ Processando rodada 2025121600, prazo 96h, data válida 2025122000
 Processando rodada 2025121700, prazo 96h, data válida 2025122100
 Processando rodada 2025121800, prazo 96h, data válida 2025122200
 Processando rodada 2025121900, prazo 96h, data válida 2025122300
-Ano 2025, mes 12, prazo 96h, total de arquivos: 6
+Processando rodada 2025122000, prazo 96h, data válida 2025122400
+Ano 2025, mes 12, prazo 96h, total de arquivos: 7
 Processando rodada 2025121000, prazo 120h, data válida 2025121500
 Processando rodada 2025121100, prazo 120h, data válida 2025121600
 Processando rodada 2025121200, prazo 120h, data válida 2025121700
@@ -1870,7 +2051,8 @@ Processando rodada 2025121600, prazo 120h, data válida 2025122100
 Processando rodada 2025121700, prazo 120h, data válida 2025122200
 Processando rodada 2025121800, prazo 120h, data válida 2025122300
 Processando rodada 2025121900, prazo 120h, data válida 2025122400
-Ano 2025, mes 12, prazo 120h, total de arquivos: 5
+Processando rodada 2025122000, prazo 120h, data válida 2025122500
+Ano 2025, mes 12, prazo 120h, total de arquivos: 6
 
 ----------------------------------------------------------------
 Computing monthly mean for process: skill
@@ -1894,7 +2076,8 @@ Processando rodada 2025121600, prazo 24h, data válida 2025121700
 Processando rodada 2025121700, prazo 24h, data válida 2025121800
 Processando rodada 2025121800, prazo 24h, data válida 2025121900
 Processando rodada 2025121900, prazo 24h, data válida 2025122000
-Ano 2025, mes 12, prazo 24h, total de arquivos: 9
+Processando rodada 2025122000, prazo 24h, data válida 2025122100
+Ano 2025, mes 12, prazo 24h, total de arquivos: 10
 Processando rodada 2025121000, prazo 48h, data válida 2025121200
 Processando rodada 2025121100, prazo 48h, data válida 2025121300
 Processando rodada 2025121200, prazo 48h, data válida 2025121400
@@ -1905,7 +2088,8 @@ Processando rodada 2025121600, prazo 48h, data válida 2025121800
 Processando rodada 2025121700, prazo 48h, data válida 2025121900
 Processando rodada 2025121800, prazo 48h, data válida 2025122000
 Processando rodada 2025121900, prazo 48h, data válida 2025122100
-Ano 2025, mes 12, prazo 48h, total de arquivos: 8
+Processando rodada 2025122000, prazo 48h, data válida 2025122200
+Ano 2025, mes 12, prazo 48h, total de arquivos: 9
 Processando rodada 2025121000, prazo 72h, data válida 2025121300
 Processando rodada 2025121100, prazo 72h, data válida 2025121400
 Processando rodada 2025121200, prazo 72h, data válida 2025121500
@@ -1916,7 +2100,8 @@ Processando rodada 2025121600, prazo 72h, data válida 2025121900
 Processando rodada 2025121700, prazo 72h, data válida 2025122000
 Processando rodada 2025121800, prazo 72h, data válida 2025122100
 Processando rodada 2025121900, prazo 72h, data válida 2025122200
-Ano 2025, mes 12, prazo 72h, total de arquivos: 7
+Processando rodada 2025122000, prazo 72h, data válida 2025122300
+Ano 2025, mes 12, prazo 72h, total de arquivos: 8
 Processando rodada 2025121000, prazo 96h, data válida 2025121400
 Processando rodada 2025121100, prazo 96h, data válida 2025121500
 Processando rodada 2025121200, prazo 96h, data válida 2025121600
@@ -1927,7 +2112,8 @@ Processando rodada 2025121600, prazo 96h, data válida 2025122000
 Processando rodada 2025121700, prazo 96h, data válida 2025122100
 Processando rodada 2025121800, prazo 96h, data válida 2025122200
 Processando rodada 2025121900, prazo 96h, data válida 2025122300
-Ano 2025, mes 12, prazo 96h, total de arquivos: 6
+Processando rodada 2025122000, prazo 96h, data válida 2025122400
+Ano 2025, mes 12, prazo 96h, total de arquivos: 7
 Processando rodada 2025121000, prazo 120h, data válida 2025121500
 Processando rodada 2025121100, prazo 120h, data válida 2025121600
 Processando rodada 2025121200, prazo 120h, data válida 2025121700
@@ -1938,7 +2124,8 @@ Processando rodada 2025121600, prazo 120h, data válida 2025122100
 Processando rodada 2025121700, prazo 120h, data válida 2025122200
 Processando rodada 2025121800, prazo 120h, data válida 2025122300
 Processando rodada 2025121900, prazo 120h, data válida 2025122400
-Ano 2025, mes 12, prazo 120h, total de arquivos: 5
+Processando rodada 2025122000, prazo 120h, data válida 2025122500
+Ano 2025, mes 12, prazo 120h, total de arquivos: 6
 
 ----------------------------------------------------------------
 Computing monthly mean for skill score with threshold: 1 mm (BAM)
@@ -1957,7 +2144,8 @@ Processando rodada 2025121600, prazo 24h, data válida 2025121700
 Processando rodada 2025121700, prazo 24h, data válida 2025121800
 Processando rodada 2025121800, prazo 24h, data válida 2025121900
 Processando rodada 2025121900, prazo 24h, data válida 2025122000
-Ano 2025, mes 12, prazo 24h, total de arquivos: 9
+Processando rodada 2025122000, prazo 24h, data válida 2025122100
+Ano 2025, mes 12, prazo 24h, total de arquivos: 10
 Processando rodada 2025121000, prazo 48h, data válida 2025121200
 Processando rodada 2025121100, prazo 48h, data válida 2025121300
 Processando rodada 2025121200, prazo 48h, data válida 2025121400
@@ -1968,7 +2156,8 @@ Processando rodada 2025121600, prazo 48h, data válida 2025121800
 Processando rodada 2025121700, prazo 48h, data válida 2025121900
 Processando rodada 2025121800, prazo 48h, data válida 2025122000
 Processando rodada 2025121900, prazo 48h, data válida 2025122100
-Ano 2025, mes 12, prazo 48h, total de arquivos: 8
+Processando rodada 2025122000, prazo 48h, data válida 2025122200
+Ano 2025, mes 12, prazo 48h, total de arquivos: 9
 Processando rodada 2025121000, prazo 72h, data válida 2025121300
 Processando rodada 2025121100, prazo 72h, data válida 2025121400
 Processando rodada 2025121200, prazo 72h, data válida 2025121500
@@ -1979,7 +2168,8 @@ Processando rodada 2025121600, prazo 72h, data válida 2025121900
 Processando rodada 2025121700, prazo 72h, data válida 2025122000
 Processando rodada 2025121800, prazo 72h, data válida 2025122100
 Processando rodada 2025121900, prazo 72h, data válida 2025122200
-Ano 2025, mes 12, prazo 72h, total de arquivos: 7
+Processando rodada 2025122000, prazo 72h, data válida 2025122300
+Ano 2025, mes 12, prazo 72h, total de arquivos: 8
 Processando rodada 2025121000, prazo 96h, data válida 2025121400
 Processando rodada 2025121100, prazo 96h, data válida 2025121500
 Processando rodada 2025121200, prazo 96h, data válida 2025121600
@@ -1990,7 +2180,8 @@ Processando rodada 2025121600, prazo 96h, data válida 2025122000
 Processando rodada 2025121700, prazo 96h, data válida 2025122100
 Processando rodada 2025121800, prazo 96h, data válida 2025122200
 Processando rodada 2025121900, prazo 96h, data válida 2025122300
-Ano 2025, mes 12, prazo 96h, total de arquivos: 6
+Processando rodada 2025122000, prazo 96h, data válida 2025122400
+Ano 2025, mes 12, prazo 96h, total de arquivos: 7
 Processando rodada 2025121000, prazo 120h, data válida 2025121500
 Processando rodada 2025121100, prazo 120h, data válida 2025121600
 Processando rodada 2025121200, prazo 120h, data válida 2025121700
@@ -2001,7 +2192,8 @@ Processando rodada 2025121600, prazo 120h, data válida 2025122100
 Processando rodada 2025121700, prazo 120h, data válida 2025122200
 Processando rodada 2025121800, prazo 120h, data válida 2025122300
 Processando rodada 2025121900, prazo 120h, data válida 2025122400
-Ano 2025, mes 12, prazo 120h, total de arquivos: 5
+Processando rodada 2025122000, prazo 120h, data válida 2025122500
+Ano 2025, mes 12, prazo 120h, total de arquivos: 6
 
 ----------------------------------------------------------------
 Computing monthly mean for skill score with threshold: 1 mm (GFS)
@@ -2020,7 +2212,8 @@ Processando rodada 2025121600, prazo 24h, data válida 2025121700
 Processando rodada 2025121700, prazo 24h, data válida 2025121800
 Processando rodada 2025121800, prazo 24h, data válida 2025121900
 Processando rodada 2025121900, prazo 24h, data válida 2025122000
-Ano 2025, mes 12, prazo 24h, total de arquivos: 9
+Processando rodada 2025122000, prazo 24h, data válida 2025122100
+Ano 2025, mes 12, prazo 24h, total de arquivos: 10
 Processando rodada 2025121000, prazo 48h, data válida 2025121200
 Processando rodada 2025121100, prazo 48h, data válida 2025121300
 Processando rodada 2025121200, prazo 48h, data válida 2025121400
@@ -2031,7 +2224,8 @@ Processando rodada 2025121600, prazo 48h, data válida 2025121800
 Processando rodada 2025121700, prazo 48h, data válida 2025121900
 Processando rodada 2025121800, prazo 48h, data válida 2025122000
 Processando rodada 2025121900, prazo 48h, data válida 2025122100
-Ano 2025, mes 12, prazo 48h, total de arquivos: 8
+Processando rodada 2025122000, prazo 48h, data válida 2025122200
+Ano 2025, mes 12, prazo 48h, total de arquivos: 9
 Processando rodada 2025121000, prazo 72h, data válida 2025121300
 Processando rodada 2025121100, prazo 72h, data válida 2025121400
 Processando rodada 2025121200, prazo 72h, data válida 2025121500
@@ -2042,7 +2236,8 @@ Processando rodada 2025121600, prazo 72h, data válida 2025121900
 Processando rodada 2025121700, prazo 72h, data válida 2025122000
 Processando rodada 2025121800, prazo 72h, data válida 2025122100
 Processando rodada 2025121900, prazo 72h, data válida 2025122200
-Ano 2025, mes 12, prazo 72h, total de arquivos: 7
+Processando rodada 2025122000, prazo 72h, data válida 2025122300
+Ano 2025, mes 12, prazo 72h, total de arquivos: 8
 Processando rodada 2025121000, prazo 96h, data válida 2025121400
 Processando rodada 2025121100, prazo 96h, data válida 2025121500
 Processando rodada 2025121200, prazo 96h, data válida 2025121600
@@ -2053,7 +2248,8 @@ Processando rodada 2025121600, prazo 96h, data válida 2025122000
 Processando rodada 2025121700, prazo 96h, data válida 2025122100
 Processando rodada 2025121800, prazo 96h, data válida 2025122200
 Processando rodada 2025121900, prazo 96h, data válida 2025122300
-Ano 2025, mes 12, prazo 96h, total de arquivos: 6
+Processando rodada 2025122000, prazo 96h, data válida 2025122400
+Ano 2025, mes 12, prazo 96h, total de arquivos: 7
 Processando rodada 2025121000, prazo 120h, data válida 2025121500
 Processando rodada 2025121100, prazo 120h, data válida 2025121600
 Processando rodada 2025121200, prazo 120h, data válida 2025121700
@@ -2064,7 +2260,8 @@ Processando rodada 2025121600, prazo 120h, data válida 2025122100
 Processando rodada 2025121700, prazo 120h, data válida 2025122200
 Processando rodada 2025121800, prazo 120h, data válida 2025122300
 Processando rodada 2025121900, prazo 120h, data válida 2025122400
-Ano 2025, mes 12, prazo 120h, total de arquivos: 5
+Processando rodada 2025122000, prazo 120h, data válida 2025122500
+Ano 2025, mes 12, prazo 120h, total de arquivos: 6
 
 ----------------------------------------------------------------
 Computing monthly mean for skill score with threshold: 2 mm (MONAN)
@@ -2083,7 +2280,8 @@ Processando rodada 2025121600, prazo 24h, data válida 2025121700
 Processando rodada 2025121700, prazo 24h, data válida 2025121800
 Processando rodada 2025121800, prazo 24h, data válida 2025121900
 Processando rodada 2025121900, prazo 24h, data válida 2025122000
-Ano 2025, mes 12, prazo 24h, total de arquivos: 9
+Processando rodada 2025122000, prazo 24h, data válida 2025122100
+Ano 2025, mes 12, prazo 24h, total de arquivos: 10
 Processando rodada 2025121000, prazo 48h, data válida 2025121200
 Processando rodada 2025121100, prazo 48h, data válida 2025121300
 Processando rodada 2025121200, prazo 48h, data válida 2025121400
@@ -2094,7 +2292,8 @@ Processando rodada 2025121600, prazo 48h, data válida 2025121800
 Processando rodada 2025121700, prazo 48h, data válida 2025121900
 Processando rodada 2025121800, prazo 48h, data válida 2025122000
 Processando rodada 2025121900, prazo 48h, data válida 2025122100
-Ano 2025, mes 12, prazo 48h, total de arquivos: 8
+Processando rodada 2025122000, prazo 48h, data válida 2025122200
+Ano 2025, mes 12, prazo 48h, total de arquivos: 9
 Processando rodada 2025121000, prazo 72h, data válida 2025121300
 Processando rodada 2025121100, prazo 72h, data válida 2025121400
 Processando rodada 2025121200, prazo 72h, data válida 2025121500
@@ -2105,7 +2304,8 @@ Processando rodada 2025121600, prazo 72h, data válida 2025121900
 Processando rodada 2025121700, prazo 72h, data válida 2025122000
 Processando rodada 2025121800, prazo 72h, data válida 2025122100
 Processando rodada 2025121900, prazo 72h, data válida 2025122200
-Ano 2025, mes 12, prazo 72h, total de arquivos: 7
+Processando rodada 2025122000, prazo 72h, data válida 2025122300
+Ano 2025, mes 12, prazo 72h, total de arquivos: 8
 Processando rodada 2025121000, prazo 96h, data válida 2025121400
 Processando rodada 2025121100, prazo 96h, data válida 2025121500
 Processando rodada 2025121200, prazo 96h, data válida 2025121600
@@ -2116,7 +2316,8 @@ Processando rodada 2025121600, prazo 96h, data válida 2025122000
 Processando rodada 2025121700, prazo 96h, data válida 2025122100
 Processando rodada 2025121800, prazo 96h, data válida 2025122200
 Processando rodada 2025121900, prazo 96h, data válida 2025122300
-Ano 2025, mes 12, prazo 96h, total de arquivos: 6
+Processando rodada 2025122000, prazo 96h, data válida 2025122400
+Ano 2025, mes 12, prazo 96h, total de arquivos: 7
 Processando rodada 2025121000, prazo 120h, data válida 2025121500
 Processando rodada 2025121100, prazo 120h, data válida 2025121600
 Processando rodada 2025121200, prazo 120h, data válida 2025121700
@@ -2127,7 +2328,8 @@ Processando rodada 2025121600, prazo 120h, data válida 2025122100
 Processando rodada 2025121700, prazo 120h, data válida 2025122200
 Processando rodada 2025121800, prazo 120h, data válida 2025122300
 Processando rodada 2025121900, prazo 120h, data válida 2025122400
-Ano 2025, mes 12, prazo 120h, total de arquivos: 5
+Processando rodada 2025122000, prazo 120h, data válida 2025122500
+Ano 2025, mes 12, prazo 120h, total de arquivos: 6
 
 ----------------------------------------------------------------
 Computing monthly mean for skill score with threshold: 2 mm (BAM)
@@ -2146,7 +2348,8 @@ Processando rodada 2025121600, prazo 24h, data válida 2025121700
 Processando rodada 2025121700, prazo 24h, data válida 2025121800
 Processando rodada 2025121800, prazo 24h, data válida 2025121900
 Processando rodada 2025121900, prazo 24h, data válida 2025122000
-Ano 2025, mes 12, prazo 24h, total de arquivos: 9
+Processando rodada 2025122000, prazo 24h, data válida 2025122100
+Ano 2025, mes 12, prazo 24h, total de arquivos: 10
 Processando rodada 2025121000, prazo 48h, data válida 2025121200
 Processando rodada 2025121100, prazo 48h, data válida 2025121300
 Processando rodada 2025121200, prazo 48h, data válida 2025121400
@@ -2157,7 +2360,8 @@ Processando rodada 2025121600, prazo 48h, data válida 2025121800
 Processando rodada 2025121700, prazo 48h, data válida 2025121900
 Processando rodada 2025121800, prazo 48h, data válida 2025122000
 Processando rodada 2025121900, prazo 48h, data válida 2025122100
-Ano 2025, mes 12, prazo 48h, total de arquivos: 8
+Processando rodada 2025122000, prazo 48h, data válida 2025122200
+Ano 2025, mes 12, prazo 48h, total de arquivos: 9
 Processando rodada 2025121000, prazo 72h, data válida 2025121300
 Processando rodada 2025121100, prazo 72h, data válida 2025121400
 Processando rodada 2025121200, prazo 72h, data válida 2025121500
@@ -2168,7 +2372,8 @@ Processando rodada 2025121600, prazo 72h, data válida 2025121900
 Processando rodada 2025121700, prazo 72h, data válida 2025122000
 Processando rodada 2025121800, prazo 72h, data válida 2025122100
 Processando rodada 2025121900, prazo 72h, data válida 2025122200
-Ano 2025, mes 12, prazo 72h, total de arquivos: 7
+Processando rodada 2025122000, prazo 72h, data válida 2025122300
+Ano 2025, mes 12, prazo 72h, total de arquivos: 8
 Processando rodada 2025121000, prazo 96h, data válida 2025121400
 Processando rodada 2025121100, prazo 96h, data válida 2025121500
 Processando rodada 2025121200, prazo 96h, data válida 2025121600
@@ -2179,7 +2384,8 @@ Processando rodada 2025121600, prazo 96h, data válida 2025122000
 Processando rodada 2025121700, prazo 96h, data válida 2025122100
 Processando rodada 2025121800, prazo 96h, data válida 2025122200
 Processando rodada 2025121900, prazo 96h, data válida 2025122300
-Ano 2025, mes 12, prazo 96h, total de arquivos: 6
+Processando rodada 2025122000, prazo 96h, data válida 2025122400
+Ano 2025, mes 12, prazo 96h, total de arquivos: 7
 Processando rodada 2025121000, prazo 120h, data válida 2025121500
 Processando rodada 2025121100, prazo 120h, data válida 2025121600
 Processando rodada 2025121200, prazo 120h, data válida 2025121700
@@ -2190,7 +2396,8 @@ Processando rodada 2025121600, prazo 120h, data válida 2025122100
 Processando rodada 2025121700, prazo 120h, data válida 2025122200
 Processando rodada 2025121800, prazo 120h, data válida 2025122300
 Processando rodada 2025121900, prazo 120h, data válida 2025122400
-Ano 2025, mes 12, prazo 120h, total de arquivos: 5
+Processando rodada 2025122000, prazo 120h, data válida 2025122500
+Ano 2025, mes 12, prazo 120h, total de arquivos: 6
 
 ----------------------------------------------------------------
 Computing monthly mean for skill score with threshold: 2 mm (GFS)
@@ -2209,7 +2416,8 @@ Processando rodada 2025121600, prazo 24h, data válida 2025121700
 Processando rodada 2025121700, prazo 24h, data válida 2025121800
 Processando rodada 2025121800, prazo 24h, data válida 2025121900
 Processando rodada 2025121900, prazo 24h, data válida 2025122000
-Ano 2025, mes 12, prazo 24h, total de arquivos: 9
+Processando rodada 2025122000, prazo 24h, data válida 2025122100
+Ano 2025, mes 12, prazo 24h, total de arquivos: 10
 Processando rodada 2025121000, prazo 48h, data válida 2025121200
 Processando rodada 2025121100, prazo 48h, data válida 2025121300
 Processando rodada 2025121200, prazo 48h, data válida 2025121400
@@ -2220,7 +2428,8 @@ Processando rodada 2025121600, prazo 48h, data válida 2025121800
 Processando rodada 2025121700, prazo 48h, data válida 2025121900
 Processando rodada 2025121800, prazo 48h, data válida 2025122000
 Processando rodada 2025121900, prazo 48h, data válida 2025122100
-Ano 2025, mes 12, prazo 48h, total de arquivos: 8
+Processando rodada 2025122000, prazo 48h, data válida 2025122200
+Ano 2025, mes 12, prazo 48h, total de arquivos: 9
 Processando rodada 2025121000, prazo 72h, data válida 2025121300
 Processando rodada 2025121100, prazo 72h, data válida 2025121400
 Processando rodada 2025121200, prazo 72h, data válida 2025121500
@@ -2231,7 +2440,8 @@ Processando rodada 2025121600, prazo 72h, data válida 2025121900
 Processando rodada 2025121700, prazo 72h, data válida 2025122000
 Processando rodada 2025121800, prazo 72h, data válida 2025122100
 Processando rodada 2025121900, prazo 72h, data válida 2025122200
-Ano 2025, mes 12, prazo 72h, total de arquivos: 7
+Processando rodada 2025122000, prazo 72h, data válida 2025122300
+Ano 2025, mes 12, prazo 72h, total de arquivos: 8
 Processando rodada 2025121000, prazo 96h, data válida 2025121400
 Processando rodada 2025121100, prazo 96h, data válida 2025121500
 Processando rodada 2025121200, prazo 96h, data válida 2025121600
@@ -2242,7 +2452,8 @@ Processando rodada 2025121600, prazo 96h, data válida 2025122000
 Processando rodada 2025121700, prazo 96h, data válida 2025122100
 Processando rodada 2025121800, prazo 96h, data válida 2025122200
 Processando rodada 2025121900, prazo 96h, data válida 2025122300
-Ano 2025, mes 12, prazo 96h, total de arquivos: 6
+Processando rodada 2025122000, prazo 96h, data válida 2025122400
+Ano 2025, mes 12, prazo 96h, total de arquivos: 7
 Processando rodada 2025121000, prazo 120h, data válida 2025121500
 Processando rodada 2025121100, prazo 120h, data válida 2025121600
 Processando rodada 2025121200, prazo 120h, data válida 2025121700
@@ -2253,7 +2464,8 @@ Processando rodada 2025121600, prazo 120h, data válida 2025122100
 Processando rodada 2025121700, prazo 120h, data válida 2025122200
 Processando rodada 2025121800, prazo 120h, data válida 2025122300
 Processando rodada 2025121900, prazo 120h, data válida 2025122400
-Ano 2025, mes 12, prazo 120h, total de arquivos: 5
+Processando rodada 2025122000, prazo 120h, data válida 2025122500
+Ano 2025, mes 12, prazo 120h, total de arquivos: 6
 
 ----------------------------------------------------------------
 Computing monthly mean for skill score with threshold: 5 mm (MONAN)
@@ -2272,7 +2484,8 @@ Processando rodada 2025121600, prazo 24h, data válida 2025121700
 Processando rodada 2025121700, prazo 24h, data válida 2025121800
 Processando rodada 2025121800, prazo 24h, data válida 2025121900
 Processando rodada 2025121900, prazo 24h, data válida 2025122000
-Ano 2025, mes 12, prazo 24h, total de arquivos: 9
+Processando rodada 2025122000, prazo 24h, data válida 2025122100
+Ano 2025, mes 12, prazo 24h, total de arquivos: 10
 Processando rodada 2025121000, prazo 48h, data válida 2025121200
 Processando rodada 2025121100, prazo 48h, data válida 2025121300
 Processando rodada 2025121200, prazo 48h, data válida 2025121400
@@ -2283,7 +2496,8 @@ Processando rodada 2025121600, prazo 48h, data válida 2025121800
 Processando rodada 2025121700, prazo 48h, data válida 2025121900
 Processando rodada 2025121800, prazo 48h, data válida 2025122000
 Processando rodada 2025121900, prazo 48h, data válida 2025122100
-Ano 2025, mes 12, prazo 48h, total de arquivos: 8
+Processando rodada 2025122000, prazo 48h, data válida 2025122200
+Ano 2025, mes 12, prazo 48h, total de arquivos: 9
 Processando rodada 2025121000, prazo 72h, data válida 2025121300
 Processando rodada 2025121100, prazo 72h, data válida 2025121400
 Processando rodada 2025121200, prazo 72h, data válida 2025121500
@@ -2294,7 +2508,8 @@ Processando rodada 2025121600, prazo 72h, data válida 2025121900
 Processando rodada 2025121700, prazo 72h, data válida 2025122000
 Processando rodada 2025121800, prazo 72h, data válida 2025122100
 Processando rodada 2025121900, prazo 72h, data válida 2025122200
-Ano 2025, mes 12, prazo 72h, total de arquivos: 7
+Processando rodada 2025122000, prazo 72h, data válida 2025122300
+Ano 2025, mes 12, prazo 72h, total de arquivos: 8
 Processando rodada 2025121000, prazo 96h, data válida 2025121400
 Processando rodada 2025121100, prazo 96h, data válida 2025121500
 Processando rodada 2025121200, prazo 96h, data válida 2025121600
@@ -2305,7 +2520,8 @@ Processando rodada 2025121600, prazo 96h, data válida 2025122000
 Processando rodada 2025121700, prazo 96h, data válida 2025122100
 Processando rodada 2025121800, prazo 96h, data válida 2025122200
 Processando rodada 2025121900, prazo 96h, data válida 2025122300
-Ano 2025, mes 12, prazo 96h, total de arquivos: 6
+Processando rodada 2025122000, prazo 96h, data válida 2025122400
+Ano 2025, mes 12, prazo 96h, total de arquivos: 7
 Processando rodada 2025121000, prazo 120h, data válida 2025121500
 Processando rodada 2025121100, prazo 120h, data válida 2025121600
 Processando rodada 2025121200, prazo 120h, data válida 2025121700
@@ -2316,7 +2532,8 @@ Processando rodada 2025121600, prazo 120h, data válida 2025122100
 Processando rodada 2025121700, prazo 120h, data válida 2025122200
 Processando rodada 2025121800, prazo 120h, data válida 2025122300
 Processando rodada 2025121900, prazo 120h, data válida 2025122400
-Ano 2025, mes 12, prazo 120h, total de arquivos: 5
+Processando rodada 2025122000, prazo 120h, data válida 2025122500
+Ano 2025, mes 12, prazo 120h, total de arquivos: 6
 
 ----------------------------------------------------------------
 Computing monthly mean for skill score with threshold: 5 mm (BAM)
@@ -2335,7 +2552,8 @@ Processando rodada 2025121600, prazo 24h, data válida 2025121700
 Processando rodada 2025121700, prazo 24h, data válida 2025121800
 Processando rodada 2025121800, prazo 24h, data válida 2025121900
 Processando rodada 2025121900, prazo 24h, data válida 2025122000
-Ano 2025, mes 12, prazo 24h, total de arquivos: 9
+Processando rodada 2025122000, prazo 24h, data válida 2025122100
+Ano 2025, mes 12, prazo 24h, total de arquivos: 10
 Processando rodada 2025121000, prazo 48h, data válida 2025121200
 Processando rodada 2025121100, prazo 48h, data válida 2025121300
 Processando rodada 2025121200, prazo 48h, data válida 2025121400
@@ -2346,7 +2564,8 @@ Processando rodada 2025121600, prazo 48h, data válida 2025121800
 Processando rodada 2025121700, prazo 48h, data válida 2025121900
 Processando rodada 2025121800, prazo 48h, data válida 2025122000
 Processando rodada 2025121900, prazo 48h, data válida 2025122100
-Ano 2025, mes 12, prazo 48h, total de arquivos: 8
+Processando rodada 2025122000, prazo 48h, data válida 2025122200
+Ano 2025, mes 12, prazo 48h, total de arquivos: 9
 Processando rodada 2025121000, prazo 72h, data válida 2025121300
 Processando rodada 2025121100, prazo 72h, data válida 2025121400
 Processando rodada 2025121200, prazo 72h, data válida 2025121500
@@ -2357,7 +2576,8 @@ Processando rodada 2025121600, prazo 72h, data válida 2025121900
 Processando rodada 2025121700, prazo 72h, data válida 2025122000
 Processando rodada 2025121800, prazo 72h, data válida 2025122100
 Processando rodada 2025121900, prazo 72h, data válida 2025122200
-Ano 2025, mes 12, prazo 72h, total de arquivos: 7
+Processando rodada 2025122000, prazo 72h, data válida 2025122300
+Ano 2025, mes 12, prazo 72h, total de arquivos: 8
 Processando rodada 2025121000, prazo 96h, data válida 2025121400
 Processando rodada 2025121100, prazo 96h, data válida 2025121500
 Processando rodada 2025121200, prazo 96h, data válida 2025121600
@@ -2368,7 +2588,8 @@ Processando rodada 2025121600, prazo 96h, data válida 2025122000
 Processando rodada 2025121700, prazo 96h, data válida 2025122100
 Processando rodada 2025121800, prazo 96h, data válida 2025122200
 Processando rodada 2025121900, prazo 96h, data válida 2025122300
-Ano 2025, mes 12, prazo 96h, total de arquivos: 6
+Processando rodada 2025122000, prazo 96h, data válida 2025122400
+Ano 2025, mes 12, prazo 96h, total de arquivos: 7
 Processando rodada 2025121000, prazo 120h, data válida 2025121500
 Processando rodada 2025121100, prazo 120h, data válida 2025121600
 Processando rodada 2025121200, prazo 120h, data válida 2025121700
@@ -2379,7 +2600,8 @@ Processando rodada 2025121600, prazo 120h, data válida 2025122100
 Processando rodada 2025121700, prazo 120h, data válida 2025122200
 Processando rodada 2025121800, prazo 120h, data válida 2025122300
 Processando rodada 2025121900, prazo 120h, data válida 2025122400
-Ano 2025, mes 12, prazo 120h, total de arquivos: 5
+Processando rodada 2025122000, prazo 120h, data válida 2025122500
+Ano 2025, mes 12, prazo 120h, total de arquivos: 6
 
 ----------------------------------------------------------------
 Computing monthly mean for skill score with threshold: 5 mm (GFS)
@@ -2398,7 +2620,8 @@ Processando rodada 2025121600, prazo 24h, data válida 2025121700
 Processando rodada 2025121700, prazo 24h, data válida 2025121800
 Processando rodada 2025121800, prazo 24h, data válida 2025121900
 Processando rodada 2025121900, prazo 24h, data válida 2025122000
-Ano 2025, mes 12, prazo 24h, total de arquivos: 9
+Processando rodada 2025122000, prazo 24h, data válida 2025122100
+Ano 2025, mes 12, prazo 24h, total de arquivos: 10
 Processando rodada 2025121000, prazo 48h, data válida 2025121200
 Processando rodada 2025121100, prazo 48h, data válida 2025121300
 Processando rodada 2025121200, prazo 48h, data válida 2025121400
@@ -2409,7 +2632,8 @@ Processando rodada 2025121600, prazo 48h, data válida 2025121800
 Processando rodada 2025121700, prazo 48h, data válida 2025121900
 Processando rodada 2025121800, prazo 48h, data válida 2025122000
 Processando rodada 2025121900, prazo 48h, data válida 2025122100
-Ano 2025, mes 12, prazo 48h, total de arquivos: 8
+Processando rodada 2025122000, prazo 48h, data válida 2025122200
+Ano 2025, mes 12, prazo 48h, total de arquivos: 9
 Processando rodada 2025121000, prazo 72h, data válida 2025121300
 Processando rodada 2025121100, prazo 72h, data válida 2025121400
 Processando rodada 2025121200, prazo 72h, data válida 2025121500
@@ -2420,7 +2644,8 @@ Processando rodada 2025121600, prazo 72h, data válida 2025121900
 Processando rodada 2025121700, prazo 72h, data válida 2025122000
 Processando rodada 2025121800, prazo 72h, data válida 2025122100
 Processando rodada 2025121900, prazo 72h, data válida 2025122200
-Ano 2025, mes 12, prazo 72h, total de arquivos: 7
+Processando rodada 2025122000, prazo 72h, data válida 2025122300
+Ano 2025, mes 12, prazo 72h, total de arquivos: 8
 Processando rodada 2025121000, prazo 96h, data válida 2025121400
 Processando rodada 2025121100, prazo 96h, data válida 2025121500
 Processando rodada 2025121200, prazo 96h, data válida 2025121600
@@ -2431,7 +2656,8 @@ Processando rodada 2025121600, prazo 96h, data válida 2025122000
 Processando rodada 2025121700, prazo 96h, data válida 2025122100
 Processando rodada 2025121800, prazo 96h, data válida 2025122200
 Processando rodada 2025121900, prazo 96h, data válida 2025122300
-Ano 2025, mes 12, prazo 96h, total de arquivos: 6
+Processando rodada 2025122000, prazo 96h, data válida 2025122400
+Ano 2025, mes 12, prazo 96h, total de arquivos: 7
 Processando rodada 2025121000, prazo 120h, data válida 2025121500
 Processando rodada 2025121100, prazo 120h, data válida 2025121600
 Processando rodada 2025121200, prazo 120h, data válida 2025121700
@@ -2442,7 +2668,8 @@ Processando rodada 2025121600, prazo 120h, data válida 2025122100
 Processando rodada 2025121700, prazo 120h, data válida 2025122200
 Processando rodada 2025121800, prazo 120h, data válida 2025122300
 Processando rodada 2025121900, prazo 120h, data válida 2025122400
-Ano 2025, mes 12, prazo 120h, total de arquivos: 5
+Processando rodada 2025122000, prazo 120h, data válida 2025122500
+Ano 2025, mes 12, prazo 120h, total de arquivos: 6
 
 ----------------------------------------------------------------
 Computing monthly mean for skill score with threshold: 10 mm (MONAN)
@@ -2461,7 +2688,8 @@ Processando rodada 2025121600, prazo 24h, data válida 2025121700
 Processando rodada 2025121700, prazo 24h, data válida 2025121800
 Processando rodada 2025121800, prazo 24h, data válida 2025121900
 Processando rodada 2025121900, prazo 24h, data válida 2025122000
-Ano 2025, mes 12, prazo 24h, total de arquivos: 9
+Processando rodada 2025122000, prazo 24h, data válida 2025122100
+Ano 2025, mes 12, prazo 24h, total de arquivos: 10
 Processando rodada 2025121000, prazo 48h, data válida 2025121200
 Processando rodada 2025121100, prazo 48h, data válida 2025121300
 Processando rodada 2025121200, prazo 48h, data válida 2025121400
@@ -2472,7 +2700,8 @@ Processando rodada 2025121600, prazo 48h, data válida 2025121800
 Processando rodada 2025121700, prazo 48h, data válida 2025121900
 Processando rodada 2025121800, prazo 48h, data válida 2025122000
 Processando rodada 2025121900, prazo 48h, data válida 2025122100
-Ano 2025, mes 12, prazo 48h, total de arquivos: 8
+Processando rodada 2025122000, prazo 48h, data válida 2025122200
+Ano 2025, mes 12, prazo 48h, total de arquivos: 9
 Processando rodada 2025121000, prazo 72h, data válida 2025121300
 Processando rodada 2025121100, prazo 72h, data válida 2025121400
 Processando rodada 2025121200, prazo 72h, data válida 2025121500
@@ -2483,7 +2712,8 @@ Processando rodada 2025121600, prazo 72h, data válida 2025121900
 Processando rodada 2025121700, prazo 72h, data válida 2025122000
 Processando rodada 2025121800, prazo 72h, data válida 2025122100
 Processando rodada 2025121900, prazo 72h, data válida 2025122200
-Ano 2025, mes 12, prazo 72h, total de arquivos: 7
+Processando rodada 2025122000, prazo 72h, data válida 2025122300
+Ano 2025, mes 12, prazo 72h, total de arquivos: 8
 Processando rodada 2025121000, prazo 96h, data válida 2025121400
 Processando rodada 2025121100, prazo 96h, data válida 2025121500
 Processando rodada 2025121200, prazo 96h, data válida 2025121600
@@ -2494,7 +2724,8 @@ Processando rodada 2025121600, prazo 96h, data válida 2025122000
 Processando rodada 2025121700, prazo 96h, data válida 2025122100
 Processando rodada 2025121800, prazo 96h, data válida 2025122200
 Processando rodada 2025121900, prazo 96h, data válida 2025122300
-Ano 2025, mes 12, prazo 96h, total de arquivos: 6
+Processando rodada 2025122000, prazo 96h, data válida 2025122400
+Ano 2025, mes 12, prazo 96h, total de arquivos: 7
 Processando rodada 2025121000, prazo 120h, data válida 2025121500
 Processando rodada 2025121100, prazo 120h, data válida 2025121600
 Processando rodada 2025121200, prazo 120h, data válida 2025121700
@@ -2505,7 +2736,8 @@ Processando rodada 2025121600, prazo 120h, data válida 2025122100
 Processando rodada 2025121700, prazo 120h, data válida 2025122200
 Processando rodada 2025121800, prazo 120h, data válida 2025122300
 Processando rodada 2025121900, prazo 120h, data válida 2025122400
-Ano 2025, mes 12, prazo 120h, total de arquivos: 5
+Processando rodada 2025122000, prazo 120h, data válida 2025122500
+Ano 2025, mes 12, prazo 120h, total de arquivos: 6
 
 ----------------------------------------------------------------
 Computing monthly mean for skill score with threshold: 10 mm (BAM)
@@ -2524,7 +2756,8 @@ Processando rodada 2025121600, prazo 24h, data válida 2025121700
 Processando rodada 2025121700, prazo 24h, data válida 2025121800
 Processando rodada 2025121800, prazo 24h, data válida 2025121900
 Processando rodada 2025121900, prazo 24h, data válida 2025122000
-Ano 2025, mes 12, prazo 24h, total de arquivos: 9
+Processando rodada 2025122000, prazo 24h, data válida 2025122100
+Ano 2025, mes 12, prazo 24h, total de arquivos: 10
 Processando rodada 2025121000, prazo 48h, data válida 2025121200
 Processando rodada 2025121100, prazo 48h, data válida 2025121300
 Processando rodada 2025121200, prazo 48h, data válida 2025121400
@@ -2535,7 +2768,8 @@ Processando rodada 2025121600, prazo 48h, data válida 2025121800
 Processando rodada 2025121700, prazo 48h, data válida 2025121900
 Processando rodada 2025121800, prazo 48h, data válida 2025122000
 Processando rodada 2025121900, prazo 48h, data válida 2025122100
-Ano 2025, mes 12, prazo 48h, total de arquivos: 8
+Processando rodada 2025122000, prazo 48h, data válida 2025122200
+Ano 2025, mes 12, prazo 48h, total de arquivos: 9
 Processando rodada 2025121000, prazo 72h, data válida 2025121300
 Processando rodada 2025121100, prazo 72h, data válida 2025121400
 Processando rodada 2025121200, prazo 72h, data válida 2025121500
@@ -2546,7 +2780,8 @@ Processando rodada 2025121600, prazo 72h, data válida 2025121900
 Processando rodada 2025121700, prazo 72h, data válida 2025122000
 Processando rodada 2025121800, prazo 72h, data válida 2025122100
 Processando rodada 2025121900, prazo 72h, data válida 2025122200
-Ano 2025, mes 12, prazo 72h, total de arquivos: 7
+Processando rodada 2025122000, prazo 72h, data válida 2025122300
+Ano 2025, mes 12, prazo 72h, total de arquivos: 8
 Processando rodada 2025121000, prazo 96h, data válida 2025121400
 Processando rodada 2025121100, prazo 96h, data válida 2025121500
 Processando rodada 2025121200, prazo 96h, data válida 2025121600
@@ -2557,7 +2792,8 @@ Processando rodada 2025121600, prazo 96h, data válida 2025122000
 Processando rodada 2025121700, prazo 96h, data válida 2025122100
 Processando rodada 2025121800, prazo 96h, data válida 2025122200
 Processando rodada 2025121900, prazo 96h, data válida 2025122300
-Ano 2025, mes 12, prazo 96h, total de arquivos: 6
+Processando rodada 2025122000, prazo 96h, data válida 2025122400
+Ano 2025, mes 12, prazo 96h, total de arquivos: 7
 Processando rodada 2025121000, prazo 120h, data válida 2025121500
 Processando rodada 2025121100, prazo 120h, data válida 2025121600
 Processando rodada 2025121200, prazo 120h, data válida 2025121700
@@ -2568,7 +2804,8 @@ Processando rodada 2025121600, prazo 120h, data válida 2025122100
 Processando rodada 2025121700, prazo 120h, data válida 2025122200
 Processando rodada 2025121800, prazo 120h, data válida 2025122300
 Processando rodada 2025121900, prazo 120h, data válida 2025122400
-Ano 2025, mes 12, prazo 120h, total de arquivos: 5
+Processando rodada 2025122000, prazo 120h, data válida 2025122500
+Ano 2025, mes 12, prazo 120h, total de arquivos: 6
 
 ----------------------------------------------------------------
 Computing monthly mean for skill score with threshold: 10 mm (GFS)
@@ -2587,7 +2824,8 @@ Processando rodada 2025121600, prazo 24h, data válida 2025121700
 Processando rodada 2025121700, prazo 24h, data válida 2025121800
 Processando rodada 2025121800, prazo 24h, data válida 2025121900
 Processando rodada 2025121900, prazo 24h, data válida 2025122000
-Ano 2025, mes 12, prazo 24h, total de arquivos: 9
+Processando rodada 2025122000, prazo 24h, data válida 2025122100
+Ano 2025, mes 12, prazo 24h, total de arquivos: 10
 Processando rodada 2025121000, prazo 48h, data válida 2025121200
 Processando rodada 2025121100, prazo 48h, data válida 2025121300
 Processando rodada 2025121200, prazo 48h, data válida 2025121400
@@ -2598,7 +2836,8 @@ Processando rodada 2025121600, prazo 48h, data válida 2025121800
 Processando rodada 2025121700, prazo 48h, data válida 2025121900
 Processando rodada 2025121800, prazo 48h, data válida 2025122000
 Processando rodada 2025121900, prazo 48h, data válida 2025122100
-Ano 2025, mes 12, prazo 48h, total de arquivos: 8
+Processando rodada 2025122000, prazo 48h, data válida 2025122200
+Ano 2025, mes 12, prazo 48h, total de arquivos: 9
 Processando rodada 2025121000, prazo 72h, data válida 2025121300
 Processando rodada 2025121100, prazo 72h, data válida 2025121400
 Processando rodada 2025121200, prazo 72h, data válida 2025121500
@@ -2609,7 +2848,8 @@ Processando rodada 2025121600, prazo 72h, data válida 2025121900
 Processando rodada 2025121700, prazo 72h, data válida 2025122000
 Processando rodada 2025121800, prazo 72h, data válida 2025122100
 Processando rodada 2025121900, prazo 72h, data válida 2025122200
-Ano 2025, mes 12, prazo 72h, total de arquivos: 7
+Processando rodada 2025122000, prazo 72h, data válida 2025122300
+Ano 2025, mes 12, prazo 72h, total de arquivos: 8
 Processando rodada 2025121000, prazo 96h, data válida 2025121400
 Processando rodada 2025121100, prazo 96h, data válida 2025121500
 Processando rodada 2025121200, prazo 96h, data válida 2025121600
@@ -2620,7 +2860,8 @@ Processando rodada 2025121600, prazo 96h, data válida 2025122000
 Processando rodada 2025121700, prazo 96h, data válida 2025122100
 Processando rodada 2025121800, prazo 96h, data válida 2025122200
 Processando rodada 2025121900, prazo 96h, data válida 2025122300
-Ano 2025, mes 12, prazo 96h, total de arquivos: 6
+Processando rodada 2025122000, prazo 96h, data válida 2025122400
+Ano 2025, mes 12, prazo 96h, total de arquivos: 7
 Processando rodada 2025121000, prazo 120h, data válida 2025121500
 Processando rodada 2025121100, prazo 120h, data válida 2025121600
 Processando rodada 2025121200, prazo 120h, data válida 2025121700
@@ -2631,7 +2872,8 @@ Processando rodada 2025121600, prazo 120h, data válida 2025122100
 Processando rodada 2025121700, prazo 120h, data válida 2025122200
 Processando rodada 2025121800, prazo 120h, data válida 2025122300
 Processando rodada 2025121900, prazo 120h, data válida 2025122400
-Ano 2025, mes 12, prazo 120h, total de arquivos: 5
+Processando rodada 2025122000, prazo 120h, data válida 2025122500
+Ano 2025, mes 12, prazo 120h, total de arquivos: 6
 
 ----------------------------------------------------------------
 Computing monthly mean for skill score with threshold: 20 mm (MONAN)
@@ -2650,7 +2892,8 @@ Processando rodada 2025121600, prazo 24h, data válida 2025121700
 Processando rodada 2025121700, prazo 24h, data válida 2025121800
 Processando rodada 2025121800, prazo 24h, data válida 2025121900
 Processando rodada 2025121900, prazo 24h, data válida 2025122000
-Ano 2025, mes 12, prazo 24h, total de arquivos: 9
+Processando rodada 2025122000, prazo 24h, data válida 2025122100
+Ano 2025, mes 12, prazo 24h, total de arquivos: 10
 Processando rodada 2025121000, prazo 48h, data válida 2025121200
 Processando rodada 2025121100, prazo 48h, data válida 2025121300
 Processando rodada 2025121200, prazo 48h, data válida 2025121400
@@ -2661,7 +2904,8 @@ Processando rodada 2025121600, prazo 48h, data válida 2025121800
 Processando rodada 2025121700, prazo 48h, data válida 2025121900
 Processando rodada 2025121800, prazo 48h, data válida 2025122000
 Processando rodada 2025121900, prazo 48h, data válida 2025122100
-Ano 2025, mes 12, prazo 48h, total de arquivos: 8
+Processando rodada 2025122000, prazo 48h, data válida 2025122200
+Ano 2025, mes 12, prazo 48h, total de arquivos: 9
 Processando rodada 2025121000, prazo 72h, data válida 2025121300
 Processando rodada 2025121100, prazo 72h, data válida 2025121400
 Processando rodada 2025121200, prazo 72h, data válida 2025121500
@@ -2672,7 +2916,8 @@ Processando rodada 2025121600, prazo 72h, data válida 2025121900
 Processando rodada 2025121700, prazo 72h, data válida 2025122000
 Processando rodada 2025121800, prazo 72h, data válida 2025122100
 Processando rodada 2025121900, prazo 72h, data válida 2025122200
-Ano 2025, mes 12, prazo 72h, total de arquivos: 7
+Processando rodada 2025122000, prazo 72h, data válida 2025122300
+Ano 2025, mes 12, prazo 72h, total de arquivos: 8
 Processando rodada 2025121000, prazo 96h, data válida 2025121400
 Processando rodada 2025121100, prazo 96h, data válida 2025121500
 Processando rodada 2025121200, prazo 96h, data válida 2025121600
@@ -2683,7 +2928,8 @@ Processando rodada 2025121600, prazo 96h, data válida 2025122000
 Processando rodada 2025121700, prazo 96h, data válida 2025122100
 Processando rodada 2025121800, prazo 96h, data válida 2025122200
 Processando rodada 2025121900, prazo 96h, data válida 2025122300
-Ano 2025, mes 12, prazo 96h, total de arquivos: 6
+Processando rodada 2025122000, prazo 96h, data válida 2025122400
+Ano 2025, mes 12, prazo 96h, total de arquivos: 7
 Processando rodada 2025121000, prazo 120h, data válida 2025121500
 Processando rodada 2025121100, prazo 120h, data válida 2025121600
 Processando rodada 2025121200, prazo 120h, data válida 2025121700
@@ -2694,7 +2940,8 @@ Processando rodada 2025121600, prazo 120h, data válida 2025122100
 Processando rodada 2025121700, prazo 120h, data válida 2025122200
 Processando rodada 2025121800, prazo 120h, data válida 2025122300
 Processando rodada 2025121900, prazo 120h, data válida 2025122400
-Ano 2025, mes 12, prazo 120h, total de arquivos: 5
+Processando rodada 2025122000, prazo 120h, data válida 2025122500
+Ano 2025, mes 12, prazo 120h, total de arquivos: 6
 
 ----------------------------------------------------------------
 Computing monthly mean for skill score with threshold: 20 mm (BAM)
@@ -2713,7 +2960,8 @@ Processando rodada 2025121600, prazo 24h, data válida 2025121700
 Processando rodada 2025121700, prazo 24h, data válida 2025121800
 Processando rodada 2025121800, prazo 24h, data válida 2025121900
 Processando rodada 2025121900, prazo 24h, data válida 2025122000
-Ano 2025, mes 12, prazo 24h, total de arquivos: 9
+Processando rodada 2025122000, prazo 24h, data válida 2025122100
+Ano 2025, mes 12, prazo 24h, total de arquivos: 10
 Processando rodada 2025121000, prazo 48h, data válida 2025121200
 Processando rodada 2025121100, prazo 48h, data válida 2025121300
 Processando rodada 2025121200, prazo 48h, data válida 2025121400
@@ -2724,7 +2972,8 @@ Processando rodada 2025121600, prazo 48h, data válida 2025121800
 Processando rodada 2025121700, prazo 48h, data válida 2025121900
 Processando rodada 2025121800, prazo 48h, data válida 2025122000
 Processando rodada 2025121900, prazo 48h, data válida 2025122100
-Ano 2025, mes 12, prazo 48h, total de arquivos: 8
+Processando rodada 2025122000, prazo 48h, data válida 2025122200
+Ano 2025, mes 12, prazo 48h, total de arquivos: 9
 Processando rodada 2025121000, prazo 72h, data válida 2025121300
 Processando rodada 2025121100, prazo 72h, data válida 2025121400
 Processando rodada 2025121200, prazo 72h, data válida 2025121500
@@ -2735,7 +2984,8 @@ Processando rodada 2025121600, prazo 72h, data válida 2025121900
 Processando rodada 2025121700, prazo 72h, data válida 2025122000
 Processando rodada 2025121800, prazo 72h, data válida 2025122100
 Processando rodada 2025121900, prazo 72h, data válida 2025122200
-Ano 2025, mes 12, prazo 72h, total de arquivos: 7
+Processando rodada 2025122000, prazo 72h, data válida 2025122300
+Ano 2025, mes 12, prazo 72h, total de arquivos: 8
 Processando rodada 2025121000, prazo 96h, data válida 2025121400
 Processando rodada 2025121100, prazo 96h, data válida 2025121500
 Processando rodada 2025121200, prazo 96h, data válida 2025121600
@@ -2746,7 +2996,8 @@ Processando rodada 2025121600, prazo 96h, data válida 2025122000
 Processando rodada 2025121700, prazo 96h, data válida 2025122100
 Processando rodada 2025121800, prazo 96h, data válida 2025122200
 Processando rodada 2025121900, prazo 96h, data válida 2025122300
-Ano 2025, mes 12, prazo 96h, total de arquivos: 6
+Processando rodada 2025122000, prazo 96h, data válida 2025122400
+Ano 2025, mes 12, prazo 96h, total de arquivos: 7
 Processando rodada 2025121000, prazo 120h, data válida 2025121500
 Processando rodada 2025121100, prazo 120h, data válida 2025121600
 Processando rodada 2025121200, prazo 120h, data válida 2025121700
@@ -2757,7 +3008,8 @@ Processando rodada 2025121600, prazo 120h, data válida 2025122100
 Processando rodada 2025121700, prazo 120h, data válida 2025122200
 Processando rodada 2025121800, prazo 120h, data válida 2025122300
 Processando rodada 2025121900, prazo 120h, data válida 2025122400
-Ano 2025, mes 12, prazo 120h, total de arquivos: 5
+Processando rodada 2025122000, prazo 120h, data válida 2025122500
+Ano 2025, mes 12, prazo 120h, total de arquivos: 6
 
 ----------------------------------------------------------------
 Computing monthly mean for skill score with threshold: 20 mm (GFS)
@@ -2776,7 +3028,8 @@ Processando rodada 2025121600, prazo 24h, data válida 2025121700
 Processando rodada 2025121700, prazo 24h, data válida 2025121800
 Processando rodada 2025121800, prazo 24h, data válida 2025121900
 Processando rodada 2025121900, prazo 24h, data válida 2025122000
-Ano 2025, mes 12, prazo 24h, total de arquivos: 9
+Processando rodada 2025122000, prazo 24h, data válida 2025122100
+Ano 2025, mes 12, prazo 24h, total de arquivos: 10
 Processando rodada 2025121000, prazo 48h, data válida 2025121200
 Processando rodada 2025121100, prazo 48h, data válida 2025121300
 Processando rodada 2025121200, prazo 48h, data válida 2025121400
@@ -2787,7 +3040,8 @@ Processando rodada 2025121600, prazo 48h, data válida 2025121800
 Processando rodada 2025121700, prazo 48h, data válida 2025121900
 Processando rodada 2025121800, prazo 48h, data válida 2025122000
 Processando rodada 2025121900, prazo 48h, data válida 2025122100
-Ano 2025, mes 12, prazo 48h, total de arquivos: 8
+Processando rodada 2025122000, prazo 48h, data válida 2025122200
+Ano 2025, mes 12, prazo 48h, total de arquivos: 9
 Processando rodada 2025121000, prazo 72h, data válida 2025121300
 Processando rodada 2025121100, prazo 72h, data válida 2025121400
 Processando rodada 2025121200, prazo 72h, data válida 2025121500
@@ -2798,7 +3052,8 @@ Processando rodada 2025121600, prazo 72h, data válida 2025121900
 Processando rodada 2025121700, prazo 72h, data válida 2025122000
 Processando rodada 2025121800, prazo 72h, data válida 2025122100
 Processando rodada 2025121900, prazo 72h, data válida 2025122200
-Ano 2025, mes 12, prazo 72h, total de arquivos: 7
+Processando rodada 2025122000, prazo 72h, data válida 2025122300
+Ano 2025, mes 12, prazo 72h, total de arquivos: 8
 Processando rodada 2025121000, prazo 96h, data válida 2025121400
 Processando rodada 2025121100, prazo 96h, data válida 2025121500
 Processando rodada 2025121200, prazo 96h, data válida 2025121600
@@ -2809,7 +3064,8 @@ Processando rodada 2025121600, prazo 96h, data válida 2025122000
 Processando rodada 2025121700, prazo 96h, data válida 2025122100
 Processando rodada 2025121800, prazo 96h, data válida 2025122200
 Processando rodada 2025121900, prazo 96h, data válida 2025122300
-Ano 2025, mes 12, prazo 96h, total de arquivos: 6
+Processando rodada 2025122000, prazo 96h, data válida 2025122400
+Ano 2025, mes 12, prazo 96h, total de arquivos: 7
 Processando rodada 2025121000, prazo 120h, data válida 2025121500
 Processando rodada 2025121100, prazo 120h, data válida 2025121600
 Processando rodada 2025121200, prazo 120h, data válida 2025121700
@@ -2820,7 +3076,8 @@ Processando rodada 2025121600, prazo 120h, data válida 2025122100
 Processando rodada 2025121700, prazo 120h, data válida 2025122200
 Processando rodada 2025121800, prazo 120h, data válida 2025122300
 Processando rodada 2025121900, prazo 120h, data válida 2025122400
-Ano 2025, mes 12, prazo 120h, total de arquivos: 5
+Processando rodada 2025122000, prazo 120h, data válida 2025122500
+Ano 2025, mes 12, prazo 120h, total de arquivos: 6
 
 ----------------------------------------------------------------
 Computing monthly mean for skill score with threshold: 50 mm (MONAN)
@@ -2839,7 +3096,8 @@ Processando rodada 2025121600, prazo 24h, data válida 2025121700
 Processando rodada 2025121700, prazo 24h, data válida 2025121800
 Processando rodada 2025121800, prazo 24h, data válida 2025121900
 Processando rodada 2025121900, prazo 24h, data válida 2025122000
-Ano 2025, mes 12, prazo 24h, total de arquivos: 9
+Processando rodada 2025122000, prazo 24h, data válida 2025122100
+Ano 2025, mes 12, prazo 24h, total de arquivos: 10
 Processando rodada 2025121000, prazo 48h, data válida 2025121200
 Processando rodada 2025121100, prazo 48h, data válida 2025121300
 Processando rodada 2025121200, prazo 48h, data válida 2025121400
@@ -2850,7 +3108,8 @@ Processando rodada 2025121600, prazo 48h, data válida 2025121800
 Processando rodada 2025121700, prazo 48h, data válida 2025121900
 Processando rodada 2025121800, prazo 48h, data válida 2025122000
 Processando rodada 2025121900, prazo 48h, data válida 2025122100
-Ano 2025, mes 12, prazo 48h, total de arquivos: 8
+Processando rodada 2025122000, prazo 48h, data válida 2025122200
+Ano 2025, mes 12, prazo 48h, total de arquivos: 9
 Processando rodada 2025121000, prazo 72h, data válida 2025121300
 Processando rodada 2025121100, prazo 72h, data válida 2025121400
 Processando rodada 2025121200, prazo 72h, data válida 2025121500
@@ -2861,7 +3120,8 @@ Processando rodada 2025121600, prazo 72h, data válida 2025121900
 Processando rodada 2025121700, prazo 72h, data válida 2025122000
 Processando rodada 2025121800, prazo 72h, data válida 2025122100
 Processando rodada 2025121900, prazo 72h, data válida 2025122200
-Ano 2025, mes 12, prazo 72h, total de arquivos: 7
+Processando rodada 2025122000, prazo 72h, data válida 2025122300
+Ano 2025, mes 12, prazo 72h, total de arquivos: 8
 Processando rodada 2025121000, prazo 96h, data válida 2025121400
 Processando rodada 2025121100, prazo 96h, data válida 2025121500
 Processando rodada 2025121200, prazo 96h, data válida 2025121600
@@ -2872,7 +3132,8 @@ Processando rodada 2025121600, prazo 96h, data válida 2025122000
 Processando rodada 2025121700, prazo 96h, data válida 2025122100
 Processando rodada 2025121800, prazo 96h, data válida 2025122200
 Processando rodada 2025121900, prazo 96h, data válida 2025122300
-Ano 2025, mes 12, prazo 96h, total de arquivos: 6
+Processando rodada 2025122000, prazo 96h, data válida 2025122400
+Ano 2025, mes 12, prazo 96h, total de arquivos: 7
 Processando rodada 2025121000, prazo 120h, data válida 2025121500
 Processando rodada 2025121100, prazo 120h, data válida 2025121600
 Processando rodada 2025121200, prazo 120h, data válida 2025121700
@@ -2883,7 +3144,8 @@ Processando rodada 2025121600, prazo 120h, data válida 2025122100
 Processando rodada 2025121700, prazo 120h, data válida 2025122200
 Processando rodada 2025121800, prazo 120h, data válida 2025122300
 Processando rodada 2025121900, prazo 120h, data válida 2025122400
-Ano 2025, mes 12, prazo 120h, total de arquivos: 5
+Processando rodada 2025122000, prazo 120h, data válida 2025122500
+Ano 2025, mes 12, prazo 120h, total de arquivos: 6
 
 ----------------------------------------------------------------
 Computing monthly mean for skill score with threshold: 50 mm (BAM)
@@ -2902,7 +3164,8 @@ Processando rodada 2025121600, prazo 24h, data válida 2025121700
 Processando rodada 2025121700, prazo 24h, data válida 2025121800
 Processando rodada 2025121800, prazo 24h, data válida 2025121900
 Processando rodada 2025121900, prazo 24h, data válida 2025122000
-Ano 2025, mes 12, prazo 24h, total de arquivos: 9
+Processando rodada 2025122000, prazo 24h, data válida 2025122100
+Ano 2025, mes 12, prazo 24h, total de arquivos: 10
 Processando rodada 2025121000, prazo 48h, data válida 2025121200
 Processando rodada 2025121100, prazo 48h, data válida 2025121300
 Processando rodada 2025121200, prazo 48h, data válida 2025121400
@@ -2913,7 +3176,8 @@ Processando rodada 2025121600, prazo 48h, data válida 2025121800
 Processando rodada 2025121700, prazo 48h, data válida 2025121900
 Processando rodada 2025121800, prazo 48h, data válida 2025122000
 Processando rodada 2025121900, prazo 48h, data válida 2025122100
-Ano 2025, mes 12, prazo 48h, total de arquivos: 8
+Processando rodada 2025122000, prazo 48h, data válida 2025122200
+Ano 2025, mes 12, prazo 48h, total de arquivos: 9
 Processando rodada 2025121000, prazo 72h, data válida 2025121300
 Processando rodada 2025121100, prazo 72h, data válida 2025121400
 Processando rodada 2025121200, prazo 72h, data válida 2025121500
@@ -2924,7 +3188,8 @@ Processando rodada 2025121600, prazo 72h, data válida 2025121900
 Processando rodada 2025121700, prazo 72h, data válida 2025122000
 Processando rodada 2025121800, prazo 72h, data válida 2025122100
 Processando rodada 2025121900, prazo 72h, data válida 2025122200
-Ano 2025, mes 12, prazo 72h, total de arquivos: 7
+Processando rodada 2025122000, prazo 72h, data válida 2025122300
+Ano 2025, mes 12, prazo 72h, total de arquivos: 8
 Processando rodada 2025121000, prazo 96h, data válida 2025121400
 Processando rodada 2025121100, prazo 96h, data válida 2025121500
 Processando rodada 2025121200, prazo 96h, data válida 2025121600
@@ -2935,7 +3200,8 @@ Processando rodada 2025121600, prazo 96h, data válida 2025122000
 Processando rodada 2025121700, prazo 96h, data válida 2025122100
 Processando rodada 2025121800, prazo 96h, data válida 2025122200
 Processando rodada 2025121900, prazo 96h, data válida 2025122300
-Ano 2025, mes 12, prazo 96h, total de arquivos: 6
+Processando rodada 2025122000, prazo 96h, data válida 2025122400
+Ano 2025, mes 12, prazo 96h, total de arquivos: 7
 Processando rodada 2025121000, prazo 120h, data válida 2025121500
 Processando rodada 2025121100, prazo 120h, data válida 2025121600
 Processando rodada 2025121200, prazo 120h, data válida 2025121700
@@ -2946,7 +3212,8 @@ Processando rodada 2025121600, prazo 120h, data válida 2025122100
 Processando rodada 2025121700, prazo 120h, data válida 2025122200
 Processando rodada 2025121800, prazo 120h, data válida 2025122300
 Processando rodada 2025121900, prazo 120h, data válida 2025122400
-Ano 2025, mes 12, prazo 120h, total de arquivos: 5
+Processando rodada 2025122000, prazo 120h, data válida 2025122500
+Ano 2025, mes 12, prazo 120h, total de arquivos: 6
 
 ----------------------------------------------------------------
 Computing monthly mean for skill score with threshold: 50 mm (GFS)
@@ -2965,7 +3232,8 @@ Processando rodada 2025121600, prazo 24h, data válida 2025121700
 Processando rodada 2025121700, prazo 24h, data válida 2025121800
 Processando rodada 2025121800, prazo 24h, data válida 2025121900
 Processando rodada 2025121900, prazo 24h, data válida 2025122000
-Ano 2025, mes 12, prazo 24h, total de arquivos: 9
+Processando rodada 2025122000, prazo 24h, data válida 2025122100
+Ano 2025, mes 12, prazo 24h, total de arquivos: 10
 Processando rodada 2025121000, prazo 48h, data válida 2025121200
 Processando rodada 2025121100, prazo 48h, data válida 2025121300
 Processando rodada 2025121200, prazo 48h, data válida 2025121400
@@ -2976,7 +3244,8 @@ Processando rodada 2025121600, prazo 48h, data válida 2025121800
 Processando rodada 2025121700, prazo 48h, data válida 2025121900
 Processando rodada 2025121800, prazo 48h, data válida 2025122000
 Processando rodada 2025121900, prazo 48h, data válida 2025122100
-Ano 2025, mes 12, prazo 48h, total de arquivos: 8
+Processando rodada 2025122000, prazo 48h, data válida 2025122200
+Ano 2025, mes 12, prazo 48h, total de arquivos: 9
 Processando rodada 2025121000, prazo 72h, data válida 2025121300
 Processando rodada 2025121100, prazo 72h, data válida 2025121400
 Processando rodada 2025121200, prazo 72h, data válida 2025121500
@@ -2987,7 +3256,8 @@ Processando rodada 2025121600, prazo 72h, data válida 2025121900
 Processando rodada 2025121700, prazo 72h, data válida 2025122000
 Processando rodada 2025121800, prazo 72h, data válida 2025122100
 Processando rodada 2025121900, prazo 72h, data válida 2025122200
-Ano 2025, mes 12, prazo 72h, total de arquivos: 7
+Processando rodada 2025122000, prazo 72h, data válida 2025122300
+Ano 2025, mes 12, prazo 72h, total de arquivos: 8
 Processando rodada 2025121000, prazo 96h, data válida 2025121400
 Processando rodada 2025121100, prazo 96h, data válida 2025121500
 Processando rodada 2025121200, prazo 96h, data válida 2025121600
@@ -2998,7 +3268,8 @@ Processando rodada 2025121600, prazo 96h, data válida 2025122000
 Processando rodada 2025121700, prazo 96h, data válida 2025122100
 Processando rodada 2025121800, prazo 96h, data válida 2025122200
 Processando rodada 2025121900, prazo 96h, data válida 2025122300
-Ano 2025, mes 12, prazo 96h, total de arquivos: 6
+Processando rodada 2025122000, prazo 96h, data válida 2025122400
+Ano 2025, mes 12, prazo 96h, total de arquivos: 7
 Processando rodada 2025121000, prazo 120h, data válida 2025121500
 Processando rodada 2025121100, prazo 120h, data válida 2025121600
 Processando rodada 2025121200, prazo 120h, data válida 2025121700
@@ -3009,7 +3280,8 @@ Processando rodada 2025121600, prazo 120h, data válida 2025122100
 Processando rodada 2025121700, prazo 120h, data válida 2025122200
 Processando rodada 2025121800, prazo 120h, data válida 2025122300
 Processando rodada 2025121900, prazo 120h, data válida 2025122400
-Ano 2025, mes 12, prazo 120h, total de arquivos: 5
+Processando rodada 2025122000, prazo 120h, data válida 2025122500
+Ano 2025, mes 12, prazo 120h, total de arquivos: 6
 
 ----------------------------------------------------------------
 Mean skill score across all lead times for different thresholds
@@ -3252,7 +3524,7 @@ Found file: /p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_pr
 * * *               MONAN Analysis finished.               * * *
 ################################################################
 
-Total runtime: 00:16:11
+Total runtime: 00:17:20
 
 ############################################
  ______  _____  _   _  _____  _____  _    _ 
