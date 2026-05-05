@@ -5,6 +5,8 @@ vertical_analysis_main.py
 Based on a script by Andre Lyra (andre.lyra@inpe.br)
 Last update: Feb 2026 by Guilherme Torres Mendonça (guilherme.mendonca@inpe.br)
 Last update: Mar 2026 by Guilherme Torres Mendonça (guilherme.mendonca@inpe.br)
+Last update: May 2026 by Andre Lyra (andre.lyra@inpe.br) - topography masking of pressure levels
+
 
 Description
 -----------
@@ -19,7 +21,9 @@ Steps:
 Input
 -----
 - ds_monan (xr.Dataset): netcdf file containing MONAN data
-- ds_gfs (xr.Dataset): netcdf file containing GFS data
+- ds_monan_sp (xr.Dataset): netcdf file containing MONAN data
+- ds_gfs (xr.Dataset): netCDF file containing GFS pressure-level data
+- ds_gfs_sp (xr.Dataset): netCDF file containing GFS surface pressure
 
 Output
 ------
@@ -47,13 +51,19 @@ def main():
     # Read and preprocess MONAN data 
     #===============================================================================================
     print ("\n Reading and selecting MONAN data...")
-    ds_monan_selected_filepath = vs_aux.read_and_preprocess_monan_data()
+    ds_monan_selected_filepath, ds_monan_sp_filepath = vs_aux.read_and_preprocess_monan_data()
 
     #===============================================================================================
     # Read and preprocess GFS analysis data
     #===============================================================================================
     print ("\n Reading and selecting GFS data, and converting it to MONAN data format...")
     ds_gfs_in_monan_format_filepath = vs_aux.read_and_preprocess_gfs_data()
+
+    #===============================================================================================
+    # Read and preprocess GFS surface pressure data
+    #===============================================================================================
+    print ("\n Reading and selecting GFS surface pressure data...")
+    ds_gfs_sp_filepath = vs_aux.read_and_preprocess_gfs_surface_pressure_data()
 
     #===============================================================================================
     # Interpolate MONAN / GFS data for comparability
@@ -70,8 +80,10 @@ def main():
     print ("\n Calculating statistics...")
     ds_stats_filepath_dict = vs_aux.calculate_statistics(
         ds_ref_filepath=ds_ref_filepath,
-        ds_prediction_filepath=ds_prediction_filepath
-        )
+        ds_prediction_filepath=ds_prediction_filepath,
+        ds_gfs_sp_filepath=ds_gfs_sp_filepath,
+        ds_monan_sp_filepath=ds_monan_sp_filepath   
+    )
 
     #===============================================================================================
     # Plot statistics

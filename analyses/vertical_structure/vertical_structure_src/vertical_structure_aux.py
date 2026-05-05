@@ -5,6 +5,7 @@ vertical_analysis_aux.py
 Based on a script by Andre Lyra (andre.lyra@inpe.br)
 Last update: Feb 2026 by Guilherme Torres Mendonça (guilherme.mendonca@inpe.br)
 Last update: Apr 2026 by Guilherme Torres Mendonça (guilherme.mendonca@inpe.br)
+Last update: May 2026 by Andre Lyra (andre.lyra@inpe.br) - topography masking of pressure levels
 
 Description
 -----------
@@ -84,17 +85,32 @@ def read_and_preprocess_monan_data():
         base_dir=vs_config.DIR_MONAN_PREOP,
         verbose=verbose
         )
+    
+    # Select and save MONAN surface pressure for pressure-level validity masking
+    ds_monan_sp = ds_monan[["surface_pressure"]].rename({
+        "surface_pressure": "surface_pressure_monan"
+    })
+
+    ds_monan_sp_filepath = (
+        f"{vs_config.DIR_INPUT_INTERMEDIATE}/"
+        f"monan_surface_pressure_date_{date_in_string}_"
+        f"time_window_{vs_config.TIME_WINDOW}.nc"
+    )
+
+    ds_monan_sp.to_netcdf(ds_monan_sp_filepath)
+
     # Select only data to be used for analysis
     ds_monan_selected = ds_monan[vs_config.VARIABLES_TO_ANALYZE].sel(level=vs_config.VERTICAL_LEVELS_TO_ANALYZE)
     # Save preprocessed MONAN dataset
     ds_monan_selected_filepath = f"{vs_config.DIR_INPUT_INTERMEDIATE}/monan_selected_variables_and_levels_date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}.nc"
     ds_monan_selected.to_netcdf(ds_monan_selected_filepath)
+    
     # If needed, print preprocessed dataset
     if vs_config.SEL_VERBOSE_LEVEL >= 1:
         print ("MONAN dataset with selected variables and levels:")
         print (ds_monan_selected)
 
-    return ds_monan_selected_filepath
+    return ds_monan_selected_filepath, ds_monan_sp_filepath
 
 def read_and_preprocess_gfs_data():
     # Get date and write it into preprocessed filepath
@@ -131,6 +147,58 @@ def read_and_preprocess_gfs_data():
         print (ds_gfs_in_monan_format)
     
     return ds_gfs_in_monan_format_filepath
+
+def read_and_preprocess_gfs_surface_pressure_data():
+    # Get date and write it into preprocessed filepath
+    date_in_string = utils.get_date_as_YYYYMMDDHH_str(
+        vs_config.YEAR, vs_config.MONTH, vs_config.DAY, vs_config.HOUR
+    )
+
+    # Define verbosity
+    if vs_config.SEL_VERBOSE_LEVEL >= 2:
+        verbose = 'y'
+    else:
+        verbose = 'n'
+
+    # Read GFS surface dataset
+    ds_gfs_sp, gfs_sp_filepath = io.read_ds_gfs(
+        year=vs_config.YEAR,
+        month=vs_config.MONTH,
+        day=vs_config.DAY,
+        hour=vs_config.HOUR,
+        base_dir=vs_config.DIR_GFS_ANALYSIS,
+        stream_name="surface",
+        verbose=verbose
+    )
+
+    # Select only surface pressure
+    ds_gfs_sp = ds_gfs_sp[["sp"]]
+
+    # Sort latitude to match the convention used for GFS pressure-level data
+    ds_gfs_sp = ds_gfs_sp.sortby("latitude")
+
+    # Rename dimensions and coordinates to match MONAN/GFS formatted datasets
+    ds_gfs_sp = ds_gfs_sp.rename({
+        "time": "Time",
+        "latitude": "lat",
+        "longitude": "lon",
+        "sp": "surface_pressure_gfs"
+    })
+
+    # Save preprocessed GFS surface pressure dataset
+    ds_gfs_sp_filepath = (
+        f"{vs_config.DIR_INPUT_INTERMEDIATE}/"
+        f"gfs_surface_pressure_date_{date_in_string}_"
+        f"time_window_{vs_config.TIME_WINDOW}.nc"
+    )
+    ds_gfs_sp.to_netcdf(ds_gfs_sp_filepath)
+
+    # If needed, print preprocessed dataset
+    if vs_config.SEL_VERBOSE_LEVEL >= 1:
+        print("GFS surface pressure dataset:")
+        print(ds_gfs_sp)
+
+    return ds_gfs_sp_filepath
 
 def interpolate_monan_gfs(ds_monan_selected_filepath, ds_gfs_in_monan_format_filepath):
     # Get date and write it into preprocessed filepath
@@ -173,7 +241,12 @@ def interpolate_monan_gfs(ds_monan_selected_filepath, ds_gfs_in_monan_format_fil
     
     return ds_ref_filepath, ds_prediction_filepath
 
-def calculate_statistics(ds_ref_filepath, ds_prediction_filepath):
+def calculate_statistics(
+    ds_ref_filepath,
+    ds_prediction_filepath,
+    ds_gfs_sp_filepath=None,
+    ds_monan_sp_filepath=None
+):
     # Get date to include in output filenames
     date_in_string = utils.get_date_as_YYYYMMDDHH_str(
     vs_config.YEAR, vs_config.MONTH, vs_config.DAY, vs_config.HOUR
@@ -184,6 +257,86 @@ def calculate_statistics(ds_ref_filepath, ds_prediction_filepath):
     ds_ref = xr.open_dataset(ds_ref_filepath, engine="netcdf4")
     ## MONAN prediction mapped to GFS grid
     ds_prediction = xr.open_dataset(ds_prediction_filepath, engine="netcdf4")
+
+    # Apply pressure-level validity mask based on GFS and MONAN surface pressure
+    if ds_gfs_sp_filepath is not None and ds_monan_sp_filepath is not None:
+        ds_gfs_sp = xr.open_dataset(ds_gfs_sp_filepath, engine="netcdf4")
+        ds_monan_sp = xr.open_dataset(ds_monan_sp_filepath, engine="netcdf4")
+
+        ps_gfs = ds_gfs_sp["surface_pressure_gfs"]
+        ps_monan = ds_monan_sp["surface_pressure_monan"]
+
+        # Remove singleton Time dimension from surface pressure, if present
+        if "Time" in ps_gfs.dims:
+            ps_gfs = ps_gfs.isel(Time=0)
+        if "Time" in ps_monan.dims:
+            ps_monan = ps_monan.isel(Time=0)
+
+        # If MONAN was mapped to the GFS grid, map MONAN surface pressure to the same grid
+        if vs_config.INTERPOL_TYPE == "monan_to_gfs":
+            ps_monan_mapped_filepath = (
+                f"{vs_config.DIR_INPUT_PROCESSED}/"
+                f"monan_surface_pressure_mapped_to_gfs_date_{date_in_string}_"
+                f"time_window_{vs_config.TIME_WINDOW}.nc"
+            )
+
+            preprocess.map_data_to_different_grid_with_cdo(
+                ref_nc=ds_ref_filepath,
+                input_nc=ds_monan_sp_filepath,
+                output_nc=ps_monan_mapped_filepath
+            )
+
+            ds_monan_sp_mapped = xr.open_dataset(ps_monan_mapped_filepath, engine="netcdf4")
+            ps_monan = ds_monan_sp_mapped["surface_pressure_monan"]
+
+            if "Time" in ps_monan.dims:
+                ps_monan = ps_monan.isel(Time=0)
+
+        # Detect horizontal dimension names used by the reference dataset
+        lat_name = "lat" if "lat" in ds_ref.dims else "latitude"
+        lon_name = "lon" if "lon" in ds_ref.dims else "longitude"
+
+        # Rename GFS surface pressure dimensions to match ds_ref
+        rename_gfs_dims = {}
+        if "lat" in ps_gfs.dims and lat_name != "lat":
+            rename_gfs_dims["lat"] = lat_name
+        if "latitude" in ps_gfs.dims and lat_name != "latitude":
+            rename_gfs_dims["latitude"] = lat_name
+        if "lon" in ps_gfs.dims and lon_name != "lon":
+            rename_gfs_dims["lon"] = lon_name
+        if "longitude" in ps_gfs.dims and lon_name != "longitude":
+            rename_gfs_dims["longitude"] = lon_name
+        if rename_gfs_dims:
+            ps_gfs = ps_gfs.rename(rename_gfs_dims)
+
+        # Rename MONAN surface pressure dimensions to match ds_ref after mapping
+        rename_monan_dims = {}
+        if "lat" in ps_monan.dims and lat_name != "lat":
+            rename_monan_dims["lat"] = lat_name
+        if "latitude" in ps_monan.dims and lat_name != "latitude":
+            rename_monan_dims["latitude"] = lat_name
+        if "lon" in ps_monan.dims and lon_name != "lon":
+            rename_monan_dims["lon"] = lon_name
+        if "longitude" in ps_monan.dims and lon_name != "longitude":
+            rename_monan_dims["longitude"] = lon_name
+        if rename_monan_dims:
+            ps_monan = ps_monan.rename(rename_monan_dims)
+
+        # Build validity masks for pressure-level data
+        # True means that the selected pressure level is above the surface
+        pressure_levels = ds_ref["level"].astype(float)
+
+        valid_gfs_pressure_level_mask = ps_gfs >= pressure_levels
+        valid_monan_pressure_level_mask = ps_monan >= pressure_levels
+
+        valid_pressure_level_mask = (
+            valid_gfs_pressure_level_mask
+            & valid_monan_pressure_level_mask
+        )
+
+        # Apply the same combined mask to reference and prediction
+        ds_ref = ds_ref.where(valid_pressure_level_mask)
+        ds_prediction = ds_prediction.where(valid_pressure_level_mask)
 
     # Initialize list of output filepaths for statistics datasets
     ds_stats_filepath_dict = {}
