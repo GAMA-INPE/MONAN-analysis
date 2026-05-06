@@ -18,8 +18,9 @@ Example:
 
 Updates
 -------
-- May 2026, Andre Lyra: 
-    
+- May 2026, Andre Lyra: Added the APPLY_PRESSURE_LEVEL_VALIDITY_MASK flag
+to enable or disable the topography mask in the vertical structure analysis.    
+
 Acknowledgments
 ---------------
 This file was created with the assistance of GitHub Copilot.    
@@ -47,10 +48,10 @@ VERTICAL_LEVEL_SPEC = "55"
 # Variables to analyze
 VARIABLES_TO_ANALYZE = [
     "temperature",
-#    "spechum",
-#    "zgeo",
-#    "uzonal",
-#    "umeridional",
+    #"spechum",
+    #"zgeo",
+    #"uzonal",
+    #"umeridional",
     ]
 # Vertical levels to analyze
 VERTICAL_LEVELS_TO_ANALYZE = [
