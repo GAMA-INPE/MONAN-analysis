@@ -306,30 +306,10 @@ def calculate_statistics(
         lon_name = "lon" if "lon" in ds_ref.dims else "longitude"
 
         # Rename GFS surface pressure dimensions to match ds_ref
-        rename_gfs_dims = {}
-        if "lat" in ps_gfs.dims and lat_name != "lat":
-            rename_gfs_dims["lat"] = lat_name
-        if "latitude" in ps_gfs.dims and lat_name != "latitude":
-            rename_gfs_dims["latitude"] = lat_name
-        if "lon" in ps_gfs.dims and lon_name != "lon":
-            rename_gfs_dims["lon"] = lon_name
-        if "longitude" in ps_gfs.dims and lon_name != "longitude":
-            rename_gfs_dims["longitude"] = lon_name
-        if rename_gfs_dims:
-            ps_gfs = ps_gfs.rename(rename_gfs_dims)
+        ps_gfs = preprocess.rename_horizontal_dims_to_match_ref(ps_gfs, ds_ref)
 
         # Rename MONAN surface pressure dimensions to match ds_ref after mapping
-        rename_monan_dims = {}
-        if "lat" in ps_monan.dims and lat_name != "lat":
-            rename_monan_dims["lat"] = lat_name
-        if "latitude" in ps_monan.dims and lat_name != "latitude":
-            rename_monan_dims["latitude"] = lat_name
-        if "lon" in ps_monan.dims and lon_name != "lon":
-            rename_monan_dims["lon"] = lon_name
-        if "longitude" in ps_monan.dims and lon_name != "longitude":
-            rename_monan_dims["longitude"] = lon_name
-        if rename_monan_dims:
-            ps_monan = ps_monan.rename(rename_monan_dims)
+        ps_monan = preprocess.rename_horizontal_dims_to_match_ref(ps_monan, ds_ref)
 
         # Build validity masks for pressure-level data
         # True means that the selected pressure level is above the surface
