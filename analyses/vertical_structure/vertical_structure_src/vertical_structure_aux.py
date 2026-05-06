@@ -63,7 +63,8 @@ def create_folder_structure():
         for domain in vs_config.DOMAINS_TO_ANALYZE:
             os.makedirs(vs_config.DIR_OUTPUT_FIGS+f"/date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}/var_{var}/domain_{domain}", exist_ok=True)
 
-def read_and_preprocess_monan_data():
+#def read_and_preprocess_monan_data():
+def read_and_preprocess_monan_data(read_surface_pressure=False):
     # Get date and write it into preprocessed filepath
     date_in_string = utils.get_date_as_YYYYMMDDHH_str(
     vs_config.YEAR, vs_config.MONTH, vs_config.DAY, vs_config.HOUR
@@ -87,17 +88,21 @@ def read_and_preprocess_monan_data():
         )
     
     # Select and save MONAN surface pressure for pressure-level validity masking
-    ds_monan_sp = ds_monan[["surface_pressure"]].rename({
-        "surface_pressure": "surface_pressure_monan"
-    })
+    ds_monan_sp_filepath = None
 
-    ds_monan_sp_filepath = (
-        f"{vs_config.DIR_INPUT_INTERMEDIATE}/"
-        f"monan_surface_pressure_date_{date_in_string}_"
-        f"time_window_{vs_config.TIME_WINDOW}.nc"
-    )
+    if read_surface_pressure:
+        # Select and save MONAN surface pressure for pressure-level validity masking
+        ds_monan_sp = ds_monan[["surface_pressure"]].rename({
+            "surface_pressure": "surface_pressure_monan"
+        })
 
-    ds_monan_sp.to_netcdf(ds_monan_sp_filepath)
+        ds_monan_sp_filepath = (
+            f"{vs_config.DIR_INPUT_INTERMEDIATE}/"
+            f"monan_surface_pressure_date_{date_in_string}_"
+            f"time_window_{vs_config.TIME_WINDOW}.nc"
+        )
+
+        ds_monan_sp.to_netcdf(ds_monan_sp_filepath)
 
     # Select only data to be used for analysis
     ds_monan_selected = ds_monan[vs_config.VARIABLES_TO_ANALYZE].sel(level=vs_config.VERTICAL_LEVELS_TO_ANALYZE)

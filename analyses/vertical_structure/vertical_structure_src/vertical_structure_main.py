@@ -52,8 +52,10 @@ def main():
     # Read and preprocess MONAN data 
     #===============================================================================================
     print ("\n Reading and selecting MONAN data...")
-    ds_monan_selected_filepath, ds_monan_sp_filepath = vs_aux.read_and_preprocess_monan_data()
-
+    #ds_monan_selected_filepath, ds_monan_sp_filepath = vs_aux.read_and_preprocess_monan_data()
+    ds_monan_selected_filepath, ds_monan_sp_filepath = vs_aux.read_and_preprocess_monan_data(
+        read_surface_pressure=vs_config.APPLY_PRESSURE_LEVEL_VALIDITY_MASK
+    )
     #===============================================================================================
     # Read and preprocess GFS analysis data
     #===============================================================================================
