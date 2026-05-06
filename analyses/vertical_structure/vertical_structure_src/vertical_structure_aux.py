@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-vertical_analysis_aux.py
+vertical_structure_aux.py
 
 Based on a script by Andre Lyra (andre.lyra@inpe.br)
 Last update: Feb 2026 by Guilherme Torres Mendonça (guilherme.mendonca@inpe.br)
@@ -259,7 +259,11 @@ def calculate_statistics(
     ds_prediction = xr.open_dataset(ds_prediction_filepath, engine="netcdf4")
 
     # Apply pressure-level validity mask based on GFS and MONAN surface pressure
-    if ds_gfs_sp_filepath is not None and ds_monan_sp_filepath is not None:
+    if (
+        vs_config.APPLY_PRESSURE_LEVEL_VALIDITY_MASK
+        and ds_gfs_sp_filepath is not None
+        and ds_monan_sp_filepath is not None
+    ):
         ds_gfs_sp = xr.open_dataset(ds_gfs_sp_filepath, engine="netcdf4")
         ds_monan_sp = xr.open_dataset(ds_monan_sp_filepath, engine="netcdf4")
 

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-vertical_analysis_main.py
+vertical_structure_main.py
 
 Based on a script by Andre Lyra (andre.lyra@inpe.br)
 Last update: Feb 2026 by Guilherme Torres Mendonça (guilherme.mendonca@inpe.br)
@@ -39,6 +39,7 @@ Acknowledgments
 This file was created with the assistance of GitHub Copilot. 
 """
 from . import vertical_structure_aux as vs_aux
+from . import vertical_structure_config as vs_config
 
 def main():
     #===============================================================================================
@@ -62,8 +63,11 @@ def main():
     #===============================================================================================
     # Read and preprocess GFS surface pressure data
     #===============================================================================================
-    print ("\n Reading and selecting GFS surface pressure data...")
-    ds_gfs_sp_filepath = vs_aux.read_and_preprocess_gfs_surface_pressure_data()
+    if vs_config.APPLY_PRESSURE_LEVEL_VALIDITY_MASK:
+        print ("\n Reading and selecting GFS surface pressure data...")
+        ds_gfs_sp_filepath = vs_aux.read_and_preprocess_gfs_surface_pressure_data()
+    else:
+        ds_gfs_sp_filepath = None
 
     #===============================================================================================
     # Interpolate MONAN / GFS data for comparability

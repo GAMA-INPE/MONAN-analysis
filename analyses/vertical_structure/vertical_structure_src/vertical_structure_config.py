@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-vertical_analysis_config.py
+vertical_structure_config.py
 
 Description
 -----------
@@ -105,6 +105,12 @@ DIR_INPUT = f"/lustre/projetos/monan_gam/Scripts/MONAN-analysis/analyses/vertica
 DIR_INPUT_INTERMEDIATE = f"{DIR_INPUT}/intermediate"
 DIR_INPUT_PROCESSED = f"{DIR_INPUT}/processed"
 DIR_INPUT_RAW = f"{DIR_INPUT}/raw"
+#===================================================================================================
+# Pressure-level validity mask configurations
+#===================================================================================================
+# If True, apply a mask based on surface pressure from MONAN and GFS before calculating statistics.
+# The mask excludes grid points where the selected pressure level is below the surface pressure.
+APPLY_PRESSURE_LEVEL_VALIDITY_MASK = False
 #===================================================================================================
 # For analysis of mutiple dates and time windows only
 #===================================================================================================
