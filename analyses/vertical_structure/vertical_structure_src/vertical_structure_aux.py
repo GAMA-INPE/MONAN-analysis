@@ -301,10 +301,6 @@ def calculate_statistics(
             if "Time" in ps_monan.dims:
                 ps_monan = ps_monan.isel(Time=0)
 
-        # Detect horizontal dimension names used by the reference dataset
-        lat_name = "lat" if "lat" in ds_ref.dims else "latitude"
-        lon_name = "lon" if "lon" in ds_ref.dims else "longitude"
-
         # Rename GFS surface pressure dimensions to match ds_ref
         ps_gfs = preprocess.rename_horizontal_dims_to_match_ref(ps_gfs, ds_ref)
 
