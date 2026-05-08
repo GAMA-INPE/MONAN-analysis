@@ -264,11 +264,15 @@ def calculate_statistics(
     ds_prediction = xr.open_dataset(ds_prediction_filepath, engine="netcdf4")
 
     # Apply pressure-level validity mask based on GFS and MONAN surface pressure
-    if (
-        vs_config.APPLY_PRESSURE_LEVEL_VALIDITY_MASK
-        and ds_gfs_sp_filepath is not None
-        and ds_monan_sp_filepath is not None
-    ):
+    if vs_config.APPLY_PRESSURE_LEVEL_VALIDITY_MASK:
+        if ds_gfs_sp_filepath is None or ds_monan_sp_filepath is None:
+            raise ValueError(
+                "APPLY_PRESSURE_LEVEL_VALIDITY_MASK is True, but one or more "
+                "surface pressure files are missing: "
+                f"ds_gfs_sp_filepath={ds_gfs_sp_filepath}, "
+                f"ds_monan_sp_filepath={ds_monan_sp_filepath}"
+            )
+
         ds_gfs_sp = xr.open_dataset(ds_gfs_sp_filepath, engine="netcdf4")
         ds_monan_sp = xr.open_dataset(ds_monan_sp_filepath, engine="netcdf4")
 
