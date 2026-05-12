@@ -63,7 +63,6 @@ def create_folder_structure():
         for domain in vs_config.DOMAINS_TO_ANALYZE:
             os.makedirs(vs_config.DIR_OUTPUT_FIGS+f"/date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}/var_{var}/domain_{domain}", exist_ok=True)
 
-#def read_and_preprocess_monan_data():
 def read_and_preprocess_monan_data(read_surface_pressure=False):
     # Get date and write it into preprocessed filepath
     date_in_string = utils.get_date_as_YYYYMMDDHH_str(
@@ -88,8 +87,6 @@ def read_and_preprocess_monan_data(read_surface_pressure=False):
         )
     
     # Select and save MONAN surface pressure for pressure-level validity masking
-    ds_monan_sp_filepath = None
-
     if read_surface_pressure:
         # Select and save MONAN surface pressure for pressure-level validity masking
         ds_monan_sp = ds_monan[["surface_pressure"]].rename({
