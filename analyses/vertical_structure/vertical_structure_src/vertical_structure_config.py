@@ -110,7 +110,8 @@ DIR_INPUT_RAW = f"{DIR_INPUT}/raw"
 # Pressure-level validity mask configurations
 #===================================================================================================
 # If True, apply a mask based on surface pressure from MONAN and GFS before calculating statistics.
-# The mask excludes grid points where the selected pressure level is below the surface pressure.
+# The mask excludes grid points where the selected pressure level is greater than the surface pressure,
+# which indicates that the pressure level is below the ground surface.
 APPLY_PRESSURE_LEVEL_VALIDITY_MASK = True
 #===================================================================================================
 # For analysis of mutiple dates and time windows only
