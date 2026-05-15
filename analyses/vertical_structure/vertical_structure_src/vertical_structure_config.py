@@ -37,10 +37,10 @@ SEL_VERBOSE_LEVEL = 0
 #===================================================================================================
 # Date and forecast time window for analysis
 YEAR = "2026"
-MONTH = "02"
-DAY = "02"
+MONTH = "03"
+DAY = "31"
 HOUR = "00"
-TIME_WINDOW = "24"
+TIME_WINDOW = "120"
 # Grid specification
 GRID_SPEC = "10km_uniform"
 # Vertical level specification
@@ -48,20 +48,20 @@ VERTICAL_LEVEL_SPEC = "55"
 # Variables to analyze
 VARIABLES_TO_ANALYZE = [
     "temperature",
-    #"spechum",
-    #"zgeo",
-    #"uzonal",
-    #"umeridional",
+    "spechum",
+    "zgeo",
+    "uzonal",
+    "umeridional",
     ]
 # Vertical levels to analyze
 VERTICAL_LEVELS_TO_ANALYZE = [
-    "92500", #"85000",  "70000",  "50000",  "40000",  "25000",  "10000"
+    "92500", "85000",  "70000",  "50000",  "40000",  "25000",  "10000"
     ]
 # Domains to analyze
 DOMAINS_TO_ANALYZE = [
     "global", 
-    #"south_america", 
-    #"central_america_and_caribbean"
+    "south_america", 
+    "central_america_and_caribbean"
     ]
 #===================================================================================================
 # GFS configurations
@@ -117,19 +117,19 @@ APPLY_PRESSURE_LEVEL_VALIDITY_MASK = True
 # For analysis of mutiple dates and time windows only
 #===================================================================================================
 # Initial date
-DATE_INIT = "2026020100"
+DATE_INIT = "2026030100"
 # Final date
-DATE_FINAL = "2026020200"
+DATE_FINAL = "2026033100"
 # Date time step in hours
 DATE_TIME_STEP = "24"
 # Time windows to analyze
 TIME_WINDOWS_TO_ANALYZE = [
     #"00",
     "24",
-    #"48",
-    #"72",
-    #"96",
-    #"120"
+    "48",
+    "72",
+    "96",
+    "120"
     ]
 # Multi-time stats metrics (metrics that need multiple time instants for their definition, e.g. RMSE, anomaly correlation coefficient)
 MULTI_TIME_STATS_METRICS_TO_ANALYZE = [
