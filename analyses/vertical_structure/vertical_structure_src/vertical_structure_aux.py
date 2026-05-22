@@ -370,7 +370,8 @@ def plot_statistics(ds_stats_filepath_dict):
                                          f"time_window_{vs_config.TIME_WINDOW}.png"),
                         verbose=verbose,
                         cmap_dict=vs_config.COLORMAP_DIVERGING_BY_VAR_DICT,
-                        metric_name=metric
+                        metric_name=metric,
+                        time_window=vs_config.TIME_WINDOW
                         )
 
 def cp_config_files():
@@ -700,6 +701,7 @@ def plot_mean_metrics(time_window):
                         output_filepath=output_filepath,
                         verbose=verbose,
                         cmap_dict=vs_config.COLORMAP_DIVERGING_BY_VAR_DICT,
-                        metric_name=metric
+                        metric_name=metric,
+                        time_window=vs_config.TIME_WINDOW
                         )
 #===================================================================================================
