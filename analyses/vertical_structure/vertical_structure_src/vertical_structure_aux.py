@@ -702,6 +702,6 @@ def plot_mean_metrics(time_window):
                         verbose=verbose,
                         cmap_dict=vs_config.COLORMAP_DIVERGING_BY_VAR_DICT,
                         metric_name=metric,
-                        time_window=vs_config.TIME_WINDOW
+                        time_window=time_window
                         )
 #===================================================================================================
