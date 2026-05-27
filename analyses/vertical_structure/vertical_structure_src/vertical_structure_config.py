@@ -63,6 +63,45 @@ DOMAINS_TO_ANALYZE = [
     "south_america", 
     "central_america_and_caribbean"
     ]
+# Limits of plots for each variable, metric, and vertical level (if applicable) 
+PLOT_LIMITS_BY_VAR_METRIC_LAYER = {
+    "temperature": {
+        "bias": {
+            "low": (-5, 5),
+            "mid": (-2, 2),
+            "high": (-2, 2),            
+        },
+        "rmse": {
+            "low": (0, 5),
+            "mid": (0, 3),
+            "high": (0, 2),
+        },
+    },
+    "spechum": {
+        "bias": {
+            "low": (-4, 4),      # g/kg
+            "mid": (-2, 2),      # g/kg
+            "high": (-200, 200), # mg/kg
+        },
+        "rmse": {
+            "low": (0, 4),
+            "mid": (0, 2),
+            "high": (0, 200),
+        },
+    },
+    "zgeo": {
+        "bias": {
+            "low": (-20, 20),      
+            "mid": (-30, 30),      
+            "high": (-40, 40), 
+        },
+        "rmse": {
+            "low": (0, 50),
+            "mid": (0, 50),
+            "high": (0, 100),
+        },
+    },
+}
 #===================================================================================================
 # GFS configurations
 #===================================================================================================

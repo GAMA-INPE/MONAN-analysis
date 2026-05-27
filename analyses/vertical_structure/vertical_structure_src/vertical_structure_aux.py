@@ -237,6 +237,39 @@ def interpolate_monan_gfs(ds_monan_selected_filepath, ds_gfs_in_monan_format_fil
     
     return ds_ref_filepath, ds_prediction_filepath
 
+def get_layer_from_level(level):
+    # Classify a pressure level into a broad atmospheric layer.
+    level_hpa = int(float(level) / 100)
+
+    if level_hpa >= 700:
+        return "low"
+    elif 400 <= level_hpa < 700:
+        return "mid"
+    else:
+        return "high"
+
+def get_plot_limits(var, metric, level):
+    # Get fixed plot limits based on variable, metric and pressure layer.
+
+    if not hasattr(vs_config, "PLOT_LIMITS_BY_VAR_METRIC_LAYER"):
+        return None, None
+
+    layer = get_layer_from_level(level)
+
+    try:
+        limits = vs_config.PLOT_LIMITS_BY_VAR_METRIC_LAYER[var][metric][layer]
+    except KeyError:
+        return None, None
+
+    vmin, vmax = limits
+
+    # Ensure bias limits are symmetric around zero.
+    if metric == "bias":
+        max_abs = max(abs(vmin), abs(vmax))
+        vmin, vmax = -max_abs, max_abs
+
+    return vmin, vmax
+
 def calculate_statistics(
     ds_ref_filepath,
     ds_prediction_filepath
@@ -356,6 +389,13 @@ def plot_statistics(ds_stats_filepath_dict):
                 print ("variable:", var)
                 for level in vs_config.VERTICAL_LEVELS_TO_ANALYZE:
                     print ("level:", level)
+                    
+                    vmin, vmax = get_plot_limits(
+                        var=var,
+                        metric=metric,
+                        level=level
+                    )
+
                     plots.plot_var_map(
                         ds=ds_stats, 
                         var=var, 
@@ -363,16 +403,18 @@ def plot_statistics(ds_stats_filepath_dict):
                         level=level, 
                         domain=domain,
                         output_filepath=(f"{vs_config.DIR_OUTPUT_FIGS}/date_{date_in_string}_"+
-                                         f"time_window_{vs_config.TIME_WINDOW}/"+
-                                         f"var_{var}/domain_{domain}/"+
-                                         f"metric_{metric}_var_{var}_level_{level}_"+
-                                         f"domain_{domain}_date_{date_in_string}_"+
-                                         f"time_window_{vs_config.TIME_WINDOW}.png"),
+                                        f"time_window_{vs_config.TIME_WINDOW}/"+
+                                        f"var_{var}/domain_{domain}/"+
+                                        f"metric_{metric}_var_{var}_level_{level}_"+
+                                        f"domain_{domain}_date_{date_in_string}_"+
+                                        f"time_window_{vs_config.TIME_WINDOW}.png"),
                         verbose=verbose,
                         cmap_dict=vs_config.COLORMAP_DIVERGING_BY_VAR_DICT,
                         metric_name=metric,
-                        time_window=vs_config.TIME_WINDOW
-                        )
+                        time_window=vs_config.TIME_WINDOW,
+                        vmin=vmin,
+                        vmax=vmax
+                    )
 
 def cp_config_files():
     # Get date to include in output filenames
@@ -692,6 +734,13 @@ def plot_mean_metrics(time_window):
                                          f"metric_{metric}_var_{var}_level_{level}_"+
                                          f"domain_{domain}_date_from_{vs_config.DATE_INIT}_to_{vs_config.DATE_FINAL}_"+
                                          f"time_window_{time_window}.png")
+                    
+                    vmin, vmax = get_plot_limits(
+                        var=var,
+                        metric=metric,
+                        level=level
+                    )                    
+
                     plots.plot_var_map(
                         ds=ds_stat_mean, 
                         var=var, 
@@ -702,6 +751,8 @@ def plot_mean_metrics(time_window):
                         verbose=verbose,
                         cmap_dict=vs_config.COLORMAP_DIVERGING_BY_VAR_DICT,
                         metric_name=metric,
-                        time_window=time_window
+                        time_window=time_window,
+                        vmin=vmin,
+                        vmax=vmax,
                         )
 #===================================================================================================

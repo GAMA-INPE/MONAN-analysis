@@ -22,6 +22,8 @@ Acknowledgments
 This file was created with the assistance of GitHub Copilot. 
 """
 
+from tabnanny import verbose
+
 import monan_analysis.config as config
 import monan_analysis.stats as stats
 import matplotlib.pyplot as plt
@@ -34,7 +36,8 @@ def example_function_plots():
 
 def plot_var_map(ds, var, cartopy_data_dir, level=None, Time=None, 
                  domain="global", output_filepath=None, verbose='y',
-                 cmap_dict=None,metric_name=None, time_window=None):
+                 cmap_dict=None,metric_name=None, time_window=None,
+                 vmin=None, vmax=None):
     """Plot map of a variable at a given level and domain."""
     # Set the Cartopy data directory
     os.environ["CARTOPY_USER_DATA_DIR"] = cartopy_data_dir
@@ -100,21 +103,29 @@ def plot_var_map(ds, var, cartopy_data_dir, level=None, Time=None,
     ax.set_extent([lon_range[0], lon_range[1], lat_range[0], lat_range[1]], crs=ccrs.PlateCarree())
     ax.add_feature(cfeature.COASTLINE)
     ax.add_feature(cfeature.BORDERS, linestyle=':')
+    
     # Convert reduced xarray values to Python scalars before scalar comparisons
     data_min = data.min().item()
     data_max = data.max().item()
-    # Determine the maximum absolute value for symmetric colorbar
-    max_abs_value = max(abs(data_min), abs(data_max))
-    # Check if data contains both positive and negative values
-    if data_min < 0 and data_max > 0:
+    # Use fixed limits when provided by the calling function.
+    # Otherwise, keep the previous automatic behavior.
+    if vmin is not None and vmax is not None:
         if verbose == 'y':
-            print ("Data contains both positive and negative values. Setting symmetric colorbar limits.")
-        vmin, vmax = -max_abs_value, max_abs_value
-    # If only positive or only negative values exist, Matplotlib chooses the scale
+            print(f"Using fixed colorbar limits: vmin={vmin}, vmax={vmax}")
     else:
-        if verbose == 'y':
-            print ("Data contains only positive or only negative values. Using default colorbar limits.")
-        vmin, vmax = None, None
+        # Determine the maximum absolute value for symmetric colorbar
+        max_abs_value = max(abs(data_min), abs(data_max))
+        # Check if data contains both positive and negative values
+        if data_min < 0 and data_max > 0:
+            if verbose == 'y':
+                print("Data contains both positive and negative values. Setting symmetric colorbar limits.")
+            vmin, vmax = -max_abs_value, max_abs_value
+        # If only positive or only negative values exist, Matplotlib chooses the scale
+        else:
+            if verbose == 'y':
+                print("Data contains only positive or only negative values. Using default colorbar limits.")
+            vmin, vmax = None, None
+            
     # Use pcolormesh for raw data plotting (no interpolation)
     mesh = ax.pcolormesh(data.longitude, data.latitude, data, transform=ccrs.PlateCarree(), 
                          cmap=cmap, vmin=vmin, vmax=vmax)
