@@ -38,7 +38,7 @@ SEL_VERBOSE_LEVEL = 0
 # Date and forecast time window for analysis
 YEAR = "2026"
 MONTH = "03"
-DAY = "31"
+DAY = "02"
 HOUR = "00"
 TIME_WINDOW = "120"
 # Grid specification
@@ -55,7 +55,7 @@ VARIABLES_TO_ANALYZE = [
     ]
 # Vertical levels to analyze
 VERTICAL_LEVELS_TO_ANALYZE = [
-    "92500", "85000",  "70000",  "50000",  "40000",  "25000",  "10000"
+    "92500", "85000",  "70000",  "50000",  "40000",  "30000", "25000",  "10000"
     ]
 # Domains to analyze
 DOMAINS_TO_ANALYZE = [
@@ -94,7 +94,8 @@ COLORMAP_DIVERGING_BY_VAR_DICT = {
 #===================================================================================================
 # Directory paths
 #===================================================================================================
-DIR_MONAN_PREOP = "/lustre/projetos/monan_adm/monan/ecf_PREOPER/MONAN-WorkFlow-OPER/MONAN_PRE_OPER/MONAN/scripts_CD-CT/dataout/flushout"
+#DIR_MONAN_PREOP = "/lustre/projetos/monan_adm/monan/ecf_PREOPER/MONAN-WorkFlow-OPER/MONAN_PRE_OPER/MONAN/scripts_CD-CT/dataout/flushout"
+DIR_MONAN_PREOP = "/lustre/projetos/ioper/models/MONAN-WorkFlow-OPER/MONAN_PRE_OPER/posTMP"
 DIR_GFS_ANALYSIS = "/lustre/projetos/monan_gam/andre.lyra/NetCDFs/vert_struct/GFS"
 DIR_CARTOPY_DATA = "/lustre/projetos/monan_gam/andre.lyra/cartopy"
 
@@ -119,7 +120,7 @@ APPLY_PRESSURE_LEVEL_VALIDITY_MASK = True
 # Initial date
 DATE_INIT = "2026030100"
 # Final date
-DATE_FINAL = "2026033100"
+DATE_FINAL = "2026030200"
 # Date time step in hours
 DATE_TIME_STEP = "24"
 # Time windows to analyze

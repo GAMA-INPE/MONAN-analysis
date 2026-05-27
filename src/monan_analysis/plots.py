@@ -86,6 +86,8 @@ def plot_var_map(ds, var, cartopy_data_dir, level=None, Time=None,
     # Extract the variable data
     data = ds_subset[var]
 
+    domain_mean = data.mean(skipna=True).item()
+
     # Choose colormap based on variable, if cmap_dict provided
     if cmap_dict is not None and var in cmap_dict:
         cmap = cmap_dict[var]
@@ -122,12 +124,14 @@ def plot_var_map(ds, var, cartopy_data_dir, level=None, Time=None,
     plt.colorbar(mesh, label=f"{metric_name} [{metric_units}]" if metric_name is not None else f"{var} [{config.VAR_UNITS_DICT[var]}]")
     
     time_window_label = (
-        f", lead {int(time_window):03d} h"
+        f"lead {int(time_window):03d} h"
         if time_window is not None
         else ""
     )
+
+    mean_label = f"mean = {domain_mean:.2f} {metric_units}"
     
-    plt.title(f"{var} [{config.VAR_UNITS_DICT[var]}], {level_label} {metric_name} [{metric_units}]{time_window_label}" 
+    plt.title(f"{var} [{config.VAR_UNITS_DICT[var]}], {level_label} {metric_name} [{metric_units}], {time_window_label}, {mean_label}" 
               if metric_name is not None else f"{var} {level_label}{time_window_label}")
 
     # Save figure
