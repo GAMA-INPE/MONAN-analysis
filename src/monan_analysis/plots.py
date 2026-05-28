@@ -37,7 +37,7 @@ def example_function_plots():
 def plot_var_map(ds, var, cartopy_data_dir, level=None, Time=None, 
                  domain="global", output_filepath=None, verbose='y',
                  cmap_dict=None,metric_name=None, time_window=None,
-                 vmin=None, vmax=None):
+                 vmin=None, vmax=None, unit_label=None):
     """Plot map of a variable at a given level and domain."""
     # Set the Cartopy data directory
     os.environ["CARTOPY_USER_DATA_DIR"] = cartopy_data_dir
@@ -131,8 +131,27 @@ def plot_var_map(ds, var, cartopy_data_dir, level=None, Time=None,
                          cmap=cmap, vmin=vmin, vmax=vmax)
 
     # Define metric units
-    metric_units = stats.get_stats_metric_units(var_units_dict=config.VAR_UNITS_DICT, var=var, metric=metric_name) if metric_name is not None else "N/A"
-    plt.colorbar(mesh, label=f"{metric_name} [{metric_units}]" if metric_name is not None else f"{var} [{config.VAR_UNITS_DICT[var]}]")
+    if unit_label is not None:
+        metric_units = unit_label
+    else:
+        metric_units = (
+            stats.get_stats_metric_units(
+                var_units_dict=config.VAR_UNITS_DICT,
+                var=var,
+                metric=metric_name
+            )
+            if metric_name is not None
+            else config.VAR_UNITS_DICT[var]
+        )
+
+    plt.colorbar(
+        mesh,
+        label=(
+            f"{metric_name} [{metric_units}]"
+            if metric_name is not None
+            else f"{var} [{metric_units}]"
+        )
+    )
     
     time_window_label = (
         f"lead {int(time_window):03d} h"
@@ -142,8 +161,11 @@ def plot_var_map(ds, var, cartopy_data_dir, level=None, Time=None,
 
     mean_label = f"mean = {domain_mean:.2f} {metric_units}"
     
-    plt.title(f"{var} [{config.VAR_UNITS_DICT[var]}], {level_label} {metric_name} [{metric_units}], {time_window_label}, {mean_label}" 
-              if metric_name is not None else f"{var} {level_label}{time_window_label}")
+    plt.title(
+        f"{var}, {level_label} {metric_name} [{metric_units}], {time_window_label}, {mean_label}"
+        if metric_name is not None
+        else f"{var} [{metric_units}], {level_label}{time_window_label}"
+    ) 
 
     # Save figure
     if output_filepath is not None:

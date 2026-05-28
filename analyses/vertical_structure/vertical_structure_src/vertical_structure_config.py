@@ -38,9 +38,9 @@ SEL_VERBOSE_LEVEL = 0
 # Date and forecast time window for analysis
 YEAR = "2026"
 MONTH = "03"
-DAY = "02"
+DAY = "01"
 HOUR = "00"
-TIME_WINDOW = "120"
+TIME_WINDOW = "96"
 # Grid specification
 GRID_SPEC = "10km_uniform"
 # Vertical level specification

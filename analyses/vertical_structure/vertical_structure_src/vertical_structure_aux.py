@@ -34,6 +34,7 @@ import monan_analysis.utils as utils
 import monan_analysis.preprocess as preprocess
 import monan_analysis.stats as stats
 import monan_analysis.plots as plots
+from polars import var
 from . import vertical_structure_config as vs_config
 from . import vertical_structure_main as vs_main
 import os
@@ -270,6 +271,23 @@ def get_plot_limits(var, metric, level):
 
     return vmin, vmax
 
+def convert_spechum_units_for_plot(ds, var, level):
+    if var != "spechum":
+        return ds, None
+
+    layer = get_layer_from_level(level)
+
+    ds = ds.copy()
+
+    if layer in ["low", "mid"]:
+        ds[var] = ds[var] * 1000.0
+        unit_label = "g/kg"
+    else:
+        ds[var] = ds[var] * 1000000.0
+        unit_label = "mg/kg"
+
+    return ds, unit_label
+
 def calculate_statistics(
     ds_ref_filepath,
     ds_prediction_filepath
@@ -396,8 +414,18 @@ def plot_statistics(ds_stats_filepath_dict):
                         level=level
                     )
 
+                    unit_label = None
+                    ds_to_plot = ds_stats
+
+                    if var == "spechum":
+                        ds_to_plot, unit_label = convert_spechum_units_for_plot(
+                        ds=ds_stats,
+                        var=var,
+                        level=level
+                        )
+
                     plots.plot_var_map(
-                        ds=ds_stats, 
+                        ds=ds_to_plot,
                         var=var, 
                         cartopy_data_dir=vs_config.DIR_CARTOPY_DATA,
                         level=level, 
@@ -413,7 +441,8 @@ def plot_statistics(ds_stats_filepath_dict):
                         metric_name=metric,
                         time_window=vs_config.TIME_WINDOW,
                         vmin=vmin,
-                        vmax=vmax
+                        vmax=vmax,
+                        unit_label=unit_label
                     )
 
 def cp_config_files():
@@ -741,8 +770,18 @@ def plot_mean_metrics(time_window):
                         level=level
                     )                    
 
+                    unit_label = None
+                    ds_to_plot = ds_stat_mean
+
+                    if var == "spechum":
+                        ds_to_plot, unit_label = convert_spechum_units_for_plot(
+                        ds=ds_stat_mean,
+                        var=var,
+                        level=level
+                        )
+
                     plots.plot_var_map(
-                        ds=ds_stat_mean, 
+                        ds=ds_to_plot, 
                         var=var, 
                         cartopy_data_dir=vs_config.DIR_CARTOPY_DATA,
                         level=level, 
@@ -754,5 +793,6 @@ def plot_mean_metrics(time_window):
                         time_window=time_window,
                         vmin=vmin,
                         vmax=vmax,
+                        unit_label=unit_label   
                         )
 #===================================================================================================
