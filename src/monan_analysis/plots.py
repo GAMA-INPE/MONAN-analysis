@@ -144,14 +144,15 @@ def plot_var_map(ds, var, cartopy_data_dir, level=None, Time=None,
             else config.VAR_UNITS_DICT[var]
         )
 
-    plt.colorbar(
-        mesh,
-        label=(
-            f"{metric_name} [{metric_units}]"
-            if metric_name is not None
-            else f"{var} [{metric_units}]"
-        )
+    cbar_label = (
+        f"{metric_name} [{metric_units}]"
+        if metric_name is not None
+        else f"{var} [{metric_units}]"
     )
+
+    cbar = plt.colorbar(mesh, label=cbar_label)
+    cbar.set_label(cbar_label, fontsize=14)
+    cbar.ax.tick_params(labelsize=12)
     
     time_window_label = (
         f"lead {int(time_window):03d} h"
@@ -162,10 +163,13 @@ def plot_var_map(ds, var, cartopy_data_dir, level=None, Time=None,
     mean_label = f"mean = {domain_mean:.2f} {metric_units}"
     
     plt.title(
-        f"{var}, {level_label} {metric_name} [{metric_units}], {time_window_label}, {mean_label}"
-        if metric_name is not None
-        else f"{var} [{metric_units}], {level_label}{time_window_label}"
-    ) 
+        (
+            f"{var}, {level_label} {metric_name} [{metric_units}], {time_window_label}\n{mean_label}"
+            if metric_name is not None
+            else f"{var} [{metric_units}], {level_label}{time_window_label}\n{mean_label}"
+        ),
+        fontsize=14,
+    )
 
     # Save figure
     if output_filepath is not None:

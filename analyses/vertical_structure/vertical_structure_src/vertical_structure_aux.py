@@ -250,7 +250,25 @@ def get_layer_from_level(level):
         return "high"
 
 def get_plot_limits(var, metric, level):
-    # Get fixed plot limits based on variable, metric and pressure layer.
+    # Get fixed plot limits based on variable, metric and pressure level.
+    # If no level-specific limit is found, use the broader pressure-layer limits.
+
+    level_key = str(int(float(level)))
+
+    if hasattr(vs_config, "PLOT_LIMITS_BY_VAR_METRIC_LEVEL"):
+        try:
+            limits = vs_config.PLOT_LIMITS_BY_VAR_METRIC_LEVEL[var][metric][level_key]
+        except KeyError:
+            limits = None
+
+        if limits is not None:
+            vmin, vmax = limits
+
+            if metric == "bias":
+                max_abs = max(abs(vmin), abs(vmax))
+                vmin, vmax = -max_abs, max_abs
+
+            return vmin, vmax
 
     if not hasattr(vs_config, "PLOT_LIMITS_BY_VAR_METRIC_LAYER"):
         return None, None
@@ -264,7 +282,6 @@ def get_plot_limits(var, metric, level):
 
     vmin, vmax = limits
 
-    # Ensure bias limits are symmetric around zero.
     if metric == "bias":
         max_abs = max(abs(vmin), abs(vmax))
         vmin, vmax = -max_abs, max_abs
@@ -276,10 +293,14 @@ def convert_spechum_units_for_plot(ds, var, level):
         return ds, None
 
     layer = get_layer_from_level(level)
+    level_hpa = int(float(level) / 100)
 
     ds = ds.copy()
 
-    if layer in ["low", "mid"]:
+    if int(level_hpa) <= 100:
+        ds[var] = ds[var] * 100000000.0
+        unit_label = "×0.01 mg/kg"
+    elif layer in ["low", "mid"]:
         ds[var] = ds[var] * 1000.0
         unit_label = "g/kg"
     else:

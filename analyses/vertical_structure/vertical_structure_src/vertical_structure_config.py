@@ -38,9 +38,9 @@ SEL_VERBOSE_LEVEL = 0
 # Date and forecast time window for analysis
 YEAR = "2026"
 MONTH = "03"
-DAY = "01"
+DAY = "31"
 HOUR = "00"
-TIME_WINDOW = "96"
+TIME_WINDOW = "120"
 # Grid specification
 GRID_SPEC = "10km_uniform"
 # Vertical level specification
@@ -55,7 +55,7 @@ VARIABLES_TO_ANALYZE = [
     ]
 # Vertical levels to analyze
 VERTICAL_LEVELS_TO_ANALYZE = [
-    "92500", "85000",  "70000",  "50000",  "40000",  "30000", "25000",  "10000"
+    "92500", "85000", "70000", "50000", "40000", "30000", "25000", "10000", "3000", "300"
     ]
 # Domains to analyze
 DOMAINS_TO_ANALYZE = [
@@ -69,7 +69,7 @@ PLOT_LIMITS_BY_VAR_METRIC_LAYER = {
         "bias": {
             "low": (-5, 5),
             "mid": (-2, 2),
-            "high": (-2, 2),            
+            "high": (-3, 3),            
         },
         "rmse": {
             "low": (0, 5),
@@ -79,9 +79,9 @@ PLOT_LIMITS_BY_VAR_METRIC_LAYER = {
     },
     "spechum": {
         "bias": {
-            "low": (-4, 4),      # g/kg
-            "mid": (-2, 2),      # g/kg
-            "high": (-200, 200), # mg/kg
+            "low": (-2, 2),      # g/kg
+            "mid": (-1, 1),      # g/kg
+            "high": (-100, 100), # mg/kg
         },
         "rmse": {
             "low": (0, 4),
@@ -99,6 +99,36 @@ PLOT_LIMITS_BY_VAR_METRIC_LAYER = {
             "low": (0, 50),
             "mid": (0, 50),
             "high": (0, 100),
+        },
+    },
+}
+
+# Limits of plots for specific pressure levels.
+# Keys must use the same pressure-level values used in VERTICAL_LEVELS_TO_ANALYZE, in Pa.
+# These limits have priority over PLOT_LIMITS_BY_VAR_METRIC_LAYER.
+PLOT_LIMITS_BY_VAR_METRIC_LEVEL = {
+    "temperature": {
+        "bias": {
+            "300": (-45, 45),   # K, 3 hPa
+        },
+        "rmse": {
+            "300": (0, 45),     # K, 3 hPa
+        },
+    },
+    "spechum": {
+        "bias": {
+            "300": (-250, 250), # ×0.01 mg/kg, 3 hPa
+        },
+        "rmse": {
+            "300": (0, 250),    # ×0.01 mg/kg, 3 hPa
+        },
+    },
+    "zgeo": {
+        "bias": {
+            "300": (-900, 900), # m, 3 hPa
+        },
+        "rmse": {
+            "300": (0, 900),    # m, 3 hPa
         },
     },
 }
@@ -125,7 +155,7 @@ STATS_METRICS_TO_ANALYZE = [
 # Divergin colormaps to use for each variable in plotting
 COLORMAP_DIVERGING_BY_VAR_DICT = {
     "temperature": "coolwarm",
-    "spechum": "managua",
+    "spechum": "coolwarm_r",
     "zgeo": "PiYG",
     "uzonal": "PuOr",
     "umeridional": "PuOr"
@@ -157,9 +187,9 @@ APPLY_PRESSURE_LEVEL_VALIDITY_MASK = True
 # For analysis of mutiple dates and time windows only
 #===================================================================================================
 # Initial date
-DATE_INIT = "2026030100"
+DATE_INIT = "2026040100"
 # Final date
-DATE_FINAL = "2026030200"
+DATE_FINAL = "2026043000"
 # Date time step in hours
 DATE_TIME_STEP = "24"
 # Time windows to analyze
@@ -173,6 +203,6 @@ TIME_WINDOWS_TO_ANALYZE = [
     ]
 # Multi-time stats metrics (metrics that need multiple time instants for their definition, e.g. RMSE, anomaly correlation coefficient)
 MULTI_TIME_STATS_METRICS_TO_ANALYZE = [
-    "rmse",
-    "anomaly_correlation_coefficient"
+    #"rmse",
+    #"anomaly_correlation_coefficient"
     ]
