@@ -39,6 +39,8 @@ from . import vertical_structure_config as vs_config
 from . import vertical_structure_main as vs_main
 import os
 import xarray as xr
+import pandas as pd
+import numpy as np
 import subprocess
 import importlib
 
@@ -309,6 +311,191 @@ def convert_spechum_units_for_plot(ds, var, level):
 
     return ds, unit_label
 
+def get_lat_lon_names(ds):
+    lat_candidates = ["lat", "latitude"]
+    lon_candidates = ["lon", "longitude"]
+
+    lat_name = None
+    lon_name = None
+
+    for name in lat_candidates:
+        if name in ds.coords or name in ds.dims:
+            lat_name = name
+            break
+
+    for name in lon_candidates:
+        if name in ds.coords or name in ds.dims:
+            lon_name = name
+            break
+
+    if lat_name is None or lon_name is None:
+        raise ValueError(
+            "Could not identify latitude and longitude coordinates "
+            "in the dataset."
+        )
+
+    return lat_name, lon_name
+
+
+def subset_region(ds, region_name):
+    region_limits = config.DOMAIN_DICT[region_name]
+
+    lat_min, lat_max = region_limits["lat"]
+    lon_min, lon_max = region_limits["lon"]
+
+    lat_name, lon_name = get_lat_lon_names(ds)
+
+    ds_region = ds
+
+    lat_values = ds_region[lat_name]
+    if lat_values[0] > lat_values[-1]:
+        ds_region = ds_region.sel({lat_name: slice(lat_max, lat_min)})
+    else:
+        ds_region = ds_region.sel({lat_name: slice(lat_min, lat_max)})
+
+    lon_values = ds_region[lon_name]
+
+    if float(lon_values.max()) > 180.0:
+        ds_region = ds_region.sel({lon_name: slice(lon_min, lon_max)})
+    else:
+        lon_min_180 = ((lon_min + 180.0) % 360.0) - 180.0
+        lon_max_180 = ((lon_max + 180.0) % 360.0) - 180.0
+
+        if lon_min_180 <= lon_max_180:
+            ds_region = ds_region.sel({lon_name: slice(lon_min_180, lon_max_180)})
+        else:
+            ds_region = xr.concat(
+                [
+                    ds_region.sel({lon_name: slice(lon_min_180, 180.0)}),
+                    ds_region.sel({lon_name: slice(-180.0, lon_max_180)}),
+                ],
+                dim=lon_name,
+            )
+
+    return ds_region
+
+
+def spatial_mean(da):
+    lat_name, lon_name = get_lat_lon_names(da)
+
+    spatial_dims = [
+        dim for dim in da.dims
+        if dim not in ["Time", "level"]
+    ]
+
+    if lat_name in da.coords and lat_name in spatial_dims:
+        weights = np.cos(np.deg2rad(da[lat_name]))
+        return da.weighted(weights).mean(dim=spatial_dims, skipna=True)
+
+    return da.mean(dim=spatial_dims, skipna=True)
+
+
+def spatial_min(da):
+    spatial_dims = [
+        dim for dim in da.dims
+        if dim not in ["Time", "level"]
+    ]
+    return da.min(dim=spatial_dims, skipna=True)
+
+
+def spatial_max(da):
+    spatial_dims = [
+        dim for dim in da.dims
+        if dim not in ["Time", "level"]
+    ]
+    return da.max(dim=spatial_dims, skipna=True)
+
+
+def spatial_std(da):
+    spatial_dims = [
+        dim for dim in da.dims
+        if dim not in ["Time", "level"]
+    ]
+    return da.std(dim=spatial_dims, skipna=True)
+
+
+def get_scalar_value(da):
+    value = da.values
+    if np.size(value) == 0:
+        return np.nan
+    return float(np.asarray(value).squeeze())
+
+
+def write_regional_summary_csv(
+    ds,
+    metric,
+    output_csv,
+    time_window,
+    summary_type,
+    date_init=None,
+    date_final=None,
+    date_list=None,
+):
+    if not getattr(vs_config, "WRITE_REGIONAL_SUMMARY_CSV", True):
+        return
+
+    rows = []
+
+    if "Time" in ds.dims:
+        if date_list is not None:
+            ds = ds.assign_coords(Time=date_list)
+
+        time_values = list(ds["Time"].values)
+    else:
+        time_values = [None]
+
+    for region in vs_config.SUMMARY_REGIONS_TO_ANALYZE:
+        ds_region = subset_region(ds, region)
+
+        for var in vs_config.VARIABLES_TO_ANALYZE:
+            if var not in ds_region:
+                continue
+
+            for level in vs_config.VERTICAL_LEVELS_TO_ANALYZE:
+                da = ds_region[var].sel(level=float(level))
+
+                mean_da = spatial_mean(da)
+                min_da = spatial_min(da)
+                max_da = spatial_max(da)
+                std_da = spatial_std(da)
+
+                for time_value in time_values:
+                    if time_value is not None:
+                        mean_value = get_scalar_value(mean_da.sel(Time=time_value))
+                        min_value = get_scalar_value(min_da.sel(Time=time_value))
+                        max_value = get_scalar_value(max_da.sel(Time=time_value))
+                        std_value = get_scalar_value(std_da.sel(Time=time_value))
+                        valid_date = str(time_value)
+                    else:
+                        mean_value = get_scalar_value(mean_da)
+                        min_value = get_scalar_value(min_da)
+                        max_value = get_scalar_value(max_da)
+                        std_value = get_scalar_value(std_da)
+                        valid_date = None
+
+                    rows.append(
+                        {
+                            "summary_type": summary_type,
+                            "date": valid_date,
+                            "date_init": date_init,
+                            "date_final": date_final,
+                            "time_window": time_window,
+                            "metric": metric,
+                            "variable": var,
+                            "level_pa": int(float(level)),
+                            "level_hpa": int(float(level) / 100.0),
+                            "region": region,
+                            "mean": mean_value,
+                            "min": min_value,
+                            "max": max_value,
+                            "std": std_value,
+                        }
+                    )
+
+    os.makedirs(os.path.dirname(output_csv), exist_ok=True)
+    pd.DataFrame(rows).to_csv(output_csv, index=False)
+    print(f"Regional summary CSV saved: {output_csv}")
+
 def calculate_statistics(
     ds_ref_filepath,
     ds_prediction_filepath
@@ -389,6 +576,17 @@ def calculate_statistics(
         ds_bias.to_netcdf(bias_filepath)
         ds_stats_filepath_dict["bias"] = bias_filepath
 
+    bias_summary_csv = bias_filepath.replace(".nc", "_summary.csv")
+    write_regional_summary_csv(
+        ds=ds_bias,
+        metric="bias",
+        output_csv=bias_summary_csv,
+        time_window=vs_config.TIME_WINDOW,
+        summary_type="daily",
+        date_init=date_in_string,
+        date_final=date_in_string,
+    )        
+
     if "relative_error" in vs_config.STATS_METRICS_TO_ANALYZE:
         # Compute relative error
         ds_relative_error = stats.relative_error(
@@ -404,6 +602,17 @@ def calculate_statistics(
         )
         ds_relative_error.to_netcdf(relative_error_filepath)
         ds_stats_filepath_dict["relative_error"] = relative_error_filepath
+
+    relative_error_summary_csv = relative_error_filepath.replace(".nc", "_summary.csv")
+    write_regional_summary_csv(
+        ds=ds_relative_error,
+        metric="relative_error",
+        output_csv=relative_error_summary_csv,
+        time_window=vs_config.TIME_WINDOW,
+        summary_type="daily",
+        date_init=date_in_string,
+        date_final=date_in_string,
+    )
 
     return ds_stats_filepath_dict
 
@@ -608,6 +817,22 @@ def concatenate_stats_datasets(date_list,time_window):
         # Save concatenated dataset in nc file
         stat_concat_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/{stat}_date_concat_from_{date_list[0]}_to_{date_list[-1]}_time_window_{time_window}.nc"
         ds_stat_concat.to_netcdf(stat_concat_filepath)
+        stat_daily_summary_csv = (
+            f"{vs_config.DIR_OUTPUT_DATA}/date_multiple_time_window_{time_window}/"
+            f"{stat}_daily_summary_date_from_{date_list[0]}_to_{date_list[-1]}_"
+            f"time_window_{time_window}.csv"
+        )
+
+        write_regional_summary_csv(
+            ds=ds_stat_concat,
+            metric=stat,
+            output_csv=stat_daily_summary_csv,
+            time_window=time_window,
+            summary_type="daily",
+            date_init=date_list[0],
+            date_final=date_list[-1],
+            date_list=date_list,
+        )
 
 def calculate_mean_single_time_metrics(time_window):
     # Create folder to save mean stats metrics datasets
@@ -622,6 +847,17 @@ def calculate_mean_single_time_metrics(time_window):
         # Save dataset with mean values in nc file
         stat_mean_filepath = f"{vs_config.DIR_OUTPUT_DATA}/date_multiple_time_window_{time_window}/mean_{stat}_date_from_{vs_config.DATE_INIT}_to_{vs_config.DATE_FINAL}_time_window_{time_window}.nc"
         ds_stat_mean.to_netcdf(stat_mean_filepath)
+        stat_mean_summary_csv = stat_mean_filepath.replace(".nc", "_summary.csv")
+
+        write_regional_summary_csv(
+            ds=ds_stat_mean,
+            metric=f"mean_{stat}",
+            output_csv=stat_mean_summary_csv,
+            time_window=time_window,
+            summary_type="mean_period",
+            date_init=vs_config.DATE_INIT,
+            date_final=vs_config.DATE_FINAL,
+        )
 
 def concatenate_var_datasets(date_list,time_window,verbose='y'):
     # Create folder to save concatenated datasets
@@ -727,6 +963,18 @@ def calculate_multi_time_metrics(time_window):
 
             ds_rmse.to_netcdf(rmse_filepath)
 
+            rmse_summary_csv = rmse_filepath.replace(".nc", "_summary.csv")
+
+            write_regional_summary_csv(
+                ds=ds_rmse,
+                metric="rmse",
+                output_csv=rmse_summary_csv,
+                time_window=time_window,
+                summary_type="mean_period",
+                date_init=vs_config.DATE_INIT,
+                date_final=vs_config.DATE_FINAL,
+            )
+
         elif multi_time_metric == "anomaly_correlation_coefficient":
             ds_acc = stats.anomaly_correlation_coefficient(
                 predictions=ds_var_monan_concat,
@@ -742,6 +990,17 @@ def calculate_multi_time_metrics(time_window):
 
             ds_acc.to_netcdf(acc_filepath)
 
+            acc_summary_csv = acc_filepath.replace(".nc", "_summary.csv")
+
+            write_regional_summary_csv(
+                ds=ds_acc,
+                metric="anomaly_correlation_coefficient",
+                output_csv=acc_summary_csv,
+                time_window=time_window,
+                summary_type="mean_period",
+                date_init=vs_config.DATE_INIT,
+                date_final=vs_config.DATE_FINAL,
+            )
 
 def plot_mean_metrics(time_window):
     # Define verbosity

@@ -77,5 +77,17 @@ DOMAIN_DICT = {
     "central_america_and_caribbean": {
         "lat": (-10, 35),
         "lon": (242, 335)
+    },
+    "northern_hemisphere_20_80": {
+        "lat": (20, 80),
+        "lon": (0, 360)
+    },
+    "southern_hemisphere_20_80": {
+        "lat": (-80, -20),
+        "lon": (0, 360)
+    },
+    "tropics_20s_20n": {
+        "lat": (-20, 20),
+        "lon": (0, 360)
     }
 }

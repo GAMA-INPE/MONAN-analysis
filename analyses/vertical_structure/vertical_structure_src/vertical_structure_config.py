@@ -37,7 +37,7 @@ SEL_VERBOSE_LEVEL = 0
 #===================================================================================================
 # Date and forecast time window for analysis
 YEAR = "2026"
-MONTH = "03"
+MONTH = "05"
 DAY = "31"
 HOUR = "00"
 TIME_WINDOW = "120"
@@ -63,6 +63,18 @@ DOMAINS_TO_ANALYZE = [
     "south_america", 
     "central_america_and_caribbean"
     ]
+# Summary regions to analyze 
+SUMMARY_REGIONS_TO_ANALYZE = [
+    "global",
+    "south_america",
+    "central_america_and_caribbean",
+    "northern_hemisphere_20_80",
+    "southern_hemisphere_20_80",
+    "tropics_20s_20n",
+]
+# Whether to write a CSV file with the regional summary of statistics
+WRITE_REGIONAL_SUMMARY_CSV = True
+
 # Limits of plots for each variable, metric, and vertical level (if applicable) 
 PLOT_LIMITS_BY_VAR_METRIC_LAYER = {
     "temperature": {
@@ -187,9 +199,9 @@ APPLY_PRESSURE_LEVEL_VALIDITY_MASK = True
 # For analysis of mutiple dates and time windows only
 #===================================================================================================
 # Initial date
-DATE_INIT = "2026040100"
+DATE_INIT = "2026050100"
 # Final date
-DATE_FINAL = "2026043000"
+DATE_FINAL = "2026053100"
 # Date time step in hours
 DATE_TIME_STEP = "24"
 # Time windows to analyze
@@ -203,6 +215,6 @@ TIME_WINDOWS_TO_ANALYZE = [
     ]
 # Multi-time stats metrics (metrics that need multiple time instants for their definition, e.g. RMSE, anomaly correlation coefficient)
 MULTI_TIME_STATS_METRICS_TO_ANALYZE = [
-    #"rmse",
-    #"anomaly_correlation_coefficient"
+    "rmse",
+    "anomaly_correlation_coefficient"
     ]
