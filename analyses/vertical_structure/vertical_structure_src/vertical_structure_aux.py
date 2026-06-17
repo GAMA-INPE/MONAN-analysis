@@ -1076,3 +1076,172 @@ def plot_mean_metrics(time_window):
                         unit_label=unit_label   
                         )
 #===================================================================================================
+
+#===================================================================================================
+# Functions for latitude-pressure profile plots
+#===================================================================================================
+def get_profile_scale(var):
+    """
+    Get scale factor and unit label for latitude-pressure profile plots.
+    """
+    scale_config = getattr(vs_config, "LAT_PRESSURE_PROFILE_SCALE_BY_VAR", {})
+
+    if var not in scale_config:
+        return 1.0, None
+
+    factor = scale_config[var].get("factor", 1.0)
+    unit_label = scale_config[var].get("unit_label", None)
+
+    return factor, unit_label
+
+
+def get_lat_pressure_profile_limits(var, metric):
+    """
+    Get fixed colorbar limits for latitude-pressure profile plots.
+    """
+    limits_config = getattr(vs_config, "LAT_PRESSURE_PROFILE_LIMITS_BY_VAR_METRIC", {})
+
+    try:
+        vmin, vmax = limits_config[var][metric]
+    except KeyError:
+        return None, None
+
+    if metric in ["bias", "mean_bias"]:
+        max_abs = max(abs(vmin), abs(vmax))
+        vmin, vmax = -max_abs, max_abs
+
+    return vmin, vmax
+
+
+def calculate_lat_pressure_profile(da):
+    """
+    Calculate the latitude-pressure profile by averaging over longitude and time.
+
+    This is equivalent to the GrADS command:
+    ave(ave(var, x=1, x=nlon), t=1, t=ntime)
+
+    The output keeps latitude and pressure level.
+    """
+    lat_name, lon_name = get_lat_lon_names(da)
+
+    mean_dims = [lon_name]
+
+    if "Time" in da.dims:
+        mean_dims.append("Time")
+
+    da_profile = da.mean(dim=mean_dims, skipna=True)
+
+    return da_profile
+
+def generate_lat_pressure_profile_plots(time_window):
+    """
+    Plot latitude-pressure profiles from concatenated metric datasets.
+
+    This function handles the analysis-specific workflow:
+    read concatenated metric files, select domains, variables and levels,
+    apply unit scaling, calculate the zonal and time mean profile,
+    and call the generic plotting function from monan_analysis.plots.
+    """
+    if not getattr(vs_config, "PLOT_LAT_PRESSURE_PROFILES", False):
+        return
+
+    metrics_to_plot = getattr(
+        vs_config,
+        "LAT_PRESSURE_PROFILE_METRICS_TO_PLOT",
+        vs_config.STATS_METRICS_TO_ANALYZE,
+    )
+
+    variables_to_plot = getattr(
+        vs_config,
+        "LAT_PRESSURE_PROFILE_VARIABLES_TO_PLOT",
+        vs_config.VARIABLES_TO_ANALYZE,
+    )
+
+    domains_to_plot = getattr(
+        vs_config,
+        "LAT_PRESSURE_PROFILE_DOMAINS_TO_PLOT",
+        ["global"],
+    )
+
+    levels_to_plot = getattr(
+        vs_config,
+        "LAT_PRESSURE_PROFILE_LEVELS_TO_PLOT",
+        None,
+    )
+
+    for metric in metrics_to_plot:
+        stat_concat_filepath = (
+            f"{vs_config.DIR_INPUT_PROCESSED}/"
+            f"{metric}_date_concat_from_{vs_config.DATE_INIT}_to_"
+            f"{vs_config.DATE_FINAL}_time_window_{time_window}.nc"
+        )
+
+        if not os.path.exists(stat_concat_filepath):
+            print(f"File not found, skipping: {stat_concat_filepath}")
+            continue
+
+        ds_metric = xr.open_dataset(stat_concat_filepath, engine="netcdf4")
+
+        for domain in domains_to_plot:
+            ds_domain = subset_region(ds_metric, domain)
+
+            for var in variables_to_plot:
+                if var not in ds_domain:
+                    print(f"Variable {var} not found in {stat_concat_filepath}, skipping.")
+                    continue
+
+                da = ds_domain[var]
+
+                if levels_to_plot is not None:
+                    levels_to_plot_float = [float(level) for level in levels_to_plot]
+                    da = da.sel(level=levels_to_plot_float)
+
+                scale_factor, unit_label = get_profile_scale(var)
+                da = da * scale_factor
+
+                da_profile = calculate_lat_pressure_profile(da)
+
+                vmin, vmax = get_lat_pressure_profile_limits(
+                    var=var,
+                    metric=metric,
+                )
+
+                output_filepath = (
+                    f"{vs_config.DIR_OUTPUT_FIGS}/"
+                    f"date_multiple_time_window_{time_window}/"
+                    f"var_{var}/domain_{domain}/"
+                    f"profile_{metric}_var_{var}_domain_{domain}_"
+                    f"date_from_{vs_config.DATE_INIT}_to_{vs_config.DATE_FINAL}_"
+                    f"time_window_{time_window}.png"
+                )
+
+                domain_label = domain.replace("_", " ")
+                metric_label = metric.replace("_", " ")
+
+                subtitle = (
+                    f"Zonal and time mean, {domain_label}, "
+                    f"{vs_config.DATE_INIT} to {vs_config.DATE_FINAL}, "
+                    f"lead {int(time_window):03d} h"
+                )
+
+                cmap = vs_config.COLORMAP_DIVERGING_BY_VAR_DICT.get(var, "coolwarm")
+
+                plots.plot_lat_pressure_profile(
+                    da_profile=da_profile,
+                    output_filepath=output_filepath,
+                    var_label=var,
+                    metric_label=metric_label,
+                    unit_label=unit_label,
+                    cmap=cmap,
+                    vmin=vmin,
+                    vmax=vmax,
+                    subtitle=subtitle,
+                )
+
+                print(f"Latitude-pressure profile saved: {output_filepath}")
+
+def generate_lat_pressure_profile_plots_for_all_dates_and_each_time_window():
+    for time_window in vs_config.TIME_WINDOWS_TO_ANALYZE:
+        print(f"\n Time window: {time_window}")
+        generate_lat_pressure_profile_plots(time_window=time_window)
+#===================================================================================================

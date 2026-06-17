@@ -27,8 +27,10 @@ from tabnanny import verbose
 import monan_analysis.config as config
 import monan_analysis.stats as stats
 import matplotlib.pyplot as plt
+import matplotlib.ticker as mticker
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
+import numpy as np
 import os
 
 def example_function_plots():
@@ -180,3 +182,140 @@ def plot_var_map(ds, var, cartopy_data_dir, level=None, Time=None,
         figure_filepath = f"output/map_var_{var}_level_{level}_domain_{domain}.png"
     plt.savefig(figure_filepath)
 
+def plot_lat_pressure_profile(
+    da_profile,
+    output_filepath=None,
+    var_label=None,
+    metric_label=None,
+    unit_label=None,
+    cmap="coolwarm",
+    vmin=None,
+    vmax=None,
+    title=None,
+    subtitle=None,
+    xlabel="Latitude",
+    ylabel="Pressure level (hPa)",
+):
+    """
+    Plot a latitude-pressure section from a DataArray.
+
+    Expected input:
+    da_profile: xarray.DataArray with latitude and level dimensions.
+
+    Notes:
+    This function only plots the provided DataArray.
+    Any filtering by domain, variable, metric, time window or date period
+    should be done before calling this function.
+    """
+
+    if "latitude" in da_profile.coords or "latitude" in da_profile.dims:
+        lat_name = "latitude"
+    elif "lat" in da_profile.coords or "lat" in da_profile.dims:
+        lat_name = "lat"
+    else:
+        raise ValueError("Could not identify latitude coordinate in da_profile.")
+
+    if "level" not in da_profile.coords and "level" not in da_profile.dims:
+        raise ValueError("Could not identify level coordinate in da_profile.")
+
+    pressure_hpa = da_profile["level"].values.astype(float) / 100.0
+    latitude = da_profile[lat_name].values
+
+    if da_profile.dims[0] == lat_name:
+        data_values = da_profile.values.T
+    else:
+        data_values = da_profile.values
+
+    fig, ax = plt.subplots(figsize=(11, 6))
+
+    if vmin is not None and vmax is not None:
+        contour_levels = np.linspace(vmin, vmax, 21)
+    else:
+        contour_levels = 21
+
+    contour = ax.contourf(
+        latitude,
+        pressure_hpa,
+        data_values,
+        levels=contour_levels,
+        cmap=cmap,
+        vmin=vmin,
+        vmax=vmax,
+        extend="both",
+    )
+
+    ax.set_yscale("log")
+    ax.invert_yaxis()
+
+    pressure_ticks = pressure_hpa.tolist()
+
+    ax.yaxis.set_major_locator(mticker.FixedLocator(pressure_ticks))
+    ax.yaxis.set_major_formatter(
+        mticker.FixedFormatter([f"{p:g}" for p in pressure_ticks])
+    )
+
+    # Remove completely the automatic minor ticks from the log scale
+    ax.yaxis.set_minor_locator(mticker.NullLocator())
+    ax.yaxis.set_minor_formatter(mticker.NullFormatter())
+
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+
+    if title is None:
+        title_parts = []
+
+        if var_label is not None and metric_label is not None:
+            if unit_label is not None:
+                title_parts.append(f"{var_label}, {metric_label} [{unit_label}]")
+            else:
+                title_parts.append(f"{var_label}, {metric_label}")
+        elif var_label is not None:
+            if unit_label is not None:
+                title_parts.append(f"{var_label} [{unit_label}]")
+            else:
+                title_parts.append(f"{var_label}")
+        elif metric_label is not None:
+            if unit_label is not None:
+                title_parts.append(f"{metric_label} [{unit_label}]")
+            else:
+                title_parts.append(f"{metric_label}")
+
+        if subtitle is not None:
+            title_parts.append(subtitle)
+
+        if title_parts:
+            title = "\n".join(title_parts)
+
+    if title is not None:
+        ax.set_title(title, fontsize=14)
+
+    if metric_label is not None and unit_label is not None:
+        cbar_label = f"{metric_label} [{unit_label}]"
+    elif metric_label is not None:
+        cbar_label = metric_label
+    elif unit_label is not None:
+        cbar_label = unit_label
+    else:
+        cbar_label = ""
+
+    cbar = fig.colorbar(contour, ax=ax, pad=0.02)
+
+    if cbar_label:
+        cbar.set_label(cbar_label, fontsize=14)
+
+    cbar.ax.tick_params(labelsize=12)
+
+    ax.grid(True, linestyle=":", linewidth=0.5)
+
+    if output_filepath is not None:
+        figure_filepath = output_filepath
+
+        output_dir = os.path.dirname(figure_filepath)
+        if output_dir:
+            os.makedirs(output_dir, exist_ok=True)
+    else:
+        os.makedirs("output", exist_ok=True)
+        figure_filepath = "output/lat_pressure_profile.png"
+
+    plt.savefig(figure_filepath, bbox_inches="tight")
+    plt.close(fig)
