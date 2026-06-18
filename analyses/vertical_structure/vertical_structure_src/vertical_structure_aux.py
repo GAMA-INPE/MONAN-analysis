@@ -1170,24 +1170,37 @@ def generate_lat_pressure_profile_plots(time_window):
     )
 
     for metric in metrics_to_plot:
-        stat_concat_filepath = (
-            f"{vs_config.DIR_INPUT_PROCESSED}/"
-            f"{metric}_date_concat_from_{vs_config.DATE_INIT}_to_"
-            f"{vs_config.DATE_FINAL}_time_window_{time_window}.nc"
-        )
+        if metric in vs_config.STATS_METRICS_TO_ANALYZE:
+            metric_filepath = (
+                f"{vs_config.DIR_INPUT_PROCESSED}/"
+                f"{metric}_date_concat_from_{vs_config.DATE_INIT}_to_"
+                f"{vs_config.DATE_FINAL}_time_window_{time_window}.nc"
+            )
 
-        if not os.path.exists(stat_concat_filepath):
-            print(f"File not found, skipping: {stat_concat_filepath}")
+        elif metric in vs_config.MULTI_TIME_STATS_METRICS_TO_ANALYZE:
+            metric_filepath = (
+                f"{vs_config.DIR_OUTPUT_DATA}/"
+                f"date_multiple_time_window_{time_window}/"
+                f"{metric}_date_from_{vs_config.DATE_INIT}_to_"
+                f"{vs_config.DATE_FINAL}_time_window_{time_window}.nc"
+            )
+
+        else:
+            print(f"Metric {metric} is not configured in STATS_METRICS_TO_ANALYZE or MULTI_TIME_STATS_METRICS_TO_ANALYZE. Skipping.")
             continue
 
-        ds_metric = xr.open_dataset(stat_concat_filepath, engine="netcdf4")
+        if not os.path.exists(metric_filepath):
+            print(f"File not found, skipping: {metric_filepath}")
+            continue
+
+        ds_metric = xr.open_dataset(metric_filepath, engine="netcdf4")
 
         for domain in domains_to_plot:
             ds_domain = subset_region(ds_metric, domain)
 
             for var in variables_to_plot:
                 if var not in ds_domain:
-                    print(f"Variable {var} not found in {stat_concat_filepath}, skipping.")
+                    print(f"Variable {var} not found in {metric_filepath}, skipping.")
                     continue
 
                 da = ds_domain[var]
@@ -1196,8 +1209,15 @@ def generate_lat_pressure_profile_plots(time_window):
                     levels_to_plot_float = [float(level) for level in levels_to_plot]
                     da = da.sel(level=levels_to_plot_float)
 
-                scale_factor, unit_label = get_profile_scale(var)
-                da = da * scale_factor
+                if metric in ["bias", "rmse"]:
+                    scale_factor, unit_label = get_profile_scale(var)
+                    da = da * scale_factor
+                elif metric == "relative_error":
+                    unit_label = "%"
+                elif metric == "anomaly_correlation_coefficient":
+                    unit_label = ""
+                else:
+                    unit_label = None
 
                 da_profile = calculate_lat_pressure_profile(da)
 
