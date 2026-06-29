@@ -27,6 +27,7 @@ Acknowledgments
 This file was created with the assistance of GitHub Copilot.    
 """
 
+import gc
 import monan_analysis
 import monan_analysis.config as config
 import monan_analysis.io as io
@@ -629,51 +630,54 @@ def plot_statistics(ds_stats_filepath_dict):
 
     # Maps of statistics for each metric, domain, variable and level
     for metric in ds_stats_filepath_dict.keys():
-        print (f"Metric: {metric}")
-        ds_stats = xr.open_dataset(ds_stats_filepath_dict[metric], engine="netcdf4")
-        for domain in vs_config.DOMAINS_TO_ANALYZE:
-            print ("domain:", domain)
-            for var in vs_config.VARIABLES_TO_ANALYZE:
-                print ("variable:", var)
-                for level in vs_config.VERTICAL_LEVELS_TO_ANALYZE:
-                    print ("level:", level)
-                    
-                    vmin, vmax = get_plot_limits(
-                        var=var,
-                        metric=metric,
-                        level=level
-                    )
+        print(f"Metric: {metric}")
 
-                    unit_label = None
-                    ds_to_plot = ds_stats
+        with xr.open_dataset(ds_stats_filepath_dict[metric], engine="netcdf4") as ds_stats:
+            for domain in vs_config.DOMAINS_TO_ANALYZE:
+                print("domain:", domain)
+                for var in vs_config.VARIABLES_TO_ANALYZE:
+                    print("variable:", var)
+                    for level in vs_config.VERTICAL_LEVELS_TO_ANALYZE:
+                        print("level:", level)
 
-                    if var == "spechum":
-                        ds_to_plot, unit_label = convert_spechum_units_for_plot(
-                        ds=ds_stats,
-                        var=var,
-                        level=level
+                        vmin, vmax = get_plot_limits(
+                            var=var,
+                            metric=metric,
+                            level=level
                         )
 
-                    plots.plot_var_map(
-                        ds=ds_to_plot,
-                        var=var, 
-                        cartopy_data_dir=vs_config.DIR_CARTOPY_DATA,
-                        level=level, 
-                        domain=domain,
-                        output_filepath=(f"{vs_config.DIR_OUTPUT_FIGS}/date_{date_in_string}_"+
-                                        f"time_window_{vs_config.TIME_WINDOW}/"+
-                                        f"var_{var}/domain_{domain}/"+
-                                        f"metric_{metric}_var_{var}_level_{level}_"+
-                                        f"domain_{domain}_date_{date_in_string}_"+
-                                        f"time_window_{vs_config.TIME_WINDOW}.png"),
-                        verbose=verbose,
-                        cmap_dict=vs_config.COLORMAP_DIVERGING_BY_VAR_DICT,
-                        metric_name=metric,
-                        time_window=vs_config.TIME_WINDOW,
-                        vmin=vmin,
-                        vmax=vmax,
-                        unit_label=unit_label
-                    )
+                        unit_label = None
+                        ds_to_plot = ds_stats
+
+                        if var == "spechum":
+                            ds_to_plot, unit_label = convert_spechum_units_for_plot(
+                                ds=ds_stats,
+                                var=var,
+                                level=level
+                            )
+
+                        plots.plot_var_map(
+                            ds=ds_to_plot,
+                            var=var,
+                            cartopy_data_dir=vs_config.DIR_CARTOPY_DATA,
+                            level=level,
+                            domain=domain,
+                            output_filepath=(
+                                f"{vs_config.DIR_OUTPUT_FIGS}/date_{date_in_string}_"
+                                f"time_window_{vs_config.TIME_WINDOW}/"
+                                f"var_{var}/domain_{domain}/"
+                                f"metric_{metric}_var_{var}_level_{level}_"
+                                f"domain_{domain}_date_{date_in_string}_"
+                                f"time_window_{vs_config.TIME_WINDOW}.png"
+                            ),
+                            verbose=verbose,
+                            cmap_dict=vs_config.COLORMAP_DIVERGING_BY_VAR_DICT,
+                            metric_name=metric,
+                            time_window=vs_config.TIME_WINDOW,
+                            vmin=vmin,
+                            vmax=vmax,
+                            unit_label=unit_label
+                        )
 
 def cp_config_files():
     # Get date to include in output filenames
@@ -715,6 +719,7 @@ def run_main_for_each_date_and_time_window(date_list):
             # Reload the updated config file
             importlib.reload(vs_config)
             vs_main.main()
+            gc.collect()
 
 def concatenate_datasets_for_all_dates_and_each_time_window(date_list):
     for time_window in vs_config.TIME_WINDOWS_TO_ANALYZE:

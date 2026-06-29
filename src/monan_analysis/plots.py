@@ -181,6 +181,7 @@ def plot_var_map(ds, var, cartopy_data_dir, level=None, Time=None,
         os.makedirs("output", exist_ok=True)
         figure_filepath = f"output/map_var_{var}_level_{level}_domain_{domain}.png"
     plt.savefig(figure_filepath)
+    plt.close()
 
 def plot_lat_pressure_profile(
     da_profile,
