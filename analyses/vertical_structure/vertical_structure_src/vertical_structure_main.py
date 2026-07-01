@@ -63,8 +63,8 @@ def main():
     #===============================================================================================
     print ("\n Interpolating MONAN / GFS data for comparability...")
     ds_ref_filepath, ds_prediction_filepath = vs_aux.interpolate_monan_gfs(
-        ds_monan_selected_filepath,
-        ds_gfs_in_monan_format_filepath
+        ds_monan_selected_filepath=ds_monan_selected_filepath,
+        ds_gfs_in_monan_format_filepath=ds_gfs_in_monan_format_filepath
     )
 
     #===============================================================================================
