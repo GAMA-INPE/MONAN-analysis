@@ -34,7 +34,7 @@ def example_function_plots():
 
 def plot_var_map(ds, var, cartopy_data_dir, level=None, Time=None, 
                  domain="global", output_filepath=None, verbose='y',
-                 cmap_dict=None,metric_name=None):
+                 cmap_dict=None,metric_name=None, time_window=None):
     """Plot map of a variable at a given level and domain."""
     # Set the Cartopy data directory
     os.environ["CARTOPY_USER_DATA_DIR"] = cartopy_data_dir
@@ -120,8 +120,15 @@ def plot_var_map(ds, var, cartopy_data_dir, level=None, Time=None,
     # Define metric units
     metric_units = stats.get_stats_metric_units(var_units_dict=config.VAR_UNITS_DICT, var=var, metric=metric_name) if metric_name is not None else "N/A"
     plt.colorbar(mesh, label=f"{metric_name} [{metric_units}]" if metric_name is not None else f"{var} [{config.VAR_UNITS_DICT[var]}]")
-    plt.title(f"{var} [{config.VAR_UNITS_DICT[var]}], {level_label} {metric_name} [{metric_units}]" 
-              if metric_name is not None else f"{var} {level_label}")
+    
+    time_window_label = (
+        f", lead {int(time_window):03d} h"
+        if time_window is not None
+        else ""
+    )
+    
+    plt.title(f"{var} [{config.VAR_UNITS_DICT[var]}], {level_label} {metric_name} [{metric_units}]{time_window_label}" 
+              if metric_name is not None else f"{var} {level_label}{time_window_label}")
 
     # Save figure
     if output_filepath is not None:

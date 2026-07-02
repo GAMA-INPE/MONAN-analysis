@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-vertical_analysis_aux.py
+vertical_structure_aux.py
 
 Based on a script by Andre Lyra (andre.lyra@inpe.br)
 Last update: Feb 2026 by Guilherme Torres Mendonça (guilherme.mendonca@inpe.br)
 Last update: Apr 2026 by Guilherme Torres Mendonça (guilherme.mendonca@inpe.br)
+Last update: May 2026 by Andre Lyra (andre.lyra@inpe.br) - topography masking of pressure levels
 
 Description
 -----------
@@ -65,13 +66,18 @@ def create_folder_structure():
 def read_and_preprocess_monan_data():
     # Get date and write it into preprocessed filepath
     date_in_string = utils.get_date_as_YYYYMMDDHH_str(
-    vs_config.YEAR, vs_config.MONTH, vs_config.DAY, vs_config.HOUR
+        vs_config.YEAR,
+        vs_config.MONTH,
+        vs_config.DAY,
+        vs_config.HOUR
     )
+
     # Define verbosity
     if vs_config.SEL_VERBOSE_LEVEL >= 2:
         verbose = 'y'
     else:
         verbose = 'n'
+
     # Read dataset
     ds_monan, monan_filepath = io.read_ds_monan(
         year=vs_config.YEAR,
@@ -83,30 +89,49 @@ def read_and_preprocess_monan_data():
         vertical_level_spec=vs_config.VERTICAL_LEVEL_SPEC,
         base_dir=vs_config.DIR_MONAN_PREOP,
         verbose=verbose
-        )
-    # Select only data to be used for analysis
-    ds_monan_selected = ds_monan[vs_config.VARIABLES_TO_ANALYZE].sel(level=vs_config.VERTICAL_LEVELS_TO_ANALYZE)
+    )
+
+    # Select pressure-level variables to be used for analysis
+    ds_monan_selected = ds_monan[vs_config.VARIABLES_TO_ANALYZE].sel(
+        level=vs_config.VERTICAL_LEVELS_TO_ANALYZE
+    )
+
+    # Include MONAN surface pressure in the same preprocessed dataset when
+    # the pressure-level validity mask is enabled
+    if vs_config.APPLY_PRESSURE_LEVEL_VALIDITY_MASK:
+        ds_monan_selected["surface_pressure"] = ds_monan["surface_pressure"]
+
     # Save preprocessed MONAN dataset
-    ds_monan_selected_filepath = f"{vs_config.DIR_INPUT_INTERMEDIATE}/monan_selected_variables_and_levels_date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}.nc"
+    ds_monan_selected_filepath = (
+        f"{vs_config.DIR_INPUT_INTERMEDIATE}/"
+        f"monan_selected_variables_and_levels_date_{date_in_string}_"
+        f"time_window_{vs_config.TIME_WINDOW}.nc"
+    )
     ds_monan_selected.to_netcdf(ds_monan_selected_filepath)
+
     # If needed, print preprocessed dataset
     if vs_config.SEL_VERBOSE_LEVEL >= 1:
-        print ("MONAN dataset with selected variables and levels:")
-        print (ds_monan_selected)
+        print("MONAN dataset with selected variables and levels:")
+        print(ds_monan_selected)
 
     return ds_monan_selected_filepath
 
 def read_and_preprocess_gfs_data():
     # Get date and write it into preprocessed filepath
     date_in_string = utils.get_date_as_YYYYMMDDHH_str(
-    vs_config.YEAR, vs_config.MONTH, vs_config.DAY, vs_config.HOUR
+        vs_config.YEAR,
+        vs_config.MONTH,
+        vs_config.DAY,
+        vs_config.HOUR
     )
+
     # Define verbosity
     if vs_config.SEL_VERBOSE_LEVEL >= 2:
         verbose = 'y'
     else:
         verbose = 'n'
-    # Read dataset
+
+    # Read GFS pressure-level dataset
     ds_gfs, gfs_filepath = io.read_ds_gfs(
         year=vs_config.YEAR,
         month=vs_config.MONTH,
@@ -115,21 +140,56 @@ def read_and_preprocess_gfs_data():
         base_dir=vs_config.DIR_GFS_ANALYSIS,
         stream_name=vs_config.GFS_STREAM_NAME,
         verbose=verbose
-        )
+    )
+
     # Configure GFS dataset to match MONAN format
     ds_gfs_in_monan_format = preprocess.get_gfs_data_in_monan_format(
-        ds_gfs, config.GFS_TO_MONAN_VAR_DICT)
-    # Select only data to be used for analysis
-    ds_gfs_in_monan_format = ds_gfs_in_monan_format[vs_config.VARIABLES_TO_ANALYZE].sel(
-        level=vs_config.VERTICAL_LEVELS_TO_ANALYZE)
+        ds_gfs=ds_gfs,
+        gfs_to_monan_var_dict=config.GFS_TO_MONAN_VAR_DICT
+    )
+
+    # Select pressure-level variables to be used for analysis
+    ds_gfs_in_monan_format = ds_gfs_in_monan_format[
+        vs_config.VARIABLES_TO_ANALYZE
+    ].sel(
+        level=vs_config.VERTICAL_LEVELS_TO_ANALYZE
+    )
+
+    # Include GFS surface pressure in the same preprocessed dataset when
+    # the pressure-level validity mask is enabled
+    if vs_config.APPLY_PRESSURE_LEVEL_VALIDITY_MASK:
+        ds_gfs_sp, gfs_sp_filepath = io.read_ds_gfs(
+            year=vs_config.YEAR,
+            month=vs_config.MONTH,
+            day=vs_config.DAY,
+            hour=vs_config.HOUR,
+            base_dir=vs_config.DIR_GFS_ANALYSIS,
+            stream_name="surface",
+            verbose=verbose
+        )
+
+        # Configure GFS surface-pressure dataset to match MONAN format
+        ds_gfs_sp_in_monan_format = preprocess.get_gfs_data_in_monan_format(
+            ds_gfs=ds_gfs_sp,
+            gfs_to_monan_var_dict=config.GFS_TO_MONAN_VAR_DICT
+        )
+
+        # Include GFS surface pressure data in the same preprocessed dataset
+        ds_gfs_in_monan_format["surface_pressure"] = ds_gfs_sp_in_monan_format[["surface_pressure"]]
+
     # Save preprocessed GFS dataset
-    ds_gfs_in_monan_format_filepath = f"{vs_config.DIR_INPUT_INTERMEDIATE}/gfs_in_monan_format_date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}.nc"
+    ds_gfs_in_monan_format_filepath = (
+        f"{vs_config.DIR_INPUT_INTERMEDIATE}/"
+        f"gfs_in_monan_format_date_{date_in_string}_"
+        f"time_window_{vs_config.TIME_WINDOW}.nc"
+    )
     ds_gfs_in_monan_format.to_netcdf(ds_gfs_in_monan_format_filepath)
+
     # If needed, print preprocessed dataset
     if vs_config.SEL_VERBOSE_LEVEL >= 1:
-        print ("GFS dataset in MONAN data format:")
-        print (ds_gfs_in_monan_format)
-    
+        print("GFS dataset in MONAN data format:")
+        print(ds_gfs_in_monan_format)
+
     return ds_gfs_in_monan_format_filepath
 
 def interpolate_monan_gfs(ds_monan_selected_filepath, ds_gfs_in_monan_format_filepath):
@@ -173,40 +233,101 @@ def interpolate_monan_gfs(ds_monan_selected_filepath, ds_gfs_in_monan_format_fil
     
     return ds_ref_filepath, ds_prediction_filepath
 
-def calculate_statistics(ds_ref_filepath, ds_prediction_filepath):
+def calculate_statistics(ds_ref_filepath,ds_prediction_filepath):
     # Get date to include in output filenames
     date_in_string = utils.get_date_as_YYYYMMDDHH_str(
-    vs_config.YEAR, vs_config.MONTH, vs_config.DAY, vs_config.HOUR
+        vs_config.YEAR,
+        vs_config.MONTH,
+        vs_config.DAY,
+        vs_config.HOUR
     )
 
     # Read datasets
-    ## GFS reference data
+    # GFS reference data
     ds_ref = xr.open_dataset(ds_ref_filepath, engine="netcdf4")
-    ## MONAN prediction mapped to GFS grid
+
+    # MONAN prediction data
     ds_prediction = xr.open_dataset(ds_prediction_filepath, engine="netcdf4")
+    
+    # Apply pressure-level validity mask based on GFS and MONAN surface pressure
+    if vs_config.APPLY_PRESSURE_LEVEL_VALIDITY_MASK:
+        if "surface_pressure" not in ds_ref:
+            raise ValueError(
+                "APPLY_PRESSURE_LEVEL_VALIDITY_MASK is True, but "
+                "'surface_pressure' was not found in the preprocessed GFS dataset."
+            )
+
+        if "surface_pressure" not in ds_prediction:
+            raise ValueError(
+                "APPLY_PRESSURE_LEVEL_VALIDITY_MASK is True, but "
+                "'surface_pressure' was not found in the preprocessed MONAN dataset."
+            )
+        
+        # Obtain validity masks for reference dataset
+        valid_ref_pressure_level_mask = preprocess.apply_pressure_level_validity_mask(
+            ds=ds_ref,
+            pressure_level=ds_ref["level"],
+            surface_pressure_var="surface_pressure"
+        )
+
+        # Obtain validity masks for prediction dataset
+        valid_prediction_pressure_level_mask = preprocess.apply_pressure_level_validity_mask(
+            ds=ds_prediction,
+            pressure_level=ds_prediction["level"],
+            surface_pressure_var="surface_pressure"
+        )
+
+        # Obtain validity mask considering both datasets
+        valid_pressure_level_mask = (
+            valid_ref_pressure_level_mask
+            & valid_prediction_pressure_level_mask
+        )
+
+        # Remove surface_pressure before applying the mask to avoid expanding
+        # this 2D/3D field to all pressure levels during ds.where()
+        ds_ref = ds_ref.drop_vars("surface_pressure")
+        ds_prediction = ds_prediction.drop_vars("surface_pressure")
+
+        # Apply the same combined validity mask to reference and prediction
+        ds_ref = ds_ref.where(valid_pressure_level_mask)
+        ds_prediction = ds_prediction.where(valid_pressure_level_mask)
 
     # Initialize list of output filepaths for statistics datasets
     ds_stats_filepath_dict = {}
 
     # Create a dataset for each metric.
     # Each dataset will contain all selected variables at all selected levels.
-    # We will not care about the domain now: since variables are all in 
-    # the same grid, we can compute each metric for 
+    # We will not care about the domain now: since variables are all in
+    # the same grid, we can compute each metric for
     # the whole grid and then subset it for different domains.
     if "bias" in vs_config.STATS_METRICS_TO_ANALYZE:
         # Compute bias
         ds_bias = stats.bias(predictions=ds_prediction, observations=ds_ref)
+
         # Save bias dataset in nc file
-        bias_filepath = f"{vs_config.DIR_OUTPUT_DATA}/date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}/bias_date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}.nc"
+        bias_filepath = (
+            f"{vs_config.DIR_OUTPUT_DATA}/"
+            f"date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}/"
+            f"bias_date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}.nc"
+        )
         ds_bias.to_netcdf(bias_filepath)
-        ds_stats_filepath_dict["bias"]=bias_filepath
+        ds_stats_filepath_dict["bias"] = bias_filepath
+
     if "relative_error" in vs_config.STATS_METRICS_TO_ANALYZE:
         # Compute relative error
-        ds_relative_error = stats.relative_error(predictions=ds_prediction, observations=ds_ref)
+        ds_relative_error = stats.relative_error(
+            predictions=ds_prediction,
+            observations=ds_ref
+        )
+
         # Save relative error dataset in nc file
-        relative_error_filepath = f"{vs_config.DIR_OUTPUT_DATA}/date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}/relative_error_date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}.nc"
+        relative_error_filepath = (
+            f"{vs_config.DIR_OUTPUT_DATA}/"
+            f"date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}/"
+            f"relative_error_date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}.nc"
+        )
         ds_relative_error.to_netcdf(relative_error_filepath)
-        ds_stats_filepath_dict["relative_error"]=relative_error_filepath
+        ds_stats_filepath_dict["relative_error"] = relative_error_filepath
 
     return ds_stats_filepath_dict
 
@@ -245,7 +366,8 @@ def plot_statistics(ds_stats_filepath_dict):
                                          f"time_window_{vs_config.TIME_WINDOW}.png"),
                         verbose=verbose,
                         cmap_dict=vs_config.COLORMAP_DIVERGING_BY_VAR_DICT,
-                        metric_name=metric
+                        metric_name=metric,
+                        time_window=vs_config.TIME_WINDOW
                         )
 
 def cp_config_files():
@@ -445,17 +567,88 @@ def calculate_multi_time_metrics(time_window):
     # Read concatenated variable datasets
     ds_var_monan_concat = xr.open_dataset(var_monan_concat_filepath, engine="netcdf4")
     ds_var_gfs_concat = xr.open_dataset(var_gfs_concat_filepath, engine="netcdf4")
+
+    # Apply pressure-level validity mask based on GFS and MONAN surface pressure
+    if vs_config.APPLY_PRESSURE_LEVEL_VALIDITY_MASK:
+        if "surface_pressure" not in ds_var_gfs_concat:
+            raise ValueError(
+                "APPLY_PRESSURE_LEVEL_VALIDITY_MASK is True, but "
+                "'surface_pressure' was not found in the concatenated GFS dataset."
+            )
+
+        if "surface_pressure" not in ds_var_monan_concat:
+            raise ValueError(
+                "APPLY_PRESSURE_LEVEL_VALIDITY_MASK is True, but "
+                "'surface_pressure' was not found in the concatenated MONAN dataset."
+            )
+
+        # Obtain validity mask for reference dataset 
+        valid_ref_pressure_level_mask = preprocess.apply_pressure_level_validity_mask(
+          ds=ds_var_gfs_concat,
+          pressure_level=ds_var_gfs_concat["level"],
+          surface_pressure_var="surface_pressure"
+        )
+
+        # Obtain validity mask for prediction dataset
+        valid_prediction_pressure_level_mask = preprocess.apply_pressure_level_validity_mask(
+          ds=ds_var_monan_concat,
+          pressure_level=ds_var_monan_concat["level"],
+          surface_pressure_var="surface_pressure"
+        )
+
+        # Combine validity masks for reference and prediction datasets
+        valid_pressure_level_mask = (
+          valid_ref_pressure_level_mask
+          & valid_prediction_pressure_level_mask
+        )
+
+        # Remove surface_pressure before applying the mask to avoid expanding
+        # this field to all pressure levels during ds.where()
+        ds_var_gfs_concat = ds_var_gfs_concat.drop_vars("surface_pressure")
+        ds_var_monan_concat = ds_var_monan_concat.drop_vars("surface_pressure")
+
+        # Apply the same combined validity mask to reference and prediction
+        ds_var_gfs_concat = ds_var_gfs_concat.where(valid_pressure_level_mask)
+        ds_var_monan_concat = ds_var_monan_concat.where(valid_pressure_level_mask)
+    else:
+        # Avoid calculating RMSE or ACC for surface_pressure if it exists in the dataset
+        ds_var_gfs_concat = ds_var_gfs_concat.drop_vars("surface_pressure", errors="ignore")
+        ds_var_monan_concat = ds_var_monan_concat.drop_vars("surface_pressure", errors="ignore")
+
     # Calculate and save multi-time metrics across all dates for each variable, level and domain
     ## Here we could calculate any metric that involves time averages, such as anomaly correlation coefficient or rmse
     for multi_time_metric in vs_config.MULTI_TIME_STATS_METRICS_TO_ANALYZE:
+
         if multi_time_metric == "rmse":
-            ds_rmse = stats.rmse(predictions=ds_var_monan_concat, observations=ds_var_gfs_concat, dim="Time")
-            rmse_filepath = f"{vs_config.DIR_OUTPUT_DATA}/date_multiple_time_window_{time_window}/{multi_time_metric}_date_from_{vs_config.DATE_INIT}_to_{vs_config.DATE_FINAL}_time_window_{time_window}.nc"
+            ds_rmse = stats.rmse(
+                predictions=ds_var_monan_concat,
+                observations=ds_var_gfs_concat,
+                dim="Time"
+            )
+
+            rmse_filepath = (
+                f"{vs_config.DIR_OUTPUT_DATA}/date_multiple_time_window_{time_window}/"
+                f"{multi_time_metric}_date_from_{vs_config.DATE_INIT}_to_"
+                f"{vs_config.DATE_FINAL}_time_window_{time_window}.nc"
+            )
+
             ds_rmse.to_netcdf(rmse_filepath)
+
         elif multi_time_metric == "anomaly_correlation_coefficient":
-            ds_acc = stats.anomaly_correlation_coefficient(predictions=ds_var_monan_concat, observations=ds_var_gfs_concat, dim="Time")
-            acc_filepath = f"{vs_config.DIR_OUTPUT_DATA}/date_multiple_time_window_{time_window}/{multi_time_metric}_date_from_{vs_config.DATE_INIT}_to_{vs_config.DATE_FINAL}_time_window_{time_window}.nc"
+            ds_acc = stats.anomaly_correlation_coefficient(
+                predictions=ds_var_monan_concat,
+                observations=ds_var_gfs_concat,
+                dim="Time"
+            )
+
+            acc_filepath = (
+                f"{vs_config.DIR_OUTPUT_DATA}/date_multiple_time_window_{time_window}/"
+                f"{multi_time_metric}_date_from_{vs_config.DATE_INIT}_to_"
+                f"{vs_config.DATE_FINAL}_time_window_{time_window}.nc"
+            )
+
             ds_acc.to_netcdf(acc_filepath)
+
 
 def plot_mean_metrics(time_window):
     # Define verbosity
@@ -507,6 +700,7 @@ def plot_mean_metrics(time_window):
                         output_filepath=output_filepath,
                         verbose=verbose,
                         cmap_dict=vs_config.COLORMAP_DIVERGING_BY_VAR_DICT,
-                        metric_name=metric
+                        metric_name=metric,
+                        time_window=time_window
                         )
 #===================================================================================================

@@ -24,6 +24,7 @@ This file was created with the assistance of GitHub Copilot.
 import os
 import subprocess
 
+
 def map_data_to_different_grid_with_cdo(ref_nc, input_nc, output_nc):
     """ 
     Remap input_nc to the grid of ref_nc 
@@ -65,6 +66,46 @@ def get_gfs_data_in_monan_format(ds_gfs, gfs_to_monan_var_dict):
     ds_gfs = ds_gfs.sortby('level', ascending=False)
 
     # Rename variables using the mapping dictionary
-    ds_gfs_in_monan_format = ds_gfs.rename(gfs_to_monan_var_dict)
+    ds_gfs_in_monan_format = ds_gfs.rename_vars(gfs_to_monan_var_dict)
     
     return ds_gfs_in_monan_format
+
+def apply_pressure_level_validity_mask(
+    ds,
+    pressure_level,
+    surface_pressure_var="surface_pressure",
+):
+    """
+    Build a pressure-level validity mask based on surface pressure.
+
+    Grid points are valid where surface pressure is greater than or equal to
+    the selected pressure level. Points where the selected pressure level is
+    greater than surface pressure are invalid, because they correspond to
+    pressure levels below the ground surface.
+
+    Parameters
+    ----------
+    ds : xr.Dataset
+        Dataset containing the surface pressure field.
+    pressure_level : xr.DataArray, int or float
+        Pressure level or pressure-level coordinate used to build the validity mask.
+    surface_pressure_var : str
+        Name of the surface pressure variable.
+
+    Returns
+    -------
+    xr.DataArray
+        Boolean mask with True for valid pressure-level grid points.
+    """
+    if surface_pressure_var not in ds:
+        raise ValueError(
+            f"Surface pressure variable '{surface_pressure_var}' was not found "
+            "in the dataset."
+        )
+
+    surface_pressure = ds[surface_pressure_var]
+
+    if "Time" in surface_pressure.dims and surface_pressure.sizes["Time"] == 1:
+        surface_pressure = surface_pressure.isel(Time=0)
+
+    return surface_pressure >= pressure_level
