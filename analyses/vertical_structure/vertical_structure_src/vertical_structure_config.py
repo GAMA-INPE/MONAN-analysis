@@ -36,9 +36,9 @@ SEL_VERBOSE_LEVEL = 0
 # MONAN configurations
 #===================================================================================================
 # Date and forecast time window for analysis
-YEAR = "2026"
-MONTH = "02"
-DAY = "28"
+YEAR = "2025"
+MONTH = "06"
+DAY = "30"
 HOUR = "00"
 TIME_WINDOW = "120"
 # Grid specification
@@ -159,7 +159,7 @@ STATS_METRICS_TO_ANALYZE = [
     "relative_error"
     ]
 # Whether to write a CSV file with the regional summary of statistics
-WRITE_REGIONAL_SUMMARY_CSV = False
+WRITE_REGIONAL_SUMMARY_CSV = True
 #===================================================================================================
 # Plot configurations
 #===================================================================================================
@@ -178,10 +178,10 @@ COLORMAP_DIVERGING_BY_VAR_DICT = {
 DIR_MONAN_PREOP = "/lustre/projetos/ioper/models/MONAN-WorkFlow-OPER/MONAN_PRE_OPER/posTMP"
 DIR_GFS_ANALYSIS = "/lustre/projetos/monan_gam/andre.lyra/NetCDFs/vert_struct/GFS"
 DIR_CARTOPY_DATA = "/lustre/projetos/monan_gam/andre.lyra/cartopy"
-DIR_OUTPUT = f"/lustre/projetos/monan_gam/Scripts/MONAN-analysis/analyses/vertical_structure/output_2026050100_to_2026053100"
+DIR_OUTPUT = f"/lustre/projetos/monan_gam/Scripts/MONAN-analysis/analyses/vertical_structure/output_2026060100_to_2026063000"
 DIR_OUTPUT_FIGS = f"{DIR_OUTPUT}/figs"
 DIR_OUTPUT_DATA = f"{DIR_OUTPUT}/data"
-DIR_INPUT = f"/lustre/projetos/monan_gam/Scripts/MONAN-analysis/analyses/vertical_structure/input_2026050100_to_2026053100"
+DIR_INPUT = f"/lustre/projetos/monan_gam/Scripts/MONAN-analysis/analyses/vertical_structure/input_2026060100_to_2026063000"
 DIR_INPUT_INTERMEDIATE = f"{DIR_INPUT}/intermediate"
 DIR_INPUT_PROCESSED = f"{DIR_INPUT}/processed"
 DIR_INPUT_RAW = f"{DIR_INPUT}/raw"
@@ -196,9 +196,9 @@ APPLY_PRESSURE_LEVEL_VALIDITY_MASK = True
 # For analysis of mutiple dates and time windows only
 #===================================================================================================
 # Initial date
-DATE_INIT = "2026050100"
+DATE_INIT = "2026060100"
 # Final date
-DATE_FINAL = "2026053100"
+DATE_FINAL = "2026063000"
 # Date time step in hours
 DATE_TIME_STEP = "24"
 # Time windows to analyze
