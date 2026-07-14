@@ -1,6 +1,7 @@
 # setuptools / editable install artifacts
 *.egg-info/
 *.egg-link
+*.vscode/
 
 # pip cache / build directories
 build/

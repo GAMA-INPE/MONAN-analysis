@@ -60,7 +60,8 @@ GFS_TO_MONAN_VAR_DICT = {
     "q": "spechum",
     "gh": "zgeo",
     "u": "uzonal",
-    "v": "umeridional"
+    "v": "umeridional",
+    "sp": "surface_pressure"
 }
 #===================================================================================================
 # Domain definitions

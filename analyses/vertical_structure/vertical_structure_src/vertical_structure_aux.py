@@ -101,7 +101,7 @@ def read_and_preprocess_monan_data():
     )
 
     # Include MONAN surface pressure in the same preprocessed dataset when
-    # the pressure-level validity mask is enabled.
+    # the pressure-level validity mask is enabled
     if vs_config.APPLY_PRESSURE_LEVEL_VALIDITY_MASK:
         ds_monan_selected["surface_pressure"] = ds_monan["surface_pressure"]
 
@@ -148,8 +148,8 @@ def read_and_preprocess_gfs_data():
 
     # Configure GFS dataset to match MONAN format
     ds_gfs_in_monan_format = preprocess.get_gfs_data_in_monan_format(
-        ds_gfs,
-        config.GFS_TO_MONAN_VAR_DICT
+        ds_gfs=ds_gfs,
+        gfs_to_monan_var_dict=config.GFS_TO_MONAN_VAR_DICT
     )
 
     # Select pressure-level variables to be used for analysis
@@ -160,7 +160,7 @@ def read_and_preprocess_gfs_data():
     )
 
     # Include GFS surface pressure in the same preprocessed dataset when
-    # the pressure-level validity mask is enabled.
+    # the pressure-level validity mask is enabled
     if vs_config.APPLY_PRESSURE_LEVEL_VALIDITY_MASK:
         ds_gfs_sp, gfs_sp_filepath = io.read_ds_gfs(
             year=vs_config.YEAR,
@@ -172,18 +172,14 @@ def read_and_preprocess_gfs_data():
             verbose=verbose
         )
 
-        ds_gfs_sp = ds_gfs_sp[["sp"]]
+        # Configure GFS surface-pressure dataset to match MONAN format
+        ds_gfs_sp_in_monan_format = preprocess.get_gfs_data_in_monan_format(
+            ds_gfs=ds_gfs_sp,
+            gfs_to_monan_var_dict=config.GFS_TO_MONAN_VAR_DICT
+        )
 
-        # Sort latitude to match the convention used for GFS pressure-level data
-        ds_gfs_sp = ds_gfs_sp.sortby("latitude")
-
-        # Rename dimensions and variable to match the preprocessed GFS dataset
-        ds_gfs_sp = ds_gfs_sp.rename({
-            "time": "Time",
-            "sp": "surface_pressure"
-        })
-
-        ds_gfs_in_monan_format["surface_pressure"] = ds_gfs_sp["surface_pressure"]
+        # Include GFS surface pressure data in the same preprocessed dataset
+        ds_gfs_in_monan_format["surface_pressure"] = ds_gfs_sp_in_monan_format[["surface_pressure"]]
 
     # Save preprocessed GFS dataset
     ds_gfs_in_monan_format_filepath = (
@@ -529,30 +525,33 @@ def calculate_statistics(
                 "APPLY_PRESSURE_LEVEL_VALIDITY_MASK is True, but "
                 "'surface_pressure' was not found in the preprocessed MONAN dataset."
             )
-
+        
+        # Obtain validity masks for reference dataset
         valid_ref_pressure_level_mask = preprocess.apply_pressure_level_validity_mask(
             ds=ds_ref,
             pressure_level=ds_ref["level"],
             surface_pressure_var="surface_pressure"
         )
 
+        # Obtain validity masks for prediction dataset
         valid_prediction_pressure_level_mask = preprocess.apply_pressure_level_validity_mask(
             ds=ds_prediction,
             pressure_level=ds_prediction["level"],
             surface_pressure_var="surface_pressure"
         )
 
+        # Obtain validity mask considering both datasets
         valid_pressure_level_mask = (
             valid_ref_pressure_level_mask
             & valid_prediction_pressure_level_mask
         )
 
         # Remove surface_pressure before applying the mask to avoid expanding
-        # this 2D/3D field to all pressure levels during ds.where().
+        # this 2D/3D field to all pressure levels during ds.where()
         ds_ref = ds_ref.drop_vars("surface_pressure")
         ds_prediction = ds_prediction.drop_vars("surface_pressure")
 
-        # Apply the same combined validity mask to reference and prediction.
+        # Apply the same combined validity mask to reference and prediction
         ds_ref = ds_ref.where(valid_pressure_level_mask)
         ds_prediction = ds_prediction.where(valid_pressure_level_mask)
 
@@ -919,33 +918,36 @@ def calculate_multi_time_metrics(time_window):
                 "'surface_pressure' was not found in the concatenated MONAN dataset."
             )
 
+        # Obtain validity mask for reference dataset 
         valid_ref_pressure_level_mask = preprocess.apply_pressure_level_validity_mask(
           ds=ds_var_gfs_concat,
           pressure_level=ds_var_gfs_concat["level"],
           surface_pressure_var="surface_pressure"
         )
 
+        # Obtain validity mask for prediction dataset
         valid_prediction_pressure_level_mask = preprocess.apply_pressure_level_validity_mask(
           ds=ds_var_monan_concat,
           pressure_level=ds_var_monan_concat["level"],
           surface_pressure_var="surface_pressure"
         )
 
+        # Combine validity masks for reference and prediction datasets
         valid_pressure_level_mask = (
           valid_ref_pressure_level_mask
           & valid_prediction_pressure_level_mask
         )
 
         # Remove surface_pressure before applying the mask to avoid expanding
-        # this field to all pressure levels during ds.where().
+        # this field to all pressure levels during ds.where()
         ds_var_gfs_concat = ds_var_gfs_concat.drop_vars("surface_pressure")
         ds_var_monan_concat = ds_var_monan_concat.drop_vars("surface_pressure")
 
-        # Apply the same combined validity mask to reference and prediction.
+        # Apply the same combined validity mask to reference and prediction
         ds_var_gfs_concat = ds_var_gfs_concat.where(valid_pressure_level_mask)
         ds_var_monan_concat = ds_var_monan_concat.where(valid_pressure_level_mask)
     else:
-        # Avoid calculating RMSE or ACC for surface_pressure if it exists in the dataset.
+        # Avoid calculating RMSE or ACC for surface_pressure if it exists in the dataset
         ds_var_gfs_concat = ds_var_gfs_concat.drop_vars("surface_pressure", errors="ignore")
         ds_var_monan_concat = ds_var_monan_concat.drop_vars("surface_pressure", errors="ignore")
 

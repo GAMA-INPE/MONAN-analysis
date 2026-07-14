@@ -66,7 +66,7 @@ def get_gfs_data_in_monan_format(ds_gfs, gfs_to_monan_var_dict):
     ds_gfs = ds_gfs.sortby('level', ascending=False)
 
     # Rename variables using the mapping dictionary
-    ds_gfs_in_monan_format = ds_gfs.rename(gfs_to_monan_var_dict)
+    ds_gfs_in_monan_format = ds_gfs.rename_vars(gfs_to_monan_var_dict)
     
     return ds_gfs_in_monan_format
 
@@ -109,55 +109,3 @@ def apply_pressure_level_validity_mask(
         surface_pressure = surface_pressure.isel(Time=0)
 
     return surface_pressure >= pressure_level
-
-def rename_horizontal_dims_to_match_ref(data, ref):
-    """
-    Rename horizontal dimensions in a Dataset or DataArray to match a reference object.
-
-    This function standardizes common latitude and longitude dimension names
-    between two xarray objects, for example lat/lon and latitude/longitude.
-
-    Parameters
-    ----------
-    data : xarray.Dataset or xarray.DataArray
-        Input object whose horizontal dimensions will be renamed.
-    ref : xarray.Dataset or xarray.DataArray
-        Reference object that defines the target horizontal dimension names.
-
-    Returns
-    -------
-    xarray.Dataset or xarray.DataArray
-        Object with horizontal dimensions renamed to match the reference object.
-    """
-
-    lat_ref = None
-    lon_ref = None
-
-    if "lat" in ref.dims:
-        lat_ref = "lat"
-    elif "latitude" in ref.dims:
-        lat_ref = "latitude"
-
-    if "lon" in ref.dims:
-        lon_ref = "lon"
-    elif "longitude" in ref.dims:
-        lon_ref = "longitude"
-
-    rename_dims = {}
-
-    if lat_ref is not None:
-        if "lat" in data.dims and lat_ref != "lat":
-            rename_dims["lat"] = lat_ref
-        elif "latitude" in data.dims and lat_ref != "latitude":
-            rename_dims["latitude"] = lat_ref
-
-    if lon_ref is not None:
-        if "lon" in data.dims and lon_ref != "lon":
-            rename_dims["lon"] = lon_ref
-        elif "longitude" in data.dims and lon_ref != "longitude":
-            rename_dims["longitude"] = lon_ref
-
-    if rename_dims:
-        data = data.rename(rename_dims)
-
-    return data
