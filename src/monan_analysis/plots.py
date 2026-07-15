@@ -22,8 +22,6 @@ Acknowledgments
 This file was created with the assistance of GitHub Copilot. 
 """
 
-from tabnanny import verbose
-
 import monan_analysis.config as config
 import monan_analysis.stats as stats
 import matplotlib.pyplot as plt

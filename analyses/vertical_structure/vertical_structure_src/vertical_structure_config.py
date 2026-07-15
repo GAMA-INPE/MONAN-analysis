@@ -112,9 +112,9 @@ PLOT_LIMITS_BY_VAR_METRIC_LAYER = {
         },
     },
 }
-# Limits of plots for specific pressure levels.
-# Keys must use the same pressure-level values used in VERTICAL_LEVELS_TO_ANALYZE, in Pa.
-# These limits have priority over PLOT_LIMITS_BY_VAR_METRIC_LAYER.
+# Limits of plots for specific pressure levels:
+# Keys must use the same pressure-level values used in VERTICAL_LEVELS_TO_ANALYZE, in Pa
+# These limits have priority over PLOT_LIMITS_BY_VAR_METRIC_LAYER
 PLOT_LIMITS_BY_VAR_METRIC_LEVEL = {
     "temperature": {
         "bias": {
@@ -235,14 +235,13 @@ LAT_PRESSURE_PROFILE_VARIABLES_TO_PLOT = [
     "uzonal",
     "umeridional",
     ]
-# Domains to use in latitude-pressure profile plots.
+# Domains to use in latitude-pressure profile plots
 LAT_PRESSURE_PROFILE_DOMAINS_TO_PLOT = [
     "global",
     "south_america", 
     "central_america_and_caribbean"
     ]
-# Unit scaling for latitude-pressure profile plots.
-# For these plots it is better to use one single unit for all pressure levels.
+# Unit scaling for latitude-pressure profile plots
 LAT_PRESSURE_PROFILE_SCALE_BY_VAR = {
     "temperature": {
         "factor": 1.0,
@@ -288,10 +287,8 @@ LAT_PRESSURE_PROFILE_LIMITS_BY_VAR_METRIC = {
         "rmse": (0, 10),
     },
 }
-# Pressure levels (Pa) to show in latitude-pressure profile plots.
-# This list can contain all levels from VERTICAL_LEVELS_TO_ANALYZE or only a subset of them.
-# If set to None, all levels available in the dataset will be plotted.
+# Pressure levels (Pa) to show in latitude-pressure profile plots:
+# Use all levels from VERTICAL_LEVELS_TO_ANALYZE or only a subset
 LAT_PRESSURE_PROFILE_LEVELS_TO_PLOT = [
-#    "92500", "85000", "70000", "50000", "40000", "30000", "25000", "20000", "15000", "10000", "7000", "5000", "3000", "2000", "1000", "300"
     "92500", "85000", "70000", "50000", "40000", "30000", "25000", "10000", "3000"
     ]

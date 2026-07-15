@@ -35,7 +35,6 @@ import monan_analysis.utils as utils
 import monan_analysis.preprocess as preprocess
 import monan_analysis.stats as stats
 import monan_analysis.plots as plots
-from polars import var
 from . import vertical_structure_config as vs_config
 from . import vertical_structure_main as vs_main
 import os
@@ -179,7 +178,7 @@ def read_and_preprocess_gfs_data():
         )
 
         # Include GFS surface pressure data in the same preprocessed dataset
-        ds_gfs_in_monan_format["surface_pressure"] = ds_gfs_sp_in_monan_format[["surface_pressure"]]
+        ds_gfs_in_monan_format["surface_pressure"] = ds_gfs_sp_in_monan_format["surface_pressure"]
 
     # Save preprocessed GFS dataset
     ds_gfs_in_monan_format_filepath = (
@@ -238,7 +237,7 @@ def interpolate_monan_gfs(ds_monan_selected_filepath, ds_gfs_in_monan_format_fil
     return ds_ref_filepath, ds_prediction_filepath
 
 def get_layer_from_level(level):
-    # Classify a pressure level into a broad atmospheric layer.
+    # Classify a pressure level into a broad atmospheric layer
     level_hpa = int(float(level) / 100)
 
     if level_hpa >= 700:
@@ -249,8 +248,8 @@ def get_layer_from_level(level):
         return "high"
 
 def get_plot_limits(var, metric, level):
-    # Get fixed plot limits based on variable, metric and pressure level.
-    # If no level-specific limit is found, use the broader pressure-layer limits.
+    # Get fixed plot limits based on variable, metric and pressure level
+    # If no level-specific limit is found, use the broader pressure-layer limits
 
     level_key = str(int(float(level)))
 
@@ -296,7 +295,7 @@ def convert_spechum_units_for_plot(ds, var, level):
 
     ds = ds.copy()
 
-    if int(level_hpa) <= 100:
+    if int(level_hpa) <= 100: # ×0.01 mg/kg at 100 hPa and lower-pressure levels
         ds[var] = ds[var] * 100000000.0
         unit_label = "×0.01 mg/kg"
     elif layer in ["low", "mid"]:
@@ -493,10 +492,7 @@ def write_regional_summary_csv(
     pd.DataFrame(rows).to_csv(output_csv, index=False)
     print(f"Regional summary CSV saved: {output_csv}")
 
-def calculate_statistics(
-    ds_ref_filepath,
-    ds_prediction_filepath
-):
+def calculate_statistics(ds_ref_filepath, ds_prediction_filepath):
     # Get date to include in output filenames
     date_in_string = utils.get_date_as_YYYYMMDDHH_str(
         vs_config.YEAR,
@@ -576,16 +572,17 @@ def calculate_statistics(
         ds_bias.to_netcdf(bias_filepath)
         ds_stats_filepath_dict["bias"] = bias_filepath
 
-    bias_summary_csv = bias_filepath.replace(".nc", "_summary.csv")
-    write_regional_summary_csv(
-        ds=ds_bias,
-        metric="bias",
-        output_csv=bias_summary_csv,
-        time_window=vs_config.TIME_WINDOW,
-        summary_type="daily",
-        date_init=date_in_string,
-        date_final=date_in_string,
-    )        
+        bias_summary_csv = bias_filepath.replace(".nc", "_summary.csv")
+
+        write_regional_summary_csv(
+            ds=ds_bias,
+            metric="bias",
+            output_csv=bias_summary_csv,
+            time_window=vs_config.TIME_WINDOW,
+            summary_type="daily",
+            date_init=date_in_string,
+            date_final=date_in_string,
+        )
 
     if "relative_error" in vs_config.STATS_METRICS_TO_ANALYZE:
         # Compute relative error
@@ -603,16 +600,17 @@ def calculate_statistics(
         ds_relative_error.to_netcdf(relative_error_filepath)
         ds_stats_filepath_dict["relative_error"] = relative_error_filepath
 
-    relative_error_summary_csv = relative_error_filepath.replace(".nc", "_summary.csv")
-    write_regional_summary_csv(
-        ds=ds_relative_error,
-        metric="relative_error",
-        output_csv=relative_error_summary_csv,
-        time_window=vs_config.TIME_WINDOW,
-        summary_type="daily",
-        date_init=date_in_string,
-        date_final=date_in_string,
-    )
+        relative_error_summary_csv = relative_error_filepath.replace(".nc", "_summary.csv")
+
+        write_regional_summary_csv(
+            ds=ds_relative_error,
+            metric="relative_error",
+            output_csv=relative_error_summary_csv,
+            time_window=vs_config.TIME_WINDOW,
+            summary_type="daily",
+            date_init=date_in_string,
+            date_final=date_in_string,
+        )
 
     return ds_stats_filepath_dict
 
@@ -1089,7 +1087,7 @@ def plot_mean_metrics(time_window):
 #===================================================================================================
 def get_profile_scale(var):
     """
-    Get scale factor and unit label for latitude-pressure profile plots.
+    Get scale factor and unit label for latitude-pressure profile plots
     """
     scale_config = getattr(vs_config, "LAT_PRESSURE_PROFILE_SCALE_BY_VAR", {})
 
@@ -1104,7 +1102,7 @@ def get_profile_scale(var):
 
 def get_lat_pressure_profile_limits(var, metric):
     """
-    Get fixed colorbar limits for latitude-pressure profile plots.
+    Get fixed colorbar limits for latitude-pressure profile plots based on variable and metric
     """
     limits_config = getattr(vs_config, "LAT_PRESSURE_PROFILE_LIMITS_BY_VAR_METRIC", {})
 
