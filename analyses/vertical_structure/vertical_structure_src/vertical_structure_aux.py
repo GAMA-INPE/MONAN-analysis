@@ -171,14 +171,16 @@ def read_and_preprocess_gfs_data():
             verbose=verbose
         )
 
-        # Configure GFS surface-pressure dataset to match MONAN format
-        ds_gfs_sp_in_monan_format = preprocess.get_gfs_data_in_monan_format(
-            ds_gfs=ds_gfs_sp,
-            gfs_to_monan_var_dict=config.GFS_TO_MONAN_VAR_DICT
+        # Select and configure GFS surface pressure
+        surface_pressure = (
+            ds_gfs_sp["sp"]
+            .sortby("latitude")
+            .isel(time=0, drop=True)
+            .rename("surface_pressure")
         )
 
-        # Include GFS surface pressure data in the same preprocessed dataset
-        ds_gfs_in_monan_format["surface_pressure"] = ds_gfs_sp_in_monan_format["surface_pressure"]
+        # Include GFS surface pressure in the pressure-level dataset
+        ds_gfs_in_monan_format["surface_pressure"] = surface_pressure
 
     # Save preprocessed GFS dataset
     ds_gfs_in_monan_format_filepath = (

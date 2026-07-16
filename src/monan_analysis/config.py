@@ -61,7 +61,6 @@ GFS_TO_MONAN_VAR_DICT = {
     "gh": "zgeo",
     "u": "uzonal",
     "v": "umeridional",
-    "sp": "surface_pressure"
 }
 #===================================================================================================
 # Domain definitions

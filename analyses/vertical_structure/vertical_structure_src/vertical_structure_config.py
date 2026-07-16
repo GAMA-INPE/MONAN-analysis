@@ -36,7 +36,7 @@ SEL_VERBOSE_LEVEL = 0
 # MONAN configurations
 #===================================================================================================
 # Date and forecast time window for analysis
-YEAR = "2025"
+YEAR = "2026"
 MONTH = "06"
 DAY = "30"
 HOUR = "00"
