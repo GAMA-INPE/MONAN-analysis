@@ -89,7 +89,14 @@ def plot_var_map(ds, var, cartopy_data_dir, level=None, Time=None,
     # Extract the variable data
     data = ds_subset[var]
 
-    domain_mean = data.mean(skipna=True).item()
+    # Calculate area-weighted domain mean
+    latitude_weights = np.cos(np.deg2rad(data["latitude"]))
+
+    domain_mean = (
+        data.weighted(latitude_weights)
+        .mean(dim=("latitude", "longitude"), skipna=True)
+        .item()
+    )
 
     # Choose colormap based on variable, if cmap_dict provided
     if cmap_dict is not None and var in cmap_dict:
