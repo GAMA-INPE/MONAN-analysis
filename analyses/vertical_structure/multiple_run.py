@@ -53,6 +53,12 @@ if __name__ == "__main__":
     #===============================================================================================
     print ("\n Plotting mean metrics across all dates for each time window...")
     vs_aux.plot_mean_metrics_for_all_dates_and_each_time_window()
+    #===============================================================================================
+    # Plot latitude-pressure profiles across all dates for each time window
+    #===============================================================================================
+    if getattr(vs_config, "PLOT_LAT_PRESSURE_PROFILES", False):
+        print ("\n Plotting latitude-pressure profiles across all dates for each time window...")
+        vs_aux.generate_lat_pressure_profile_plots_for_all_dates_and_each_time_window()    
     print ("\n ==========================================================================")
 
     # Record end time

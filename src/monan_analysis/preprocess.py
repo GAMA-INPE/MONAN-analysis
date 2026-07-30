@@ -66,8 +66,8 @@ def get_gfs_data_in_monan_format(ds_gfs, gfs_to_monan_var_dict):
     ds_gfs = ds_gfs.sortby('level', ascending=False)
 
     # Rename variables using the mapping dictionary
-    ds_gfs_in_monan_format = ds_gfs.rename_vars(gfs_to_monan_var_dict)
-    
+    ds_gfs_in_monan_format = ds_gfs.rename(gfs_to_monan_var_dict)
+
     return ds_gfs_in_monan_format
 
 def apply_pressure_level_validity_mask(
