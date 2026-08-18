@@ -442,7 +442,7 @@ def write_regional_summary_csv(
     else:
         time_values = [None]
 
-    for region in vs_config.SUMMARY_REGIONS_TO_ANALYZE:
+    for region in vs_config.SUMMARY_DOMAINS_TO_ANALYZE:
         ds_region = subset_region(ds, region)
 
         for var in vs_config.VARIABLES_TO_ANALYZE:

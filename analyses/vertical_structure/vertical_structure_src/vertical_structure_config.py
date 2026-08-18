@@ -33,7 +33,7 @@ This file was created with the assistance of GitHub Copilot.
 # 2: log messages from vertical_analysis_main.py + vertical_analysis_aux.py + monan_analysis modules
 SEL_VERBOSE_LEVEL = 0
 #===================================================================================================
-# MONAN configurations
+# General analysis configurations
 #===================================================================================================
 # Date and forecast time window for analysis
 YEAR = "2026"
@@ -41,6 +41,24 @@ MONTH = "06"
 DAY = "30"
 HOUR = "00"
 TIME_WINDOW = "120"
+# Domains for spatial analyses (maps)
+DOMAINS_TO_ANALYZE = [
+    "global", 
+    "south_america", 
+    "central_america_and_caribbean"
+    ]
+# Domains for summary analyses
+SUMMARY_DOMAINS_TO_ANALYZE = [
+    "global",
+    "south_america",
+    "central_america_and_caribbean",
+    "northern_hemisphere_20_80",
+    "southern_hemisphere_20_80",
+    "tropics_20s_20n",
+]
+#===================================================================================================
+# MONAN configurations
+#===================================================================================================
 # Grid specification
 GRID_SPEC = "10km_uniform"
 # Vertical level specification
@@ -58,21 +76,36 @@ VERTICAL_LEVELS_TO_ANALYZE = [
 #    "92500", "85000", "70000", "50000", "40000", "30000", "25000", "20000", "15000", "10000", "7000", "5000", "3000", "2000", "1000", "300"
     "92500", "85000", "70000", "50000", "40000", "30000", "25000", "10000", "3000", "300"
     ]
-# Domains to analyze
-DOMAINS_TO_ANALYZE = [
-    "global", 
-    "south_america", 
-    "central_america_and_caribbean"
+#===================================================================================================
+# GFS configurations
+#===================================================================================================
+# Name of data stream from GFS to read (e.g. "levels" or "surface")
+GFS_STREAM_NAME = "levels"
+#===================================================================================================
+# Data interpolation configurations
+#===================================================================================================
+# Type of data interpolation
+INTERPOL_TYPE = "monan_to_gfs" # "monan_to_gfs" or "gfs_to_monan"
+#===================================================================================================
+# Statistics configurations
+#===================================================================================================
+STATS_METRICS_TO_ANALYZE = [
+    "bias",
+    "relative_error"
     ]
-# Summary regions to analyze 
-SUMMARY_REGIONS_TO_ANALYZE = [
-    "global",
-    "south_america",
-    "central_america_and_caribbean",
-    "northern_hemisphere_20_80",
-    "southern_hemisphere_20_80",
-    "tropics_20s_20n",
-]
+# Whether to write a CSV file with the regional summary of statistics
+WRITE_REGIONAL_SUMMARY_CSV = True
+#===================================================================================================
+# Plot configurations
+#===================================================================================================
+# Divergin colormaps to use for each variable in plotting
+COLORMAP_DIVERGING_BY_VAR_DICT = {
+    "temperature": "coolwarm",
+    "spechum": "coolwarm_r",
+    "zgeo": "PiYG",
+    "uzonal": "PuOr",
+    "umeridional": "PuOr"
+}
 # Limits of plots for each variable, metric, and vertical level (if applicable) 
 PLOT_LIMITS_BY_VAR_METRIC_LAYER = {
     "temperature": {
@@ -142,36 +175,6 @@ PLOT_LIMITS_BY_VAR_METRIC_LEVEL = {
     },
 }
 #===================================================================================================
-# GFS configurations
-#===================================================================================================
-# Name of data stream from GFS to read (e.g. "levels" or "surface")
-GFS_STREAM_NAME = "levels"
-#===================================================================================================
-# Data interpolation configurations
-#===================================================================================================
-# Type of data interpolation
-INTERPOL_TYPE = "monan_to_gfs" # "monan_to_gfs" or "gfs_to_monan"
-#===================================================================================================
-# Statistics configurations
-#===================================================================================================
-STATS_METRICS_TO_ANALYZE = [
-    "bias",
-    "relative_error"
-    ]
-# Whether to write a CSV file with the regional summary of statistics
-WRITE_REGIONAL_SUMMARY_CSV = True
-#===================================================================================================
-# Plot configurations
-#===================================================================================================
-# Divergin colormaps to use for each variable in plotting
-COLORMAP_DIVERGING_BY_VAR_DICT = {
-    "temperature": "coolwarm",
-    "spechum": "coolwarm_r",
-    "zgeo": "PiYG",
-    "uzonal": "PuOr",
-    "umeridional": "PuOr"
-}
-#===================================================================================================
 # Directory paths
 #===================================================================================================
 #DIR_MONAN_PREOP = "/lustre/projetos/monan_adm/monan/ecf_PREOPER/MONAN-WorkFlow-OPER/MONAN_PRE_OPER/MONAN/scripts_CD-CT/dataout/flushout"
@@ -192,9 +195,14 @@ DIR_INPUT_RAW = f"{DIR_INPUT}/raw"
 # The mask excludes grid points where the selected pressure level is greater than the surface pressure,
 # which indicates that the pressure level is below the ground surface.
 APPLY_PRESSURE_LEVEL_VALIDITY_MASK = True
+
+
+
+####################################################################################################
 #===================================================================================================
 # For analysis of mutiple dates and time windows only
 #===================================================================================================
+####################################################################################################
 # Initial date
 DATE_INIT = "2026060100"
 # Final date
