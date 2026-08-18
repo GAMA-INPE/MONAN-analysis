@@ -47,15 +47,15 @@ def main():
     vs_aux.create_folder_structure()
 
     #===============================================================================================
-    # Read and preprocess forecast data
+    # Read and preprocess forecast model data
     #===============================================================================================
     print ("\n Reading and selecting MONAN data...")
     ds_monan_selected_filepath = vs_aux.read_and_preprocess_forecast_data()
    
     #===============================================================================================
-    # Read and preprocess GFS analysis data
+    # Read and preprocess reference data (currently GFS analysis)
     #===============================================================================================
-    print ("\n Reading and selecting GFS data, and converting it to MONAN data format...")
+    print ("\n Reading and selecting reference data (GFS analysis), and converting it to MONAN data format...")
     ds_gfs_in_monan_format_filepath = vs_aux.read_and_preprocess_gfs_data()
 
      #===============================================================================================
