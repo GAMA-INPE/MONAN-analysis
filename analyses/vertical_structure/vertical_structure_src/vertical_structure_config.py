@@ -60,11 +60,11 @@ SUMMARY_DOMAINS_TO_ANALYZE = [
 # MONAN configurations
 #===================================================================================================
 # Grid specification
-GRID_SPEC = "10km_uniform"
+GRID_SPEC_MONAN = "10km_uniform"
 # Vertical level specification
-VERTICAL_LEVEL_SPEC = "55"
+VERTICAL_LEVEL_SPEC_MONAN = "55"
 # Variables to analyze
-VARIABLES_TO_ANALYZE = [
+VARIABLES_TO_ANALYZE_MONAN = [
     "temperature",
     "spechum",
     "zgeo",
@@ -72,7 +72,7 @@ VARIABLES_TO_ANALYZE = [
     "umeridional",
     ]
 # Vertical levels (Pa) to analyze
-VERTICAL_LEVELS_TO_ANALYZE = [
+VERTICAL_LEVELS_TO_ANALYZE_MONAN = [
 #    "92500", "85000", "70000", "50000", "40000", "30000", "25000", "20000", "15000", "10000", "7000", "5000", "3000", "2000", "1000", "300"
     "92500", "85000", "70000", "50000", "40000", "30000", "25000", "10000", "3000", "300"
     ]
@@ -80,7 +80,7 @@ VERTICAL_LEVELS_TO_ANALYZE = [
 # GFS configurations
 #===================================================================================================
 # Name of data stream from GFS to read (e.g. "levels" or "surface")
-GFS_STREAM_NAME = "levels"
+STREAM_NAME_GFS = "levels"
 #===================================================================================================
 # Data interpolation configurations
 #===================================================================================================

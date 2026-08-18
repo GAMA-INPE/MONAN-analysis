@@ -61,7 +61,7 @@ def create_folder_structure():
     os.makedirs(vs_config.DIR_OUTPUT_DATA+f"/date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}", exist_ok=True)
     os.makedirs(vs_config.DIR_OUTPUT_FIGS, exist_ok=True)
     os.makedirs(vs_config.DIR_OUTPUT_FIGS+f"/date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}", exist_ok=True)
-    for var in vs_config.VARIABLES_TO_ANALYZE:
+    for var in vs_config.VARIABLES_TO_ANALYZE_MONAN:
         os.makedirs(vs_config.DIR_OUTPUT_FIGS+f"/date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}/var_{var}", exist_ok=True)
         for domain in vs_config.DOMAINS_TO_ANALYZE:
             os.makedirs(vs_config.DIR_OUTPUT_FIGS+f"/date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}/var_{var}/domain_{domain}", exist_ok=True)
@@ -88,15 +88,15 @@ def read_and_preprocess_monan_data():
         day=vs_config.DAY,
         hour=vs_config.HOUR,
         time_window=vs_config.TIME_WINDOW,
-        grid_spec=vs_config.GRID_SPEC,
-        vertical_level_spec=vs_config.VERTICAL_LEVEL_SPEC,
+        grid_spec=vs_config.GRID_SPEC_MONAN,
+        vertical_level_spec=vs_config.VERTICAL_LEVEL_SPEC_MONAN,
         base_dir=vs_config.DIR_MONAN_PREOP,
         verbose=verbose
     )
 
     # Select pressure-level variables to be used for analysis
-    ds_monan_selected = ds_monan[vs_config.VARIABLES_TO_ANALYZE].sel(
-        level=vs_config.VERTICAL_LEVELS_TO_ANALYZE
+    ds_monan_selected = ds_monan[vs_config.VARIABLES_TO_ANALYZE_MONAN].sel(
+        level=vs_config.VERTICAL_LEVELS_TO_ANALYZE_MONAN
     )
 
     # Include MONAN surface pressure in the same preprocessed dataset when
@@ -141,7 +141,7 @@ def read_and_preprocess_gfs_data():
         day=vs_config.DAY,
         hour=vs_config.HOUR,
         base_dir=vs_config.DIR_GFS_ANALYSIS,
-        stream_name=vs_config.GFS_STREAM_NAME,
+        stream_name=vs_config.STREAM_NAME_GFS,
         verbose=verbose
     )
 
@@ -153,9 +153,9 @@ def read_and_preprocess_gfs_data():
 
     # Select pressure-level variables to be used for analysis
     ds_gfs_in_monan_format = ds_gfs_in_monan_format[
-        vs_config.VARIABLES_TO_ANALYZE
+        vs_config.VARIABLES_TO_ANALYZE_MONAN
     ].sel(
-        level=vs_config.VERTICAL_LEVELS_TO_ANALYZE
+        level=vs_config.VERTICAL_LEVELS_TO_ANALYZE_MONAN
     )
 
     # Include GFS surface pressure in the same preprocessed dataset when
@@ -445,11 +445,11 @@ def write_regional_summary_csv(
     for region in vs_config.SUMMARY_DOMAINS_TO_ANALYZE:
         ds_region = subset_region(ds, region)
 
-        for var in vs_config.VARIABLES_TO_ANALYZE:
+        for var in vs_config.VARIABLES_TO_ANALYZE_MONAN:
             if var not in ds_region:
                 continue
 
-            for level in vs_config.VERTICAL_LEVELS_TO_ANALYZE:
+            for level in vs_config.VERTICAL_LEVELS_TO_ANALYZE_MONAN:
                 da = ds_region[var].sel(level=float(level))
 
                 mean_da = spatial_mean(da)
@@ -634,9 +634,9 @@ def plot_statistics(ds_stats_filepath_dict):
         with xr.open_dataset(ds_stats_filepath_dict[metric], engine="netcdf4") as ds_stats:
             for domain in vs_config.DOMAINS_TO_ANALYZE:
                 print("domain:", domain)
-                for var in vs_config.VARIABLES_TO_ANALYZE:
+                for var in vs_config.VARIABLES_TO_ANALYZE_MONAN:
                     print("variable:", var)
-                    for level in vs_config.VERTICAL_LEVELS_TO_ANALYZE:
+                    for level in vs_config.VERTICAL_LEVELS_TO_ANALYZE_MONAN:
                         print("level:", level)
 
                         vmin, vmax = get_plot_limits(
@@ -1017,7 +1017,7 @@ def plot_mean_metrics(time_window):
         verbose = 'n'
     # Create folders to save mean stats metrics plots
     os.makedirs(vs_config.DIR_OUTPUT_FIGS+f"/date_multiple_time_window_{time_window}", exist_ok=True)
-    for var in vs_config.VARIABLES_TO_ANALYZE:
+    for var in vs_config.VARIABLES_TO_ANALYZE_MONAN:
         os.makedirs(vs_config.DIR_OUTPUT_FIGS+f"/date_multiple_time_window_{time_window}/var_{var}", exist_ok=True)
         for domain in vs_config.DOMAINS_TO_ANALYZE:
             os.makedirs(vs_config.DIR_OUTPUT_FIGS+f"/date_multiple_time_window_{time_window}/var_{var}/domain_{domain}", exist_ok=True)
@@ -1032,9 +1032,9 @@ def plot_mean_metrics(time_window):
         # Plot maps of mean values of stat metric for each domain, variable and level
         for domain in vs_config.DOMAINS_TO_ANALYZE:
             print ("domain:", domain)
-            for var in vs_config.VARIABLES_TO_ANALYZE:
+            for var in vs_config.VARIABLES_TO_ANALYZE_MONAN:
                 print ("variable:", var)
-                for level in vs_config.VERTICAL_LEVELS_TO_ANALYZE:
+                for level in vs_config.VERTICAL_LEVELS_TO_ANALYZE_MONAN:
                     print ("level:", level)
                     if metric in vs_config.STATS_METRICS_TO_ANALYZE:
                         output_filepath = (f"{vs_config.DIR_OUTPUT_FIGS}/date_multiple_"+
@@ -1161,7 +1161,7 @@ def generate_lat_pressure_profile_plots(time_window):
     variables_to_plot = getattr(
         vs_config,
         "LAT_PRESSURE_PROFILE_VARIABLES_TO_PLOT",
-        vs_config.VARIABLES_TO_ANALYZE,
+        vs_config.VARIABLES_TO_ANALYZE_MONAN,
     )
 
     domains_to_plot = getattr(
