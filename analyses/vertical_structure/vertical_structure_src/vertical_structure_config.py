@@ -35,6 +35,8 @@ SEL_VERBOSE_LEVEL = 0
 #===================================================================================================
 # General analysis configurations
 #===================================================================================================
+# Model to analyze (e.g. "monan", "gfs_analysis" (gfs forecast + assimilation), "gfs", "bam")
+FORECAST_MODEL = "gfs_analysis"
 # Date and forecast time window for analysis
 YEAR = "2026"
 MONTH = "06"
