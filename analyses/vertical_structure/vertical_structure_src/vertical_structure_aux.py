@@ -66,10 +66,10 @@ def create_folder_structure():
         for domain in vs_config.DOMAINS_TO_ANALYZE:
             os.makedirs(vs_config.DIR_OUTPUT_FIGS+f"/date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}/var_{var}/domain_{domain}", exist_ok=True)
 
-def read_and_preprocess_forecast_data():
-    if vs_config.FORECAST_MODEL == "monan":
+def read_and_preprocess_prediction_data():
+    if vs_config.PREDICTION_MODEL == "monan":
         return read_and_preprocess_monan_data()
-    elif vs_config.FORECAST_MODEL == "gfs_analysis":
+    elif vs_config.PREDICTION_MODEL == "gfs_analysis":
         return read_and_preprocess_gfs_data()
 
 def read_and_preprocess_monan_data():
@@ -124,6 +124,12 @@ def read_and_preprocess_monan_data():
         print(ds_monan_selected)
 
     return ds_monan_selected_filepath
+
+def read_and_preprocess_ref_data():
+    if vs_config.REFERENCE_DATA == "gfs_analysis":
+        return read_and_preprocess_gfs_data()
+    else:
+        raise ValueError(f"Unsupported reference data: {vs_config.REFERENCE_DATA}")
 
 def read_and_preprocess_gfs_data():
     # Get date and write it into preprocessed filepath
@@ -202,6 +208,18 @@ def read_and_preprocess_gfs_data():
         print(ds_gfs_in_monan_format)
 
     return ds_gfs_in_monan_format_filepath
+
+def interpolate_forecast_ref(ds_forecast_filepath, ds_ref_filepath):
+    if vs_config.PREDICTION_MODEL == "monan" and vs_config.REFERENCE_DATA == "gfs_analysis":
+        return interpolate_monan_gfs(
+            ds_monan_selected_filepath=ds_forecast_filepath,
+            ds_gfs_in_monan_format_filepath=ds_ref_filepath
+        )
+    elif vs_config.PREDICTION_MODEL == "gfs_analysis" and vs_config.REFERENCE_DATA == "gfs_analysis":
+        return interpolate_monan_gfs(
+            ds_monan_selected_filepath=ds_ref_filepath,
+            ds_gfs_in_monan_format_filepath=ds_forecast_filepath
+        )
 
 def interpolate_monan_gfs(ds_monan_selected_filepath, ds_gfs_in_monan_format_filepath):
     # Get date and write it into preprocessed filepath
@@ -340,7 +358,6 @@ def get_lat_lon_names(ds):
 
     return lat_name, lon_name
 
-
 def subset_region(ds, region_name):
     region_limits = config.DOMAIN_DICT[region_name]
 
@@ -378,7 +395,6 @@ def subset_region(ds, region_name):
 
     return ds_region
 
-
 def spatial_mean(da):
     lat_name, lon_name = get_lat_lon_names(da)
 
@@ -401,14 +417,12 @@ def spatial_min(da):
     ]
     return da.min(dim=spatial_dims, skipna=True)
 
-
 def spatial_max(da):
     spatial_dims = [
         dim for dim in da.dims
         if dim not in ["Time", "level"]
     ]
     return da.max(dim=spatial_dims, skipna=True)
-
 
 def spatial_std(da):
     spatial_dims = [
@@ -417,13 +431,11 @@ def spatial_std(da):
     ]
     return da.std(dim=spatial_dims, skipna=True)
 
-
 def get_scalar_value(da):
     value = da.values
     if np.size(value) == 0:
         return np.nan
     return float(np.asarray(value).squeeze())
-
 
 def write_regional_summary_csv(
     ds,

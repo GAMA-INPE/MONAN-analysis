@@ -47,23 +47,23 @@ def main():
     vs_aux.create_folder_structure()
 
     #===============================================================================================
-    # Read and preprocess forecast model data
+    # Read and preprocess prediction model data
     #===============================================================================================
     print ("\n Reading and selecting MONAN data...")
-    ds_monan_selected_filepath = vs_aux.read_and_preprocess_forecast_data()
+    ds_preprocessed_prediction_filepath = vs_aux.read_and_preprocess_prediction_data()
    
     #===============================================================================================
     # Read and preprocess reference data (currently GFS analysis)
     #===============================================================================================
     print ("\n Reading and selecting reference data (GFS analysis), and converting it to MONAN data format...")
-    ds_gfs_in_monan_format_filepath = vs_aux.read_and_preprocess_gfs_data()
+    ds_preprocessed_ref_filepath = vs_aux.read_and_preprocess_gfs_data()
 
-     #===============================================================================================
-    # Interpolate MONAN / GFS data for comparability
     #===============================================================================================
-    print ("\n Interpolating MONAN / GFS data for comparability...")
-    ds_ref_filepath, ds_prediction_filepath = vs_aux.interpolate_monan_gfs(
-        ds_monan_selected_filepath=ds_monan_selected_filepath,
+    # Interpolate forecast / ref data for comparability
+    #===============================================================================================
+    print ("\n Interpolating forecast / reference data for comparability...")
+    ds_ref_filepath, ds_prediction_filepath = vs_aux.interpolate_forecast_ref(
+        ds_forecast_filepath=ds_monan_selected_filepath,
         ds_gfs_in_monan_format_filepath=ds_gfs_in_monan_format_filepath
     )
 
