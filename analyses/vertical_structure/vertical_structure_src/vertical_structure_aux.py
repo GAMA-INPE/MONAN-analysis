@@ -209,16 +209,26 @@ def read_and_preprocess_gfs_data():
 
     return ds_gfs_in_monan_format_filepath
 
-def interpolate_forecast_ref(ds_forecast_filepath, ds_ref_filepath):
+def interpolate_prediction_ref(ds_prediction_filepath, ds_ref_filepath):
     if vs_config.PREDICTION_MODEL == "monan" and vs_config.REFERENCE_DATA == "gfs_analysis":
+        if vs_config.SEL_VERBOSE_LEVEL >= 1:
+            print(f"Selecting interpolation routine interpolate_monan_gfs for"
+                  f"prediction model: {vs_config.PREDICTION_MODEL} and "
+                  f"reference data: {vs_config.REFERENCE_DATA}")
         return interpolate_monan_gfs(
-            ds_monan_selected_filepath=ds_forecast_filepath,
+            ds_monan_selected_filepath=ds_prediction_filepath,
             ds_gfs_in_monan_format_filepath=ds_ref_filepath
         )
     elif vs_config.PREDICTION_MODEL == "gfs_analysis" and vs_config.REFERENCE_DATA == "gfs_analysis":
-        return interpolate_monan_gfs(
-            ds_monan_selected_filepath=ds_ref_filepath,
-            ds_gfs_in_monan_format_filepath=ds_forecast_filepath
+        if vs_config.SEL_VERBOSE_LEVEL >= 1:
+            print(f"No interpolation routine needed because"
+                  f"prediction model: {vs_config.PREDICTION_MODEL} and "
+                  f"reference data: {vs_config.REFERENCE_DATA}")
+        return ds_ref_filepath, ds_prediction_filepath
+    else:
+        raise ValueError(
+            f"Unsupported combination of prediction model: {vs_config.PREDICTION_MODEL} and"
+            f"reference data: {vs_config.REFERENCE_DATA} for interpolation."
         )
 
 def interpolate_monan_gfs(ds_monan_selected_filepath, ds_gfs_in_monan_format_filepath):
@@ -259,6 +269,12 @@ def interpolate_monan_gfs(ds_monan_selected_filepath, ds_gfs_in_monan_format_fil
         if vs_config.SEL_VERBOSE_LEVEL >= 1:
             print ("GFS data mapped to MONAN grid:")
             print (ds_interpolated)
+    else:
+        raise ValueError(
+            f"Unsupported interpolation type: {vs_config.INTERPOL_TYPE} for" 
+            f"combination of prediction model: {vs_config.PREDICTION_MODEL} and" 
+            f"reference data: {vs_config.REFERENCE_DATA}."
+            )
     
     return ds_ref_filepath, ds_prediction_filepath
 
