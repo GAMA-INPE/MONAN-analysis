@@ -56,7 +56,7 @@ def main():
     # Read and preprocess reference data (currently GFS analysis)
     #===============================================================================================
     print ("\n Reading and selecting reference data (GFS analysis), and converting it to MONAN data format...")
-    ds_preprocessed_ref_filepath = vs_aux.read_and_preprocess_gfs_data()
+    ds_preprocessed_ref_filepath = vs_aux.read_and_preprocess_ref_data()
 
     #===============================================================================================
     # Interpolate forecast / ref data for comparability
