@@ -27,6 +27,17 @@ This file was created with the assistance of GitHub Copilot.
 # Standard settings for MONAN data
 #===================================================================================================
 # Standard prefix in MONAN output filenames
+PREFIX_MONAN_SHORT = "MONAN_DIAG"
+# Global or regional domain specifications
+DOMAIN_TYPE_DICT = {
+    "global": "G",
+    "regional": "R"
+}
+INITIAL_CONDITIONS_TYPE_DICT = {
+    "GFS": "GFS",
+    "ERA5": "ERA"
+}
+# Standard prefix in MONAN output filenames
 PREFIX_MONAN_DIAG_STRING = "MONAN_DIAG_G_POS_GFS"
 # Strings for each grid configuration
 GRID_DICT = {
