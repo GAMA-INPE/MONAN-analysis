@@ -31,7 +31,7 @@ This file was created with the assistance of GitHub Copilot.
 # 0: log messages from vertical_analysis_main.py only
 # 1: log messages from vertical_analysis_main.py + vertical_analysis_aux.py
 # 2: log messages from vertical_analysis_main.py + vertical_analysis_aux.py + monan_analysis modules
-SEL_VERBOSE_LEVEL = 0
+SEL_VERBOSE_LEVEL = 2
 #===================================================================================================
 # General analysis configurations
 #===================================================================================================
@@ -44,7 +44,7 @@ YEAR = "2026"
 MONTH = "06"
 DAY = "30"
 HOUR = "00"
-TIME_WINDOW = "120"
+TIME_WINDOW = "24"
 # Domains for spatial analyses (maps)
 DOMAINS_TO_ANALYZE = [
     "global", 
@@ -184,6 +184,7 @@ PLOT_LIMITS_BY_VAR_METRIC_LEVEL = {
 #DIR_MONAN_PREOP = "/lustre/projetos/monan_adm/monan/ecf_PREOPER/MONAN-WorkFlow-OPER/MONAN_PRE_OPER/MONAN/scripts_CD-CT/dataout/flushout"
 DIR_MONAN_PREOP = "/lustre/projetos/ioper/models/MONAN-WorkFlow-OPER/MONAN_PRE_OPER/posTMP"
 DIR_GFS_ANALYSIS = "/lustre/projetos/monan_gam/andre.lyra/NetCDFs/vert_struct/GFS"
+DIR_GFS = "/oper/dados/ioper/tempo/GFS/0p25/brutos"
 DIR_CARTOPY_DATA = "/lustre/projetos/monan_gam/andre.lyra/cartopy"
 DIR_OUTPUT = f"/lustre/projetos/monan_atm/guilherme.mendonca/MONAN-analysis/analyses/vertical_structure/output_2026060100_to_2026063000"
 DIR_OUTPUT_FIGS = f"{DIR_OUTPUT}/figs"
