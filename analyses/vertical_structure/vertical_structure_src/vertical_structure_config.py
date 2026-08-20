@@ -42,9 +42,9 @@ REFERENCE_DATA = "gfs_analysis"
 # Date and forecast time window for analysis
 YEAR = "2026"
 MONTH = "06"
-DAY = "30"
+DAY = "02"
 HOUR = "00"
-TIME_WINDOW = "24"
+TIME_WINDOW = "120"
 # Domains for spatial analyses (maps)
 DOMAINS_TO_ANALYZE = [
     "global", 
@@ -69,16 +69,17 @@ GRID_SPEC_MONAN = "10km_uniform"
 VERTICAL_LEVEL_SPEC_MONAN = "55"
 # Variables to analyze
 VARIABLES_TO_ANALYZE_MONAN = [
-    "temperature",
-    "spechum",
+    #"temperature",
+    #"spechum",
     "zgeo",
-    "uzonal",
-    "umeridional",
+    #"uzonal",
+    #"umeridional",
     ]
 # Vertical levels (Pa) to analyze
 VERTICAL_LEVELS_TO_ANALYZE_MONAN = [
 #    "92500", "85000", "70000", "50000", "40000", "30000", "25000", "20000", "15000", "10000", "7000", "5000", "3000", "2000", "1000", "300"
-    "92500", "85000", "70000", "50000", "40000", "30000", "25000", "10000", "3000", "300"
+    #"92500", "85000", "70000", "50000", "40000", "30000", "25000", "10000", "3000", "300"
+    50000
     ]
 #===================================================================================================
 # GFS configurations
@@ -186,10 +187,10 @@ DIR_MONAN_PREOP = "/lustre/projetos/ioper/models/MONAN-WorkFlow-OPER/MONAN_PRE_O
 DIR_GFS_ANALYSIS = "/lustre/projetos/monan_gam/andre.lyra/NetCDFs/vert_struct/GFS"
 DIR_GFS = "/oper/dados/ioper/tempo/GFS/0p25/brutos"
 DIR_CARTOPY_DATA = "/lustre/projetos/monan_gam/andre.lyra/cartopy"
-DIR_OUTPUT = f"/lustre/projetos/monan_atm/guilherme.mendonca/MONAN-analysis/analyses/vertical_structure/output_2026060100_to_2026063000"
+DIR_OUTPUT = f"/lustre/projetos/monan_atm/guilherme.mendonca/MONAN-analysis/analyses/vertical_structure/output"
 DIR_OUTPUT_FIGS = f"{DIR_OUTPUT}/figs"
 DIR_OUTPUT_DATA = f"{DIR_OUTPUT}/data"
-DIR_INPUT = f"/lustre/projetos/monan_atm/guilherme.mendonca/MONAN-analysis/analyses/vertical_structure/input_2026060100_to_2026063000"
+DIR_INPUT = f"/lustre/projetos/monan_atm/guilherme.mendonca/MONAN-analysis/analyses/vertical_structure/input"
 DIR_INPUT_INTERMEDIATE = f"{DIR_INPUT}/intermediate"
 DIR_INPUT_PROCESSED = f"{DIR_INPUT}/processed"
 DIR_INPUT_RAW = f"{DIR_INPUT}/raw"
@@ -211,16 +212,16 @@ APPLY_PRESSURE_LEVEL_VALIDITY_MASK = True
 # Initial date
 DATE_INIT = "2026060100"
 # Final date
-DATE_FINAL = "2026063000"
+DATE_FINAL = "2026060200" #"2026063000"
 # Date time step in hours
 DATE_TIME_STEP = "24"
 # Time windows to analyze
 TIME_WINDOWS_TO_ANALYZE = [
     #"00",
-    "24",
-    "48",
-    "72",
-    "96",
+    #"24",
+    #"48",
+    #"72",
+    #"96",
     "120"
     ]
 # Multi-time stats metrics (metrics that need multiple time instants for their definition, e.g. RMSE, anomaly correlation coefficient)
@@ -232,7 +233,7 @@ MULTI_TIME_STATS_METRICS_TO_ANALYZE = [
 # Latitude-pressure profile plot configurations
 #===================================================================================================
 # Whether to generate latitude-pressure profile plots from concatenated datasets
-PLOT_LAT_PRESSURE_PROFILES = True
+PLOT_LAT_PRESSURE_PROFILES = False #True
 # Metrics to use in latitude-pressure profile plots.
 LAT_PRESSURE_PROFILE_METRICS_TO_PLOT = [
     "bias",
