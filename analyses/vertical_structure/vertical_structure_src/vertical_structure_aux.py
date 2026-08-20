@@ -945,12 +945,13 @@ def concatenate_stats_datasets(date_list,time_window):
         # Save concatenated dataset in nc file
         stat_concat_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/{stat}_date_concat_from_{date_list[0]}_to_{date_list[-1]}_time_window_{time_window}.nc"
         ds_stat_concat.to_netcdf(stat_concat_filepath)
+        
+        # Save summary CSV for concatenated stat dataset
         stat_daily_summary_csv = (
             f"{vs_config.DIR_OUTPUT_DATA}/date_multiple_time_window_{time_window}/"
             f"{stat}_daily_summary_date_from_{date_list[0]}_to_{date_list[-1]}_"
             f"time_window_{time_window}.csv"
         )
-
         write_regional_summary_csv(
             ds=ds_stat_concat,
             metric=stat,
@@ -990,33 +991,49 @@ def calculate_mean_single_time_metrics(time_window):
 def concatenate_var_datasets(date_list,time_window,verbose='y'):
     # Create folder to save concatenated datasets
     os.makedirs(vs_config.DIR_OUTPUT_DATA+f"/date_multiple_time_window_{time_window}", exist_ok=True)
+
     # Construct filepaths for variable datasets to be concatenated
-    var_monan_filepaths = []
-    var_gfs_filepaths = []
-    if vs_config.INTERPOL_TYPE == 'monan_to_gfs':
+    var_prediction_filepaths = []
+    var_ref_filepaths = []
+
+    # Check prediction model and reference data for concatenating the right files
+    if vs_config.PREDICTION_MODEL == "monan" and vs_config.REFERENCE_DATA == "gfs_analysis":
+        if vs_config.INTERPOL_TYPE == 'monan_to_gfs':
+            for date_in_string in date_list:
+                var_prediction_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/monan_mapped_to_gfs_date_{date_in_string}_time_window_{time_window}.nc"
+                var_prediction_filepaths.append(var_prediction_filepath)
+                var_ref_filepath = f"{vs_config.DIR_INPUT_INTERMEDIATE}/gfs_in_monan_format_date_{date_in_string}_time_window_{time_window}.nc"
+                var_ref_filepaths.append(var_ref_filepath)
+        elif vs_config.INTERPOL_TYPE == 'gfs_to_monan':
+            for date_in_string in date_list:
+                var_prediction_filepath = f"{vs_config.DIR_INPUT_INTERMEDIATE}/monan_selected_variables_and_levels_date_{date_in_string}_time_window_{time_window}.nc"
+                var_prediction_filepaths.append(var_prediction_filepath)
+                var_ref_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/gfs_mapped_to_monan_date_{date_in_string}_time_window_{time_window}.nc"
+                var_ref_filepaths.append(var_ref_filepath)
+        else:
+            raise ValueError(f"Unsupported interpolation type: {vs_config.INTERPOL_TYPE} for concat " 
+                             f"with prediction model: {vs_config.PREDICTION_MODEL} and "
+                             f"reference data: {vs_config.REFERENCE_DATA}.")
+        
+    elif vs_config.REFERENCE_DATA == "gfs_analysis":
         for date_in_string in date_list:
-            var_monan_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/monan_mapped_to_gfs_date_{date_in_string}_time_window_{time_window}.nc"
-            var_monan_filepaths.append(var_monan_filepath)
-            var_gfs_filepath = f"{vs_config.DIR_INPUT_INTERMEDIATE}/gfs_in_monan_format_date_{date_in_string}_time_window_{time_window}.nc"
-            var_gfs_filepaths.append(var_gfs_filepath)
-    elif vs_config.INTERPOL_TYPE == 'gfs_to_monan':
-        for date_in_string in date_list:
-            var_monan_filepath = f"{vs_config.DIR_INPUT_INTERMEDIATE}/monan_selected_variables_and_levels_date_{date_in_string}_time_window_{time_window}.nc"
-            var_monan_filepaths.append(var_monan_filepath)
-            var_gfs_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/gfs_mapped_to_monan_date_{date_in_string}_time_window_{time_window}.nc"
-            var_gfs_filepaths.append(var_gfs_filepath)
+            var_prediction_filepath = f"{vs_config.DIR_INPUT_INTERMEDIATE}/{vs_config.INTERPOL_TYPE}_prediction_in_monan_format_date_{date_in_string}_time_window_{time_window}.nc"
+            var_prediction_filepaths.append(var_prediction_filepath)
+            var_ref_filepath = f"{vs_config.DIR_INPUT_INTERMEDIATE}/{vs_config.REFERENCE_DATA}_in_monan_format_date_{date_in_string}_time_window_{time_window}.nc"
+            var_ref_filepaths.append(var_ref_filepath)
+
     # Concatenate variable datasets along "Time" dimension
     if verbose == 'y':
         print ("Concatenating variable datasets for time window", time_window)
-    ds_var_monan_concat = xr.open_mfdataset(var_monan_filepaths, combine="nested", concat_dim="Time")
-    ds_var_gfs_concat = xr.open_mfdataset(var_gfs_filepaths, combine="nested", concat_dim="Time")
+    ds_var_prediction_concat = xr.open_mfdataset(var_prediction_filepaths, combine="nested", concat_dim="Time")
+    ds_var_ref_concat = xr.open_mfdataset(var_prediction_filepaths, combine="nested", concat_dim="Time")
     if verbose == 'y':
         print ("Done concatenating variable datasets for time window", time_window)
     # Save concatenated datasets in nc file
-    var_monan_concat_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/monan_concat_date_from_{date_list[0]}_to_{date_list[-1]}_time_window_{time_window}.nc"
-    ds_var_monan_concat.to_netcdf(var_monan_concat_filepath)
-    var_gfs_concat_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/gfs_concat_date_from_{date_list[0]}_to_{date_list[-1]}_time_window_{time_window}.nc"
-    ds_var_gfs_concat.to_netcdf(var_gfs_concat_filepath)
+    var_prediction_concat_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/prediction_{vs_config.PREDICTION_MODEL}_concat_date_from_{date_list[0]}_to_{date_list[-1]}_time_window_{time_window}.nc"
+    ds_var_prediction_concat.to_netcdf(var_prediction_concat_filepath)
+    var_ref_concat_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/ref_{vs_config.REFERENCE_DATA}_concat_date_from_{date_list[0]}_to_{date_list[-1]}_time_window_{time_window}.nc"
+    ds_var_ref_concat.to_netcdf(var_ref_concat_filepath)
 
 def calculate_multi_time_metrics(time_window):
     # Create folder to save multi-time stats metrics datasets
