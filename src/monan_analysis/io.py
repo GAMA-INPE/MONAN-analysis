@@ -76,6 +76,16 @@ def get_GFS_analysis_filename(date_in_string,stream_name="levels"):
     filename = (f"{config.PREFIX_GFS_ANALYSIS_STRING}_{stream_name}_{date_in_string}.nc")
     return filename
 
+def get_ERA5_reanalysis_filename(variable):
+    filename = (f"{config.ERA5_TO_MONAN_VAR_DICT[variable]['era5_longname']}.nc")
+    return filename
+
+def get_CERES_dataset_filename(date_in_string, stream_name, edition):
+    edition_name = config.CERES_EDITION_DICT[edition]
+    ceres_key = f"{stream_name}_{edition_name}"
+    filename = (f"{config.CERES_DATASET}-{stream_name}_{edition_name}_{config.CERES_CODE_DICT[ceres_key]}.{date_in_string}.hdf")
+    return filename
+
 def read_ds_monan(year,month,day,hour,time_window,grid_spec,
                   vertical_level_spec,base_dir,verbose='n'):
     """ Read MONAN data and return them as an xarray Dataset."""
@@ -169,3 +179,97 @@ def read_ds_gfs(year,month,day,hour,base_dir,stream_name="levels",
     # Read dataset using complete path
     ds_gfs = xr.open_dataset(filepath, engine="netcdf4")
     return ds_gfs, filepath
+
+def read_ds_era5(year,month,base_dir,variable,stream_name="single_levels",
+                verbose='n'):
+    """ 
+    Read ERA5 data downloaded in netcdf format and return them as an xarray Dataset.
+    It assumes ERA5 data is downloaded as one month of data for a single variable, 
+    and that the file is within directory <base_dir>/single_levels/<year>/<month>/<variable>.nc".
+    """
+    # Get file path for reading ERA5 data
+    ## Get ERA5 output filename
+    filename = get_ERA5_reanalysis_filename(variable)
+    ## Get complete path
+    filepath = f"{base_dir}/{stream_name}/{year}/{month}/{filename}"
+    if verbose == 'y':
+        print(f"Reading ERA5 analysis data from file: {filepath}")
+    # Read dataset using complete path
+    ds_era5 = xr.open_dataset(filepath, engine="netcdf4")
+
+    return ds_era5, filepath
+
+
+def read_ds_ceres(year,month,day,base_dir,edition,stream_name, variable,
+                verbose='y'):
+    """ 
+    Read CERES data downloaded in netcdf format and return them as an xarray Dataset.
+    It assumes CERES data is downloaded as one month of data , 
+    and that the file is within directory <base_dir>/<CERES_DATASET>/<year>/<month>/<day>/<variable>.nc".
+    """
+    date_in_string = utils.get_date_as_YYYYMMDD_str(
+        year, month, day
+        )
+    ceres_var_name=config.CERES_TO_MONAN_VAR_DICT[variable]['ceres_name']
+    # Get file path for reading ERA5 data'
+    ## Get CERES output filename
+    filename = get_CERES_dataset_filename(date_in_string, stream_name, edition)
+    ## Get complete path
+    filepath = f"{base_dir}/{config.CERES_DATASET}/{stream_name}/{config.CERES_EDITION_DICT[edition]}/{filename}"
+    if verbose == 'y':
+        print(f"Reading CERES analysis data from file: {filepath}")
+    # Read dataset using complete path
+
+    from pyhdf.SD import SD, SDC
+    import numpy as np
+    import pandas as pd
+
+    sd = SD(str(filepath), SDC.READ)
+    datasets_info = sd.datasets()
+    if ceres_var_name not in datasets_info:
+        raise KeyError(f"{ceres_var_name} not found in {filepath}")
+
+    arr = np.asarray(sd.select(ceres_var_name).get(), dtype=np.float64)
+    attrs = sd.select(ceres_var_name).attributes()
+    print(attrs)
+    for key in ["_FillValue", "fillvalue", "missing_value"]:
+        if key in attrs:
+            arr = np.where(arr == attrs[key], np.nan, arr)
+
+        if arr.ndim == 3:
+            nlon, nlat, nhour = arr.shape
+            lon = np.linspace(-179.5, 179.5, nlon)
+            lat = np.linspace(-89.5, 89.5, nlat)
+            time = pd.date_range(
+                start=pd.to_datetime(filepath.split(".")[-2], format="%Y%m%d"),
+                periods=nhour,
+                freq="1h",
+            )
+            ds_ceres = xr.DataArray(
+                arr,
+                dims=("longitude", "latitude", "time"),
+                coords={"longitude": lon, "latitude": lat, "time": time},
+            )
+        elif arr.ndim == 4:
+            nlon, nlat, nhour, ncld = arr.shape
+            lon = np.linspace(-179.5, 179.5, nlon)
+            lat = np.linspace(-89.5, 89.5, nlat)
+            time = pd.date_range(
+                start=pd.to_datetime(filepath.split(".")[-2], format="%Y%m%d"),
+                periods=nhour,
+                freq="1h",
+            )
+            ds_ceres = xr.DataArray(
+                arr,
+                dims=("longitude", "latitude", "time", "cloud_layer"),
+                coords={
+                    "longitude": lon,
+                    "latitude": lat,
+                    "time": time,
+                    "cloud_layer": np.arange(1, ncld + 1),
+                },
+            )
+        else:
+            raise ValueError(f"Expected 3D or 4D CERES array, got {arr.shape}")
+
+    return ds_ceres, filepath

@@ -42,6 +42,10 @@ def get_date_as_YYYYMMDDHH_str(year,month,day,hour):
     date_in_string = f"{year}{month}{day}{hour}" 
     return date_in_string
 
+def get_date_as_YYYYMMDD_str(year,month,day):
+    date_in_string = f"{year}{month}{day}" 
+    return date_in_string
+
 def get_date_as_YYYYMM_str(year,month):
     date_in_string = f"{year}{month}" 
     return date_in_string
