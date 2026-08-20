@@ -287,7 +287,7 @@ def read_and_preprocess_gfs_ref_data():
     # Save preprocessed GFS dataset
     ds_gfs_in_monan_format_filepath = (
         f"{vs_config.DIR_INPUT_INTERMEDIATE}/"
-        f"ref_{vs_config.PREDICTION_MODEL}_in_monan_format_date_{date_in_string}_"
+        f"ref_{vs_config.REFERENCE_DATA}_in_monan_format_date_{date_in_string}_"
         f"time_window_{vs_config.TIME_WINDOW}.nc"
     )
     ds_gfs_in_monan_format.to_netcdf(ds_gfs_in_monan_format_filepath)
@@ -328,7 +328,7 @@ def interpolate_monan_gfs(ds_monan_selected_filepath, ds_gfs_in_monan_format_fil
     )
     if vs_config.INTERPOL_TYPE == 'prediction_to_ref':
         # Now, the mapped grid is the prediction model MONAN
-        ds_mapped_grid_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/monan_mapped_to_{vs_config.REFERENCE_DATA}_date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}.nc"
+        ds_mapped_grid_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/prediction_monan_mapped_to_ref_{vs_config.REFERENCE_DATA}_date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}.nc"
         # And the reference grid is the GFS in MONAN format (before mapping)
         ds_ref_grid_filepath = ds_gfs_in_monan_format_filepath
         # Map MONAN data to GFS grid
@@ -350,7 +350,7 @@ def interpolate_monan_gfs(ds_monan_selected_filepath, ds_gfs_in_monan_format_fil
 
     elif vs_config.INTERPOL_TYPE == 'ref_to_prediction':
         # Now, the mapped grid is the reference data GFS
-        ds_mapped_grid_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/{vs_config.REFERENCE_DATA}_mapped_to_monan_date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}.nc"
+        ds_mapped_grid_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/ref_{vs_config.REFERENCE_DATA}_mapped_to_prediction_monan_date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}.nc"
         # And the reference grid is the original prediction model MONAN
         ds_ref_grid_filepath = ds_monan_selected_filepath
         # Map GFS data to MONAN grid
@@ -1007,29 +1007,40 @@ def concatenate_var_datasets(date_list,time_window,verbose='y'):
     var_ref_filepaths = []
 
     # Check prediction model and reference data for concatenating the right files
-    if vs_config.PREDICTION_MODEL == "monan":
-        if vs_config.INTERPOL_TYPE == 'monan_to_ref':
-            for date_in_string in date_list:
-                var_prediction_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/monan_mapped_to_{vs_config.REFERENCE_DATA}_date_{date_in_string}_time_window_{time_window}.nc"
-                var_prediction_filepaths.append(var_prediction_filepath)
-                var_ref_filepath = f"{vs_config.DIR_INPUT_INTERMEDIATE}/{vs_config.REFERENCE_DATA}_in_monan_format_date_{date_in_string}_time_window_{time_window}.nc"
-                var_ref_filepaths.append(var_ref_filepath)
-        elif vs_config.INTERPOL_TYPE == 'ref_to_monan':
-            for date_in_string in date_list:
-                var_prediction_filepath = f"{vs_config.DIR_INPUT_INTERMEDIATE}/monan_selected_variables_and_levels_date_{date_in_string}_time_window_{time_window}.nc"
-                var_prediction_filepaths.append(var_prediction_filepath)
-                var_ref_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/{vs_config.REFERENCE_DATA}_mapped_to_monan_date_{date_in_string}_time_window_{time_window}.nc"
-                var_ref_filepaths.append(var_ref_filepath)
-        else:
-            raise ValueError(f"Unsupported interpolation type: {vs_config.INTERPOL_TYPE} for concat " 
-                             f"with prediction model: {vs_config.PREDICTION_MODEL} and "
-                             f"reference data: {vs_config.REFERENCE_DATA}.")
-    elif vs_config.REFERENCE_DATA == "gfs_analysis":
+    if vs_config.PREDICTION_MODEL == vs_config.REFERENCE_DATA:
         for date_in_string in date_list:
-            var_prediction_filepath = f"{vs_config.DIR_INPUT_INTERMEDIATE}/{vs_config.INTERPOL_TYPE}_prediction_in_monan_format_date_{date_in_string}_time_window_{time_window}.nc"
+            var_prediction_filepath = f"{vs_config.DIR_INPUT_INTERMEDIATE}/prediction_{vs_config.INTERPOL_TYPE}_in_monan_format_date_{date_in_string}_time_window_{time_window}.nc"
             var_prediction_filepaths.append(var_prediction_filepath)
-            var_ref_filepath = f"{vs_config.DIR_INPUT_INTERMEDIATE}/{vs_config.REFERENCE_DATA}_in_monan_format_date_{date_in_string}_time_window_{time_window}.nc"
+            var_ref_filepath = f"{vs_config.DIR_INPUT_INTERMEDIATE}/ref_{vs_config.REFERENCE_DATA}_in_monan_format_date_{date_in_string}_time_window_{time_window}.nc"
             var_ref_filepaths.append(var_ref_filepath)
+    elif vs_config.PREDICTION_MODEL == "monan":
+        if vs_config.INTERPOL_TYPE == "prediction_to_ref":
+            for date_in_string in date_list:
+                var_prediction_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/prediction_monan_mapped_to_ref_{vs_config.REFERENCE_DATA}_date_{date_in_string}_time_window_{time_window}.nc"
+                var_prediction_filepaths.append(var_prediction_filepath)
+                var_ref_filepath = f"{vs_config.DIR_INPUT_INTERMEDIATE}/ref_{vs_config.REFERENCE_DATA}_in_monan_format_date_{date_in_string}_time_window_{time_window}.nc"
+                var_ref_filepaths.append(var_ref_filepath)
+        elif vs_config.INTERPOL_TYPE == "ref_to_prediction":
+            for date_in_string in date_list:
+                var_prediction_filepath = f"{vs_config.DIR_INPUT_INTERMEDIATE}/prediction_monan_selected_variables_and_levels_date_{date_in_string}_time_window_{time_window}.nc"
+                var_prediction_filepaths.append(var_prediction_filepath)
+                var_ref_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/ref_{vs_config.REFERENCE_DATA}_mapped_to_monan_date_{date_in_string}_time_window_{time_window}.nc"
+                var_ref_filepaths.append(var_ref_filepath)
+    else:
+        if vs_config.INTERPOL_TYPE == "prediction_to_ref":
+            for date_in_string in date_list:
+                var_prediction_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/prediction_{vs_config.PREDICTION_MODEL}_mapped_to_ref_{vs_config.REFERENCE_DATA}_date_{date_in_string}_time_window_{time_window}.nc"
+                var_prediction_filepaths.append(var_prediction_filepath)
+                var_ref_filepath = f"{vs_config.DIR_INPUT_INTERMEDIATE}/ref_{vs_config.REFERENCE_DATA}_in_monan_format_date_{date_in_string}_time_window_{time_window}.nc"
+                var_ref_filepaths.append(var_ref_filepath)
+        elif vs_config.INTERPOL_TYPE == "ref_to_prediction":
+            for date_in_string in date_list:
+                var_prediction_filepath = f"{vs_config.DIR_INPUT_INTERMEDIATE}/prediction_{vs_config.PREDICTION_MODEL}_in_monan_format_date_{date_in_string}_time_window_{time_window}.nc"
+                var_prediction_filepaths.append(var_prediction_filepath)
+                var_ref_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/ref_{vs_config.REFERENCE_DATA}_mapped_to_{vs_config.PREDICTION_MODEL}_date_{date_in_string}_time_window_{time_window}.nc"
+                var_ref_filepaths.append(var_ref_filepath)
+
+    
 
     # Concatenate variable datasets along "Time" dimension
     if verbose == 'y':
