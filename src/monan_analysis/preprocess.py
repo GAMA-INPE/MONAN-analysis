@@ -25,7 +25,7 @@ import os
 import subprocess
 
 
-def map_data_to_different_grid_with_cdo(ref_nc, input_nc, output_nc):
+def map_data_to_different_grid_with_cdo(ref_grid_nc, input_nc, output_nc):
     """ 
     Remap input_nc to the grid of ref_nc 
     and save the output in output_nc using CDO.
@@ -37,7 +37,7 @@ def map_data_to_different_grid_with_cdo(ref_nc, input_nc, output_nc):
     subprocess.run([
         "bash", "-l", "-c", 
         f"module load cdo && "
-        f"cdo -f nc -remapcon,{ref_nc} {input_nc} {output_nc}"
+        f"cdo -f nc -remapcon,{ref_grid_nc} {input_nc} {output_nc}"
         ],
     check=True
     )

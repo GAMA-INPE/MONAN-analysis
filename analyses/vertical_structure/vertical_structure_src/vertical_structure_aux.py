@@ -113,7 +113,7 @@ def read_and_preprocess_monan_data():
     # Save preprocessed MONAN dataset
     ds_monan_selected_filepath = (
         f"{vs_config.DIR_INPUT_INTERMEDIATE}/"
-        f"monan_selected_variables_and_levels_date_{date_in_string}_"
+        f"prediction_monan_selected_variables_and_levels_date_{date_in_string}_"
         f"time_window_{vs_config.TIME_WINDOW}.nc"
     )
     ds_monan_selected.to_netcdf(ds_monan_selected_filepath)
@@ -198,7 +198,7 @@ def read_and_preprocess_gfs_prediction_data():
     # Save preprocessed GFS dataset as prediction model
     ds_gfs_in_monan_format_filepath = (
         f"{vs_config.DIR_INPUT_INTERMEDIATE}/"
-        f"gfs_prediction_in_monan_format_date_{date_in_string}_"
+        f"prediction_{vs_config.PREDICTION_MODEL}_in_monan_format_date_{date_in_string}_"
         f"time_window_{vs_config.TIME_WINDOW}.nc"
     )
     ds_gfs_in_monan_format.to_netcdf(ds_gfs_in_monan_format_filepath)
@@ -287,7 +287,7 @@ def read_and_preprocess_gfs_ref_data():
     # Save preprocessed GFS dataset
     ds_gfs_in_monan_format_filepath = (
         f"{vs_config.DIR_INPUT_INTERMEDIATE}/"
-        f"gfs_ref_in_monan_format_date_{date_in_string}_"
+        f"ref_{vs_config.PREDICTION_MODEL}_in_monan_format_date_{date_in_string}_"
         f"time_window_{vs_config.TIME_WINDOW}.nc"
     )
     ds_gfs_in_monan_format.to_netcdf(ds_gfs_in_monan_format_filepath)
@@ -327,36 +327,46 @@ def interpolate_monan_gfs(ds_monan_selected_filepath, ds_gfs_in_monan_format_fil
     vs_config.YEAR, vs_config.MONTH, vs_config.DAY, vs_config.HOUR
     )
     if vs_config.INTERPOL_TYPE == 'monan_to_gfs':
-        # Now, the mapped data is the prediction
-        ds_prediction_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/monan_mapped_to_gfs_date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}.nc"
-        # And the reference is the GFS data in MONAN format (before mapping)
-        ds_ref_filepath = ds_gfs_in_monan_format_filepath
+        # Now, the mapped grid is the prediction model MONAN
+        ds_mapped_grid_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/monan_mapped_to_{vs_config.REFERENCE_DATA}_date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}.nc"
+        # And the reference grid is the GFS in MONAN format (before mapping)
+        ds_ref_grid_filepath = ds_gfs_in_monan_format_filepath
         # Map MONAN data to GFS grid
         preprocess.map_data_to_different_grid_with_cdo(
-            ref_nc=ds_gfs_in_monan_format_filepath,
+            ref_grid_nc=ds_ref_grid_filepath,
             input_nc=ds_monan_selected_filepath, 
-            output_nc=ds_prediction_filepath
+            output_nc=ds_mapped_grid_filepath
             )
-        # Read interpolated data
-        ds_interpolated = xr.open_dataset(ds_prediction_filepath, engine="netcdf4")
+        # The final ref data is the GFS in MONAN format (before mapping)
+        ds_ref_data_filepath = ds_gfs_in_monan_format_filepath
+        # The final prediction model data is the MONAN data mapped to GFS grid
+        ds_prediction_model_filepath = ds_mapped_grid_filepath
+        # If needed, show the mapped data
         if vs_config.SEL_VERBOSE_LEVEL >= 1:
+            # Read interpolated data
+            ds_interpolated = xr.open_dataset(ds_mapped_grid_filepath, engine="netcdf4")
             print ("MONAN data mapped to GFS grid:")
             print (ds_interpolated)
 
     elif vs_config.INTERPOL_TYPE == 'gfs_to_monan':
-        # Now, the mapped data is the reference
-        ds_ref_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/gfs_mapped_to_monan_date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}.nc"
-        # And the prediction is the original MONAN data (before mapping)
-        ds_prediction_filepath = ds_monan_selected_filepath
+        # Now, the mapped grid is the reference data GFS
+        ds_mapped_grid_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/{vs_config.REFERENCE_DATA}_mapped_to_monan_date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}.nc"
+        # And the reference grid is the original prediction model MONAN
+        ds_ref_grid_filepath = ds_monan_selected_filepath
         # Map GFS data to MONAN grid
         preprocess.map_data_to_different_grid_with_cdo(
-            ref_nc=ds_monan_selected_filepath,
+            ref_grid_nc=ds_ref_grid_filepath,
             input_nc=ds_gfs_in_monan_format_filepath, 
-            output_nc=ds_ref_filepath
+            output_nc=ds_mapped_grid_filepath
             )
-        # Read interpolated data
-        ds_interpolated = xr.open_dataset(ds_ref_filepath, engine="netcdf4")
+        # The final ref data is the GFS mapped to MONAN grid
+        ds_ref_data_filepath = ds_mapped_grid_filepath
+        # The final prediction model data is the original MONAN
+        ds_prediction_model_filepath = ds_monan_selected_filepath
+        # If needed, show the mapped data
         if vs_config.SEL_VERBOSE_LEVEL >= 1:
+            # Read interpolated data
+            ds_interpolated = xr.open_dataset(ds_mapped_grid_filepath, engine="netcdf4")
             print ("GFS data mapped to MONAN grid:")
             print (ds_interpolated)
     else:
@@ -366,7 +376,7 @@ def interpolate_monan_gfs(ds_monan_selected_filepath, ds_gfs_in_monan_format_fil
             f"reference data: {vs_config.REFERENCE_DATA}."
             )
     
-    return ds_ref_filepath, ds_prediction_filepath
+    return ds_ref_data_filepath, ds_prediction_model_filepath
 
 def get_layer_from_level(level):
     # Classify a pressure level into a broad atmospheric layer
