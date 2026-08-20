@@ -204,72 +204,77 @@ def read_ds_ceres(year,month,day,base_dir,edition,stream_name, variable,
                 verbose='y'):
     """ 
     Read CERES data downloaded in netcdf format and return them as an xarray Dataset.
-    It assumes CERES data is downloaded as one month of data , 
-    and that the file is within directory <base_dir>/<CERES_DATASET>/<year>/<month>/<day>/<variable>.nc".
+    It assumes CERES data is downloaded as one month of data, and that the file is
+    within directory <base_dir>/<CERES_DATASET>/<stream_name>/<edition>/<filename>.
     """
     date_in_string = utils.get_date_as_YYYYMMDD_str(
         year, month, day
         )
-    ceres_var_name=config.CERES_TO_MONAN_VAR_DICT[variable]['ceres_name']
-    # Get file path for reading ERA5 data'
+    ceres_var_name = config.CERES_TO_MONAN_VAR_DICT[variable]['ceres_name']
+
     ## Get CERES output filename
     filename = get_CERES_dataset_filename(date_in_string, stream_name, edition)
-    ## Get complete path
+    ## Get file path for reading CERES data
     filepath = f"{base_dir}/{config.CERES_DATASET}/{stream_name}/{config.CERES_EDITION_DICT[edition]}/{filename}"
     if verbose == 'y':
         print(f"Reading CERES analysis data from file: {filepath}")
-    # Read dataset using complete path
 
     from pyhdf.SD import SD, SDC
     import numpy as np
     import pandas as pd
 
     sd = SD(str(filepath), SDC.READ)
-    datasets_info = sd.datasets()
+    datasets_info = list(sd.datasets().keys())
     if ceres_var_name not in datasets_info:
         raise KeyError(f"{ceres_var_name} not found in {filepath}")
 
-    arr = np.asarray(sd.select(ceres_var_name).get(), dtype=np.float64)
-    attrs = sd.select(ceres_var_name).attributes()
-    print(attrs)
+    var = sd.select(ceres_var_name)
+    arr = np.asarray(var.get(), dtype=np.float64)
+    attrs = var.attributes()
+
     for key in ["_FillValue", "fillvalue", "missing_value"]:
         if key in attrs:
             arr = np.where(arr == attrs[key], np.nan, arr)
 
-        if arr.ndim == 3:
-            nlon, nlat, nhour = arr.shape
-            lon = np.linspace(-179.5, 179.5, nlon)
-            lat = np.linspace(-89.5, 89.5, nlat)
-            time = pd.date_range(
-                start=pd.to_datetime(filepath.split(".")[-2], format="%Y%m%d"),
-                periods=nhour,
-                freq="1h",
-            )
-            ds_ceres = xr.DataArray(
-                arr,
-                dims=("longitude", "latitude", "time"),
-                coords={"longitude": lon, "latitude": lat, "time": time},
-            )
-        elif arr.ndim == 4:
-            nlon, nlat, nhour, ncld = arr.shape
-            lon = np.linspace(-179.5, 179.5, nlon)
-            lat = np.linspace(-89.5, 89.5, nlat)
-            time = pd.date_range(
-                start=pd.to_datetime(filepath.split(".")[-2], format="%Y%m%d"),
-                periods=nhour,
-                freq="1h",
-            )
-            ds_ceres = xr.DataArray(
-                arr,
-                dims=("longitude", "latitude", "time", "cloud_layer"),
-                coords={
-                    "longitude": lon,
-                    "latitude": lat,
-                    "time": time,
-                    "cloud_layer": np.arange(1, ncld + 1),
-                },
-            )
+    if arr.ndim == 3:
+        nlon, nlat, nhour = arr.shape
+        lon = np.linspace(-179.5, 179.5, nlon)
+        lat = np.linspace(-89.5, 89.5, nlat)
+        time = pd.date_range(
+            start=pd.to_datetime(date_in_string, format="%Y%m%d"),
+            periods=nhour,
+            freq="1h",
+        )
+        ds_ceres = xr.DataArray(
+            arr,
+            dims=("longitude", "latitude", "time"),
+            coords={"longitude": lon, "latitude": lat, "time": time},
+        )
+    elif arr.ndim == 4:
+        nlon, nlat, nhour, nprofile = arr.shape
+        lon = np.linspace(-179.5, 179.5, nlon)
+        lat = np.linspace(-89.5, 89.5, nlat)
+        time = pd.date_range(
+            start=pd.to_datetime(date_in_string, format="%Y%m%d"),
+            periods=nhour,
+            freq="1h",
+        )
+        group_name = str(attrs.get("group", "")).lower()
+        if "cloud" in group_name or "profile" in group_name or "layer" in group_name:
+            profile_dim = "cloud_layer"
         else:
-            raise ValueError(f"Expected 3D or 4D CERES array, got {arr.shape}")
+            profile_dim = "level"
+        ds_ceres = xr.DataArray(
+            arr,
+            dims=("longitude", "latitude", "time", profile_dim),
+            coords={
+                "longitude": lon,
+                "latitude": lat,
+                "time": time,
+                profile_dim: np.arange(1, nprofile + 1),
+            },
+        )
+    else:
+        ds_ceres = xr.DataArray(arr)
 
     return ds_ceres, filepath
