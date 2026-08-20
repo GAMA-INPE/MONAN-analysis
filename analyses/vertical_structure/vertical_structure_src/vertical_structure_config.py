@@ -89,8 +89,8 @@ STREAM_NAME_GFS = "levels"
 #===================================================================================================
 # Data interpolation configurations
 #===================================================================================================
-# Type of data interpolation
-INTERPOL_TYPE = "monan_to_gfs" # "monan_to_gfs" or "gfs_to_monan"
+# Type of data interpolation (prediction_to_ref or ref_to_prediction)
+INTERPOL_TYPE = "prediction_to_ref"
 #===================================================================================================
 # Statistics configurations
 #===================================================================================================
