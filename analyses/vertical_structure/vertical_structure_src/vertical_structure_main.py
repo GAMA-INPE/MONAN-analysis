@@ -63,8 +63,8 @@ def main():
     #===============================================================================================
     print ("\n Interpolating forecast / reference data for comparability...")
     ds_ref_filepath, ds_prediction_filepath = vs_aux.interpolate_prediction_ref(
-        ds_prediction_filepath=ds_preprocessed_prediction_filepath,
-        ds_ref_filepath=ds_preprocessed_ref_filepath
+        ds_prediction_model_filepath=ds_preprocessed_prediction_filepath,
+        ds_ref_data_filepath=ds_preprocessed_ref_filepath
     )
 
     #===============================================================================================
