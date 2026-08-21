@@ -31,7 +31,7 @@ This file was created with the assistance of GitHub Copilot.
 # 0: log messages from vertical_analysis_main.py only
 # 1: log messages from vertical_analysis_main.py + vertical_analysis_aux.py
 # 2: log messages from vertical_analysis_main.py + vertical_analysis_aux.py + monan_analysis modules
-SEL_VERBOSE_LEVEL = 0
+SEL_VERBOSE_LEVEL = 1
 #===================================================================================================
 # General analysis configurations
 #===================================================================================================
@@ -187,10 +187,10 @@ DIR_MONAN_PREOP = "/lustre/projetos/ioper/models/MONAN-WorkFlow-OPER/MONAN_PRE_O
 DIR_GFS_ANALYSIS = "/lustre/projetos/monan_gam/andre.lyra/NetCDFs/vert_struct/GFS"
 DIR_GFS = "/lustre/projetos/monan_atm/guilherme.mendonca/scratch/data/GFS"
 DIR_CARTOPY_DATA = "/lustre/projetos/monan_gam/andre.lyra/cartopy"
-DIR_OUTPUT = f"/lustre/projetos/monan_atm/guilherme.mendonca/MONAN-analysis/analyses/vertical_structure/results/output_2026070100_to_2026073100"
+DIR_OUTPUT = f"/lustre/projetos/monan_atm/guilherme.mendonca/MONAN-analysis/analyses/vertical_structure/results/output"
 DIR_OUTPUT_FIGS = f"{DIR_OUTPUT}/figs"
 DIR_OUTPUT_DATA = f"{DIR_OUTPUT}/data"
-DIR_INPUT = f"/lustre/projetos/monan_atm/guilherme.mendonca/MONAN-analysis/analyses/vertical_structure/results/input_2026070100_to_2026073100"
+DIR_INPUT = f"/lustre/projetos/monan_atm/guilherme.mendonca/MONAN-analysis/analyses/vertical_structure/results/input"
 DIR_INPUT_INTERMEDIATE = f"{DIR_INPUT}/intermediate"
 DIR_INPUT_PROCESSED = f"{DIR_INPUT}/processed"
 DIR_INPUT_RAW = f"{DIR_INPUT}/raw"

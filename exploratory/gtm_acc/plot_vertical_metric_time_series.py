@@ -29,7 +29,7 @@ import pandas as pd
 
 # Configuration
 # Directory containing output_YYYYMMDDHH_to_YYYYMMDDHH directories.
-BASE_DIR = Path("/lustre/projetos/monan_atm/guilherme.mendonca/MONAN-analysis/analyses/vertical_structure/results")
+BASE_DIR = Path("/lustre/projetos/monan_atm/guilherme.mendonca/MONAN-analysis/analyses/vertical_structure/results/gfs_202606_to_202607")
 
 # Metric filename prefix.
 # Options:
