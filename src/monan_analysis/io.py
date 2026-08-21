@@ -119,29 +119,17 @@ def read_ds_monan(year,month,day,hour,time_window,grid_spec,
     ds_monan = xr.open_dataset(filepath, engine="netcdf4")
     return ds_monan, filepath
 
-def read_ds_monan_unstructured(year,month,day,hour,time_window,grid_spec,
+def read_ds_monan_unstructured(date_in_string_init, date_in_string_final, grid_spec,
                   domain_type,initial_condition_type,vertical_level_spec,
                   base_dir,verbose='n'):
     """ Read MONAN data and return them as an xarray Dataset."""
     if verbose == 'y':
         print ("Reading MONAN output data...")
     # Get file path for reading MONAN data
-    ## Compute final prediction date in datetime and string formats
-    date_final_in_datetime = utils.get_date_as_datetime(
-        year, month, day, hour
-        )
-    date_final_in_string = utils.get_date_as_YYYYMMDDHH_str(
-        year, month, day, hour
-        )
-    ## Compute initial date (final date - time window)
-    date_init_in_datetime = utils.get_initial_date_from_final_date(
-        date_final_in_datetime, time_window
-        )
-    date_init_in_string = date_init_in_datetime.strftime(config.DATE_FORMAT_STRING)
     ## Get MONAN output filename
     filename = get_MONAN_unstructured_filename(
-        date_init_in_string,
-        date_final_in_string,
+        date_in_string_init,
+        date_in_string_final,
         grid_spec=grid_spec,
         domain_type=domain_type,
         initial_condition_type=initial_condition_type,
@@ -250,6 +238,8 @@ def read_ds_ceres(year,month,day,base_dir,edition,stream_name, variable,
             dims=("longitude", "latitude", "time"),
             coords={"longitude": lon, "latitude": lat, "time": time},
         )
+
+        ds_ceres= ds_ceres.transpose("time", "longitude", "latitude")
     elif arr.ndim == 4:
         nlon, nlat, nhour, nprofile = arr.shape
         lon = np.linspace(-179.5, 179.5, nlon)
@@ -276,5 +266,7 @@ def read_ds_ceres(year,month,day,base_dir,edition,stream_name, variable,
         )
     else:
         ds_ceres = xr.DataArray(arr)
+
+    ds_ceres = ds_ceres.to_dataset(name=ceres_var_name)
 
     return ds_ceres, filepath
