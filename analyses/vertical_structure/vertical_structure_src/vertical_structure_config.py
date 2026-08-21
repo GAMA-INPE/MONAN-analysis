@@ -31,7 +31,7 @@ This file was created with the assistance of GitHub Copilot.
 # 0: log messages from vertical_analysis_main.py only
 # 1: log messages from vertical_analysis_main.py + vertical_analysis_aux.py
 # 2: log messages from vertical_analysis_main.py + vertical_analysis_aux.py + monan_analysis modules
-SEL_VERBOSE_LEVEL = 2
+SEL_VERBOSE_LEVEL = 1
 #===================================================================================================
 # General analysis configurations
 #===================================================================================================
@@ -40,16 +40,16 @@ PREDICTION_MODEL = "gfs_analysis"
 # Reference data (e.g. "gfs_analysis", "era5")
 REFERENCE_DATA = "gfs_analysis"
 # Date and forecast time window for analysis
-YEAR = "2026"
+YEAR = "2025"
 MONTH = "06"
-DAY = "02"
+DAY = "30"
 HOUR = "00"
 TIME_WINDOW = "120"
 # Domains for spatial analyses (maps)
 DOMAINS_TO_ANALYZE = [
     "global", 
-    "south_america", 
-    "central_america_and_caribbean"
+    #"south_america", 
+    #"central_america_and_caribbean"
     ]
 # Domains for summary analyses
 SUMMARY_DOMAINS_TO_ANALYZE = [
@@ -210,9 +210,9 @@ APPLY_PRESSURE_LEVEL_VALIDITY_MASK = True
 #===================================================================================================
 ####################################################################################################
 # Initial date
-DATE_INIT = "2026060100"
+DATE_INIT = "2025060100"
 # Final date
-DATE_FINAL = "2026060200" #"2026063000"
+DATE_FINAL = "2025063000"
 # Date time step in hours
 DATE_TIME_STEP = "24"
 # Time windows to analyze
@@ -233,7 +233,7 @@ MULTI_TIME_STATS_METRICS_TO_ANALYZE = [
 # Latitude-pressure profile plot configurations
 #===================================================================================================
 # Whether to generate latitude-pressure profile plots from concatenated datasets
-PLOT_LAT_PRESSURE_PROFILES = True
+PLOT_LAT_PRESSURE_PROFILES = False #True
 # Metrics to use in latitude-pressure profile plots.
 LAT_PRESSURE_PROFILE_METRICS_TO_PLOT = [
     "bias",
