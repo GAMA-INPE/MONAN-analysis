@@ -1258,7 +1258,6 @@ def get_profile_scale(var):
 
     return factor, unit_label
 
-
 def get_lat_pressure_profile_limits(var, metric):
     """
     Get fixed colorbar limits for latitude-pressure profile plots based on variable and metric
@@ -1275,7 +1274,6 @@ def get_lat_pressure_profile_limits(var, metric):
         vmin, vmax = -max_abs, max_abs
 
     return vmin, vmax
-
 
 def calculate_lat_pressure_profile(da):
     """
