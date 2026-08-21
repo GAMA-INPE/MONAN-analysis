@@ -875,78 +875,6 @@ def concatenate_datasets_for_all_dates_and_each_time_window(date_list):
             time_window=time_window
             )
 
-def calculate_mean_metrics_for_all_dates_and_each_time_window():
-    for time_window in vs_config.TIME_WINDOWS_TO_ANALYZE:
-        if vs_config.SEL_VERBOSE_LEVEL >= 1:
-            print (f"\n Time window: {time_window}")
-        # First, mean of metrics that can be calculated for each time instant independently
-        # (e.g., bias, relative error)
-        calculate_mean_single_time_metrics(time_window=time_window)
-        # Second, metrics that require multiple time instants for their definition
-        # (e.g., RMSE, anomaly correlation coefficient)
-        calculate_multi_time_metrics(time_window=time_window)
-
-def plot_mean_metrics_for_all_dates_and_each_time_window():
-    for time_window in vs_config.TIME_WINDOWS_TO_ANALYZE:
-        if vs_config.SEL_VERBOSE_LEVEL >= 1:
-            print (f"\n Time window: {time_window}")
-        plot_mean_metrics(time_window=time_window)
-
-def update_config_file(config_file_path, date, time_window):
-    """
-    Updates YEAR, MONTH, DAY, HOUR, and TIME_WINDOW in the config file without changing order
-    of already existing variables.
-
-    Args:
-        config_file_path (str): Path to the vertical_structure_config.py file.
-        date (str): Date string in the format "%Y%m%d%H".
-        time_window (int): Time window value to be added.
-
-    Returns:
-        None
-    """
-    # Parse the date string
-    YEAR = date[:4]
-    MONTH = date[4:6]
-    DAY = date[6:8]
-    HOUR = date[8:10]
-
-    # Read the current content of the config file
-    with open(config_file_path, 'r') as file:
-        lines = file.readlines()
-
-    # Define the variables to update (ensure values are strings)
-    variables = {
-        "YEAR": f'"{YEAR}"',
-        "MONTH": f'"{MONTH}"',
-        "DAY": f'"{DAY}"',
-        "HOUR": f'"{HOUR}"',
-        "TIME_WINDOW": f'"{time_window}"'
-    }
-
-    # Update the lines in the file
-    updated_lines = []
-    existing_vars = set()
-    for line in lines:
-        updated = False
-        for var, value in variables.items():
-            if line.strip().startswith(f"{var} ="):
-                updated_lines.append(f"{var} = {value}\n")
-                existing_vars.add(var)
-                updated = True
-                break
-        if not updated:
-            updated_lines.append(line)
-
-    # Add any missing variables at the end
-    for var, value in variables.items():
-        if var not in existing_vars:
-            updated_lines.append(f"{var} = {value}\n")
-
-    # Write the updated content back to the config file
-    with open(config_file_path, 'w') as file:
-        file.writelines(updated_lines)
-
 def concatenate_stats_datasets(date_list,time_window):
     # Create folder to save concatenated datasets
     os.makedirs(vs_config.DIR_OUTPUT_DATA+f"/date_multiple_time_window_{time_window}", exist_ok=True)
@@ -977,31 +905,6 @@ def concatenate_stats_datasets(date_list,time_window):
             date_init=date_list[0],
             date_final=date_list[-1],
             date_list=date_list,
-        )
-
-def calculate_mean_single_time_metrics(time_window):
-    # Create folder to save mean stats metrics datasets
-    os.makedirs(vs_config.DIR_OUTPUT_DATA+f"/date_multiple_time_window_{time_window}", exist_ok=True)
-    # Construct filepaths for concatenated stats datasets
-    for stat in vs_config.STATS_METRICS_TO_ANALYZE:
-        stat_concat_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/{stat}_date_concat_from_{vs_config.DATE_INIT}_to_{vs_config.DATE_FINAL}_time_window_{time_window}.nc"
-        # Read concatenated dataset
-        ds_stat_concat = xr.open_dataset(stat_concat_filepath, engine="netcdf4")
-        # Calculate mean value of stat metric across all dates for each variable, level and domain
-        ds_stat_mean = ds_stat_concat.mean(dim="Time")
-        # Save dataset with mean values in nc file
-        stat_mean_filepath = f"{vs_config.DIR_OUTPUT_DATA}/date_multiple_time_window_{time_window}/mean_{stat}_date_from_{vs_config.DATE_INIT}_to_{vs_config.DATE_FINAL}_time_window_{time_window}.nc"
-        ds_stat_mean.to_netcdf(stat_mean_filepath)
-        stat_mean_summary_csv = stat_mean_filepath.replace(".nc", "_summary.csv")
-
-        write_regional_summary_csv(
-            ds=ds_stat_mean,
-            metric=f"mean_{stat}",
-            output_csv=stat_mean_summary_csv,
-            time_window=time_window,
-            summary_type="mean_period",
-            date_init=vs_config.DATE_INIT,
-            date_final=vs_config.DATE_FINAL,
         )
 
 def concatenate_var_datasets(date_list,time_window):
@@ -1047,6 +950,43 @@ def concatenate_var_datasets(date_list,time_window):
     var_ref_concat_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/ref_{vs_config.REFERENCE_DATA}_concat_date_from_{date_list[0]}_to_{date_list[-1]}_time_window_{time_window}.nc"
     ds_var_ref_concat.to_netcdf(var_ref_concat_filepath)
 
+def calculate_mean_metrics_for_all_dates_and_each_time_window():
+    for time_window in vs_config.TIME_WINDOWS_TO_ANALYZE:
+        if vs_config.SEL_VERBOSE_LEVEL >= 1:
+            print (f"\n Time window: {time_window}")
+        # First, mean of metrics that can be calculated for each time instant independently
+        # (e.g., bias, relative error)
+        calculate_mean_single_time_metrics(time_window=time_window)
+        # Second, metrics that require multiple time instants for their definition
+        # (e.g., RMSE, anomaly correlation coefficient)
+        calculate_multi_time_metrics(time_window=time_window)
+
+def calculate_mean_single_time_metrics(time_window):
+    # Create folder to save mean stats metrics datasets
+    os.makedirs(vs_config.DIR_OUTPUT_DATA+f"/date_multiple_time_window_{time_window}", exist_ok=True)
+    # Construct filepaths for concatenated stats datasets
+    for stat in vs_config.STATS_METRICS_TO_ANALYZE:
+        stat_concat_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/{stat}_date_concat_from_{vs_config.DATE_INIT}_to_{vs_config.DATE_FINAL}_time_window_{time_window}.nc"
+        # Read concatenated dataset
+        ds_stat_concat = xr.open_dataset(stat_concat_filepath, engine="netcdf4")
+        # Calculate mean value of stat metric across all dates for each variable, level and domain
+        ds_stat_mean = ds_stat_concat.mean(dim="Time")
+        # Save dataset with mean values in nc file
+        stat_mean_filepath = f"{vs_config.DIR_OUTPUT_DATA}/date_multiple_time_window_{time_window}/mean_{stat}_date_from_{vs_config.DATE_INIT}_to_{vs_config.DATE_FINAL}_time_window_{time_window}.nc"
+        ds_stat_mean.to_netcdf(stat_mean_filepath)
+
+        # Write summary of mean values to CSV file
+        stat_mean_summary_csv = stat_mean_filepath.replace(".nc", "_summary.csv")
+        write_regional_summary_csv(
+            ds=ds_stat_mean,
+            metric=f"mean_{stat}",
+            output_csv=stat_mean_summary_csv,
+            time_window=time_window,
+            summary_type="mean_period",
+            date_init=vs_config.DATE_INIT,
+            date_final=vs_config.DATE_FINAL,
+        )
+
 def calculate_multi_time_metrics(time_window):
     # Create folder to save multi-time stats metrics datasets
     os.makedirs(vs_config.DIR_OUTPUT_DATA+f"/date_multiple_time_window_{time_window}", exist_ok=True)
@@ -1057,7 +997,7 @@ def calculate_multi_time_metrics(time_window):
     ds_var_monan_concat = xr.open_dataset(var_monan_concat_filepath, engine="netcdf4")
     ds_var_gfs_concat = xr.open_dataset(var_gfs_concat_filepath, engine="netcdf4")
 
-    # Apply pressure-level validity mask based on GFS and MONAN surface pressure
+    # Apply pressure-level validity mask based on ref and prediction model surface pressure
     if vs_config.APPLY_PRESSURE_LEVEL_VALIDITY_MASK:
         if "surface_pressure" not in ds_var_gfs_concat:
             raise ValueError(
@@ -1162,6 +1102,12 @@ def calculate_multi_time_metrics(time_window):
                 date_final=vs_config.DATE_FINAL,
             )
 
+def plot_mean_metrics_for_all_dates_and_each_time_window():
+    for time_window in vs_config.TIME_WINDOWS_TO_ANALYZE:
+        if vs_config.SEL_VERBOSE_LEVEL >= 1:
+            print (f"\n Time window: {time_window}")
+        plot_mean_metrics(time_window=time_window)
+
 def plot_mean_metrics(time_window):
     # Define verbosity
     if vs_config.SEL_VERBOSE_LEVEL >= 2:
@@ -1238,6 +1184,61 @@ def plot_mean_metrics(time_window):
                         vmax=vmax,
                         unit_label=unit_label   
                         )
+
+def update_config_file(config_file_path, date, time_window):
+    """
+    Updates YEAR, MONTH, DAY, HOUR, and TIME_WINDOW in the config file without changing order
+    of already existing variables.
+
+    Args:
+        config_file_path (str): Path to the vertical_structure_config.py file.
+        date (str): Date string in the format "%Y%m%d%H".
+        time_window (int): Time window value to be added.
+
+    Returns:
+        None
+    """
+    # Parse the date string
+    YEAR = date[:4]
+    MONTH = date[4:6]
+    DAY = date[6:8]
+    HOUR = date[8:10]
+
+    # Read the current content of the config file
+    with open(config_file_path, 'r') as file:
+        lines = file.readlines()
+
+    # Define the variables to update (ensure values are strings)
+    variables = {
+        "YEAR": f'"{YEAR}"',
+        "MONTH": f'"{MONTH}"',
+        "DAY": f'"{DAY}"',
+        "HOUR": f'"{HOUR}"',
+        "TIME_WINDOW": f'"{time_window}"'
+    }
+
+    # Update the lines in the file
+    updated_lines = []
+    existing_vars = set()
+    for line in lines:
+        updated = False
+        for var, value in variables.items():
+            if line.strip().startswith(f"{var} ="):
+                updated_lines.append(f"{var} = {value}\n")
+                existing_vars.add(var)
+                updated = True
+                break
+        if not updated:
+            updated_lines.append(line)
+
+    # Add any missing variables at the end
+    for var, value in variables.items():
+        if var not in existing_vars:
+            updated_lines.append(f"{var} = {value}\n")
+
+    # Write the updated content back to the config file
+    with open(config_file_path, 'w') as file:
+        file.writelines(updated_lines)
 #===================================================================================================
 
 #===================================================================================================
