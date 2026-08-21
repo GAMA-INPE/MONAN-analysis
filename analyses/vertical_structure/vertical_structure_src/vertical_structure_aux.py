@@ -621,7 +621,8 @@ def write_regional_summary_csv(
 
     os.makedirs(os.path.dirname(output_csv), exist_ok=True)
     pd.DataFrame(rows).to_csv(output_csv, index=False)
-    print(f"Regional summary CSV saved: {output_csv}")
+    if vs_config.SEL_VERBOSE_LEVEL >= 1:
+        print(f"Regional summary CSV saved: {output_csv}")
 
 def calculate_statistics(ds_ref_filepath, ds_prediction_filepath):
     # Get date to include in output filenames
@@ -758,15 +759,19 @@ def plot_statistics(ds_stats_filepath_dict):
 
     # Maps of statistics for each metric, domain, variable and level
     for metric in ds_stats_filepath_dict.keys():
-        print(f"Metric: {metric}")
+        if vs_config.SEL_VERBOSE_LEVEL >= 1:
+            print(f"Metric: {metric}")
 
         with xr.open_dataset(ds_stats_filepath_dict[metric], engine="netcdf4") as ds_stats:
             for domain in vs_config.DOMAINS_TO_ANALYZE:
-                print("domain:", domain)
+                if vs_config.SEL_VERBOSE_LEVEL >= 1:
+                    print("domain:", domain)
                 for var in vs_config.VARIABLES_TO_ANALYZE_MONAN:
-                    print("variable:", var)
+                    if vs_config.SEL_VERBOSE_LEVEL >= 1:
+                        print("variable:", var)
                     for level in vs_config.VERTICAL_LEVELS_TO_ANALYZE_MONAN:
-                        print("level:", level)
+                        if vs_config.SEL_VERBOSE_LEVEL >= 1:
+                            print("level:", level)
 
                         vmin, vmax = get_plot_limits(
                             var=var,
@@ -837,8 +842,9 @@ def run_main_for_each_date_and_time_window(date_list):
     vs_config_file_path = os.path.join(vs_config_dir, "vertical_structure_config.py")
     for date in date_list:
         for time_window in vs_config.TIME_WINDOWS_TO_ANALYZE:
-            print (f"\n Date:{date}; time window: {time_window}")
-            print ("\n Updating analysis-specific config file...")
+            if vs_config.SEL_VERBOSE_LEVEL >= 1:
+                print (f"\n Date:{date}; time window: {time_window}")
+                print ("\n Updating analysis-specific config file...")
             update_config_file(
                 config_file_path=vs_config_file_path,
                 date=date, 
@@ -851,16 +857,19 @@ def run_main_for_each_date_and_time_window(date_list):
 
 def concatenate_datasets_for_all_dates_and_each_time_window(date_list):
     for time_window in vs_config.TIME_WINDOWS_TO_ANALYZE:
-        print (f"\n Time window: {time_window}")
+        if vs_config.SEL_VERBOSE_LEVEL >= 1:
+            print (f"\n Time window: {time_window}")
         # First, concatenate datasets for statistical metrics calculated for each date
-        print (f"\n Stats datasets... {time_window}")
+        if vs_config.SEL_VERBOSE_LEVEL >= 1:
+            print (f"\n Stats datasets... {time_window}")
         concatenate_stats_datasets(
             date_list=date_list, 
             time_window=time_window
             )
         # Second, concatenate datasets for the variables analyzed for each date (they will be used
         # to calculate metrics that involve time averages)
-        print (f"\n Vars datasets... {time_window}")
+        if vs_config.SEL_VERBOSE_LEVEL >= 1:
+            print (f"\n Vars datasets... {time_window}")
         concatenate_var_datasets(
             date_list=date_list, 
             time_window=time_window
@@ -868,7 +877,8 @@ def concatenate_datasets_for_all_dates_and_each_time_window(date_list):
 
 def calculate_mean_metrics_for_all_dates_and_each_time_window():
     for time_window in vs_config.TIME_WINDOWS_TO_ANALYZE:
-        print (f"\n Time window: {time_window}")
+        if vs_config.SEL_VERBOSE_LEVEL >= 1:
+            print (f"\n Time window: {time_window}")
         # First, mean of metrics that can be calculated for each time instant independently
         # (e.g., bias, relative error)
         calculate_mean_single_time_metrics(time_window=time_window)
@@ -878,7 +888,8 @@ def calculate_mean_metrics_for_all_dates_and_each_time_window():
 
 def plot_mean_metrics_for_all_dates_and_each_time_window():
     for time_window in vs_config.TIME_WINDOWS_TO_ANALYZE:
-        print (f"\n Time window: {time_window}")
+        if vs_config.SEL_VERBOSE_LEVEL >= 1:
+            print (f"\n Time window: {time_window}")
         plot_mean_metrics(time_window=time_window)
 
 def update_config_file(config_file_path, date, time_window):
@@ -993,7 +1004,7 @@ def calculate_mean_single_time_metrics(time_window):
             date_final=vs_config.DATE_FINAL,
         )
 
-def concatenate_var_datasets(date_list,time_window,verbose='y'):
+def concatenate_var_datasets(date_list,time_window):
     # Create folder to save concatenated datasets
     os.makedirs(vs_config.DIR_OUTPUT_DATA+f"/date_multiple_time_window_{time_window}", exist_ok=True)
 
@@ -1024,11 +1035,11 @@ def concatenate_var_datasets(date_list,time_window,verbose='y'):
                 var_ref_filepaths.append(var_ref_filepath)
 
     # Concatenate variable datasets along "Time" dimension
-    if verbose == 'y':
+    if vs_config.SEL_VERBOSE_LEVEL >= 1:
         print ("Concatenating variable datasets for time window", time_window)
     ds_var_prediction_concat = xr.open_mfdataset(var_prediction_filepaths, combine="nested", concat_dim="Time")
     ds_var_ref_concat = xr.open_mfdataset(var_prediction_filepaths, combine="nested", concat_dim="Time")
-    if verbose == 'y':
+    if vs_config.SEL_VERBOSE_LEVEL >= 1:
         print ("Done concatenating variable datasets for time window", time_window)
     # Save concatenated datasets in nc file
     var_prediction_concat_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/prediction_{vs_config.PREDICTION_MODEL}_concat_date_from_{date_list[0]}_to_{date_list[-1]}_time_window_{time_window}.nc"
@@ -1173,11 +1184,14 @@ def plot_mean_metrics(time_window):
         ds_stat_mean = xr.open_dataset(stat_mean_filepath, engine="netcdf4")
         # Plot maps of mean values of stat metric for each domain, variable and level
         for domain in vs_config.DOMAINS_TO_ANALYZE:
-            print ("domain:", domain)
+            if vs_config.SEL_VERBOSE_LEVEL >= 1:
+                print ("domain:", domain)
             for var in vs_config.VARIABLES_TO_ANALYZE_MONAN:
-                print ("variable:", var)
+                if vs_config.SEL_VERBOSE_LEVEL >= 1:
+                    print ("variable:", var)
                 for level in vs_config.VERTICAL_LEVELS_TO_ANALYZE_MONAN:
-                    print ("level:", level)
+                    if vs_config.SEL_VERBOSE_LEVEL >= 1:
+                        print ("level:", level)
                     if metric in vs_config.STATS_METRICS_TO_ANALYZE:
                         output_filepath = (f"{vs_config.DIR_OUTPUT_FIGS}/date_multiple_"+
                                          f"time_window_{time_window}/"+
@@ -1406,11 +1420,12 @@ def generate_lat_pressure_profile_plots(time_window):
                     vmax=vmax,
                     subtitle=subtitle,
                 )
-
-                print(f"Latitude-pressure profile saved: {output_filepath}")
+                if vs_config.SEL_VERBOSE_LEVEL >= 1:
+                    print(f"Latitude-pressure profile saved: {output_filepath}")
 
 def generate_lat_pressure_profile_plots_for_all_dates_and_each_time_window():
     for time_window in vs_config.TIME_WINDOWS_TO_ANALYZE:
-        print(f"\n Time window: {time_window}")
+        if vs_config.SEL_VERBOSE_LEVEL >= 1:
+            print(f"\n Time window: {time_window}")
         generate_lat_pressure_profile_plots(time_window=time_window)
 #===================================================================================================
