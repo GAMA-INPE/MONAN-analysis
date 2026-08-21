@@ -90,7 +90,7 @@ STREAM_NAME_GFS = "levels"
 # Data interpolation configurations
 #===================================================================================================
 # Type of data interpolation (prediction_to_ref or ref_to_prediction)
-INTERPOL_TYPE = "ref_to_prediction"
+INTERPOL_TYPE = "prediction_to_ref"
 #===================================================================================================
 # Statistics configurations
 #===================================================================================================
