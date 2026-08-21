@@ -14,7 +14,7 @@ WGRIB2="/p/app/wgrib2/3.8.0/bin/wgrib2"
 BASE_IN="/oper/dados/ioper/tempo/GFS/0p25/brutos"
 
 ANO="2026"
-MES="06"
+MES="07"
 
 DIR_OUT="/lustre/projetos/monan_atm/guilherme.mendonca/scratch/data/GFS/${ANO}${MES}"
 mkdir -p "${DIR_OUT}"
