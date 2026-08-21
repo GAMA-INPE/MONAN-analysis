@@ -945,10 +945,14 @@ def concatenate_var_datasets(date_list,time_window):
     if vs_config.SEL_VERBOSE_LEVEL >= 1:
         print ("Done concatenating variable datasets for time window", time_window)
     # Save concatenated datasets in nc file
-    var_prediction_concat_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/prediction_{vs_config.PREDICTION_MODEL}_concat_date_from_{date_list[0]}_to_{date_list[-1]}_time_window_{time_window}.nc"
+    var_prediction_concat_filepath, var_ref_concat_filepath = get_prediction_ref_concat_filepath(time_window)
     ds_var_prediction_concat.to_netcdf(var_prediction_concat_filepath)
-    var_ref_concat_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/ref_{vs_config.REFERENCE_DATA}_concat_date_from_{date_list[0]}_to_{date_list[-1]}_time_window_{time_window}.nc"
     ds_var_ref_concat.to_netcdf(var_ref_concat_filepath)
+
+def get_prediction_ref_concat_filepath(time_window):
+    prediction_concat_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/prediction_{vs_config.PREDICTION_MODEL}_concat_date_from_{vs_config.DATE_INIT}_to_{vs_config.DATE_FINAL}_time_window_{time_window}.nc"
+    ref_concat_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/ref_{vs_config.REFERENCE_DATA}_concat_date_from_{vs_config.DATE_INIT}_to_{vs_config.DATE_FINAL}_time_window_{vs_config.TIME_WINDOW}.nc"
+    return prediction_concat_filepath, ref_concat_filepath
 
 def calculate_mean_metrics_for_all_dates_and_each_time_window():
     for time_window in vs_config.TIME_WINDOWS_TO_ANALYZE:
@@ -991,37 +995,36 @@ def calculate_multi_time_metrics(time_window):
     # Create folder to save multi-time stats metrics datasets
     os.makedirs(vs_config.DIR_OUTPUT_DATA+f"/date_multiple_time_window_{time_window}", exist_ok=True)
     # Construct filepaths for concatenated variable datasets
-    var_monan_concat_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/monan_concat_date_from_{vs_config.DATE_INIT}_to_{vs_config.DATE_FINAL}_time_window_{time_window}.nc"
-    var_gfs_concat_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/gfs_concat_date_from_{vs_config.DATE_INIT}_to_{vs_config.DATE_FINAL}_time_window_{time_window}.nc"
+    var_prediction_concat_filepath, var_ref_concat_filepath = get_prediction_ref_concat_filepath(time_window)
     # Read concatenated variable datasets
-    ds_var_monan_concat = xr.open_dataset(var_monan_concat_filepath, engine="netcdf4")
-    ds_var_gfs_concat = xr.open_dataset(var_gfs_concat_filepath, engine="netcdf4")
+    ds_var_prediction_concat = xr.open_dataset(var_prediction_concat_filepath, engine="netcdf4")
+    ds_var_ref_concat = xr.open_dataset(var_ref_concat_filepath, engine="netcdf4")
 
     # Apply pressure-level validity mask based on ref and prediction model surface pressure
     if vs_config.APPLY_PRESSURE_LEVEL_VALIDITY_MASK:
-        if "surface_pressure" not in ds_var_gfs_concat:
+        if "surface_pressure" not in ds_var_ref_concat:
             raise ValueError(
                 "APPLY_PRESSURE_LEVEL_VALIDITY_MASK is True, but "
-                "'surface_pressure' was not found in the concatenated GFS dataset."
+                "'surface_pressure' was not found in the concatenated ref dataset."
             )
 
-        if "surface_pressure" not in ds_var_monan_concat:
+        if "surface_pressure" not in ds_var_prediction_concat:
             raise ValueError(
                 "APPLY_PRESSURE_LEVEL_VALIDITY_MASK is True, but "
-                "'surface_pressure' was not found in the concatenated MONAN dataset."
+                "'surface_pressure' was not found in the concatenated prediction model dataset."
             )
 
         # Obtain validity mask for reference dataset 
         valid_ref_pressure_level_mask = preprocess.apply_pressure_level_validity_mask(
-          ds=ds_var_gfs_concat,
-          pressure_level=ds_var_gfs_concat["level"],
+          ds=ds_var_ref_concat,
+          pressure_level=ds_var_ref_concat["level"],
           surface_pressure_var="surface_pressure"
         )
 
         # Obtain validity mask for prediction dataset
         valid_prediction_pressure_level_mask = preprocess.apply_pressure_level_validity_mask(
-          ds=ds_var_monan_concat,
-          pressure_level=ds_var_monan_concat["level"],
+          ds=ds_var_prediction_concat,
+          pressure_level=ds_var_prediction_concat["level"],
           surface_pressure_var="surface_pressure"
         )
 
@@ -1033,16 +1036,16 @@ def calculate_multi_time_metrics(time_window):
 
         # Remove surface_pressure before applying the mask to avoid expanding
         # this field to all pressure levels during ds.where()
-        ds_var_gfs_concat = ds_var_gfs_concat.drop_vars("surface_pressure")
-        ds_var_monan_concat = ds_var_monan_concat.drop_vars("surface_pressure")
+        ds_var_ref_concat = ds_var_ref_concat.drop_vars("surface_pressure")
+        ds_var_prediction_concat = ds_var_prediction_concat.drop_vars("surface_pressure")
 
         # Apply the same combined validity mask to reference and prediction
-        ds_var_gfs_concat = ds_var_gfs_concat.where(valid_pressure_level_mask)
-        ds_var_monan_concat = ds_var_monan_concat.where(valid_pressure_level_mask)
+        ds_var_ref_concat = ds_var_ref_concat.where(valid_pressure_level_mask)
+        ds_var_prediction_concat = ds_var_prediction_concat.where(valid_pressure_level_mask)
     else:
         # Avoid calculating RMSE or ACC for surface_pressure if it exists in the dataset
-        ds_var_gfs_concat = ds_var_gfs_concat.drop_vars("surface_pressure", errors="ignore")
-        ds_var_monan_concat = ds_var_monan_concat.drop_vars("surface_pressure", errors="ignore")
+        ds_var_ref_concat = ds_var_ref_concat.drop_vars("surface_pressure", errors="ignore")
+        ds_var_prediction_concat = ds_var_prediction_concat.drop_vars("surface_pressure", errors="ignore")
 
     # Calculate and save multi-time metrics across all dates for each variable, level and domain
     ## Here we could calculate any metric that involves time averages, such as anomaly correlation coefficient or rmse
@@ -1050,8 +1053,8 @@ def calculate_multi_time_metrics(time_window):
 
         if multi_time_metric == "rmse":
             ds_rmse = stats.rmse(
-                predictions=ds_var_monan_concat,
-                observations=ds_var_gfs_concat,
+                predictions=ds_var_prediction_concat,
+                observations=ds_var_ref_concat,
                 dim="Time"
             )
 
@@ -1077,8 +1080,8 @@ def calculate_multi_time_metrics(time_window):
 
         elif multi_time_metric == "anomaly_correlation_coefficient":
             ds_acc = stats.anomaly_correlation_coefficient(
-                predictions=ds_var_monan_concat,
-                observations=ds_var_gfs_concat,
+                predictions=ds_var_prediction_concat,
+                observations=ds_var_ref_concat,
                 dim="Time"
             )
 
