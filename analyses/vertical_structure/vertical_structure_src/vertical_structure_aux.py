@@ -312,6 +312,11 @@ def interpolate_prediction_ref(ds_prediction_model_filepath, ds_ref_data_filepat
         vs_config.YEAR, vs_config.MONTH, vs_config.DAY, vs_config.HOUR
         )
         if vs_config.INTERPOL_TYPE == 'prediction_to_ref':
+            if vs_config.SEL_VERBOSE_LEVEL >= 1:
+                print(f"Interpolating prediction model data to reference data grid because "
+                      f"INTERPOL_TYPE is set to 'prediction_to_ref' for "
+                      f"prediction model: {vs_config.PREDICTION_MODEL} and "
+                      f"reference data: {vs_config.REFERENCE_DATA}.")
             # Now, the mapped grid is that from the prediction model
             ds_mapped_grid_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/prediction_{vs_config.PREDICTION_MODEL}_mapped_to_ref_{vs_config.REFERENCE_DATA}_date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}.nc"
             # And the reference grid is that from the reference data
@@ -335,6 +340,11 @@ def interpolate_prediction_ref(ds_prediction_model_filepath, ds_ref_data_filepat
             return ds_ref_data_filepath, ds_prediction_model_filepath
 
         elif vs_config.INTERPOL_TYPE == 'ref_to_prediction':
+            if vs_config.SEL_VERBOSE_LEVEL >= 1:
+                print(f"Interpolating reference data to prediction model grid because "
+                      f"INTERPOL_TYPE is set to 'ref_to_prediction' for "
+                      f"prediction model: {vs_config.PREDICTION_MODEL} and "
+                      f"reference data: {vs_config.REFERENCE_DATA}.")
             # Now, the mapped grid is that from the reference data
             ds_mapped_grid_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/ref_{vs_config.REFERENCE_DATA}_mapped_to_prediction_{vs_config.REFERENCE_DATA}_date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}.nc"
             # And the reference grid is that from the prediction model
