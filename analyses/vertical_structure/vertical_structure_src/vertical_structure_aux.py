@@ -113,7 +113,7 @@ def read_and_preprocess_monan_data():
     # Save preprocessed MONAN dataset
     ds_monan_selected_filepath = (
         f"{vs_config.DIR_INPUT_INTERMEDIATE}/"
-        f"prediction_monan_selected_variables_and_levels_date_{date_in_string}_"
+        f"prediction_{vs_config.PREDICTION_MODEL}_in_monan_format_date_{date_in_string}_"
         f"time_window_{vs_config.TIME_WINDOW}.nc"
     )
     ds_monan_selected.to_netcdf(ds_monan_selected_filepath)
@@ -328,7 +328,7 @@ def interpolate_monan_gfs(ds_monan_selected_filepath, ds_gfs_in_monan_format_fil
     )
     if vs_config.INTERPOL_TYPE == 'prediction_to_ref':
         # Now, the mapped grid is the prediction model MONAN
-        ds_mapped_grid_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/prediction_monan_mapped_to_ref_{vs_config.REFERENCE_DATA}_date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}.nc"
+        ds_mapped_grid_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/prediction_{vs_config.PREDICTION_MODEL}_mapped_to_ref_{vs_config.REFERENCE_DATA}_date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}.nc"
         # And the reference grid is the GFS in MONAN format (before mapping)
         ds_ref_grid_filepath = ds_gfs_in_monan_format_filepath
         # Map MONAN data to GFS grid
@@ -350,7 +350,7 @@ def interpolate_monan_gfs(ds_monan_selected_filepath, ds_gfs_in_monan_format_fil
 
     elif vs_config.INTERPOL_TYPE == 'ref_to_prediction':
         # Now, the mapped grid is the reference data GFS
-        ds_mapped_grid_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/ref_{vs_config.REFERENCE_DATA}_mapped_to_prediction_monan_date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}.nc"
+        ds_mapped_grid_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/ref_{vs_config.REFERENCE_DATA}_mapped_to_prediction_{vs_config.REFERENCE_DATA}_date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}.nc"
         # And the reference grid is the original prediction model MONAN
         ds_ref_grid_filepath = ds_monan_selected_filepath
         # Map GFS data to MONAN grid
