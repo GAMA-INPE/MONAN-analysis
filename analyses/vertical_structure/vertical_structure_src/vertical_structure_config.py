@@ -41,8 +41,8 @@ PREDICTION_MODEL = "gfs_analysis"
 REFERENCE_DATA = "gfs_analysis"
 # Date and forecast time window for analysis
 YEAR = "2025"
-MONTH = "06"
-DAY = "30"
+MONTH = "08"
+DAY = "31"
 HOUR = "00"
 TIME_WINDOW = "120"
 # Domains for spatial analyses (maps)
@@ -187,10 +187,10 @@ DIR_MONAN_PREOP = "/lustre/projetos/ioper/models/MONAN-WorkFlow-OPER/MONAN_PRE_O
 DIR_GFS_ANALYSIS = "/lustre/projetos/monan_gam/andre.lyra/NetCDFs/vert_struct/GFS"
 DIR_GFS = "/oper/dados/ioper/tempo/GFS/0p25/brutos"
 DIR_CARTOPY_DATA = "/lustre/projetos/monan_gam/andre.lyra/cartopy"
-DIR_OUTPUT = f"/lustre/projetos/monan_atm/guilherme.mendonca/MONAN-analysis/analyses/vertical_structure/output"
+DIR_OUTPUT = f"/lustre/projetos/monan_atm/guilherme.mendonca/MONAN-analysis/analyses/vertical_structure/results/output_2025080100_to_2025083100"
 DIR_OUTPUT_FIGS = f"{DIR_OUTPUT}/figs"
 DIR_OUTPUT_DATA = f"{DIR_OUTPUT}/data"
-DIR_INPUT = f"/lustre/projetos/monan_atm/guilherme.mendonca/MONAN-analysis/analyses/vertical_structure/input"
+DIR_INPUT = f"/lustre/projetos/monan_atm/guilherme.mendonca/MONAN-analysis/analyses/vertical_structure/results/input_2025080100_to_2025083100"
 DIR_INPUT_INTERMEDIATE = f"{DIR_INPUT}/intermediate"
 DIR_INPUT_PROCESSED = f"{DIR_INPUT}/processed"
 DIR_INPUT_RAW = f"{DIR_INPUT}/raw"
@@ -210,9 +210,9 @@ APPLY_PRESSURE_LEVEL_VALIDITY_MASK = True
 #===================================================================================================
 ####################################################################################################
 # Initial date
-DATE_INIT = "2025060100"
+DATE_INIT = "2025080100"
 # Final date
-DATE_FINAL = "2025063000"
+DATE_FINAL = "2025083100"
 # Date time step in hours
 DATE_TIME_STEP = "24"
 # Time windows to analyze

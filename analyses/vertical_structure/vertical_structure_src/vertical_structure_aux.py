@@ -43,6 +43,7 @@ import pandas as pd
 import numpy as np
 import subprocess
 import importlib
+from concurrent.futures import ProcessPoolExecutor, as_completed
 
 #===================================================================================================
 # Functions for single run
@@ -837,6 +838,46 @@ def cp_config_files():
 #===================================================================================================
 # Functions for multiple run
 #===================================================================================================
+# Tentative functions for running this in parallel (CURRENTLY NOT WORKING!):
+# def process_date_and_time_window(date, time_window, vs_config_dir):
+#     """
+#     Process a single combination of date and time window.
+#     """
+#     vs_config_file_path = os.path.join(vs_config_dir, "vertical_structure_config.py")
+#     if vs_config.SEL_VERBOSE_LEVEL >= 1:
+#         print(f"\n Date:{date}; time window: {time_window}")
+#         print("\n Updating analysis-specific config file...")
+#     update_config_file(
+#         config_file_path=vs_config_file_path,
+#         date=date,
+#         time_window=time_window
+#     )
+#     # Reload the updated config file
+#     importlib.reload(vs_config)
+#     vs_main.main()
+#     gc.collect()
+
+# def run_main_for_each_date_and_time_window(date_list):
+#     """
+#     Run the main function for each combination of date and time window in parallel.
+#     """
+#     vs_config_dir = os.path.dirname(os.path.abspath(__file__))
+#     tasks = []
+
+#     # Use ProcessPoolExecutor for parallel execution
+#     with ProcessPoolExecutor() as executor:
+#         for date in date_list:
+#             for time_window in vs_config.TIME_WINDOWS_TO_ANALYZE:
+#                 # Submit each combination as a separate task
+#                 tasks.append(executor.submit(process_date_and_time_window, date, time_window, vs_config_dir))
+
+#         # Collect results and handle exceptions
+#         for future in as_completed(tasks):
+#             try:
+#                 future.result()  # Wait for the task to complete
+#             except Exception as e:
+#                 print(f"Task failed with exception: {e}")
+
 def run_main_for_each_date_and_time_window(date_list):
     vs_config_dir = os.path.dirname(os.path.abspath(__file__))
     vs_config_file_path = os.path.join(vs_config_dir, "vertical_structure_config.py")

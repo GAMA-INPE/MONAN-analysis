@@ -29,7 +29,7 @@ import pandas as pd
 
 # Configuration
 # Directory containing output_YYYYMMDDHH_to_YYYYMMDDHH directories.
-BASE_DIR = Path(".")
+BASE_DIR = Path("/lustre/projetos/monan_atm/guilherme.mendonca/MONAN-analysis/analyses/vertical_structure/results")
 
 # Metric filename prefix.
 # Options:
@@ -51,7 +51,7 @@ VARIABLE = "zgeo"
 LEVEL_HPA = 500
 
 # Forecast leads to plot. Use None to include all available leads.
-TIME_WINDOWS = [24, 48, 72, 96, 120]
+TIME_WINDOWS = [120] #[24, 48, 72, 96, 120]
 
 # Regions to plot. Use None to include all regions available in the CSV files.
 REGIONS = [
@@ -65,16 +65,16 @@ REGIONS = [
 
 # Optional temporal filtering based on date_init.
 # Use None to include all dates, or specify a date in "YYYYMMDDHH" format.
-DATE_INIT_MIN = "2025060100"
-DATE_INIT_MAX = "2026063000"
-#DATE_INIT_MIN = None
-#DATE_INIT_MAX = None
+#DATE_INIT_MIN = "2025060100"
+#DATE_INIT_MAX = "2026063000"
+DATE_INIT_MIN = None
+DATE_INIT_MAX = None
 
 # Number of subplot columns.
 N_COLUMNS = 2
 
 # Set manually, for example (0.70, 1.00), or use None for automatic limits.
-Y_LIMITS = (0.70, 1.00)
+Y_LIMITS = (0.70, 1.02)
 
 # Output settings.
 OUTPUT_DIR = Path("figs_time_series")

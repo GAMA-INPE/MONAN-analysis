@@ -15,8 +15,12 @@ dist/
 # nc files
 *.nc
 
+# csv files
+*.csv
+
 # output
 output/
+results/
 
 # other python stuff
 *.pyc
