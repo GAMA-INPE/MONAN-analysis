@@ -373,257 +373,6 @@ def interpolate_prediction_ref(ds_prediction_model_filepath, ds_ref_data_filepat
                 f"reference data: {vs_config.REFERENCE_DATA}."
                 )
 
-def get_layer_from_level(level):
-    # Classify a pressure level into a broad atmospheric layer
-    level_hpa = int(float(level) / 100)
-
-    if level_hpa >= 700:
-        return "low"
-    elif 400 <= level_hpa < 700:
-        return "mid"
-    else:
-        return "high"
-
-def get_plot_limits(var, metric, level):
-    # Get fixed plot limits based on variable, metric and pressure level
-    # If no level-specific limit is found, use the broader pressure-layer limits
-
-    level_key = str(int(float(level)))
-
-    if hasattr(vs_config, "PLOT_LIMITS_BY_VAR_METRIC_LEVEL"):
-        try:
-            limits = vs_config.PLOT_LIMITS_BY_VAR_METRIC_LEVEL[var][metric][level_key]
-        except KeyError:
-            limits = None
-
-        if limits is not None:
-            vmin, vmax = limits
-
-            if metric == "bias":
-                max_abs = max(abs(vmin), abs(vmax))
-                vmin, vmax = -max_abs, max_abs
-
-            return vmin, vmax
-
-    if not hasattr(vs_config, "PLOT_LIMITS_BY_VAR_METRIC_LAYER"):
-        return None, None
-
-    layer = get_layer_from_level(level)
-
-    try:
-        limits = vs_config.PLOT_LIMITS_BY_VAR_METRIC_LAYER[var][metric][layer]
-    except KeyError:
-        return None, None
-
-    vmin, vmax = limits
-
-    if metric == "bias":
-        max_abs = max(abs(vmin), abs(vmax))
-        vmin, vmax = -max_abs, max_abs
-
-    return vmin, vmax
-
-def convert_spechum_units_for_plot(ds, var, level):
-    if var != "spechum":
-        return ds, None
-
-    layer = get_layer_from_level(level)
-    level_hpa = int(float(level) / 100)
-
-    ds = ds.copy()
-
-    if int(level_hpa) <= 100: # ×0.01 mg/kg at 100 hPa and lower-pressure levels
-        ds[var] = ds[var] * 100000000.0
-        unit_label = "×0.01 mg/kg"
-    elif layer in ["low", "mid"]:
-        ds[var] = ds[var] * 1000.0
-        unit_label = "g/kg"
-    else:
-        ds[var] = ds[var] * 1000000.0
-        unit_label = "mg/kg"
-
-    return ds, unit_label
-
-def get_lat_lon_names(ds):
-    lat_candidates = ["lat", "latitude"]
-    lon_candidates = ["lon", "longitude"]
-
-    lat_name = None
-    lon_name = None
-
-    for name in lat_candidates:
-        if name in ds.coords or name in ds.dims:
-            lat_name = name
-            break
-
-    for name in lon_candidates:
-        if name in ds.coords or name in ds.dims:
-            lon_name = name
-            break
-
-    if lat_name is None or lon_name is None:
-        raise ValueError(
-            "Could not identify latitude and longitude coordinates "
-            "in the dataset."
-        )
-
-    return lat_name, lon_name
-
-def subset_region(ds, region_name):
-    region_limits = config.DOMAIN_DICT[region_name]
-
-    lat_min, lat_max = region_limits["lat"]
-    lon_min, lon_max = region_limits["lon"]
-
-    lat_name, lon_name = get_lat_lon_names(ds)
-
-    ds_region = ds
-
-    lat_values = ds_region[lat_name]
-    if lat_values[0] > lat_values[-1]:
-        ds_region = ds_region.sel({lat_name: slice(lat_max, lat_min)})
-    else:
-        ds_region = ds_region.sel({lat_name: slice(lat_min, lat_max)})
-
-    lon_values = ds_region[lon_name]
-
-    if float(lon_values.max()) > 180.0:
-        ds_region = ds_region.sel({lon_name: slice(lon_min, lon_max)})
-    else:
-        lon_min_180 = ((lon_min + 180.0) % 360.0) - 180.0
-        lon_max_180 = ((lon_max + 180.0) % 360.0) - 180.0
-
-        if lon_min_180 <= lon_max_180:
-            ds_region = ds_region.sel({lon_name: slice(lon_min_180, lon_max_180)})
-        else:
-            ds_region = xr.concat(
-                [
-                    ds_region.sel({lon_name: slice(lon_min_180, 180.0)}),
-                    ds_region.sel({lon_name: slice(-180.0, lon_max_180)}),
-                ],
-                dim=lon_name,
-            )
-
-    return ds_region
-
-def spatial_mean(da):
-    lat_name, lon_name = get_lat_lon_names(da)
-
-    spatial_dims = [
-        dim for dim in da.dims
-        if dim not in ["Time", "level"]
-    ]
-
-    if lat_name in da.coords and lat_name in spatial_dims:
-        weights = np.cos(np.deg2rad(da[lat_name]))
-        return da.weighted(weights).mean(dim=spatial_dims, skipna=True)
-
-    return da.mean(dim=spatial_dims, skipna=True)
-
-
-def spatial_min(da):
-    spatial_dims = [
-        dim for dim in da.dims
-        if dim not in ["Time", "level"]
-    ]
-    return da.min(dim=spatial_dims, skipna=True)
-
-def spatial_max(da):
-    spatial_dims = [
-        dim for dim in da.dims
-        if dim not in ["Time", "level"]
-    ]
-    return da.max(dim=spatial_dims, skipna=True)
-
-def spatial_std(da):
-    spatial_dims = [
-        dim for dim in da.dims
-        if dim not in ["Time", "level"]
-    ]
-    return da.std(dim=spatial_dims, skipna=True)
-
-def get_scalar_value(da):
-    value = da.values
-    if np.size(value) == 0:
-        return np.nan
-    return float(np.asarray(value).squeeze())
-
-def write_regional_summary_csv(
-    ds,
-    metric,
-    output_csv,
-    time_window,
-    summary_type,
-    date_init=None,
-    date_final=None,
-    date_list=None,
-):
-    if not getattr(vs_config, "WRITE_REGIONAL_SUMMARY_CSV", True):
-        return
-
-    rows = []
-
-    if "Time" in ds.dims:
-        if date_list is not None:
-            ds = ds.assign_coords(Time=date_list)
-
-        time_values = list(ds["Time"].values)
-    else:
-        time_values = [None]
-
-    for region in vs_config.SUMMARY_DOMAINS_TO_ANALYZE:
-        ds_region = subset_region(ds, region)
-
-        for var in vs_config.VARIABLES_TO_ANALYZE:
-            if var not in ds_region:
-                continue
-
-            for level in vs_config.VERTICAL_LEVELS_TO_ANALYZE:
-                da = ds_region[var].sel(level=float(level))
-
-                mean_da = spatial_mean(da)
-                min_da = spatial_min(da)
-                max_da = spatial_max(da)
-                std_da = spatial_std(da)
-
-                for time_value in time_values:
-                    if time_value is not None:
-                        mean_value = get_scalar_value(mean_da.sel(Time=time_value))
-                        min_value = get_scalar_value(min_da.sel(Time=time_value))
-                        max_value = get_scalar_value(max_da.sel(Time=time_value))
-                        std_value = get_scalar_value(std_da.sel(Time=time_value))
-                        valid_date = str(time_value)
-                    else:
-                        mean_value = get_scalar_value(mean_da)
-                        min_value = get_scalar_value(min_da)
-                        max_value = get_scalar_value(max_da)
-                        std_value = get_scalar_value(std_da)
-                        valid_date = None
-
-                    rows.append(
-                        {
-                            "summary_type": summary_type,
-                            "date": valid_date,
-                            "date_init": date_init,
-                            "date_final": date_final,
-                            "time_window": time_window,
-                            "metric": metric,
-                            "variable": var,
-                            "level_pa": int(float(level)),
-                            "level_hpa": int(float(level) / 100.0),
-                            "region": region,
-                            "mean": mean_value,
-                            "min": min_value,
-                            "max": max_value,
-                            "std": std_value,
-                        }
-                    )
-
-    os.makedirs(os.path.dirname(output_csv), exist_ok=True)
-    pd.DataFrame(rows).to_csv(output_csv, index=False)
-    if vs_config.SEL_VERBOSE_LEVEL >= 1:
-        print(f"Regional summary CSV saved: {output_csv}")
-
 def calculate_statistics(ds_ref_filepath, ds_prediction_filepath):
     # Get date to include in output filenames
     date_in_string = utils.get_date_as_YYYYMMDDHH_str(
@@ -746,6 +495,180 @@ def calculate_statistics(ds_ref_filepath, ds_prediction_filepath):
 
     return ds_stats_filepath_dict
 
+def write_regional_summary_csv(
+    ds,
+    metric,
+    output_csv,
+    time_window,
+    summary_type,
+    date_init=None,
+    date_final=None,
+    date_list=None,
+):
+    if not getattr(vs_config, "WRITE_REGIONAL_SUMMARY_CSV", True):
+        return
+
+    rows = []
+
+    if "Time" in ds.dims:
+        if date_list is not None:
+            ds = ds.assign_coords(Time=date_list)
+
+        time_values = list(ds["Time"].values)
+    else:
+        time_values = [None]
+
+    for region in vs_config.SUMMARY_DOMAINS_TO_ANALYZE:
+        ds_region = subset_region(ds, region)
+
+        for var in vs_config.VARIABLES_TO_ANALYZE:
+            if var not in ds_region:
+                continue
+
+            for level in vs_config.VERTICAL_LEVELS_TO_ANALYZE:
+                da = ds_region[var].sel(level=float(level))
+
+                mean_da = spatial_mean(da)
+                min_da = spatial_min(da)
+                max_da = spatial_max(da)
+                std_da = spatial_std(da)
+
+                for time_value in time_values:
+                    if time_value is not None:
+                        mean_value = get_scalar_value(mean_da.sel(Time=time_value))
+                        min_value = get_scalar_value(min_da.sel(Time=time_value))
+                        max_value = get_scalar_value(max_da.sel(Time=time_value))
+                        std_value = get_scalar_value(std_da.sel(Time=time_value))
+                        valid_date = str(time_value)
+                    else:
+                        mean_value = get_scalar_value(mean_da)
+                        min_value = get_scalar_value(min_da)
+                        max_value = get_scalar_value(max_da)
+                        std_value = get_scalar_value(std_da)
+                        valid_date = None
+
+                    rows.append(
+                        {
+                            "summary_type": summary_type,
+                            "date": valid_date,
+                            "date_init": date_init,
+                            "date_final": date_final,
+                            "time_window": time_window,
+                            "metric": metric,
+                            "variable": var,
+                            "level_pa": int(float(level)),
+                            "level_hpa": int(float(level) / 100.0),
+                            "region": region,
+                            "mean": mean_value,
+                            "min": min_value,
+                            "max": max_value,
+                            "std": std_value,
+                        }
+                    )
+
+    os.makedirs(os.path.dirname(output_csv), exist_ok=True)
+    pd.DataFrame(rows).to_csv(output_csv, index=False)
+    if vs_config.SEL_VERBOSE_LEVEL >= 1:
+        print(f"Regional summary CSV saved: {output_csv}")
+
+def get_lat_lon_names(ds):
+    lat_candidates = ["lat", "latitude"]
+    lon_candidates = ["lon", "longitude"]
+
+    lat_name = None
+    lon_name = None
+
+    for name in lat_candidates:
+        if name in ds.coords or name in ds.dims:
+            lat_name = name
+            break
+
+    for name in lon_candidates:
+        if name in ds.coords or name in ds.dims:
+            lon_name = name
+            break
+
+    if lat_name is None or lon_name is None:
+        raise ValueError(
+            "Could not identify latitude and longitude coordinates "
+            "in the dataset."
+        )
+
+    return lat_name, lon_name
+
+def subset_region(ds, region_name):
+    region_limits = config.DOMAIN_DICT[region_name]
+
+    lat_min, lat_max = region_limits["lat"]
+    lon_min, lon_max = region_limits["lon"]
+
+    lat_name, lon_name = get_lat_lon_names(ds)
+
+    ds_region = ds
+
+    lat_values = ds_region[lat_name]
+    if lat_values[0] > lat_values[-1]:
+        ds_region = ds_region.sel({lat_name: slice(lat_max, lat_min)})
+    else:
+        ds_region = ds_region.sel({lat_name: slice(lat_min, lat_max)})
+
+    lon_values = ds_region[lon_name]
+
+    if float(lon_values.max()) > 180.0:
+        ds_region = ds_region.sel({lon_name: slice(lon_min, lon_max)})
+    else:
+        lon_min_180 = ((lon_min + 180.0) % 360.0) - 180.0
+        lon_max_180 = ((lon_max + 180.0) % 360.0) - 180.0
+
+        if lon_min_180 <= lon_max_180:
+            ds_region = ds_region.sel({lon_name: slice(lon_min_180, lon_max_180)})
+        else:
+            ds_region = xr.concat(
+                [
+                    ds_region.sel({lon_name: slice(lon_min_180, 180.0)}),
+                    ds_region.sel({lon_name: slice(-180.0, lon_max_180)}),
+                ],
+                dim=lon_name,
+            )
+
+    return ds_region
+
+def spatial_mean(da):
+    lat_name, lon_name = get_lat_lon_names(da)
+
+    spatial_dims = [
+        dim for dim in da.dims
+        if dim not in ["Time", "level"]
+    ]
+
+    if lat_name in da.coords and lat_name in spatial_dims:
+        weights = np.cos(np.deg2rad(da[lat_name]))
+        return da.weighted(weights).mean(dim=spatial_dims, skipna=True)
+
+    return da.mean(dim=spatial_dims, skipna=True)
+
+
+def spatial_min(da):
+    spatial_dims = [
+        dim for dim in da.dims
+        if dim not in ["Time", "level"]
+    ]
+    return da.min(dim=spatial_dims, skipna=True)
+
+def spatial_max(da):
+    spatial_dims = [
+        dim for dim in da.dims
+        if dim not in ["Time", "level"]
+    ]
+    return da.max(dim=spatial_dims, skipna=True)
+
+def spatial_std(da):
+    spatial_dims = [
+        dim for dim in da.dims
+        if dim not in ["Time", "level"]
+    ]
+    return da.std(dim=spatial_dims, skipna=True)
+
 def plot_statistics(ds_stats_filepath_dict):
     # Get date to include in output filenames
     date_in_string = utils.get_date_as_YYYYMMDDHH_str(
@@ -811,6 +734,83 @@ def plot_statistics(ds_stats_filepath_dict):
                             vmax=vmax,
                             unit_label=unit_label
                         )
+
+def convert_spechum_units_for_plot(ds, var, level):
+    if var != "spechum":
+        return ds, None
+
+    layer = get_layer_from_level(level)
+    level_hpa = int(float(level) / 100)
+
+    ds = ds.copy()
+
+    if int(level_hpa) <= 100: # ×0.01 mg/kg at 100 hPa and lower-pressure levels
+        ds[var] = ds[var] * 100000000.0
+        unit_label = "×0.01 mg/kg"
+    elif layer in ["low", "mid"]:
+        ds[var] = ds[var] * 1000.0
+        unit_label = "g/kg"
+    else:
+        ds[var] = ds[var] * 1000000.0
+        unit_label = "mg/kg"
+
+    return ds, unit_label
+
+def get_layer_from_level(level):
+    # Classify a pressure level into a broad atmospheric layer
+    level_hpa = int(float(level) / 100)
+
+    if level_hpa >= 700:
+        return "low"
+    elif 400 <= level_hpa < 700:
+        return "mid"
+    else:
+        return "high"
+
+def get_plot_limits(var, metric, level):
+    # Get fixed plot limits based on variable, metric and pressure level
+    # If no level-specific limit is found, use the broader pressure-layer limits
+
+    level_key = str(int(float(level)))
+
+    if hasattr(vs_config, "PLOT_LIMITS_BY_VAR_METRIC_LEVEL"):
+        try:
+            limits = vs_config.PLOT_LIMITS_BY_VAR_METRIC_LEVEL[var][metric][level_key]
+        except KeyError:
+            limits = None
+
+        if limits is not None:
+            vmin, vmax = limits
+
+            if metric == "bias":
+                max_abs = max(abs(vmin), abs(vmax))
+                vmin, vmax = -max_abs, max_abs
+
+            return vmin, vmax
+
+    if not hasattr(vs_config, "PLOT_LIMITS_BY_VAR_METRIC_LAYER"):
+        return None, None
+
+    layer = get_layer_from_level(level)
+
+    try:
+        limits = vs_config.PLOT_LIMITS_BY_VAR_METRIC_LAYER[var][metric][layer]
+    except KeyError:
+        return None, None
+
+    vmin, vmax = limits
+
+    if metric == "bias":
+        max_abs = max(abs(vmin), abs(vmax))
+        vmin, vmax = -max_abs, max_abs
+
+    return vmin, vmax
+
+def get_scalar_value(da):
+    value = da.values
+    if np.size(value) == 0:
+        return np.nan
+    return float(np.asarray(value).squeeze())
 
 def cp_config_files():
     # Get date to include in output filenames
@@ -1280,20 +1280,21 @@ def generate_lat_pressure_profile_plots(time_window):
         vs_config.VARIABLES_TO_ANALYZE,
     )
     # Get domains for lat-pressure profile plots; if no specific domains for that were given
-    # in vertical_structure_config, then get only global
+    # in vertical_structure_config, then get those from DOMAINS_TO_ANALYZE
     domains_to_plot = getattr(
         vs_config,
         "LAT_PRESSURE_PROFILE_DOMAINS_TO_PLOT",
-        ["global"],
+        vs_config.DOMAINS_TO_ANALYZE,
     )
     # Get levels for lat-pressure profile plots; if no specific levels for that were given
-    # in vertical_structure_config, then get none (?)
+    # in vertical_structure_config, then get those from VERTICAL_LEVELS_TO_ANALYZE
     levels_to_plot = getattr(
         vs_config,
         "LAT_PRESSURE_PROFILE_LEVELS_TO_PLOT",
-        None,
+        vs_config.VERTICAL_LEVELS_TO_ANALYZE,
     )
 
+    # Get metrics filepaths
     for metric in metrics_to_plot:
         if metric in vs_config.STATS_METRICS_TO_ANALYZE:
             metric_filepath = (
@@ -1318,8 +1319,10 @@ def generate_lat_pressure_profile_plots(time_window):
             print(f"File not found, skipping: {metric_filepath}")
             continue
 
+        # Read metric dataset
         ds_metric = xr.open_dataset(metric_filepath, engine="netcdf4")
 
+        # Loop over domains, variables, and levels to generate latitude-pressure profile plots
         for domain in domains_to_plot:
             ds_domain = subset_region(ds_metric, domain)
 
