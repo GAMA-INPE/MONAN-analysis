@@ -233,7 +233,7 @@ MULTI_TIME_STATS_METRICS_TO_ANALYZE = [
 # Latitude-pressure profile plot configurations
 #===================================================================================================
 # Whether to generate latitude-pressure profile plots from concatenated datasets
-PLOT_LAT_PRESSURE_PROFILES = False #True
+PLOT_LAT_PRESSURE_PROFILES = True
 # Metrics to use in latitude-pressure profile plots.
 LAT_PRESSURE_PROFILE_METRICS_TO_PLOT = [
     "bias",
