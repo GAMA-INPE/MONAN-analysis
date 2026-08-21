@@ -60,15 +60,8 @@ SUMMARY_DOMAINS_TO_ANALYZE = [
     "southern_hemisphere_20_80",
     "tropics_20s_20n",
 ]
-#===================================================================================================
-# MONAN configurations
-#===================================================================================================
-# Grid specification
-GRID_SPEC_MONAN = "10km_uniform"
-# Vertical level specification
-VERTICAL_LEVEL_SPEC_MONAN = "55"
 # Variables to analyze
-VARIABLES_TO_ANALYZE_MONAN = [
+VARIABLES_TO_ANALYZE = [
     #"temperature",
     #"spechum",
     "zgeo",
@@ -76,11 +69,18 @@ VARIABLES_TO_ANALYZE_MONAN = [
     #"umeridional",
     ]
 # Vertical levels (Pa) to analyze
-VERTICAL_LEVELS_TO_ANALYZE_MONAN = [
+VERTICAL_LEVELS_TO_ANALYZE = [
 #    "92500", "85000", "70000", "50000", "40000", "30000", "25000", "20000", "15000", "10000", "7000", "5000", "3000", "2000", "1000", "300"
     #"92500", "85000", "70000", "50000", "40000", "30000", "25000", "10000", "3000", "300"
     50000
     ]
+#===================================================================================================
+# MONAN configurations
+#===================================================================================================
+# Grid specification
+GRID_SPEC_MONAN = "10km_uniform"
+# Vertical level specification
+VERTICAL_LEVEL_SPEC_MONAN = "55"
 #===================================================================================================
 # GFS configurations
 #===================================================================================================

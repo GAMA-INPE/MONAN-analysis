@@ -61,7 +61,7 @@ def create_folder_structure():
     os.makedirs(vs_config.DIR_OUTPUT_DATA+f"/date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}", exist_ok=True)
     os.makedirs(vs_config.DIR_OUTPUT_FIGS, exist_ok=True)
     os.makedirs(vs_config.DIR_OUTPUT_FIGS+f"/date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}", exist_ok=True)
-    for var in vs_config.VARIABLES_TO_ANALYZE_MONAN:
+    for var in vs_config.VARIABLES_TO_ANALYZE:
         os.makedirs(vs_config.DIR_OUTPUT_FIGS+f"/date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}/var_{var}", exist_ok=True)
         for domain in vs_config.DOMAINS_TO_ANALYZE:
             os.makedirs(vs_config.DIR_OUTPUT_FIGS+f"/date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}/var_{var}/domain_{domain}", exist_ok=True)
@@ -101,8 +101,8 @@ def read_and_preprocess_monan_data():
     )
 
     # Select pressure-level variables to be used for analysis
-    ds_monan_selected = ds_monan[vs_config.VARIABLES_TO_ANALYZE_MONAN].sel(
-        level=vs_config.VERTICAL_LEVELS_TO_ANALYZE_MONAN
+    ds_monan_selected = ds_monan[vs_config.VARIABLES_TO_ANALYZE].sel(
+        level=vs_config.VERTICAL_LEVELS_TO_ANALYZE
     )
 
     # Include MONAN surface pressure in the same preprocessed dataset when
@@ -166,9 +166,9 @@ def read_and_preprocess_gfs_prediction_data():
 
     # Select pressure-level variables to be used for analysis
     ds_gfs_in_monan_format = ds_gfs_in_monan_format[
-        vs_config.VARIABLES_TO_ANALYZE_MONAN
+        vs_config.VARIABLES_TO_ANALYZE
     ].sel(
-        level=vs_config.VERTICAL_LEVELS_TO_ANALYZE_MONAN
+        level=vs_config.VERTICAL_LEVELS_TO_ANALYZE
     )
 
     # Include GFS surface pressure in the same preprocessed dataset when
@@ -255,9 +255,9 @@ def read_and_preprocess_gfs_ref_data():
 
     # Select pressure-level variables to be used for analysis
     ds_gfs_in_monan_format = ds_gfs_in_monan_format[
-        vs_config.VARIABLES_TO_ANALYZE_MONAN
+        vs_config.VARIABLES_TO_ANALYZE
     ].sel(
-        level=vs_config.VERTICAL_LEVELS_TO_ANALYZE_MONAN
+        level=vs_config.VERTICAL_LEVELS_TO_ANALYZE
     )
 
     # Include GFS surface pressure in the same preprocessed dataset when
@@ -574,11 +574,11 @@ def write_regional_summary_csv(
     for region in vs_config.SUMMARY_DOMAINS_TO_ANALYZE:
         ds_region = subset_region(ds, region)
 
-        for var in vs_config.VARIABLES_TO_ANALYZE_MONAN:
+        for var in vs_config.VARIABLES_TO_ANALYZE:
             if var not in ds_region:
                 continue
 
-            for level in vs_config.VERTICAL_LEVELS_TO_ANALYZE_MONAN:
+            for level in vs_config.VERTICAL_LEVELS_TO_ANALYZE:
                 da = ds_region[var].sel(level=float(level))
 
                 mean_da = spatial_mean(da)
@@ -766,10 +766,10 @@ def plot_statistics(ds_stats_filepath_dict):
             for domain in vs_config.DOMAINS_TO_ANALYZE:
                 if vs_config.SEL_VERBOSE_LEVEL >= 1:
                     print("domain:", domain)
-                for var in vs_config.VARIABLES_TO_ANALYZE_MONAN:
+                for var in vs_config.VARIABLES_TO_ANALYZE:
                     if vs_config.SEL_VERBOSE_LEVEL >= 1:
                         print("variable:", var)
-                    for level in vs_config.VERTICAL_LEVELS_TO_ANALYZE_MONAN:
+                    for level in vs_config.VERTICAL_LEVELS_TO_ANALYZE:
                         if vs_config.SEL_VERBOSE_LEVEL >= 1:
                             print("level:", level)
 
@@ -1174,7 +1174,7 @@ def plot_mean_metrics(time_window):
         verbose = 'n'
     # Create folders to save mean stats metrics plots
     os.makedirs(vs_config.DIR_OUTPUT_FIGS+f"/date_multiple_time_window_{time_window}", exist_ok=True)
-    for var in vs_config.VARIABLES_TO_ANALYZE_MONAN:
+    for var in vs_config.VARIABLES_TO_ANALYZE:
         os.makedirs(vs_config.DIR_OUTPUT_FIGS+f"/date_multiple_time_window_{time_window}/var_{var}", exist_ok=True)
         for domain in vs_config.DOMAINS_TO_ANALYZE:
             os.makedirs(vs_config.DIR_OUTPUT_FIGS+f"/date_multiple_time_window_{time_window}/var_{var}/domain_{domain}", exist_ok=True)
@@ -1190,10 +1190,10 @@ def plot_mean_metrics(time_window):
         for domain in vs_config.DOMAINS_TO_ANALYZE:
             if vs_config.SEL_VERBOSE_LEVEL >= 1:
                 print ("domain:", domain)
-            for var in vs_config.VARIABLES_TO_ANALYZE_MONAN:
+            for var in vs_config.VARIABLES_TO_ANALYZE:
                 if vs_config.SEL_VERBOSE_LEVEL >= 1:
                     print ("variable:", var)
-                for level in vs_config.VERTICAL_LEVELS_TO_ANALYZE_MONAN:
+                for level in vs_config.VERTICAL_LEVELS_TO_ANALYZE:
                     if vs_config.SEL_VERBOSE_LEVEL >= 1:
                         print ("level:", level)
                     if metric in vs_config.STATS_METRICS_TO_ANALYZE:
@@ -1253,57 +1253,6 @@ def generate_lat_pressure_profile_plots_for_all_dates_and_each_time_window():
             print(f"\n Time window: {time_window}")
         generate_lat_pressure_profile_plots(time_window=time_window)
 
-def get_profile_scale(var):
-    """
-    Get scale factor and unit label for latitude-pressure profile plots
-    """
-    scale_config = getattr(vs_config, "LAT_PRESSURE_PROFILE_SCALE_BY_VAR", {})
-
-    if var not in scale_config:
-        return 1.0, None
-
-    factor = scale_config[var].get("factor", 1.0)
-    unit_label = scale_config[var].get("unit_label", None)
-
-    return factor, unit_label
-
-def get_lat_pressure_profile_limits(var, metric):
-    """
-    Get fixed colorbar limits for latitude-pressure profile plots based on variable and metric
-    """
-    limits_config = getattr(vs_config, "LAT_PRESSURE_PROFILE_LIMITS_BY_VAR_METRIC", {})
-
-    try:
-        vmin, vmax = limits_config[var][metric]
-    except KeyError:
-        return None, None
-
-    if metric in ["bias", "mean_bias"]:
-        max_abs = max(abs(vmin), abs(vmax))
-        vmin, vmax = -max_abs, max_abs
-
-    return vmin, vmax
-
-def calculate_lat_pressure_profile(da):
-    """
-    Calculate the latitude-pressure profile by averaging over longitude and time.
-
-    This is equivalent to the GrADS command:
-    ave(ave(var, x=1, x=nlon), t=1, t=ntime)
-
-    The output keeps latitude and pressure level.
-    """
-    lat_name, lon_name = get_lat_lon_names(da)
-
-    mean_dims = [lon_name]
-
-    if "Time" in da.dims:
-        mean_dims.append("Time")
-
-    da_profile = da.mean(dim=mean_dims, skipna=True)
-
-    return da_profile
-
 def generate_lat_pressure_profile_plots(time_window):
     """
     Plot latitude-pressure profiles from concatenated metric datasets.
@@ -1316,24 +1265,29 @@ def generate_lat_pressure_profile_plots(time_window):
     if not getattr(vs_config, "PLOT_LAT_PRESSURE_PROFILES", False):
         return
 
+    # Get metrics for lat-pressure profile plots; if no specific metrics for that were given
+    # in vertical_structure_config, then get those from STATS_METRICS_TO_ANALYZE
     metrics_to_plot = getattr(
         vs_config,
         "LAT_PRESSURE_PROFILE_METRICS_TO_PLOT",
         vs_config.STATS_METRICS_TO_ANALYZE,
     )
-
+    # Get variables for lat-pressure profile plots; if no specific variables for that were given
+    # in vertical_structure_config, then get those from STATS_METRICS_TO_ANALYZE
     variables_to_plot = getattr(
         vs_config,
         "LAT_PRESSURE_PROFILE_VARIABLES_TO_PLOT",
-        vs_config.VARIABLES_TO_ANALYZE_MONAN,
+        vs_config.VARIABLES_TO_ANALYZE,
     )
-
+    # Get domains for lat-pressure profile plots; if no specific domains for that were given
+    # in vertical_structure_config, then get only global
     domains_to_plot = getattr(
         vs_config,
         "LAT_PRESSURE_PROFILE_DOMAINS_TO_PLOT",
         ["global"],
     )
-
+    # Get levels for lat-pressure profile plots; if no specific levels for that were given
+    # in vertical_structure_config, then get none (?)
     levels_to_plot = getattr(
         vs_config,
         "LAT_PRESSURE_PROFILE_LEVELS_TO_PLOT",
@@ -1430,4 +1384,55 @@ def generate_lat_pressure_profile_plots(time_window):
                 )
                 if vs_config.SEL_VERBOSE_LEVEL >= 1:
                     print(f"Latitude-pressure profile saved: {output_filepath}")
+
+def get_profile_scale(var):
+    """
+    Get scale factor and unit label for latitude-pressure profile plots
+    """
+    scale_config = getattr(vs_config, "LAT_PRESSURE_PROFILE_SCALE_BY_VAR", {})
+
+    if var not in scale_config:
+        return 1.0, None
+
+    factor = scale_config[var].get("factor", 1.0)
+    unit_label = scale_config[var].get("unit_label", None)
+
+    return factor, unit_label
+
+def get_lat_pressure_profile_limits(var, metric):
+    """
+    Get fixed colorbar limits for latitude-pressure profile plots based on variable and metric
+    """
+    limits_config = getattr(vs_config, "LAT_PRESSURE_PROFILE_LIMITS_BY_VAR_METRIC", {})
+
+    try:
+        vmin, vmax = limits_config[var][metric]
+    except KeyError:
+        return None, None
+
+    if metric in ["bias", "mean_bias"]:
+        max_abs = max(abs(vmin), abs(vmax))
+        vmin, vmax = -max_abs, max_abs
+
+    return vmin, vmax
+
+def calculate_lat_pressure_profile(da):
+    """
+    Calculate the latitude-pressure profile by averaging over longitude and time.
+
+    This is equivalent to the GrADS command:
+    ave(ave(var, x=1, x=nlon), t=1, t=ntime)
+
+    The output keeps latitude and pressure level.
+    """
+    lat_name, lon_name = get_lat_lon_names(da)
+
+    mean_dims = [lon_name]
+
+    if "Time" in da.dims:
+        mean_dims.append("Time")
+
+    da_profile = da.mean(dim=mean_dims, skipna=True)
+
+    return da_profile
 #===================================================================================================
