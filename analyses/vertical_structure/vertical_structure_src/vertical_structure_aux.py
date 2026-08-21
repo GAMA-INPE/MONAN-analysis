@@ -855,6 +855,61 @@ def run_main_for_each_date_and_time_window(date_list):
             vs_main.main()
             gc.collect()
 
+def update_config_file(config_file_path, date, time_window):
+    """
+    Updates YEAR, MONTH, DAY, HOUR, and TIME_WINDOW in the config file without changing order
+    of already existing variables.
+
+    Args:
+        config_file_path (str): Path to the vertical_structure_config.py file.
+        date (str): Date string in the format "%Y%m%d%H".
+        time_window (int): Time window value to be added.
+
+    Returns:
+        None
+    """
+    # Parse the date string
+    YEAR = date[:4]
+    MONTH = date[4:6]
+    DAY = date[6:8]
+    HOUR = date[8:10]
+
+    # Read the current content of the config file
+    with open(config_file_path, 'r') as file:
+        lines = file.readlines()
+
+    # Define the variables to update (ensure values are strings)
+    variables = {
+        "YEAR": f'"{YEAR}"',
+        "MONTH": f'"{MONTH}"',
+        "DAY": f'"{DAY}"',
+        "HOUR": f'"{HOUR}"',
+        "TIME_WINDOW": f'"{time_window}"'
+    }
+
+    # Update the lines in the file
+    updated_lines = []
+    existing_vars = set()
+    for line in lines:
+        updated = False
+        for var, value in variables.items():
+            if line.strip().startswith(f"{var} ="):
+                updated_lines.append(f"{var} = {value}\n")
+                existing_vars.add(var)
+                updated = True
+                break
+        if not updated:
+            updated_lines.append(line)
+
+    # Add any missing variables at the end
+    for var, value in variables.items():
+        if var not in existing_vars:
+            updated_lines.append(f"{var} = {value}\n")
+
+    # Write the updated content back to the config file
+    with open(config_file_path, 'w') as file:
+        file.writelines(updated_lines)
+
 def concatenate_datasets_for_all_dates_and_each_time_window(date_list):
     for time_window in vs_config.TIME_WINDOWS_TO_ANALYZE:
         if vs_config.SEL_VERBOSE_LEVEL >= 1:
@@ -1187,66 +1242,17 @@ def plot_mean_metrics(time_window):
                         vmax=vmax,
                         unit_label=unit_label   
                         )
-
-def update_config_file(config_file_path, date, time_window):
-    """
-    Updates YEAR, MONTH, DAY, HOUR, and TIME_WINDOW in the config file without changing order
-    of already existing variables.
-
-    Args:
-        config_file_path (str): Path to the vertical_structure_config.py file.
-        date (str): Date string in the format "%Y%m%d%H".
-        time_window (int): Time window value to be added.
-
-    Returns:
-        None
-    """
-    # Parse the date string
-    YEAR = date[:4]
-    MONTH = date[4:6]
-    DAY = date[6:8]
-    HOUR = date[8:10]
-
-    # Read the current content of the config file
-    with open(config_file_path, 'r') as file:
-        lines = file.readlines()
-
-    # Define the variables to update (ensure values are strings)
-    variables = {
-        "YEAR": f'"{YEAR}"',
-        "MONTH": f'"{MONTH}"',
-        "DAY": f'"{DAY}"',
-        "HOUR": f'"{HOUR}"',
-        "TIME_WINDOW": f'"{time_window}"'
-    }
-
-    # Update the lines in the file
-    updated_lines = []
-    existing_vars = set()
-    for line in lines:
-        updated = False
-        for var, value in variables.items():
-            if line.strip().startswith(f"{var} ="):
-                updated_lines.append(f"{var} = {value}\n")
-                existing_vars.add(var)
-                updated = True
-                break
-        if not updated:
-            updated_lines.append(line)
-
-    # Add any missing variables at the end
-    for var, value in variables.items():
-        if var not in existing_vars:
-            updated_lines.append(f"{var} = {value}\n")
-
-    # Write the updated content back to the config file
-    with open(config_file_path, 'w') as file:
-        file.writelines(updated_lines)
 #===================================================================================================
 
 #===================================================================================================
 # Functions for latitude-pressure profile plots
 #===================================================================================================
+def generate_lat_pressure_profile_plots_for_all_dates_and_each_time_window():
+    for time_window in vs_config.TIME_WINDOWS_TO_ANALYZE:
+        if vs_config.SEL_VERBOSE_LEVEL >= 1:
+            print(f"\n Time window: {time_window}")
+        generate_lat_pressure_profile_plots(time_window=time_window)
+
 def get_profile_scale(var):
     """
     Get scale factor and unit label for latitude-pressure profile plots
@@ -1424,10 +1430,4 @@ def generate_lat_pressure_profile_plots(time_window):
                 )
                 if vs_config.SEL_VERBOSE_LEVEL >= 1:
                     print(f"Latitude-pressure profile saved: {output_filepath}")
-
-def generate_lat_pressure_profile_plots_for_all_dates_and_each_time_window():
-    for time_window in vs_config.TIME_WINDOWS_TO_ANALYZE:
-        if vs_config.SEL_VERBOSE_LEVEL >= 1:
-            print(f"\n Time window: {time_window}")
-        generate_lat_pressure_profile_plots(time_window=time_window)
 #===================================================================================================
