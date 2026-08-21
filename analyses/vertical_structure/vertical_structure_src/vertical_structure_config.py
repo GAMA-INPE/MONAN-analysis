@@ -31,17 +31,17 @@ This file was created with the assistance of GitHub Copilot.
 # 0: log messages from vertical_analysis_main.py only
 # 1: log messages from vertical_analysis_main.py + vertical_analysis_aux.py
 # 2: log messages from vertical_analysis_main.py + vertical_analysis_aux.py + monan_analysis modules
-SEL_VERBOSE_LEVEL = 1
+SEL_VERBOSE_LEVEL = 0
 #===================================================================================================
 # General analysis configurations
 #===================================================================================================
 # Prediction model to analyze (e.g. "monan", "gfs_analysis" (gfs forecast + assimilation), "gfs", "bam")
-PREDICTION_MODEL = "gfs_analysis"
+PREDICTION_MODEL = "gfs"
 # Reference data (e.g. "gfs_analysis", "era5")
 REFERENCE_DATA = "gfs_analysis"
 # Date and forecast time window for analysis
-YEAR = "2025"
-MONTH = "08"
+YEAR = "2026"
+MONTH = "07"
 DAY = "31"
 HOUR = "00"
 TIME_WINDOW = "120"
@@ -185,12 +185,12 @@ PLOT_LIMITS_BY_VAR_METRIC_LEVEL = {
 #DIR_MONAN_PREOP = "/lustre/projetos/monan_adm/monan/ecf_PREOPER/MONAN-WorkFlow-OPER/MONAN_PRE_OPER/MONAN/scripts_CD-CT/dataout/flushout"
 DIR_MONAN_PREOP = "/lustre/projetos/ioper/models/MONAN-WorkFlow-OPER/MONAN_PRE_OPER/posTMP"
 DIR_GFS_ANALYSIS = "/lustre/projetos/monan_gam/andre.lyra/NetCDFs/vert_struct/GFS"
-DIR_GFS = "/oper/dados/ioper/tempo/GFS/0p25/brutos"
+DIR_GFS = "/lustre/projetos/monan_atm/guilherme.mendonca/scratch/data/GFS"
 DIR_CARTOPY_DATA = "/lustre/projetos/monan_gam/andre.lyra/cartopy"
-DIR_OUTPUT = f"/lustre/projetos/monan_atm/guilherme.mendonca/MONAN-analysis/analyses/vertical_structure/results/output_2025080100_to_2025083100"
+DIR_OUTPUT = f"/lustre/projetos/monan_atm/guilherme.mendonca/MONAN-analysis/analyses/vertical_structure/results/output_2026070100_to_2026073100"
 DIR_OUTPUT_FIGS = f"{DIR_OUTPUT}/figs"
 DIR_OUTPUT_DATA = f"{DIR_OUTPUT}/data"
-DIR_INPUT = f"/lustre/projetos/monan_atm/guilherme.mendonca/MONAN-analysis/analyses/vertical_structure/results/input_2025080100_to_2025083100"
+DIR_INPUT = f"/lustre/projetos/monan_atm/guilherme.mendonca/MONAN-analysis/analyses/vertical_structure/results/input_2026070100_to_2026073100"
 DIR_INPUT_INTERMEDIATE = f"{DIR_INPUT}/intermediate"
 DIR_INPUT_PROCESSED = f"{DIR_INPUT}/processed"
 DIR_INPUT_RAW = f"{DIR_INPUT}/raw"
@@ -210,9 +210,9 @@ APPLY_PRESSURE_LEVEL_VALIDITY_MASK = True
 #===================================================================================================
 ####################################################################################################
 # Initial date
-DATE_INIT = "2025080100"
+DATE_INIT = "2026070100"
 # Final date
-DATE_FINAL = "2025083100"
+DATE_FINAL = "2026073100"
 # Date time step in hours
 DATE_TIME_STEP = "24"
 # Time windows to analyze
