@@ -1001,26 +1001,14 @@ def concatenate_var_datasets(date_list,time_window,verbose='y'):
     var_prediction_filepaths = []
     var_ref_filepaths = []
 
-    # Check prediction model and reference data for concatenating the right files
+    # Check if prediction model and reference data are the same, in which case no mapping was applied
     if vs_config.PREDICTION_MODEL == vs_config.REFERENCE_DATA:
         for date_in_string in date_list:
-            var_prediction_filepath = f"{vs_config.DIR_INPUT_INTERMEDIATE}/prediction_{vs_config.INTERPOL_TYPE}_in_monan_format_date_{date_in_string}_time_window_{time_window}.nc"
+            var_prediction_filepath = f"{vs_config.DIR_INPUT_INTERMEDIATE}/prediction_{vs_config.PREDICTION_MODEL}_in_monan_format_date_{date_in_string}_time_window_{time_window}.nc"
             var_prediction_filepaths.append(var_prediction_filepath)
             var_ref_filepath = f"{vs_config.DIR_INPUT_INTERMEDIATE}/ref_{vs_config.REFERENCE_DATA}_in_monan_format_date_{date_in_string}_time_window_{time_window}.nc"
             var_ref_filepaths.append(var_ref_filepath)
-    elif vs_config.PREDICTION_MODEL == "monan":
-        if vs_config.INTERPOL_TYPE == "prediction_to_ref":
-            for date_in_string in date_list:
-                var_prediction_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/prediction_monan_mapped_to_ref_{vs_config.REFERENCE_DATA}_date_{date_in_string}_time_window_{time_window}.nc"
-                var_prediction_filepaths.append(var_prediction_filepath)
-                var_ref_filepath = f"{vs_config.DIR_INPUT_INTERMEDIATE}/ref_{vs_config.REFERENCE_DATA}_in_monan_format_date_{date_in_string}_time_window_{time_window}.nc"
-                var_ref_filepaths.append(var_ref_filepath)
-        elif vs_config.INTERPOL_TYPE == "ref_to_prediction":
-            for date_in_string in date_list:
-                var_prediction_filepath = f"{vs_config.DIR_INPUT_INTERMEDIATE}/prediction_monan_selected_variables_and_levels_date_{date_in_string}_time_window_{time_window}.nc"
-                var_prediction_filepaths.append(var_prediction_filepath)
-                var_ref_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/ref_{vs_config.REFERENCE_DATA}_mapped_to_monan_date_{date_in_string}_time_window_{time_window}.nc"
-                var_ref_filepaths.append(var_ref_filepath)
+    # If not, look for the correct mapped and reference data depending on the employed type of interpolation
     else:
         if vs_config.INTERPOL_TYPE == "prediction_to_ref":
             for date_in_string in date_list:
@@ -1034,8 +1022,6 @@ def concatenate_var_datasets(date_list,time_window,verbose='y'):
                 var_prediction_filepaths.append(var_prediction_filepath)
                 var_ref_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/ref_{vs_config.REFERENCE_DATA}_mapped_to_{vs_config.PREDICTION_MODEL}_date_{date_in_string}_time_window_{time_window}.nc"
                 var_ref_filepaths.append(var_ref_filepath)
-
-    
 
     # Concatenate variable datasets along "Time" dimension
     if verbose == 'y':
