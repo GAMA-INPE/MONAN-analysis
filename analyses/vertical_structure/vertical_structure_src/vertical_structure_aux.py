@@ -335,7 +335,7 @@ def interpolate_prediction_ref(ds_prediction_model_filepath, ds_ref_data_filepat
             if vs_config.SEL_VERBOSE_LEVEL >= 1:
                 # Read interpolated data
                 ds_interpolated = xr.open_dataset(ds_mapped_grid_filepath, engine="netcdf4")
-                print ("MONAN data mapped to GFS grid:")
+                print (f"{vs_config.PREDICTION_MODEL} data mapped to {vs_config.REFERENCE_DATA} grid:")
                 print (ds_interpolated)
             return ds_ref_data_filepath, ds_prediction_model_filepath
 
@@ -346,7 +346,7 @@ def interpolate_prediction_ref(ds_prediction_model_filepath, ds_ref_data_filepat
                       f"prediction model: {vs_config.PREDICTION_MODEL} and "
                       f"reference data: {vs_config.REFERENCE_DATA}.")
             # Now, the mapped grid is that from the reference data
-            ds_mapped_grid_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/ref_{vs_config.REFERENCE_DATA}_mapped_to_prediction_{vs_config.REFERENCE_DATA}_date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}.nc"
+            ds_mapped_grid_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/ref_{vs_config.REFERENCE_DATA}_mapped_to_prediction_{vs_config.PREDICTION_MODEL}_date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}.nc"
             # And the reference grid is that from the prediction model
             ds_ref_grid_filepath = ds_prediction_model_filepath
             # Map reference data to prediction model grid
@@ -363,7 +363,7 @@ def interpolate_prediction_ref(ds_prediction_model_filepath, ds_ref_data_filepat
             if vs_config.SEL_VERBOSE_LEVEL >= 1:
                 # Read interpolated data
                 ds_interpolated = xr.open_dataset(ds_mapped_grid_filepath, engine="netcdf4")
-                print ("GFS data mapped to MONAN grid:")
+                print (f"{vs_config.REFERENCE_DATA} data mapped to {vs_config.PREDICTION_MODEL} grid:")
                 print (ds_interpolated)
             return ds_ref_data_filepath, ds_prediction_model_filepath
         else:

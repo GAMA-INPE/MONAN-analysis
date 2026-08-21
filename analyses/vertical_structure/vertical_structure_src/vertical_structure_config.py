@@ -36,7 +36,7 @@ SEL_VERBOSE_LEVEL = 2
 # General analysis configurations
 #===================================================================================================
 # Prediction model to analyze (e.g. "monan", "gfs_analysis" (gfs forecast + assimilation), "gfs", "bam")
-PREDICTION_MODEL = "monan"
+PREDICTION_MODEL = "gfs_analysis"
 # Reference data (e.g. "gfs_analysis", "era5")
 REFERENCE_DATA = "gfs_analysis"
 # Date and forecast time window for analysis
@@ -90,7 +90,7 @@ STREAM_NAME_GFS = "levels"
 # Data interpolation configurations
 #===================================================================================================
 # Type of data interpolation (prediction_to_ref or ref_to_prediction)
-INTERPOL_TYPE = "prediction_to_ref"
+INTERPOL_TYPE = "ref_to_prediction"
 #===================================================================================================
 # Statistics configurations
 #===================================================================================================
