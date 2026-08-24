@@ -111,8 +111,10 @@ def read_ds_monan(year,month,day,hour,time_window,grid_spec,
         grid_spec=grid_spec,
         vertical_level_spec=vertical_level_spec
         )
-    ## Get complete path
-    filepath = f"{base_dir}/{date_init_in_string}/{filename}"
+    ## Should receive complete path, the base_dir should be passed complete, as in the unstructured case, to allow for generalization
+    ## Sometimes structured output will be under "Post" directory, sometimes directly under the "{initial_date_init_in_datetime}" directory,
+    ## and other structures are possible
+    filepath = f"{base_dir}/{filename}"
     if verbose == 'y':
         print(f"Taking data from file: {filepath}")
     # Read dataset using complete path'
@@ -136,7 +138,7 @@ def read_ds_monan_unstructured(date_in_string_init, date_in_string_final, grid_s
         vertical_level_spec=vertical_level_spec
         )
     ## Get complete path - won't assume that the base_dir has a subdirectory for each date, as in the structured case, since we can have test case names
-    filepath = f"{base_dir}/Model/{filename}"
+    filepath = f"{base_dir}/{filename}"
     if verbose == 'y':
         print(f"Taking data from file: {filepath}")
     # Read dataset using complete path
@@ -160,8 +162,10 @@ def read_ds_gfs(year,month,day,hour,base_dir,stream_name="levels",
     date_year_month_in_string = utils.get_date_as_YYYYMM_str(
         year, month
         )
-    ## Get complete path
-    filepath = f"{base_dir}/{date_year_month_in_string}/{filename}"
+    ## Should receive complete path, the base_dir should be passed complete, as in the structured case, to allow for generalization
+    ## Sometimes structured output will be under "Model" directory, sometimes directly under the "{initial_date_init_in_datetime}" directory, 
+    ## and other structures are possible
+    filepath = f"{base_dir}/{filename}"
     if verbose == 'y':
         print(f"Reading GFS analysis data from file: {filepath}")
     # Read dataset using complete path
