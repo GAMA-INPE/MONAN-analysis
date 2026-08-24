@@ -43,7 +43,8 @@ PREFIX_MONAN_DIAG_STRING = "MONAN_DIAG_G_POS_GFS"
 GRID_DICT = {
     "10km_uniform": "x5898242",
     "24km_uniform": "x1024002",
-    "30km_uniform": "x655362"
+    "30km_uniform": "x655362",
+    "30km_uniform_Amazonia": "x655362_AMAZONIA"
     }
 # Strings for each vertical level configuration
 VERTICAL_LEVEL_DICT = {

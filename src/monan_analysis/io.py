@@ -59,7 +59,7 @@ def get_MONAN_DIAG_filename(date_in_string_init, date_in_string_final,grid_spec,
                 f"{GRID_STRING}{VERTICAL_LEVEL_STRING}.nc")
     return filename
 
-def get_MONAN_unstructured_filename(date_in_string_init, date_in_string_final,grid_spec,vertical_level_spec,domain_type,initial_condition_type):
+def get_MONAN_unstructured_filename(date_in_string_init, date_in_string_final,grid_spec,vertical_level_spec, domain_type, initial_condition_type):
     # Grid string is directly specified by the user for unstructured data to increase, so we don't need to look it up in a dictionary.
     GRID_STRING = grid_spec
     # Get domain type string
@@ -100,7 +100,7 @@ def get_CERES_dataset_filename(date_in_string, stream_name, edition):
     return filename
 
 def read_ds_monan(year,month,day,hour,time_window,grid_spec,
-                  vertical_level_spec,base_dir,domain_type="G",initial_condition_type="GFS",verbose='n'):
+                  vertical_level_spec,base_dir,domain_type="global",initial_condition_type="GFS",verbose='n'):
     """ Read MONAN data and return them as an xarray Dataset."""
     if verbose == 'y':
         print ("Reading MONAN output data...")
@@ -137,8 +137,8 @@ def read_ds_monan(year,month,day,hour,time_window,grid_spec,
     return ds_monan, filepath
 
 def read_ds_monan_unstructured(date_in_string_init, date_in_string_final, grid_spec,
-                  domain_type,vertical_level_spec,
-                  base_dir,initial_condition_type="GFS",verbose='n'):
+                  vertical_level_spec,
+                  base_dir,domain_type="G",initial_condition_type="GFS",verbose='n'):
     """ Read MONAN data and return them as an xarray Dataset."""
     if verbose == 'y':
         print ("Reading MONAN output data...")
@@ -148,9 +148,8 @@ def read_ds_monan_unstructured(date_in_string_init, date_in_string_final, grid_s
         date_in_string_init,
         date_in_string_final,
         grid_spec=grid_spec,
-        domain_type=domain_type,
-        initial_condition_type=initial_condition_type,
         vertical_level_spec=vertical_level_spec,
+        domain_type=domain_type,
         initial_condition_type=initial_condition_type
         )
     ## Get complete path - won't assume that the base_dir has a subdirectory for each date, as in the structured case, since we can have test case names
