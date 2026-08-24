@@ -31,7 +31,7 @@ This file was created with the assistance of GitHub Copilot.
 # 0: log messages from vertical_analysis_main.py only
 # 1: log messages from vertical_analysis_main.py + vertical_analysis_aux.py
 # 2: log messages from vertical_analysis_main.py + vertical_analysis_aux.py + monan_analysis modules
-SEL_VERBOSE_LEVEL = 1
+SEL_VERBOSE_LEVEL = 2
 #===================================================================================================
 # General analysis configurations
 #===================================================================================================
