@@ -69,13 +69,24 @@ def create_folder_structure():
 
 def read_and_preprocess_prediction_data():
     if vs_config.PREDICTION_MODEL == "monan":
-        return read_and_preprocess_monan_data()
+        if vs_config.SEL_VERBOSE_LEVEL >= 1:
+            print("Reading and preprocessing data from prediction model: MONAN. Selected routine: "
+                  "read_and_preprocess_monan_prediction_data...")
+        return read_and_preprocess_monan_prediction_data()
     elif vs_config.PREDICTION_MODEL == "gfs_analysis":
-        return read_and_preprocess_gfs_prediction_data()
+        if vs_config.SEL_VERBOSE_LEVEL >= 1:
+            print("Reading and preprocessing data from prediction model: GFS analysis. Selected routine: "
+                  "read_and_preprocess_gfs_analysis_prediction_data...")
+        return read_and_preprocess_gfs_analysis_prediction_data()
     elif vs_config.PREDICTION_MODEL == "gfs":
+        if vs_config.SEL_VERBOSE_LEVEL >= 1:
+            print("Reading and preprocessing data from prediction model: GFS. Selected routine:"
+                  "read_and_preprocess_gfs_prediction_data...")
         return read_and_preprocess_gfs_prediction_data()
+    else:
+        raise ValueError(f"Unsupported prediction model: {vs_config.PREDICTION_MODEL}")
     
-def read_and_preprocess_monan_data():
+def read_and_preprocess_monan_prediction_data():
     # Get date and write it into preprocessed filepath
     date_in_string = utils.get_date_as_YYYYMMDDHH_str(
         vs_config.YEAR,
@@ -128,14 +139,85 @@ def read_and_preprocess_monan_data():
 
     return ds_monan_selected_filepath
 
-def read_and_preprocess_gfs_prediction_data():
-    # For GFS, choose whether to read forecast or analysis data
-    if vs_config.PREDICTION_MODEL == "gfs":
-        GFS_BASE_DIR=vs_config.DIR_GFS
-    elif vs_config.PREDICTION_MODEL == "gfs_analysis":
-        GFS_BASE_DIR=vs_config.DIR_GFS_ANALYSIS
+def read_and_preprocess_gfs_analysis_prediction_data():
+    # Get date and write it into preprocessed filepath
+    date_in_string = utils.get_date_as_YYYYMMDDHH_str(
+        vs_config.YEAR,
+        vs_config.MONTH,
+        vs_config.DAY,
+        vs_config.HOUR
+    )
+
+    # Define verbosity
+    if vs_config.SEL_VERBOSE_LEVEL >= 2:
+        verbose = 'y'
     else:
-        raise ValueError(f"Unsupported prediction model: {vs_config.PREDICTION_MODEL}")
+        verbose = 'n'
+
+    # Read GFS pressure-level dataset
+    ds_gfs, gfs_filepath = io.read_ds_gfs_analysis(
+        year=vs_config.YEAR,
+        month=vs_config.MONTH,
+        day=vs_config.DAY,
+        hour=vs_config.HOUR,
+        base_dir=vs_config.DIR_GFS_ANALYSIS,
+        stream_name=vs_config.STREAM_NAME_GFS,
+        verbose=verbose
+    )
+
+    # Configure GFS dataset to match MONAN format
+    ds_gfs_in_monan_format = preprocess.get_gfs_data_in_monan_format(
+        ds_gfs=ds_gfs,
+        gfs_to_monan_var_dict=config.GFS_TO_MONAN_VAR_DICT
+    )
+
+    # Select pressure-level variables to be used for analysis
+    ds_gfs_in_monan_format = ds_gfs_in_monan_format[
+        vs_config.VARIABLES_TO_ANALYZE
+    ].sel(
+        level=vs_config.VERTICAL_LEVELS_TO_ANALYZE
+    )
+
+    # Include GFS surface pressure in the same preprocessed dataset when
+    # the pressure-level validity mask is enabled
+    if vs_config.APPLY_PRESSURE_LEVEL_VALIDITY_MASK:
+        ds_gfs_sp, gfs_sp_filepath = io.read_ds_gfs_analysis(
+            year=vs_config.YEAR,
+            month=vs_config.MONTH,
+            day=vs_config.DAY,
+            hour=vs_config.HOUR,
+            base_dir=vs_config.DIR_GFS_ANALYSIS,
+            stream_name="surface",
+            verbose=verbose
+        )
+
+        # Select and configure GFS surface pressure
+        surface_pressure = (
+            ds_gfs_sp["sp"]
+            .sortby("latitude")
+            .isel(time=0, drop=True)
+            .rename("surface_pressure")
+        )
+
+        # Include GFS surface pressure in the pressure-level dataset
+        ds_gfs_in_monan_format["surface_pressure"] = surface_pressure
+
+    # Save preprocessed GFS dataset as prediction model
+    ds_gfs_in_monan_format_filepath = (
+        f"{vs_config.DIR_INPUT_INTERMEDIATE}/"
+        f"prediction_{vs_config.PREDICTION_MODEL}_in_monan_format_date_{date_in_string}_"
+        f"time_window_{vs_config.TIME_WINDOW}.nc"
+    )
+    ds_gfs_in_monan_format.to_netcdf(ds_gfs_in_monan_format_filepath)
+
+    # If needed, print preprocessed dataset
+    if vs_config.SEL_VERBOSE_LEVEL >= 1:
+        print("GFS prediction dataset in MONAN data format:")
+        print(ds_gfs_in_monan_format)
+
+    return ds_gfs_in_monan_format_filepath
+
+def read_and_preprocess_gfs_prediction_data():
     # Get date and write it into preprocessed filepath
     date_in_string = utils.get_date_as_YYYYMMDDHH_str(
         vs_config.YEAR,
@@ -156,7 +238,8 @@ def read_and_preprocess_gfs_prediction_data():
         month=vs_config.MONTH,
         day=vs_config.DAY,
         hour=vs_config.HOUR,
-        base_dir=GFS_BASE_DIR,
+        time_window=vs_config.TIME_WINDOW,
+        base_dir=vs_config.DIR_GFS,
         stream_name=vs_config.STREAM_NAME_GFS,
         verbose=verbose
     )
@@ -182,7 +265,8 @@ def read_and_preprocess_gfs_prediction_data():
             month=vs_config.MONTH,
             day=vs_config.DAY,
             hour=vs_config.HOUR,
-            base_dir=GFS_BASE_DIR,
+            time_window=vs_config.TIME_WINDOW,
+            base_dir=vs_config.DIR_GFS,
             stream_name="surface",
             verbose=verbose
         )
@@ -215,16 +299,14 @@ def read_and_preprocess_gfs_prediction_data():
 
 def read_and_preprocess_ref_data():
     if vs_config.REFERENCE_DATA == "gfs_analysis":
-        return read_and_preprocess_gfs_ref_data()
+        if vs_config.SEL_VERBOSE_LEVEL >= 1:
+            print("Reading and preprocessing reference data: GFS analysis. Selected routine: "
+                  "read_and_preprocess_gfs_analysis_ref_data...")
+        return read_and_preprocess_gfs_analysis_ref_data()
     else:
         raise ValueError(f"Unsupported reference data: {vs_config.REFERENCE_DATA}")
 
-def read_and_preprocess_gfs_ref_data():
-    if vs_config.REFERENCE_DATA == "gfs_analysis":
-        GFS_BASE_DIR=vs_config.DIR_GFS_ANALYSIS
-    else:
-        raise ValueError(f"Unsupported reference data: {vs_config.REFERENCE_DATA}")
-    
+def read_and_preprocess_gfs_analysis_ref_data():
     # Get date and write it into preprocessed filepath
     date_in_string = utils.get_date_as_YYYYMMDDHH_str(
         vs_config.YEAR,
@@ -240,12 +322,12 @@ def read_and_preprocess_gfs_ref_data():
         verbose = 'n'
 
     # Read GFS pressure-level dataset
-    ds_gfs, gfs_filepath = io.read_ds_gfs(
+    ds_gfs, gfs_filepath = io.read_ds_gfs_analysis(
         year=vs_config.YEAR,
         month=vs_config.MONTH,
         day=vs_config.DAY,
         hour=vs_config.HOUR,
-        base_dir=GFS_BASE_DIR,
+        base_dir=vs_config.DIR_GFS_ANALYSIS,
         stream_name=vs_config.STREAM_NAME_GFS,
         verbose=verbose
     )
@@ -266,12 +348,12 @@ def read_and_preprocess_gfs_ref_data():
     # Include GFS surface pressure in the same preprocessed dataset when
     # the pressure-level validity mask is enabled
     if vs_config.APPLY_PRESSURE_LEVEL_VALIDITY_MASK:
-        ds_gfs_sp, gfs_sp_filepath = io.read_ds_gfs(
+        ds_gfs_sp, gfs_sp_filepath = io.read_ds_gfs_analysis(
             year=vs_config.YEAR,
             month=vs_config.MONTH,
             day=vs_config.DAY,
             hour=vs_config.HOUR,
-            base_dir=GFS_BASE_DIR,
+            base_dir=vs_config.DIR_GFS_ANALYSIS,
             stream_name="surface",
             verbose=verbose
         )

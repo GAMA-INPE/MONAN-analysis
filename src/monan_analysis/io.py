@@ -52,6 +52,12 @@ def get_GFS_analysis_filename(date_in_string,stream_name="levels"):
     filename = (f"{config.PREFIX_GFS_ANALYSIS_STRING}_{stream_name}_{date_in_string}.nc")
     return filename
 
+def get_GFS_filename(date_in_string,time_window,stream_name="levels"):
+    if stream_name not in ["levels", "surface"]:
+        raise ValueError("Invalid data_type. Must be 'levels' or 'surface'.")
+    filename = (f"{config.PREFIX_GFS_STRING}{time_window}_{stream_name}_{date_in_string}.nc")
+    return filename
+
 def read_ds_monan(year,month,day,hour,time_window,grid_spec,
                   vertical_level_spec,base_dir,verbose='n'):
     """ Read MONAN data and return them as an xarray Dataset."""
@@ -60,20 +66,27 @@ def read_ds_monan(year,month,day,hour,time_window,grid_spec,
     # Get file path for reading MONAN data
     ## Compute final prediction date in datetime and string formats
     date_final_in_datetime = utils.get_date_as_datetime(
-        year, month, day, hour
+        year=year,
+        month=month,
+        day=day,
+        hour=hour
         )
     date_final_in_string = utils.get_date_as_YYYYMMDDHH_str(
-        year, month, day, hour
+        year=year,
+        month=month,
+        day=day,
+        hour=hour
         )
     ## Compute initial date (final date - time window)
     date_init_in_datetime = utils.get_initial_date_from_final_date(
-        date_final_in_datetime, time_window
+        date_in_datetime=date_final_in_datetime,
+        time_window=time_window
         )
     date_init_in_string = date_init_in_datetime.strftime(config.DATE_FORMAT_STRING)
     ## Get MONAN output filename
     filename = get_MONAN_DIAG_filename(
-        date_init_in_string,
-        date_final_in_string,
+        date_in_string_init=date_init_in_string,
+        date_in_string_final=date_final_in_string,
         grid_spec=grid_spec,
         vertical_level_spec=vertical_level_spec
         )
@@ -85,27 +98,61 @@ def read_ds_monan(year,month,day,hour,time_window,grid_spec,
     ds_monan = xr.open_dataset(filepath, engine="netcdf4")
     return ds_monan, filepath
 
-def read_ds_gfs(year,month,day,hour,base_dir,stream_name="levels",
+def read_ds_gfs_analysis(year,month,day,hour,base_dir,stream_name="levels",
                 verbose='n'):
-    """ Read GFS data and return them as an xarray Dataset."""
+    """ Read GFS analysis data and return them as an xarray Dataset."""
     # Get file path for reading GFS data
     ## Compute date in string format
     date_in_string = utils.get_date_as_YYYYMMDDHH_str(
-        year, month, day, hour
+        year=year, 
+        month=month, 
+        day=day, 
+        hour=hour
         )
     ## Get GFS output filename
     filename = get_GFS_analysis_filename(
-        date_in_string,
-        stream_name
+        date_in_string=date_in_string,
+        stream_name=stream_name
         )
     ## Compute year and month only
     date_year_month_in_string = utils.get_date_as_YYYYMM_str(
-        year, month
+        year=year,
+        month=month
         )
     ## Get complete path
     filepath = f"{base_dir}/{date_year_month_in_string}/{filename}"
     if verbose == 'y':
         print(f"Reading GFS analysis data from file: {filepath}")
+    # Read dataset using complete path
+    ds_gfs = xr.open_dataset(filepath, engine="netcdf4")
+    return ds_gfs, filepath
+
+def read_ds_gfs(year,month,day,hour,time_window,base_dir,stream_name="levels",
+                verbose='n'):
+    """ Read GFS data and return them as an xarray Dataset."""
+    # Get file path for reading GFS data
+    ## Compute date in string format
+    date_in_string = utils.get_date_as_YYYYMMDDHH_str(
+        year=year, 
+        month=month, 
+        day=day, 
+        hour=hour
+        )
+    ## Get GFS output filename
+    filename = get_GFS_filename(
+        date_in_string=date_in_string,
+        time_window=time_window,
+        stream_name=stream_name,
+        )
+    ## Compute year and month only
+    date_year_month_in_string = utils.get_date_as_YYYYMM_str(
+        year=year,
+        month=month
+        )
+    ## Get complete path
+    filepath = f"{base_dir}/{date_year_month_in_string}/{filename}"
+    if verbose == 'y':
+        print(f"Reading GFS forecast data from file: {filepath}")
     # Read dataset using complete path
     ds_gfs = xr.open_dataset(filepath, engine="netcdf4")
     return ds_gfs, filepath

@@ -49,13 +49,15 @@ def main():
     #===============================================================================================
     # Read and preprocess prediction model data
     #===============================================================================================
-    print (f"\n Reading and selecting prediction model {vs_config.PREDICTION_MODEL} data...")
+    print (f"\n Reading and selecting prediction model {vs_config.PREDICTION_MODEL} data, and "
+           "converting it to standard MONAN data format (var names, lat and lev ordering)...")
     ds_preprocessed_prediction_filepath = vs_aux.read_and_preprocess_prediction_data()
    
     #===============================================================================================
     # Read and preprocess reference data (currently GFS analysis)
     #===============================================================================================
-    print (f"\n Reading and selecting reference data {vs_config.REFERENCE_DATA}, and converting it to standard MONAN data format (var names, lat and lev ordering)...")
+    print (f"\n Reading and selecting reference data {vs_config.REFERENCE_DATA}, and converting it "
+           "to standard MONAN data format (var names, lat and lev ordering)...")
     ds_preprocessed_ref_filepath = vs_aux.read_and_preprocess_ref_data()
 
     #===============================================================================================
