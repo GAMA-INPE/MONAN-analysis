@@ -14,7 +14,7 @@ WGRIB2="/p/app/wgrib2/3.8.0/bin/wgrib2"
 BASE_IN="/oper/dados/ioper/tempo/GFS/0p25/brutos"
 
 ANO="2026"
-MES="06"
+MES="07"
 
 DIR_OUT="/lustre/projetos/monan_atm/guilherme.mendonca/scratch/data/GFS/${ANO}${MES}"
 mkdir -p "${DIR_OUT}"
@@ -24,7 +24,7 @@ REG_VARS_LEVS=":(TMP|SPFH|HGT|UGRD|VGRD):"
 REG_LEVS=":(925|850|700|500|400|250|100) mb:"
 REG_VARS_SFC=":(PRMSL|PRES):"
 REG_SFC=":(surface|mean sea level):"
-REG_STEP=":f120:"
+REG_STEP=":120"
 FHHH="f120"
 
 DATA_INI="${ANO}-${MES}-01"
