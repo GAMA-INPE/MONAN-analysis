@@ -41,10 +41,10 @@ PREDICTION_MODEL = "gfs"
 REFERENCE_DATA = "gfs_analysis"
 # Date and forecast time window for analysis
 YEAR = "2026"
-MONTH = "07"
-DAY = "31"
+MONTH = "06"
+DAY = "07"
 HOUR = "00"
-TIME_WINDOW = "120"
+TIME_WINDOW = "00"
 # Domains for spatial analyses (maps)
 DOMAINS_TO_ANALYZE = [
     "global", 
@@ -62,17 +62,17 @@ SUMMARY_DOMAINS_TO_ANALYZE = [
 ]
 # Variables to analyze
 VARIABLES_TO_ANALYZE = [
-    #"temperature",
-    #"spechum",
+    "temperature",
+    "spechum",
     "zgeo",
-    #"uzonal",
-    #"umeridional",
+    "uzonal",
+    "umeridional",
     ]
 # Vertical levels (Pa) to analyze
 VERTICAL_LEVELS_TO_ANALYZE = [
 #    "92500", "85000", "70000", "50000", "40000", "30000", "25000", "20000", "15000", "10000", "7000", "5000", "3000", "2000", "1000", "300"
     #"92500", "85000", "70000", "50000", "40000", "30000", "25000", "10000", "3000", "300"
-    50000
+    92500, 50000
     ]
 #===================================================================================================
 # MONAN configurations

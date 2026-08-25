@@ -130,24 +130,31 @@ def read_ds_gfs_analysis(year,month,day,hour,base_dir,stream_name="levels",
 def read_ds_gfs(year,month,day,hour,time_window,base_dir,stream_name="levels",
                 verbose='n'):
     """ Read GFS data and return them as an xarray Dataset."""
+    if verbose == 'y':
+        print ("Reading GFS output data...")
     # Get file path for reading GFS data
-    ## Compute date in string format
-    date_in_string = utils.get_date_as_YYYYMMDDHH_str(
-        year=year, 
-        month=month, 
-        day=day, 
+    ## Compute final prediction date in datetime and string formats
+    date_final_in_datetime = utils.get_date_as_datetime(
+        year=year,
+        month=month,
+        day=day,
         hour=hour
         )
+    ## Compute initial date (final date - time window)
+    date_init_in_datetime = utils.get_initial_date_from_final_date(
+        date_in_datetime=date_final_in_datetime,
+        time_window=time_window
+        )    
+    date_init_in_string = date_init_in_datetime.strftime(config.DATE_FORMAT_STRING)
     ## Get GFS output filename
     filename = get_GFS_filename(
-        date_in_string=date_in_string,
+        date_in_string=date_init_in_string,
         time_window=time_window,
         stream_name=stream_name,
         )
-    ## Compute year and month only
-    date_year_month_in_string = utils.get_date_as_YYYYMM_str(
-        year=year,
-        month=month
+    ## Compute year and month from date_init_in_datetime
+    date_year_month_in_string = utils.get_date_as_YYYYMM_str_from_datetime(
+        date_in_datetime=date_init_in_datetime
         )
     ## Get complete path
     filepath = f"{base_dir}/{date_year_month_in_string}/{filename}"

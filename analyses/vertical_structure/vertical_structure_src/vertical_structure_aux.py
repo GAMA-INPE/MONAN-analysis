@@ -385,7 +385,7 @@ def read_and_preprocess_gfs_analysis_ref_data():
     return ds_gfs_in_monan_format_filepath
 
 def interpolate_prediction_ref(ds_prediction_model_filepath, ds_ref_data_filepath):
-    if vs_config.PREDICTION_MODEL == vs_config.REFERENCE_DATA:
+    if vs_config.PREDICTION_MODEL == vs_config.REFERENCE_DATA or (vs_config.PREDICTION_MODEL == 'gfs' and vs_config.REFERENCE_DATA == 'gfs_analysis'):
         if vs_config.SEL_VERBOSE_LEVEL >= 1:
             print(f"No interpolation routine needed because "
                   f"prediction model: {vs_config.PREDICTION_MODEL} is the same as "
@@ -1096,7 +1096,7 @@ def concatenate_var_datasets(date_list,time_window):
     var_ref_filepaths = []
 
     # Check if prediction model and reference data are the same, in which case no mapping was applied
-    if vs_config.PREDICTION_MODEL == vs_config.REFERENCE_DATA:
+    if vs_config.PREDICTION_MODEL == vs_config.REFERENCE_DATA or (vs_config.PREDICTION_MODEL == 'gfs' and vs_config.REFERENCE_DATA == 'gfs_analysis'):
         for date_in_string in date_list:
             var_prediction_filepath = f"{vs_config.DIR_INPUT_INTERMEDIATE}/prediction_{vs_config.PREDICTION_MODEL}_in_monan_format_date_{date_in_string}_time_window_{time_window}.nc"
             var_prediction_filepaths.append(var_prediction_filepath)
