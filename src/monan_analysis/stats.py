@@ -201,6 +201,50 @@ def anomaly_correlation_coefficient(predictions, observations, dim):
 
     return result
 
+def anomaly_correlation_coefficient_standard(predictions, observations, dim):
+    """
+    Calculate the standard anomaly correlation coefficient between predictions and observations.
+    
+    The anomaly correlation coefficient is here generally defined as the mean of the product of the 
+    anomalies of the predictions and observations, divided by the product of the standard deviations 
+    of the anomalies of the predictions and observations. 
+    This definition follows that of (1), which seems to be the standard definition used in NWP 
+    centers (1,2,3,4).
+
+    Mathematically, we define
+
+    ACC = (pred_anom * obs_anom).mean(dim=space) / ((pred_anom ** 2).mean(dim=space) ** 0.5 * (obs_anom ** 2).mean(dim=space) ** 0.5),
+
+    where
+    pred_anom = (predictions.monthly_mean - climatology[month]) - (predictions.monthly_mean - climatology[month]).mean(dim=space)
+    obs_anom = (observations.monthly_mean - climatology[month]) - (observations.monthly_mean - climatology[month]).mean(dim=space)
+    n = number of components in the field
+
+    Reference:
+    1. Jolliffe and Stephenson, Forecast Verification: A Practitioner's Guide in Atmospheric Science, 2003
+    2. Hollingsworth et al, Comparison of Medium Range Forecasts Made with Two PArametrization Schemes, 1979
+    3. ECMWF Forecaster User Guide, available at: 
+    https://confluence.ecmwf.int/spaces/FUG/pages/673551834/Section+12.A+Statistical+Concepts+-+Deterministic+Data#Section12.AStatisticalConceptsDeterministicData-MeasureofSkill-theAnomalyCorrelationCoefficient(ACC)
+    4. Livezey et al, Verification of Official Monthly Mean 700-hPa Height Forecasts: An Update, 1995
+    """
+    if not isinstance(predictions, xr.Dataset) or not isinstance(observations, xr.Dataset):
+        raise TypeError("Both predictions and observations must be xarray Datasets.")
+    
+    result = predictions.copy()
+    for var in predictions.data_vars:
+        pred_anom = predictions[var] - predictions[var].mean(dim=dim)
+        obs_anom = observations[var] - observations[var].mean(dim=dim)
+        result[var] = (pred_anom * obs_anom).mean(dim=dim) / (
+            (pred_anom ** 2).mean(dim=dim) ** 0.5 *
+            (obs_anom ** 2).mean(dim=dim) ** 0.5
+        )
+
+    # Explicitly drop the specified dimension from the result dataset
+    if dim in result.dims:
+        result = result.drop_dims(dim)
+
+    return result
+
 def get_stats_metric_units(var_units_dict,var,metric):
     metric_units_dict = {
         "bias": var_units_dict[var],
