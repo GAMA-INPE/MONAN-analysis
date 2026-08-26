@@ -23,6 +23,7 @@ This file was created with the assistance of GitHub Copilot.
 """
 
 import xarray as xr
+import monan_analysis.preprocess as preprocess
 
 def example_function_stats():
     print ("this is a function imported from the stats.py module.")
@@ -246,13 +247,13 @@ def anomaly_correlation_coefficient_standard(var, predictions_monthly, observati
     result = xr.Dataset()
 
     # Compute anomalies
-    pred_anom = predictions_monthly[var] - predictions_monthly[var].mean(dim=dim)
-    obs_anom = observations_monthly[var] - observations_monthly[var].mean(dim=dim)
+    pred_anom = (predictions_monthly[var] - climatology_monthly[var]) - preprocess.spatial_mean(predictions_monthly[var] - climatology_monthly[var])
+    obs_anom = (observations_monthly[var] - climatology_monthly[var]) - preprocess.spatial_mean(observations_monthly[var] - climatology_monthly[var])
 
     # Compute ACC and store in the result dataset
-    result[var] = (pred_anom * obs_anom).mean(dim=dim) / (
-        (pred_anom ** 2).mean(dim=dim) ** 0.5 *
-        (obs_anom ** 2).mean(dim=dim) ** 0.5
+    result[var] = preprocess.spatial_mean(pred_anom * obs_anom) / (
+        (preprocess.spatial_mean(pred_anom ** 2)) ** 0.5 *
+        (preprocess.spatial_mean(obs_anom ** 2)) ** 0.5
     )
 
     return result
