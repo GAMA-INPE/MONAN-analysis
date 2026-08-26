@@ -385,7 +385,7 @@ def read_and_preprocess_gfs_analysis_ref_data():
 
     return ds_gfs_in_monan_format_filepath
 
-def interpolate_prediction_ref(ds_prediction_model_filepath, ds_ref_data_filepath):
+def interpolate_prediction_ref(ds_prediction_model_filepath, ds_ref_data_filepath, output_nc=None):
     if vs_config.PREDICTION_MODEL == vs_config.REFERENCE_DATA or (vs_config.PREDICTION_MODEL == 'gfs' and vs_config.REFERENCE_DATA == 'gfs_analysis'):
         if vs_config.SEL_VERBOSE_LEVEL >= 1:
             print(f"No interpolation routine needed because "
@@ -408,6 +408,8 @@ def interpolate_prediction_ref(ds_prediction_model_filepath, ds_ref_data_filepat
             # And the reference grid is that from the reference data
             ds_ref_grid_filepath = ds_ref_data_filepath
             # Map prediction model data to reference data grid
+            if output_nc:
+                ds_mapped_grid_filepath = output_nc
             preprocess.map_data_to_different_grid_with_cdo(
                 ref_grid_nc=ds_ref_grid_filepath,
                 input_nc=ds_prediction_model_filepath, 
@@ -436,6 +438,8 @@ def interpolate_prediction_ref(ds_prediction_model_filepath, ds_ref_data_filepat
             # And the reference grid is that from the prediction model
             ds_ref_grid_filepath = ds_prediction_model_filepath
             # Map reference data to prediction model grid
+            if output_nc:
+                ds_mapped_grid_filepath = output_nc
             preprocess.map_data_to_different_grid_with_cdo(
                 ref_grid_nc=ds_ref_grid_filepath,
                 input_nc=ds_ref_data_filepath, 
@@ -1181,6 +1185,31 @@ def calculate_multi_time_metrics(time_window):
                 date_init=vs_config.DATE_INIT,
                 date_final=vs_config.DATE_FINAL,
             )
+
+        elif multi_time_metric == "anomaly_correlation_coefficient_standard":
+            # Interpolate climatology to ref grid
+            interpolate_prediction_ref(
+                ds_prediction_model_filepath=vs_config.FILEPATH_CLIMATOLOGY,
+                ds_ref_data_filepath=ds_var_ref_concat,
+                output_nc=vs_config.DIR_INPUT_PROCESSED+f"/climatology_mapped_to_ref_{vs_config.REFERENCE_DATA}.nc",
+            )
+            # Read mapped climatology
+            ds_climatology = xr.open_dataset(vs_config.DIR_INPUT_PROCESSED+f"/climatology_mapped_to_ref_{vs_config.REFERENCE_DATA}.nc", engine="netcdf4")
+            
+            ds_acc = stats.anomaly_correlation_coefficient_standard(
+                var="zgeo", 
+                predictions_monthly=ds_var_prediction_concat.mean(dim="Time", keep_attrs=True).sel(level="50000"),
+                observations_monthly=ds_var_ref_concat.mean(dim="Time", keep_attrs=True).sel(level="50000"),
+                climatology_monthly=ds_climatology.sel(level="50000")
+            )
+
+            acc_filepath = (
+                f"{vs_config.DIR_OUTPUT_DATA}/date_multiple_time_window_{time_window}/"
+                f"{multi_time_metric}_date_from_{vs_config.DATE_INIT}_to_"
+                f"{vs_config.DATE_FINAL}_time_window_{time_window}.nc"
+            )
+
+            ds_acc.to_netcdf(acc_filepath)
 
 def plot_mean_metrics_for_all_dates_and_each_time_window():
     for time_window in vs_config.TIME_WINDOWS_TO_ANALYZE:
