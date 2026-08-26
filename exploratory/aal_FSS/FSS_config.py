@@ -10,6 +10,8 @@ thresholds, window sizes.
 
 from pathlib import Path
 
+SCRIPT_DIR = Path(__file__).resolve().parent
+
 # Base directory for precipitation data
 BASE_PRECIP = Path(
     "/lustre/projetos/monan_gam/andre.lyra/"
@@ -17,7 +19,10 @@ BASE_PRECIP = Path(
 )
 
 # Output directory for FSS results
-OUTDIR_FSS = Path("FSS_results")
+OUTDIR_FSS = SCRIPT_DIR / "FSS_results"
+
+# Output directory for figures
+OUTDIR_FIG = SCRIPT_DIR / "Fig_FSS"
 
 MODELOS = [
     "MONAN",

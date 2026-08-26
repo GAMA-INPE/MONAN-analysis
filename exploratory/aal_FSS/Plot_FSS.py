@@ -17,7 +17,6 @@ Execution examples:
 """
 
 import argparse
-from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -26,6 +25,7 @@ from matplotlib.colors import BoundaryNorm
 
 from FSS_config import (
     OUTDIR_FSS,
+    OUTDIR_FIG,
     MODELOS,
     REFERENCIAS,
     FSS_DOMAINS,
@@ -34,11 +34,6 @@ from FSS_config import (
     REGRID_METHOD,
     USE_PRECOMPUTED_REMAPCON,
 )
-
-SCRIPT_DIR = Path(__file__).resolve().parent
-OUT_DIR = Path("/pesq/share/monan/monan_gam/precip_24h/")
-OUTDIR_FIG_BASE = OUT_DIR / "FSS"
-#OUTDIR_FIG_BASE = SCRIPT_DIR / "Fig_FSS"
 
 LEVELS = np.arange(0.0, 1.05, 0.05)
 CMAP = plt.get_cmap("RdYlGn", len(LEVELS) - 1)
@@ -102,9 +97,9 @@ def diretorio_csv(periodo, modelo, referencia):
 
 def diretorio_figuras(periodo):
     if TARGET_GRID is None:
-        return OUTDIR_FIG_BASE / periodo
+        return OUTDIR_FIG / periodo
 
-    return OUTDIR_FIG_BASE / modo_grade() / periodo
+    return OUTDIR_FIG / modo_grade() / periodo
 
 
 def parse_args():
