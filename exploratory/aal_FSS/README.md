@@ -12,11 +12,23 @@ A precipitação é convertida em um evento binário para cada limiar considerad
 
 Para a previsão:
 
-$$I_F(x)=\begin{cases}1, & P_F(x)\geq \mathrm{Limiar}\\0, & P_F(x)<\mathrm{Limiar}\end{cases}$$
+$$
+I_F(x)=
+\begin{cases}
+1, & P_F(x)\geq \mathrm{Limiar} \\
+0, & P_F(x)<\mathrm{Limiar}
+\end{cases}
+$$
 
 Para a observação:
 
-$$I_O(x)=\begin{cases}1, & P_O(x)\geq \mathrm{Limiar}\\0, & P_O(x)<\mathrm{Limiar}\end{cases}$$
+$$
+I_O(x)=
+\begin{cases}
+1, & P_O(x)\geq \mathrm{Limiar} \\
+0, & P_O(x)<\mathrm{Limiar}
+\end{cases}
+$$
 
 Os índices **F** e **O** representam, respectivamente, **previsão** e **observação**.
 
