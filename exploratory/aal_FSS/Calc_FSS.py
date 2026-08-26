@@ -15,29 +15,31 @@ Examples:
     python Calc_FSS.py --period 202601
     python Calc_FSS.py --period 202601 --models MONAN
     python Calc_FSS.py --period 202601 --models BAM GFS --references MSWEP GSMAP
-    python Calc_FSS.py --period 202601 --domains AMS ACC
+    python Calc_FSS.py --period 202601 \
+        --domains global south_america central_america_and_caribbean
 """
 
 import argparse
 import csv
 import calendar
 from datetime import datetime, timedelta
-from pathlib import Path
 
 import numpy as np
 import xarray as xr
 from scipy.ndimage import uniform_filter
+
+import monan_analysis.config as config
 
 from FSS_config import (
     BASE_PRECIP,
     OUTDIR_FSS,
     MODELOS,
     REFERENCIAS,
+    FSS_DOMAINS,
     THRESHOLDS,
     WINDOW_SIZES,
     PRAZOS,
     VAR_PREC,
-    DOMINIOS,
     TARGET_GRID,
     REGRID_METHOD,
     USE_PRECOMPUTED_REMAPCON,
@@ -125,19 +127,34 @@ def parse_args():
         "--domains",
         nargs="+",
         default=["all"],
-        help="Domínios a processar. Use GLB AMS ACC ou all. Padrão: all.",
+        help=(
+            "Domínios a processar. Use global, south_america, "
+            "central_america_and_caribbean ou all. Padrão: all."
+        ),
     )
 
     return parser.parse_args()
 
 
 def seleciona_opcoes(escolhas, disponiveis, nome):
-    escolhas_upper = [item.upper() for item in escolhas]
+    mapa = {
+        str(item).lower(): item
+        for item in disponiveis
+    }
 
-    if "ALL" in escolhas_upper:
+    escolhas_lower = [
+        item.lower()
+        for item in escolhas
+    ]
+
+    if "all" in escolhas_lower:
         return list(disponiveis)
 
-    invalidas = [item for item in escolhas_upper if item not in disponiveis]
+    invalidas = [
+        item
+        for item in escolhas_lower
+        if item not in mapa
+    ]
 
     if invalidas:
         raise ValueError(
@@ -145,7 +162,10 @@ def seleciona_opcoes(escolhas, disponiveis, nome):
             f"Opções disponíveis: {list(disponiveis)}"
         )
 
-    return escolhas_upper
+    return [
+        mapa[item]
+        for item in escolhas_lower
+    ]
 
 
 def interpreta_periodo(periodo):
@@ -433,10 +453,10 @@ def alinha_campos(fcst, obs):
     return fcst, obs
 
 
-# Cuts the field to the specified domain.
+# Cuts the field to the specified domain from dictionary in the monan_analysis.config.
 def recorte_dominio(da, dominio):
-    lat_min, lat_max = DOMINIOS[dominio]["lat"]
-    lon_min, lon_max = DOMINIOS[dominio]["lon"]
+    lat_min, lat_max = config.DOMAIN_DICT[dominio]["lat"]
+    lon_min, lon_max = config.DOMAIN_DICT[dominio]["lon"]
 
     return da.sel(
         lat=slice(lat_min, lat_max),
@@ -536,7 +556,7 @@ def calcula_fss_campo(
         np.nan,
     )
 
-    periodic_lon = dominio == "GLB"
+    periodic_lon = dominio == "global"
 
     fcst_frac = neighborhood_fraction(
         fcst_event,
@@ -1015,7 +1035,7 @@ def main():
 
     dominios = seleciona_opcoes(
         args.domains,
-        DOMINIOS.keys(),
+        FSS_DOMAINS,
         "Domínio",
     )
 

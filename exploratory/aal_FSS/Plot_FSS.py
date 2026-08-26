@@ -12,7 +12,8 @@ Execution examples:
     python Plot_FSS.py --period 202601
     python Plot_FSS.py --period 202601 --models MONAN
     python Plot_FSS.py --period 202601 --references MSWEP GSMAP
-    python Plot_FSS.py --period 202601 --domains AMS
+    python Plot_FSS.py --period 202601 \
+        --domains global south_america central_america_and_caribbean
 """
 
 import argparse
@@ -27,8 +28,8 @@ from FSS_config import (
     OUTDIR_FSS,
     MODELOS,
     REFERENCIAS,
+    FSS_DOMAINS,
     THRESHOLDS,
-    DOMINIOS,
     TARGET_GRID,
     REGRID_METHOD,
     USE_PRECOMPUTED_REMAPCON,
@@ -138,7 +139,10 @@ def parse_args():
         "--domains",
         nargs="+",
         default=["all"],
-        help="Domínios a plotar ou all. Padrão: all.",
+        help=(
+            "Domínios a plotar. Use global, south_america, "
+            "central_america_and_caribbean ou all. Padrão: all."
+        ),
     )
 
     parser.add_argument(
@@ -157,12 +161,24 @@ def parse_args():
 
 
 def seleciona_opcoes(escolhas, disponiveis, nome):
-    escolhas_upper = [item.upper() for item in escolhas]
+    mapa = {
+        str(item).lower(): item
+        for item in disponiveis
+    }
 
-    if "ALL" in escolhas_upper:
+    escolhas_lower = [
+        item.lower()
+        for item in escolhas
+    ]
+
+    if "all" in escolhas_lower:
         return list(disponiveis)
 
-    invalidas = [item for item in escolhas_upper if item not in disponiveis]
+    invalidas = [
+        item
+        for item in escolhas_lower
+        if item not in mapa
+    ]
 
     if invalidas:
         raise ValueError(
@@ -170,7 +186,10 @@ def seleciona_opcoes(escolhas, disponiveis, nome):
             f"Opções disponíveis: {list(disponiveis)}"
         )
 
-    return escolhas_upper
+    return [
+        mapa[item]
+        for item in escolhas_lower
+    ]
 
 
 def draw_step_boundary(
@@ -537,7 +556,7 @@ def main():
 
     dominios = seleciona_opcoes(
         args.domains,
-        DOMINIOS.keys(),
+        FSS_DOMAINS,
         "Domínio",
     )
 

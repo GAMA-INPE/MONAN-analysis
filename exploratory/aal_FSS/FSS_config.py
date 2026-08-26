@@ -5,7 +5,7 @@
 """
 This script contains configuration parameters for calculating the Fractions Skill Score (FSS).
 The parameters include paths to precipitation data, output directories, models, references,
-thresholds, window sizes, and domains.
+thresholds, window sizes.
 """
 
 from pathlib import Path
@@ -17,7 +17,7 @@ BASE_PRECIP = Path(
 )
 
 # Output directory for FSS results
-OUTDIR_FSS = BASE_PRECIP / "FSS_remapcon_common_grid"
+OUTDIR_FSS = Path("FSS_results")
 
 MODELOS = [
     "MONAN",
@@ -30,6 +30,12 @@ REFERENCIAS = [
     "MSWEP",
     "GSMAP",
 ]
+
+FSS_DOMAINS = (
+    "global",
+    "south_america",
+    "central_america_and_caribbean",
+)
 
 THRESHOLDS = [
     1.0,
@@ -52,21 +58,6 @@ WINDOW_SIZES = [
 PRAZOS = range(24, 241, 24)
 
 VAR_PREC = "prec"
-
-DOMINIOS = {
-    "GLB": {
-        "lat": (-90, 90),
-        "lon": (0, 360),
-    },
-    "AMS": {
-        "lat": (-55, 20),
-        "lon": (275, 340),
-    },
-    "ACC": {
-        "lat": (-10, 35),
-        "lon": (242, 335),
-    },
-}
 
 # None uses each model's native grid.
 # "GFS" interpolates all models in memory to the GFS grid.
