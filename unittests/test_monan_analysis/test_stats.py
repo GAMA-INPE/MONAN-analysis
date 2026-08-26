@@ -22,6 +22,13 @@ def create_test_dataset_without_Time(data=np.ones((2, 3, 3)), dims=("level", "la
     }
     return xr.Dataset({"var": (dims, np.array(data).reshape(shape))}, coords=coords)
 
+def create_test_dataset_with_level_only(data=np.ones((2)), dims=("level")):
+    shape = 2
+    coords = {
+        "level": np.arange(shape),
+    }
+    return xr.Dataset({"var": (dims, np.array(data).reshape(shape))}, coords=coords)
+
 def test_bias():
     # Dataset for observations containing only values 1
     observations = create_test_dataset(data=np.ones((10, 2, 3, 3)))
@@ -272,3 +279,38 @@ def test_anomaly_correlation_zero_correlation_with_offset():
     
     # Test if calculated and correct results match
     xr.testing.assert_allclose(calculated_result, correct_result)
+
+# def test_anomaly_correlation_standard_perfect_anti_correlation_with_offset():
+# # Create sine wave data for predictions and observations
+#     longitude = np.linspace(0, 2 * np.pi, 3)  # 3 longitude steps
+#     sine_wave = np.sin(longitude)  # Sine wave for the longitude dimension
+    
+#     # Expand sine wave to match the test_dataset shape (10, 2, 3, 3)
+#     ## Reshape to (1, 1, 1, 3)
+#     sine_wave = sine_wave[np.newaxis, np.newaxis, np.newaxis, :]  
+#     ## Tile to (10, 2, 3, 3)
+#     sine_wave = np.tile(sine_wave, (10, 2, 3, 1))
+#     # Create data with correct dimensions
+#     predictions_data = 4 * sine_wave + 3
+#     observations_data = -5 * sine_wave - 6
+#     climatology_data = 10 * np.ones((10, 2, 3, 3))  # Constant climatology
+     
+#     # Use create_test_dataset to generate datasets
+#     predictions = create_test_dataset(data=predictions_data)
+#     observations = create_test_dataset(data=observations_data)
+#     climatology = create_test_dataset(data=climatology_data)
+    
+#     # Correct result: perfect anti-correlation (-1.0)
+#     test_dataset_with_level_only = create_test_dataset_with_level_only(data=-np.ones((2)))
+#     correct_result = test_dataset_with_level_only.sel(level=0)
+    
+#     # Calculate anomaly correlation
+#     calculated_result = stats.anomaly_correlation_coefficient_standard(
+#         var="var", 
+#         predictions_monthly=predictions.mean(dim="Time", keep_attrs=True).sel(level=0),
+#         observations_monthly=observations.mean(dim="Time", keep_attrs=True).sel(level=0),
+#         climatology_monthly=climatology.mean(dim="Time", keep_attrs=True).sel(level=0)
+#         )
+    
+#     # Test if calculated and correct results match
+#     xr.testing.assert_allclose(calculated_result, correct_result)
