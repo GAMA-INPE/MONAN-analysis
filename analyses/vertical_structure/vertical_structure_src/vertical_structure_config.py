@@ -72,7 +72,7 @@ VARIABLES_TO_ANALYZE = [
 VERTICAL_LEVELS_TO_ANALYZE = [
 #    "92500", "85000", "70000", "50000", "40000", "30000", "25000", "20000", "15000", "10000", "7000", "5000", "3000", "2000", "1000", "300"
     #"92500", "85000", "70000", "50000", "40000", "30000", "25000", "10000", "3000", "300"
-    50000
+    "50000"
     ]
 #===================================================================================================
 # MONAN configurations
@@ -180,7 +180,7 @@ PLOT_LIMITS_BY_VAR_METRIC_LEVEL = {
     },
 }
 #===================================================================================================
-# Directory paths
+# Directory and file paths
 #===================================================================================================
 #DIR_MONAN_PREOP = "/lustre/projetos/monan_adm/monan/ecf_PREOPER/MONAN-WorkFlow-OPER/MONAN_PRE_OPER/MONAN/scripts_CD-CT/dataout/flushout"
 DIR_MONAN_PREOP = "/lustre/projetos/ioper/models/MONAN-WorkFlow-OPER/MONAN_PRE_OPER/posTMP"
@@ -194,6 +194,7 @@ DIR_INPUT = f"/lustre/projetos/monan_atm/guilherme.mendonca/MONAN-analysis/analy
 DIR_INPUT_INTERMEDIATE = f"{DIR_INPUT}/intermediate"
 DIR_INPUT_PROCESSED = f"{DIR_INPUT}/processed"
 DIR_INPUT_RAW = f"{DIR_INPUT}/raw"
+FILEPATH_CLIMATOLOGY = f"/lustre/projetos/monan_atm/guilherme.mendonca/scratch/data/ERA5/mon/nc_climatology/climatology.nc"
 #===================================================================================================
 # Pressure-level validity mask configurations
 #===================================================================================================
