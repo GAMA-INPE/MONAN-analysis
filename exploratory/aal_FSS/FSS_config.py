@@ -1,10 +1,22 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# Author: André Lyra <andre.lyra@inpe.br>
+
+"""
+This script contains configuration parameters for calculating the Fractions Skill Score (FSS).
+The parameters include paths to precipitation data, output directories, models, references,
+thresholds, window sizes, and domains.
+"""
+
 from pathlib import Path
 
+# Base directory for precipitation data
 BASE_PRECIP = Path(
     "/lustre/projetos/monan_gam/andre.lyra/"
     "NetCDFs/precip_24h"
 )
 
+# Output directory for FSS results
 OUTDIR_FSS = BASE_PRECIP / "FSS_remapcon_common_grid"
 
 MODELOS = [

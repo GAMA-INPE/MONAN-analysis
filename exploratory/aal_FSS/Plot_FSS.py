@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# Author: André Lyra <andre.lyra@inpe.br>
 
 """
-Plota os resultados mensais do Fractions Skill Score, FSS.
+Plot the monthly results of the Fractions Skill Score, FSS.
+Uses FSS_config.py for configuration parameters.
 
-O script gera:
-    1. Um heatmap individual para cada limiar.
-    2. Um painel 3 x 2 com os seis limiares e uma única barra de cores.
+Outputs: A 3 x 2 panel with all six thresholds and a single colorbar.
 
-Exemplos:
+Execution examples:
     python Plot_FSS.py --period 202601
     python Plot_FSS.py --period 202601 --models MONAN
     python Plot_FSS.py --period 202601 --references MSWEP GSMAP

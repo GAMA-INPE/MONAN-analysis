@@ -3,11 +3,13 @@
 # Author: André Lyra <andre.lyra@inpe.br>
 
 """
-# This script calculates the Fractions Skill Score (FSS) for 24-hour accumulated precipitation. 
-# The calculation is performed for combinations of:
-# Models: MONAN, BAM, and GFS
-# References: GPM_IMERG, MSWEP, and GSMAP
-# Uses FSS_config.py for configuration, including paths, thresholds, window sizes, and domains.
+This script calculates the Fractions Skill Score (FSS) for 24-hour accumulated precipitation.
+
+The calculation is performed for combinations of:
+Models: MONAN, BAM, and GFS
+References: GPM_IMERG, MSWEP, and GSMAP
+
+Uses FSS_config.py for configuration, including paths, thresholds, window sizes, and domains.
 
 Examples:
     python Calc_FSS.py --period 202601
