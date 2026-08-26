@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
+# Author: André Lyra <andre.lyra@inpe.br>
 
 set -u
 set -o pipefail
 
-# Remapeia a precipitacao acumulada de 24 h do MONAN e do BAM para a grade
-# do GFS usando interpolacao conservativa de primeira ordem do CDO.
+# Remap 24-hour accumulated precipitation from MONAN and BAM to the GFS grid
+# using first-order conservative remapping with CDO.
 
 BASE_DIR="/lustre/projetos/monan_gam/andre.lyra/NetCDFs/precip_24h"
 PERIOD="${1:-202601}"
@@ -48,8 +49,8 @@ declare -A WEIGHTS
 WEIGHTS[MONAN]="${MONAN_WEIGHTS}"
 WEIGHTS[BAM]="${BAM_WEIGHTS}"
 
-# Cada modelo precisa de seu proprio arquivo de pesos, pois MONAN e BAM
-# possuem grades de origem diferentes. Os pesos sao reutilizados no mes.
+# Each model needs its own weights file, as MONAN and BAM have different source grids.
+# The weights are reused for the month.
 for model in MONAN BAM; do
     sample=""
     for cycle_dir in "${BASE_DIR}/${model}/${PERIOD}"??00; do
@@ -143,15 +144,15 @@ for model in MONAN BAM; do
 done
 
 log ""
-log "Resumo"
-log "MONAN remapeados: ${n_monan}"
-log "BAM remapeados: ${n_bam}"
-log "Arquivos existentes pulados: ${n_skipped}"
-log "Arquivos ausentes: ${n_missing}"
-log "Erros: ${n_errors}"
+log "Summary of remapping:"
+log "MONAN remapped: ${n_monan}"
+log "BAM remapped: ${n_bam}"
+log "Files skipped: ${n_skipped}"
+log "Files missing: ${n_missing}"
+log "Errors: ${n_errors}"
 
 if (( n_errors > 0 )); then
     exit 2
 fi
 
-log "Processamento concluido."
+log "Remap completed successfully"
