@@ -82,8 +82,8 @@ def download_for_time_range(start_date, end_date, area, output_dir, var_list, pl
 
 if __name__ == "__main__":
     # Data setup
-    start_date = datetime.strptime('1991-01-15 00:00', '%Y-%m-%d %H:%M') # Simulation start date
-    end_date = datetime.strptime('2020-12-15 00:00', '%Y-%m-%d %H:%M') # Simulation end date
+    start_date = datetime.strptime('1991-01-05 00:00', '%Y-%m-%d %H:%M') # Simulation start date
+    end_date = datetime.strptime('1991-04-05 00:00', '%Y-%m-%d %H:%M') # Simulation end date
     # Download area
     area = [-90, -180, 90, 180]  # Example area [South, West, North, East]
     # List of variables for download
@@ -93,7 +93,7 @@ if __name__ == "__main__":
 ## !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ## !!!!!!!!!!! ATENCAO: DIRETORIO PARA SALVAR OS DADOS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! !!!!!!!!!!!
 ## !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    output_dir = '/lustre/projetos/monan_atm/guilherme.mendonca/scratch/data/ERA5/mon'  # Output directory
+    output_dir = '/lustre/projetos/monan_atm/guilherme.mendonca/scratch/data/ERA5/mon/grib'  # Output directory
 ## !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     # Ensure output directory exists
