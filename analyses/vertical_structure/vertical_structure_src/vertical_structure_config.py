@@ -194,7 +194,7 @@ DIR_INPUT = f"/lustre/projetos/monan_atm/guilherme.mendonca/MONAN-analysis/analy
 DIR_INPUT_INTERMEDIATE = f"{DIR_INPUT}/intermediate"
 DIR_INPUT_PROCESSED = f"{DIR_INPUT}/processed"
 DIR_INPUT_RAW = f"{DIR_INPUT}/raw"
-FILEPATH_CLIMATOLOGY = f"/lustre/projetos/monan_atm/guilherme.mendonca/scratch/data/ERA5/mon/nc_climatology/climatology.nc"
+FILEPATH_CLIMATOLOGY = f"/lustre/projetos/monan_atm/guilherme.mendonca/scratch/data/ERA5/mon/nc_climatology/climatology_in_monan_format.nc"
 #===================================================================================================
 # Pressure-level validity mask configurations
 #===================================================================================================
@@ -228,7 +228,8 @@ TIME_WINDOWS_TO_ANALYZE = [
 # Multi-time stats metrics (metrics that need multiple time instants for their definition, e.g. RMSE, anomaly correlation coefficient)
 MULTI_TIME_STATS_METRICS_TO_ANALYZE = [
     "rmse",
-    "anomaly_correlation_coefficient"
+    "anomaly_correlation_coefficient",
+    "anomaly_correlation_coefficient_standard"
     ]
 #===================================================================================================
 # Latitude-pressure profile plot configurations

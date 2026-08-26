@@ -255,6 +255,11 @@ def anomaly_correlation_coefficient_standard(var, predictions_monthly, observati
         (preprocess.spatial_mean(pred_anom ** 2)) ** 0.5 *
         (preprocess.spatial_mean(obs_anom ** 2)) ** 0.5
     )
+    print (predictions_monthly[var])
+    print (observations_monthly[var])
+    print (pred_anom)
+    print (obs_anom)
+    print (result[var])
 
     return result
 

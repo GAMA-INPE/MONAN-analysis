@@ -60,7 +60,7 @@ else
 fi
 
 # Change the dimension name from plev to level
-cdo chname,plev,level "$CLIMATOLOGY_FILE_TEMP" "$CLIMATOLOGY_FILE"
+cdo chname,plev,level,lat,latitude,lon,longitude,time,Time "$CLIMATOLOGY_FILE_TEMP" "$CLIMATOLOGY_FILE"
 
 if [ $? -eq 0 ]; then
     echo "plev changed to level successfully: $CLIMATOLOGY_FILE"

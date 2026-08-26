@@ -19,9 +19,18 @@ def plot_zgeo_map(ds1_filepath, ds2_filepath, month, level=50000, output_dir="./
     ds1 = xr.open_dataset(ds1_filepath)
     ds2 = xr.open_dataset(ds2_filepath)
 
+    print (ds1.coords)
+    print (ds2.coords)
+    ds2 = get_era5_in_monan_format(ds2, gfs_to_monan_var_dict={})
+    print ("after conversion:")
+    print ("monan:")
+    print (ds1.coords)
+    print ("era5:")
+    print (ds2.coords)
+
     # Extract zgeo for the specified month and level
     zgeo_ds1 = ds1['zgeo'].sel(Time=ds1['Time'].dt.month == month, level=level).mean(dim='Time')
-    zgeo_ds2 = ds2['zgeo'].sel(time=ds2['time'].dt.month == month, level=level).mean(dim='time')
+    zgeo_ds2 = ds2['zgeo'].sel(Time=ds2['Time'].dt.month == month, level=level).mean(dim='Time')
 
     # Plot and save the first dataset
     plt.figure(figsize=(12, 6))
@@ -52,6 +61,29 @@ def plot_zgeo_map(ds1_filepath, ds2_filepath, month, level=50000, output_dir="./
     plt.savefig(output_file_ds2, dpi=300, bbox_inches='tight')
     plt.close()
     print(f"Saved: {output_file_ds2}")
+
+    # Save converted ds2 to a new NetCDF file
+    ds2.to_netcdf(f"/lustre/projetos/monan_atm/guilherme.mendonca/scratch/data/ERA5/mon/nc_climatology/climatology_in_monan_format.nc")
+
+def get_era5_in_monan_format(ds_era5, gfs_to_monan_var_dict):
+    # Sort by latitude
+    ds_era5 = ds_era5.sortby('latitude')
+
+    # Convert longitude from -180 -> 180 to 0 -> 360
+    #ds_era5 = ds_era5.assign_coords(longitude=(ds_era5.longitude + 360) % 360)
+
+    ds_era5['longitude'] = (ds_era5['longitude'] + 180) % 360
+
+    # Sort by level
+    ds_era5 = ds_era5.sortby('level', ascending=False)
+    
+    print ("ds_era5 coords after sorting and longitude conversion:")
+    print (ds_era5.coords)
+
+    # Rename time variable and coord from time to Time
+    ds_era5_in_monan_format = ds_era5.rename({'time': 'Time'})
+
+    return ds_era5_in_monan_format
 
 # Example usage
 if __name__ == "__main__":
