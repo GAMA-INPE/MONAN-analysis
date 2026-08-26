@@ -12,23 +12,11 @@ A precipitação é convertida em um evento binário para cada limiar considerad
 
 Para a previsão:
 
-$$
-I_F(x)=
-\begin{cases}
-1, & P_F(x) \geq \mathrm{Limiar} \\
-0, & P_F(x) < \mathrm{Limiar}
-\end{cases}
-$$
+$$I_F(x)=\begin{cases}1, & P_F(x)\geq \mathrm{Limiar}\\0, & P_F(x)<\mathrm{Limiar}\end{cases}$$
 
 Para a observação:
 
-$$
-I_O(x)=
-\begin{cases}
-1, & P_O(x) \geq \mathrm{Limiar} \\
-0, & P_O(x) < \mathrm{Limiar}
-\end{cases}
-$$
+$$I_O(x)=\begin{cases}1, & P_O(x)\geq \mathrm{Limiar}\\0, & P_O(x)<\mathrm{Limiar}\end{cases}$$
 
 Os índices **F** e **O** representam, respectivamente, **previsão** e **observação**.
 
@@ -36,27 +24,17 @@ Os índices **F** e **O** representam, respectivamente, **previsão** e **observ
 
 ## 2. Fração de ocorrência do evento na vizinhança
 
-Para cada ponto da grade, calcula-se a fração de pixels em que o evento ocorre dentro de uma janela espacial de tamanho \(n \times n\).
+Para cada ponto da grade, calcula-se a fração de pixels em que o evento ocorre dentro de uma janela espacial de tamanho $n \times n$.
 
 Para a previsão:
 
-$$
-f_F^{(n)}(x)
-=
-\frac{1}{N_n}
-\sum I_F(y)
-$$
+$$f_F^{(n)}(x)=\frac{1}{N_n}\sum I_F(y)$$
 
 Para a observação:
 
-$$
-f_O^{(n)}(x)
-=
-\frac{1}{N_n}
-\sum I_O(y)
-$$
+$$f_O^{(n)}(x)=\frac{1}{N_n}\sum I_O(y)$$
 
-onde \(N_n\) representa o número de pontos válidos dentro da vizinhança.
+onde $N_n$ representa o número de pontos válidos dentro da vizinhança.
 
 ### Exemplo conceitual
 
@@ -72,15 +50,11 @@ Considere o campo binário:
 
 Para uma **janela 3 × 3** contendo 6 ocorrências:
 
-$$
-f^{(3)}(x)=\frac{6}{9}=0.67
-$$
+$$f^{(3)}(x)=\frac{6}{9}=0.67$$
 
 Para uma **janela 5 × 5** contendo 11 ocorrências:
 
-$$
-f^{(5)}(x)=\frac{11}{25}=0.44
-$$
+$$f^{(5)}(x)=\frac{11}{25}=0.44$$
 
 Assim, o FSS avalia o desempenho da previsão em diferentes escalas espaciais, reduzindo a exigência de coincidência exata ponto a ponto.
 
@@ -90,43 +64,23 @@ Assim, o FSS avalia o desempenho da previsão em diferentes escalas espaciais, r
 
 O **Fractions Brier Score (FBS)** mede o erro quadrático médio entre as frações previstas e observadas em todos os pontos válidos do domínio.
 
-$$
-FBS_n
-=
-\frac{1}{N_D}
-\sum_{x \in D}
-\left[
-f_F^{(n)}(x)
--
-f_O^{(n)}(x)
-\right]^2
-$$
+$$FBS_n=\frac{1}{N_D}\sum_{x\in D}\left[f_F^{(n)}(x)-f_O^{(n)}(x)\right]^2$$
 
 onde:
 
-- \(D\) representa o domínio de avaliação;
-- \(N_D\) representa o número de pontos válidos do domínio;
-- \(n\) representa o tamanho da janela espacial.
+- $D$ representa o domínio de avaliação;
+- $N_D$ representa o número de pontos válidos do domínio;
+- $n$ representa o tamanho da janela espacial.
 
 ---
 
-## 4. Erro de referência — \(FBS_{\mathrm{worst}}\)
+## 4. Erro de referência — $FBS_{\mathrm{worst},n}$
 
 O erro de referência é definido por:
 
-$$
-FBS_{\mathrm{worst},n}
-=
-\frac{1}{N_D}
-\sum_{x \in D}
-\left[
-\left(f_F^{(n)}(x)\right)^2
-+
-\left(f_O^{(n)}(x)\right)^2
-\right]
-$$
+$$FBS_{\mathrm{worst},n}=\frac{1}{N_D}\sum_{x\in D}\left[\left(f_F^{(n)}(x)\right)^2+\left(f_O^{(n)}(x)\right)^2\right]$$
 
-O \(FBS_{\mathrm{worst},n}\) representa o valor do erro de referência quando as frações previstas e observadas apresentam a menor correspondência espacial possível, ou seja, quando não há sobreposição entre elas.
+O $FBS_{\mathrm{worst},n}$ representa o valor do erro de referência quando as frações previstas e observadas apresentam a menor correspondência espacial possível, ou seja, quando não há sobreposição entre elas.
 
 ---
 
@@ -134,16 +88,7 @@ O \(FBS_{\mathrm{worst},n}\) representa o valor do erro de referência quando as
 
 O FSS é obtido pela normalização do FBS pelo erro de referência:
 
-$$
-\boxed{
-FSS_n
-=
-1
--
-\frac{FBS_n}
-{FBS_{\mathrm{worst},n}}
-}
-$$
+$$\boxed{FSS_n=1-\frac{FBS_n}{FBS_{\mathrm{worst},n}}}$$
 
 O valor do FSS varia, em geral, entre **0 e 1**:
 
