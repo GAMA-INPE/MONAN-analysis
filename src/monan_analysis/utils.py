@@ -25,6 +25,7 @@ This file was created with the assistance of GitHub Copilot.
 import datetime
 import argparse
 import monan_analysis.config as config
+import numpy as np
 
 def example_function_utils():
     print ("this is a function imported from the utils.py module.")
@@ -83,6 +84,37 @@ def get_date_list(date_init, date_final, time_step):
         current_date += datetime.timedelta(hours=int(time_step))
 
     return date_list
+
+def get_lat_lon_names(ds):
+    lat_candidates = ["lat", "latitude"]
+    lon_candidates = ["lon", "longitude"]
+
+    lat_name = None
+    lon_name = None
+
+    for name in lat_candidates:
+        if name in ds.coords or name in ds.dims:
+            lat_name = name
+            break
+
+    for name in lon_candidates:
+        if name in ds.coords or name in ds.dims:
+            lon_name = name
+            break
+
+    if lat_name is None or lon_name is None:
+        raise ValueError(
+            "Could not identify latitude and longitude coordinates "
+            "in the dataset."
+        )
+
+    return lat_name, lon_name
+
+def get_scalar_value(da):
+    value = da.values
+    if np.size(value) == 0:
+        return np.nan
+    return float(np.asarray(value).squeeze())
 
 def setup_parser():
     """Set up the argument parser with common arguments."""

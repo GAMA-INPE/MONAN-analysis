@@ -201,47 +201,59 @@ def anomaly_correlation_coefficient(predictions, observations, dim):
 
     return result
 
-def anomaly_correlation_coefficient_standard(predictions, observations, dim):
+def anomaly_correlation_coefficient_standard(var, predictions_monthly, observations_monthly, climatology_monthly):
     """
-    Calculate the standard anomaly correlation coefficient between predictions and observations.
+    Calculate the anomaly correlation coefficient (ACC) for a specific variable between monthly 
+    predictions and observations, using the standard definition employed in operational centers (1,2,3,4).
     
-    The anomaly correlation coefficient is here generally defined as the mean of the product of the 
-    anomalies of the predictions and observations, divided by the product of the standard deviations 
-    of the anomalies of the predictions and observations. 
-    This definition follows that of (1), which seems to be the standard definition used in NWP 
-    centers (1,2,3,4).
+    The ACC is here defined as the spatial mean of the product of the anomalies of the predictions 
+    and observations, divided by the product of the standard deviations of the anomalies of the 
+    predictions and observations.
 
-    Mathematically, we define
+    Mathematically:
 
     ACC = (pred_anom * obs_anom).mean(dim=space) / ((pred_anom ** 2).mean(dim=space) ** 0.5 * (obs_anom ** 2).mean(dim=space) ** 0.5),
 
     where
-    pred_anom = (predictions.monthly_mean - climatology[month]) - (predictions.monthly_mean - climatology[month]).mean(dim=space)
-    obs_anom = (observations.monthly_mean - climatology[month]) - (observations.monthly_mean - climatology[month]).mean(dim=space)
-    n = number of components in the field
+    pred_anom = (predictions_monthly - climatology_monthly) - (predictions_monthly - climatology_monthly).mean(dim=space)
+    obs_anom = (observations_monthly - climatology_monthly) - (observations_monthly - climatology_monthly).mean(dim=space)
 
-    Reference:
+    Parameters:
+        predictions_monthly (xr.Dataset): Dataset containing monthly-averaged predictions.
+        observations_monthly (xr.Dataset): Dataset containing monthly-averaged observations.
+        climatology_monthly (xr.Dataset): Dataset containing monthly-averaged climatology.
+        var (str): Variable name to calculate the anomaly correlation coefficient for.
+        dim (str or list): Dimension(s) over which to calculate the correlation.
+
+    Returns:
+        xr.Dataset: Dataset containing the anomaly correlation coefficient for the specified variable.
+
+    References:
     1. Jolliffe and Stephenson, Forecast Verification: A Practitioner's Guide in Atmospheric Science, 2003
-    2. Hollingsworth et al, Comparison of Medium Range Forecasts Made with Two PArametrization Schemes, 1979
+    2. Hollingsworth et al, Comparison of Medium Range Forecasts Made with Two Parametrization Schemes, 1979
     3. ECMWF Forecaster User Guide, available at: 
     https://confluence.ecmwf.int/spaces/FUG/pages/673551834/Section+12.A+Statistical+Concepts+-+Deterministic+Data#Section12.AStatisticalConceptsDeterministicData-MeasureofSkill-theAnomalyCorrelationCoefficient(ACC)
     4. Livezey et al, Verification of Official Monthly Mean 700-hPa Height Forecasts: An Update, 1995
     """
-    if not isinstance(predictions, xr.Dataset) or not isinstance(observations, xr.Dataset):
-        raise TypeError("Both predictions and observations must be xarray Datasets.")
+    if not isinstance(predictions_monthly, xr.Dataset) or not isinstance(observations_monthly, xr.Dataset) \
+        or not isinstance(climatology_monthly, xr.Dataset):
+        raise TypeError("Predictions, observations, and climatology must be xarray Datasets.")
     
-    result = predictions.copy()
-    for var in predictions.data_vars:
-        pred_anom = predictions[var] - predictions[var].mean(dim=dim)
-        obs_anom = observations[var] - observations[var].mean(dim=dim)
-        result[var] = (pred_anom * obs_anom).mean(dim=dim) / (
-            (pred_anom ** 2).mean(dim=dim) ** 0.5 *
-            (obs_anom ** 2).mean(dim=dim) ** 0.5
-        )
+    if var not in predictions_monthly or var not in observations_monthly or var not in climatology_monthly:
+        raise ValueError(f"The variable '{var}' must exist in predictions, observations, and climatology datasets.")
 
-    # Explicitly drop the specified dimension from the result dataset
-    if dim in result.dims:
-        result = result.drop_dims(dim)
+    # Create an empty dataset for the result
+    result = xr.Dataset()
+
+    # Compute anomalies
+    pred_anom = predictions_monthly[var] - predictions_monthly[var].mean(dim=dim)
+    obs_anom = observations_monthly[var] - observations_monthly[var].mean(dim=dim)
+
+    # Compute ACC and store in the result dataset
+    result[var] = (pred_anom * obs_anom).mean(dim=dim) / (
+        (pred_anom ** 2).mean(dim=dim) ** 0.5 *
+        (obs_anom ** 2).mean(dim=dim) ** 0.5
+    )
 
     return result
 
