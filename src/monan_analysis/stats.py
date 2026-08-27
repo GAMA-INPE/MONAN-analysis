@@ -22,7 +22,11 @@ Acknowledgments
 This file was created with the assistance of GitHub Copilot. 
 """
 
+import operator
+
+import numpy as np
 import xarray as xr
+from scipy.ndimage import uniform_filter
 
 def example_function_stats():
     print ("this is a function imported from the stats.py module.")
@@ -209,3 +213,276 @@ def get_stats_metric_units(var_units_dict,var,metric):
         "anomaly_correlation_coefficient": " "
     }
     return metric_units_dict[metric]
+
+# Define strings to operators for thresholding events
+_EVENT_OPERATORS = {
+    "ge": operator.ge,
+    "gt": operator.gt,
+    "le": operator.le,
+    "lt": operator.lt,
+}
+
+def threshold_event(
+    data,
+    threshold,
+    comparison="ge",
+    valid_mask=None,
+):
+    """
+    Convert a continuous field into a binary event field.
+
+    Parameters
+    ----------
+    data : xarray.DataArray
+        Continuous field to threshold.
+    threshold : float or xarray.DataArray
+        Threshold defining the event.
+    comparison : {"ge", "gt", "le", "lt"}
+        Comparison used to define the event.
+    valid_mask : xarray.DataArray, optional
+        Boolean mask defining valid points.
+
+    Returns
+    -------
+    xarray.DataArray
+        Event field containing 1, 0 and NaN.
+    """
+
+    if not isinstance(data, xr.DataArray):
+        raise TypeError(
+            "data must be an xarray.DataArray."
+        )
+
+    if comparison not in _EVENT_OPERATORS:
+        raise ValueError(
+            "comparison must be one of "
+            "'ge', 'gt', 'le' or 'lt'."
+        )
+
+    if valid_mask is None:
+        valid_mask = np.isfinite(data)
+
+    operator_func = _EVENT_OPERATORS[comparison]
+
+    event = operator_func(
+        data,
+        threshold,
+    )
+
+    return xr.where(
+        valid_mask,
+        event,
+        np.nan,
+    )
+
+def neighborhood_fraction(
+    event,
+    window_size,
+    spatial_dims=("lat", "lon"),
+    boundary_modes=("constant", "constant"),
+):
+    """
+    Calculate the event fraction inside a spatial neighbourhood.
+    NaN values are excluded from the denominator.
+    """
+
+    if not isinstance(event, xr.DataArray):
+        raise TypeError(
+            "event must be an xarray.DataArray."
+        )
+
+    if len(spatial_dims) != 2:
+        raise ValueError(
+            "spatial_dims must contain exactly two dimensions."
+        )
+
+    if event.ndim != 2:
+        raise ValueError(
+            "event must be a two-dimensional field."
+        )
+
+    for dim in spatial_dims:
+        if dim not in event.dims:
+            raise ValueError(
+                f"Dimension {dim!r} not found in event."
+            )
+
+    if not isinstance(window_size, int) or window_size < 1:
+        raise ValueError(
+            "window_size must be a positive integer."
+        )
+
+    if len(boundary_modes) != 2:
+        raise ValueError(
+            "boundary_modes must contain one mode "
+            "for each spatial dimension."
+        )
+
+    event = event.transpose(*spatial_dims)
+
+    binary = event.astype("float32")
+
+    valid = xr.where(
+        np.isfinite(binary),
+        1.0,
+        0.0,
+    ).astype("float32")
+
+    binary = binary.fillna(0.0)
+
+    numerator = uniform_filter(
+        binary.values,
+        size=window_size,
+        mode=boundary_modes,
+        cval=0.0,
+    )
+
+    denominator = uniform_filter(
+        valid.values,
+        size=window_size,
+        mode=boundary_modes,
+        cval=0.0,
+    )
+
+    with np.errstate(
+        invalid="ignore",
+        divide="ignore",
+    ):
+        fraction = np.where(
+            denominator > 0.0,
+            numerator / denominator,
+            np.nan,
+        ).astype("float32")
+
+    return xr.DataArray(
+        fraction,
+        coords=event.coords,
+        dims=event.dims,
+    )
+
+def fractions_skill_score(
+    forecast_event,
+    observation_event,
+    window_size,
+    spatial_dims=("lat", "lon"),
+    boundary_modes=("constant", "constant"),
+    weights=None,
+):
+    """
+    Calculate the Fractions Skill Score (FSS) from forecast and
+    observation event fields.
+
+    Forecast and observation events must be defined before calling
+    this function. Event fields should contain:
+
+        1   event occurrence
+        0   event non-occurrence
+        NaN invalid or missing points
+
+    Events may be defined from a single threshold, multiple thresholds,
+    or combinations of different variables.
+
+    For simple threshold-based events, threshold_event() can be used
+    to create the event fields.
+
+    Examples of possible events:
+
+        precipitation >= 10 mm
+        temperature <= 0 C
+        20 <= temperature <= 30 C
+        temperature >= 35 C and relative humidity <= 30 %
+
+    The function:
+        1. computes neighbourhood event fractions;
+        2. computes the Fractions Brier Score (FBS);
+        3. computes FBSworst;
+        4. computes FSS = 1 - FBS / FBSworst.
+
+    Returns
+    -------
+    fss : float
+        Fractions Skill Score.
+    fbs : float
+        Spatially averaged Fractions Brier Score.
+    fbs_worst : float
+        Spatially averaged worst-case Fractions Brier Score.
+    """
+
+    forecast_event, observation_event = xr.align(
+        forecast_event,
+        observation_event,
+        join="exact",
+    )
+
+    forecast_fraction = neighborhood_fraction(
+        forecast_event,
+        window_size=window_size,
+        spatial_dims=spatial_dims,
+        boundary_modes=boundary_modes,
+    )
+
+    observation_fraction = neighborhood_fraction(
+        observation_event,
+        window_size=window_size,
+        spatial_dims=spatial_dims,
+        boundary_modes=boundary_modes,
+    )
+
+    fbs_field = (
+        forecast_fraction
+        - observation_fraction
+    ) ** 2
+
+    fbs_worst_field = (
+        forecast_fraction ** 2
+        + observation_fraction ** 2
+    )
+
+    if weights is None:
+        fbs_mean = fbs_field.mean(
+            dim=spatial_dims,
+            skipna=True,
+        )
+
+        fbs_worst_mean = fbs_worst_field.mean(
+            dim=spatial_dims,
+            skipna=True,
+        )
+
+    else:
+        fbs_mean = fbs_field.weighted(
+            weights
+        ).mean(
+            dim=spatial_dims,
+            skipna=True,
+        )
+
+        fbs_worst_mean = fbs_worst_field.weighted(
+            weights
+        ).mean(
+            dim=spatial_dims,
+            skipna=True,
+        )
+
+    fbs_mean = float(fbs_mean.values)
+    fbs_worst_mean = float(
+        fbs_worst_mean.values
+    )
+
+    if (
+        not np.isfinite(fbs_mean)
+        or not np.isfinite(fbs_worst_mean)
+        or fbs_worst_mean == 0.0
+    ):
+        return np.nan, np.nan, np.nan
+
+    fss = (
+        1.0
+        - fbs_mean / fbs_worst_mean
+    )
+
+    return (
+        fss,
+        fbs_mean,
+        fbs_worst_mean,
+    )

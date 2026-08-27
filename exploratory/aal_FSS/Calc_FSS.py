@@ -26,9 +26,9 @@ from datetime import datetime, timedelta
 
 import numpy as np
 import xarray as xr
-from scipy.ndimage import uniform_filter
 
 import monan_analysis.config as config
+import monan_analysis.stats as stats
 
 from FSS_config import (
     BASE_PRECIP,
@@ -464,55 +464,6 @@ def recorte_dominio(da, dominio):
     )
 
 
-# Calculates the fraction of occurrence within the neighborhood.
-# NaN values remain outside the denominator of the fraction.
-def neighborhood_fraction(binary_da, window_size, periodic_lon=False):
-
-    binary = binary_da.astype("float32")
-
-    valid = xr.where(
-        np.isfinite(binary),
-        1.0,
-        0.0,
-    ).astype("float32")
-
-    binary = binary.fillna(0.0).astype("float32")
-
-    arr = binary.values
-    mask = valid.values
-
-    if periodic_lon:
-        mode = ("nearest", "wrap")
-    else:
-        mode = ("constant", "constant")
-
-    num = uniform_filter(
-        arr,
-        size=window_size,
-        mode=mode,
-        cval=0.0,
-    )
-
-    den = uniform_filter(
-        mask,
-        size=window_size,
-        mode=mode,
-        cval=0.0,
-    )
-
-    with np.errstate(invalid="ignore", divide="ignore"):
-        frac = np.where(
-            den > 0.0,
-            num / den,
-            np.nan,
-        ).astype("float32")
-
-    return xr.DataArray(
-        frac,
-        coords=binary_da.coords,
-        dims=binary_da.dims,
-    )
-
 
 # Calculates latitude weights for area-weighted averaging.
 def pesos_latitude(da):
@@ -523,77 +474,6 @@ def pesos_latitude(da):
         coords={"lat": da["lat"]},
         dims=["lat"],
     )
-
-
-# Computes the spatially weighted mean of a DataArray using latitude weights.
-def media_ponderada_espacial(da, weights):
-    return da.weighted(weights).mean(
-        dim=("lat", "lon"),
-        skipna=True,
-    )
-
-
-# Compute FSS for a single forecast and observation field at a given valid date
-def calcula_fss_campo(
-    fcst,
-    obs,
-    threshold,
-    window_size,
-    dominio,
-):
-
-    valid_mask = np.isfinite(fcst) & np.isfinite(obs)
-
-    fcst_event = xr.where(
-        valid_mask,
-        fcst >= threshold,
-        np.nan,
-    )
-
-    obs_event = xr.where(
-        valid_mask,
-        obs >= threshold,
-        np.nan,
-    )
-
-    periodic_lon = dominio == "global"
-
-    fcst_frac = neighborhood_fraction(
-        fcst_event,
-        window_size=window_size,
-        periodic_lon=periodic_lon,
-    )
-
-    obs_frac = neighborhood_fraction(
-        obs_event,
-        window_size=window_size,
-        periodic_lon=periodic_lon,
-    )
-
-    fbs = (fcst_frac - obs_frac) ** 2
-    fbs_worst = fcst_frac ** 2 + obs_frac ** 2
-
-    weights = pesos_latitude(fcst)
-
-    fbs_mean = media_ponderada_espacial(fbs, weights)
-    fbs_worst_mean = media_ponderada_espacial(
-        fbs_worst,
-        weights,
-    )
-
-    fbs_mean = float(fbs_mean.values)
-    fbs_worst_mean = float(fbs_worst_mean.values)
-
-    if (
-        not np.isfinite(fbs_mean)
-        or not np.isfinite(fbs_worst_mean)
-        or fbs_worst_mean == 0.0
-    ):
-        return np.nan, np.nan, np.nan
-
-    fss = 1.0 - (fbs_mean / fbs_worst_mean)
-
-    return fss, fbs_mean, fbs_worst_mean
 
 
 # Estimates the grid resolution and corresponding distance.
@@ -718,6 +598,7 @@ def atualiza_erros_processamento(
 
 
 # Calculates FSS for a combination of model, reference, and domain over a specified period.
+# Loop for each lead time, valid date, and domain, calculating FSS for each threshold and window size.
 def calcula_combinacao(
     periodo,
     modelo,
@@ -809,14 +690,44 @@ def calcula_combinacao(
 
                     resolucao = estima_resolucao_grade(fcst_dom)
 
+                    weights = pesos_latitude(fcst_dom)
+
+                    boundary_modes = (
+                        ("nearest", "wrap")
+                        if dominio == "global"
+                        else ("constant", "constant")
+                    )
+
+                    valid_mask = (
+                        np.isfinite(fcst_dom)
+                        & np.isfinite(obs_dom)
+                    )
+
                     for threshold in THRESHOLDS:
+
+                        fcst_event = stats.threshold_event(
+                            data=fcst_dom,
+                            threshold=float(threshold),
+                            comparison="ge",
+                            valid_mask=valid_mask,
+                        )
+
+                        obs_event = stats.threshold_event(
+                            data=obs_dom,
+                            threshold=float(threshold),
+                            comparison="ge",
+                            valid_mask=valid_mask,
+                        )
+
                         for window_size in WINDOW_SIZES:
-                            fss, fbs, fbs_worst = calcula_fss_campo(
-                                fcst=fcst_dom,
-                                obs=obs_dom,
-                                threshold=float(threshold),
+
+                            fss, fbs, fbs_worst = stats.fractions_skill_score(
+                                forecast_event=fcst_event,
+                                observation_event=obs_event,
                                 window_size=int(window_size),
-                                dominio=dominio,
+                                spatial_dims=("lat", "lon"),
+                                boundary_modes=boundary_modes,
+                                weights=weights,
                             )
 
                             chave = (
