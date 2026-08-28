@@ -22,7 +22,7 @@ BASE_PRECIP = Path(
 OUTDIR_FSS = SCRIPT_DIR / "FSS_results"
 
 # Output directory for figures
-OUTDIR_FIG = SCRIPT_DIR / "Fig_FSS"
+OUTDIR_FIG = SCRIPT_DIR / "FSS_figures"
 
 MODELOS = [
     "MONAN",

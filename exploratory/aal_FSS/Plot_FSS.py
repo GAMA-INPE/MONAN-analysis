@@ -10,6 +10,7 @@ Outputs: A 3 x 2 panel with all six thresholds and a single colorbar.
 
 Execution examples:
     python Plot_FSS.py --period 202601
+    python Plot_FSS.py --period 202601 --skip-individual
     python Plot_FSS.py --period 202601 --models MONAN
     python Plot_FSS.py --period 202601 --references MSWEP GSMAP
     python Plot_FSS.py --period 202601 \
