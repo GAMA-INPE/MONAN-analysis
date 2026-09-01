@@ -29,6 +29,7 @@ import xarray as xr
 
 import monan_analysis.config as config
 import monan_analysis.stats as stats
+import monan_analysis.preprocess as preprocess
 
 from FSS_config import (
     BASE_PRECIP,
@@ -705,14 +706,14 @@ def calcula_combinacao(
 
                     for threshold in THRESHOLDS:
 
-                        fcst_event = stats.threshold_event(
+                        fcst_event = preprocess.threshold_event(
                             data=fcst_dom,
                             threshold=float(threshold),
                             comparison="ge",
                             valid_mask=valid_mask,
                         )
 
-                        obs_event = stats.threshold_event(
+                        obs_event = preprocess.threshold_event(
                             data=obs_dom,
                             threshold=float(threshold),
                             comparison="ge",

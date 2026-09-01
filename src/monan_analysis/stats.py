@@ -22,8 +22,6 @@ Acknowledgments
 This file was created with the assistance of GitHub Copilot. 
 """
 
-import operator
-
 import numpy as np
 import xarray as xr
 from scipy.ndimage import uniform_filter
@@ -213,67 +211,6 @@ def get_stats_metric_units(var_units_dict,var,metric):
         "anomaly_correlation_coefficient": " "
     }
     return metric_units_dict[metric]
-
-# Define strings to operators for thresholding events
-_EVENT_OPERATORS = {
-    "ge": operator.ge,
-    "gt": operator.gt,
-    "le": operator.le,
-    "lt": operator.lt,
-}
-
-def threshold_event(
-    data,
-    threshold,
-    comparison="ge",
-    valid_mask=None,
-):
-    """
-    Convert a continuous field into a binary event field.
-
-    Parameters
-    ----------
-    data : xarray.DataArray
-        Continuous field to threshold.
-    threshold : float or xarray.DataArray
-        Threshold defining the event.
-    comparison : {"ge", "gt", "le", "lt"}
-        Comparison used to define the event.
-    valid_mask : xarray.DataArray, optional
-        Boolean mask defining valid points.
-
-    Returns
-    -------
-    xarray.DataArray
-        Event field containing 1, 0 and NaN.
-    """
-
-    if not isinstance(data, xr.DataArray):
-        raise TypeError(
-            "data must be an xarray.DataArray."
-        )
-
-    if comparison not in _EVENT_OPERATORS:
-        raise ValueError(
-            "comparison must be one of "
-            "'ge', 'gt', 'le' or 'lt'."
-        )
-
-    if valid_mask is None:
-        valid_mask = np.isfinite(data)
-
-    operator_func = _EVENT_OPERATORS[comparison]
-
-    event = operator_func(
-        data,
-        threshold,
-    )
-
-    return xr.where(
-        valid_mask,
-        event,
-        np.nan,
-    )
 
 def neighborhood_fraction(
     event,
