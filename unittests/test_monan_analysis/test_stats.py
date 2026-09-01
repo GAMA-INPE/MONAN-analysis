@@ -272,3 +272,183 @@ def test_anomaly_correlation_zero_correlation_with_offset():
     
     # Test if calculated and correct results match
     xr.testing.assert_allclose(calculated_result, correct_result)
+
+
+def create_fss_event(data, lat=None, lon=None):
+    # Create an xarray DataArray representing a binary event field for FSS testing.
+    data = np.asarray(data, dtype=float)
+
+    if lat is None:
+        lat = np.arange(data.shape[0], dtype=float)
+
+    if lon is None:
+        lon = np.arange(data.shape[1], dtype=float)
+
+    return xr.DataArray(
+        data,
+        coords={
+            "lat": lat,
+            "lon": lon,
+        },
+        dims=("lat", "lon"),
+    )
+
+
+def test_neighborhood_fraction_window_one():
+    # Test that the neighborhood_fraction function returns the same event field when the window size is 1.
+    event = create_fss_event([
+        [1.0, 0.0],
+        [np.nan, 1.0],
+    ])
+
+    # The correct result is the same as the input event field since the window size is 1.
+    calculated_result = stats.neighborhood_fraction(
+        event=event,
+        window_size=1,
+    )
+
+    xr.testing.assert_allclose(
+        calculated_result,
+        event,
+    )
+
+
+def test_neighborhood_fraction_constant_boundaries():
+    # Test that the neighborhood_fraction function correctly calculates the neighborhood fraction with constant boundary conditions.
+    event = create_fss_event([
+        [0.0, 0.0, 0.0],
+        [0.0, 1.0, 0.0],
+        [0.0, 0.0, 0.0],
+    ])
+
+    # The correct result is a 3x3 array where the center cell has a neighborhood fraction of 1/9, and the adjacent cells have a neighborhood fraction of 1/6, while the corners have a neighborhood fraction of 1/4.
+    correct_result = create_fss_event([
+        [1.0 / 4.0, 1.0 / 6.0, 1.0 / 4.0],
+        [1.0 / 6.0, 1.0 / 9.0, 1.0 / 6.0],
+        [1.0 / 4.0, 1.0 / 6.0, 1.0 / 4.0],
+    ])
+
+    # Calculate the neighborhood fraction with a window size of 3 and constant boundary conditions.
+    calculated_result = stats.neighborhood_fraction(
+        event=event,
+        window_size=3,
+        boundary_modes=("constant", "constant"),
+    )
+
+    xr.testing.assert_allclose(
+        calculated_result,
+        correct_result,
+    )
+
+def test_neighborhood_fraction_periodic_longitude():
+    # Test that the neighborhood_fraction function correctly calculates the neighborhood fraction with periodic boundary conditions in the longitude direction.
+    event = create_fss_event([
+        [1.0, 0.0, 0.0, 0.0],
+    ])
+
+    correct_result = create_fss_event([
+        [1.0 / 3.0, 1.0 / 3.0, 0.0, 1.0 / 3.0],
+    ])
+
+    calculated_result = stats.neighborhood_fraction(
+        event=event,
+        window_size=3,
+        boundary_modes=("nearest", "wrap"),
+    )
+
+    xr.testing.assert_allclose(
+        calculated_result,
+        correct_result,
+    )
+
+
+def test_fractions_skill_score_perfect_forecast():
+    # Test that the fractions_skill_score function returns perfect scores when the forecast and observation events are identical.
+    forecast_event = create_fss_event([
+        [1.0, 0.0],
+        [0.0, 0.0],
+    ])
+
+    observation_event = forecast_event.copy()
+
+    fss, fbs, fbs_worst = stats.fractions_skill_score(
+        forecast_event=forecast_event,
+        observation_event=observation_event,
+        window_size=1,
+    )
+
+    assert fss == pytest.approx(1.0)
+    assert fbs == pytest.approx(0.0)
+    assert fbs_worst == pytest.approx(0.5)
+
+
+def test_fractions_skill_score_displaced_events_window_one():
+    forecast_event = create_fss_event([
+        [1.0, 0.0],
+        [0.0, 0.0],
+    ])
+
+    observation_event = create_fss_event([
+        [0.0, 1.0],
+        [0.0, 0.0],
+    ])
+
+    fss, fbs, fbs_worst = stats.fractions_skill_score(
+        forecast_event=forecast_event,
+        observation_event=observation_event,
+        window_size=1,
+    )
+
+    assert fss == pytest.approx(0.0)
+    assert fbs == pytest.approx(0.5)
+    assert fbs_worst == pytest.approx(0.5)
+
+
+def test_fractions_skill_score_no_events():
+    # Test that the fractions_skill_score function returns NaN scores when there are no events in either the forecast or observation.
+    forecast_event = create_fss_event([
+        [0.0, 0.0],
+        [0.0, 0.0],
+    ])
+
+    observation_event = forecast_event.copy()
+
+    fss, fbs, fbs_worst = stats.fractions_skill_score(
+        forecast_event=forecast_event,
+        observation_event=observation_event,
+        window_size=1,
+    )
+
+    assert np.isnan(fss)
+    assert np.isnan(fbs)
+    assert np.isnan(fbs_worst)
+
+
+def test_fractions_skill_score_with_weights():
+    # Test that the fractions_skill_score function correctly incorporates weights into the calculation.
+    forecast_event = create_fss_event([
+        [1.0, 0.0],
+        [0.0, 0.0],
+    ])
+
+    observation_event = create_fss_event([
+        [1.0, 0.0],
+        [1.0, 0.0],
+    ])
+
+    weights = xr.DataArray(
+        [1.0, 2.0],
+        coords={"lat": forecast_event["lat"]},
+        dims=["lat"],
+    )
+
+    fss, fbs, fbs_worst = stats.fractions_skill_score(
+        forecast_event=forecast_event,
+        observation_event=observation_event,
+        window_size=1,
+        weights=weights,
+    )
+
+    assert fss == pytest.approx(0.5)
+    assert fbs == pytest.approx(1.0 / 3.0)
+    assert fbs_worst == pytest.approx(2.0 / 3.0)
