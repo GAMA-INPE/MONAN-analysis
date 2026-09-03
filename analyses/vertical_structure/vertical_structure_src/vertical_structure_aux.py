@@ -1166,20 +1166,32 @@ def calculate_multi_time_metrics(time_window):
             # Get climatology dataset
             ds_climatology = xr.open_dataset(vs_config.FILEPATH_CLIMATOLOGY, engine="netcdf4")
             # Compute anomaly correlation coefficient for the specified month
-            ds_acc = stats.anomaly_correlation_coefficient_standard(
+            ds_acc_standard = stats.anomaly_correlation_coefficient_standard_spatial_field(
                 predictions=ds_var_prediction_concat,
                 observations=ds_var_ref_concat,
                 climatology=ds_climatology,
                 month_MM = month_MM
             )
 
-            acc_filepath = (
+            acc_standard_filepath = (
                 f"{vs_config.DIR_OUTPUT_DATA}/date_multiple_time_window_{time_window}/"
                 f"{multi_time_metric}_date_from_{vs_config.DATE_INIT}_to_"
                 f"{vs_config.DATE_FINAL}_time_window_{time_window}.nc"
             )
 
-            ds_acc.to_netcdf(acc_filepath)
+            ds_acc_standard.to_netcdf(acc_standard_filepath)
+
+            acc_standard_summary_csv = acc_standard_filepath.replace(".nc", "_summary.csv")
+
+            write_regional_summary_csv(
+                ds=ds_acc_standard,
+                metric="anomaly_correlation_coefficient_standard",
+                output_csv=acc_standard_summary_csv,
+                time_window=time_window,
+                summary_type="mean_period",
+                date_init=vs_config.DATE_INIT,
+                date_final=vs_config.DATE_FINAL,
+            )
 
 def plot_mean_metrics_for_all_dates_and_each_time_window():
     for time_window in vs_config.TIME_WINDOWS_TO_ANALYZE:
