@@ -480,48 +480,11 @@ def calculate_statistics(ds_ref_filepath, ds_prediction_filepath):
     # MONAN prediction data
     ds_prediction = xr.open_dataset(ds_prediction_filepath, engine="netcdf4")
     
-    # Apply pressure-level validity mask based on GFS and MONAN surface pressure
-    if vs_config.APPLY_PRESSURE_LEVEL_VALIDITY_MASK:
-        if "surface_pressure" not in ds_ref:
-            raise ValueError(
-                "APPLY_PRESSURE_LEVEL_VALIDITY_MASK is True, but "
-                "'surface_pressure' was not found in the preprocessed GFS dataset."
-            )
-
-        if "surface_pressure" not in ds_prediction:
-            raise ValueError(
-                "APPLY_PRESSURE_LEVEL_VALIDITY_MASK is True, but "
-                "'surface_pressure' was not found in the preprocessed MONAN dataset."
-            )
-        
-        # Obtain validity masks for reference dataset
-        valid_ref_pressure_level_mask = preprocess.apply_pressure_level_validity_mask(
-            ds=ds_ref,
-            pressure_level=ds_ref["level"],
-            surface_pressure_var="surface_pressure"
-        )
-
-        # Obtain validity masks for prediction dataset
-        valid_prediction_pressure_level_mask = preprocess.apply_pressure_level_validity_mask(
-            ds=ds_prediction,
-            pressure_level=ds_prediction["level"],
-            surface_pressure_var="surface_pressure"
-        )
-
-        # Obtain validity mask considering both datasets
-        valid_pressure_level_mask = (
-            valid_ref_pressure_level_mask
-            & valid_prediction_pressure_level_mask
-        )
-
-        # Remove surface_pressure before applying the mask to avoid expanding
-        # this 2D/3D field to all pressure levels during ds.where()
-        ds_ref = ds_ref.drop_vars("surface_pressure")
-        ds_prediction = ds_prediction.drop_vars("surface_pressure")
-
-        # Apply the same combined validity mask to reference and prediction
-        ds_ref = ds_ref.where(valid_pressure_level_mask)
-        ds_prediction = ds_prediction.where(valid_pressure_level_mask)
+    # If required, apply pressure-level validity mask based on GFS and MONAN surface pressure
+    ds_ref, ds_prediction = apply_pressure_level_mask_in_ref_and_prediction(
+        ds_ref=ds_ref,
+        ds_prediction=ds_prediction
+    )
 
     # Initialize list of output filepaths for statistics datasets
     ds_stats_filepath_dict = {}
@@ -585,6 +548,57 @@ def calculate_statistics(ds_ref_filepath, ds_prediction_filepath):
         )
 
     return ds_stats_filepath_dict
+
+def apply_pressure_level_mask_in_ref_and_prediction(ds_ref, ds_prediction):
+    # Apply pressure-level validity mask based on prediction and ref surface pressure
+    if vs_config.APPLY_PRESSURE_LEVEL_VALIDITY_MASK:
+        if "surface_pressure" not in ds_ref:
+            raise ValueError(
+                "APPLY_PRESSURE_LEVEL_VALIDITY_MASK is True, but "
+                "'surface_pressure' was not found in the preprocessed GFS dataset."
+            )
+
+        if "surface_pressure" not in ds_prediction:
+            raise ValueError(
+                "APPLY_PRESSURE_LEVEL_VALIDITY_MASK is True, but "
+                "'surface_pressure' was not found in the preprocessed MONAN dataset."
+            )
+        
+        # Obtain validity masks for reference dataset
+        valid_ref_pressure_level_mask = preprocess.apply_pressure_level_validity_mask(
+            ds=ds_ref,
+            pressure_level=ds_ref["level"],
+            surface_pressure_var="surface_pressure"
+        )
+
+        # Obtain validity masks for prediction dataset
+        valid_prediction_pressure_level_mask = preprocess.apply_pressure_level_validity_mask(
+            ds=ds_prediction,
+            pressure_level=ds_prediction["level"],
+            surface_pressure_var="surface_pressure"
+        )
+
+        # Obtain validity mask considering both datasets
+        valid_pressure_level_mask = (
+            valid_ref_pressure_level_mask
+            & valid_prediction_pressure_level_mask
+        )
+
+        # Remove surface_pressure before applying the mask to avoid expanding
+        # this 2D/3D field to all pressure levels during ds.where()
+        ds_ref = ds_ref.drop_vars("surface_pressure")
+        ds_prediction = ds_prediction.drop_vars("surface_pressure")
+
+        # Apply the same combined validity mask to reference and prediction
+        ds_ref = ds_ref.where(valid_pressure_level_mask)
+        ds_prediction = ds_prediction.where(valid_pressure_level_mask)
+
+    else:
+        # Avoid calculating RMSE or ACC for surface_pressure if it exists in the dataset
+        ds_ref = ds_ref.drop_vars("surface_pressure", errors="ignore")
+        ds_prediction = ds_prediction.drop_vars("surface_pressure", errors="ignore")
+    
+    return ds_ref, ds_prediction
 
 def plot_statistics(ds_stats_filepath_dict):
     # Get date to include in output filenames
@@ -1082,52 +1096,11 @@ def calculate_multi_time_metrics(time_window):
     ds_var_prediction_concat = xr.open_dataset(var_prediction_concat_filepath, engine="netcdf4")
     ds_var_ref_concat = xr.open_dataset(var_ref_concat_filepath, engine="netcdf4")
 
-    # Apply pressure-level validity mask based on ref and prediction model surface pressure
-    if vs_config.APPLY_PRESSURE_LEVEL_VALIDITY_MASK:
-        if "surface_pressure" not in ds_var_ref_concat:
-            raise ValueError(
-                "APPLY_PRESSURE_LEVEL_VALIDITY_MASK is True, but "
-                "'surface_pressure' was not found in the concatenated ref dataset."
-            )
-
-        if "surface_pressure" not in ds_var_prediction_concat:
-            raise ValueError(
-                "APPLY_PRESSURE_LEVEL_VALIDITY_MASK is True, but "
-                "'surface_pressure' was not found in the concatenated prediction model dataset."
-            )
-
-        # Obtain validity mask for reference dataset 
-        valid_ref_pressure_level_mask = preprocess.apply_pressure_level_validity_mask(
-          ds=ds_var_ref_concat,
-          pressure_level=ds_var_ref_concat["level"],
-          surface_pressure_var="surface_pressure"
-        )
-
-        # Obtain validity mask for prediction dataset
-        valid_prediction_pressure_level_mask = preprocess.apply_pressure_level_validity_mask(
-          ds=ds_var_prediction_concat,
-          pressure_level=ds_var_prediction_concat["level"],
-          surface_pressure_var="surface_pressure"
-        )
-
-        # Combine validity masks for reference and prediction datasets
-        valid_pressure_level_mask = (
-          valid_ref_pressure_level_mask
-          & valid_prediction_pressure_level_mask
-        )
-
-        # Remove surface_pressure before applying the mask to avoid expanding
-        # this field to all pressure levels during ds.where()
-        ds_var_ref_concat = ds_var_ref_concat.drop_vars("surface_pressure")
-        ds_var_prediction_concat = ds_var_prediction_concat.drop_vars("surface_pressure")
-
-        # Apply the same combined validity mask to reference and prediction
-        ds_var_ref_concat = ds_var_ref_concat.where(valid_pressure_level_mask)
-        ds_var_prediction_concat = ds_var_prediction_concat.where(valid_pressure_level_mask)
-    else:
-        # Avoid calculating RMSE or ACC for surface_pressure if it exists in the dataset
-        ds_var_ref_concat = ds_var_ref_concat.drop_vars("surface_pressure", errors="ignore")
-        ds_var_prediction_concat = ds_var_prediction_concat.drop_vars("surface_pressure", errors="ignore")
+    # If required, apply pressure-level validity mask based on GFS and MONAN surface pressure
+    ds_var_ref_concat, ds_var_prediction_concat = apply_pressure_level_mask_in_ref_and_prediction(
+        ds_ref=ds_var_ref_concat,
+        ds_prediction=ds_var_prediction_concat
+    )
 
     # Calculate and save multi-time metrics across all dates for each variable, level and domain
     ## Here we could calculate any metric that involves time averages, such as anomaly correlation coefficient or rmse
