@@ -85,6 +85,11 @@ def get_date_list(date_init, date_final, time_step):
 
     return date_list
 
+def get_MM_str_from_YYYYMMDDHH_str(date_string):
+    # Extract the month (characters at index 4 and 5)
+    month = date_string[4:6]
+    return month
+
 def get_lat_lon_names(ds):
     lat_candidates = ["lat", "latitude"]
     lon_candidates = ["lon", "longitude"]

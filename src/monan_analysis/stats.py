@@ -202,7 +202,7 @@ def anomaly_correlation_coefficient(predictions, observations, dim):
 
     return result
 
-def anomaly_correlation_coefficient_standard(var, predictions_monthly, observations_monthly, climatology_monthly):
+def anomaly_correlation_coefficient_standard(var, predictions, observations, climatology, month_MM, ):
     """
     Calculate the anomaly correlation coefficient (ACC) for a specific variable between monthly 
     predictions and observations, using the standard definition employed in operational centers (1,2,3,4).
@@ -236,30 +236,37 @@ def anomaly_correlation_coefficient_standard(var, predictions_monthly, observati
     https://confluence.ecmwf.int/spaces/FUG/pages/673551834/Section+12.A+Statistical+Concepts+-+Deterministic+Data#Section12.AStatisticalConceptsDeterministicData-MeasureofSkill-theAnomalyCorrelationCoefficient(ACC)
     4. Livezey et al, Verification of Official Monthly Mean 700-hPa Height Forecasts: An Update, 1995
     """
-    if not isinstance(predictions_monthly, xr.Dataset) or not isinstance(observations_monthly, xr.Dataset) \
-        or not isinstance(climatology_monthly, xr.Dataset):
+    if not isinstance(predictions, xr.Dataset) or not isinstance(observations, xr.Dataset) \
+        or not isinstance(climatology, xr.Dataset):
         raise TypeError("Predictions, observations, and climatology must be xarray Datasets.")
     
-    if var not in predictions_monthly or var not in observations_monthly or var not in climatology_monthly:
+    if var not in predictions or var not in observations or var not in climatology:
         raise ValueError(f"The variable '{var}' must exist in predictions, observations, and climatology datasets.")
+
+    # Get monthly mean for predictions and observations
+    ## Filter data for the specific month_MM
+    predictions_filtered = predictions.sel(Time=predictions["Time"].dt.strftime("%m") == month_MM)
+    observations_filtered = observations.sel(Time=observations["Time"].dt.strftime("%m") == month_MM)
+    ## Get monthly mean for the filtered predictions and observations
+    predictions_monthly = predictions_filtered[var].mean(dim="Time", keep_attrs=True)
+    observations_monthly = observations_filtered[var].mean(dim="Time", keep_attrs=True)
+    
+    # Get climatology for that month (assuming 1991-2020 period, with climatology time stamps 
+    # written as 2020-MM-01)
+    climatology_monthly = climatology[var].sel(Time=f"2020-{month_MM}-01")
+
+    # Compute anomalies
+    pred_anom = (predictions_monthly - climatology_monthly) - preprocess.spatial_mean(predictions_monthly - climatology_monthly)
+    obs_anom = (observations_monthly - climatology_monthly) - preprocess.spatial_mean(observations_monthly - climatology_monthly)
 
     # Create an empty dataset for the result
     result = xr.Dataset()
-
-    # Compute anomalies
-    pred_anom = (predictions_monthly[var] - climatology_monthly[var]) - preprocess.spatial_mean(predictions_monthly[var] - climatology_monthly[var])
-    obs_anom = (observations_monthly[var] - climatology_monthly[var]) - preprocess.spatial_mean(observations_monthly[var] - climatology_monthly[var])
 
     # Compute ACC and store in the result dataset
     result[var] = preprocess.spatial_mean(pred_anom * obs_anom) / (
         (preprocess.spatial_mean(pred_anom ** 2)) ** 0.5 *
         (preprocess.spatial_mean(obs_anom ** 2)) ** 0.5
     )
-    print (predictions_monthly[var])
-    print (observations_monthly[var])
-    print (pred_anom)
-    print (obs_anom)
-    print (result[var])
 
     return result
 
