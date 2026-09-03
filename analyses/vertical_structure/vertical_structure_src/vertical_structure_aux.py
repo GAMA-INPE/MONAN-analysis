@@ -1023,7 +1023,7 @@ def concatenate_var_datasets(date_list,time_window):
     if vs_config.SEL_VERBOSE_LEVEL >= 1:
         print ("Concatenating variable datasets for time window", time_window)
     ds_var_prediction_concat = xr.open_mfdataset(var_prediction_filepaths, combine="nested", concat_dim="Time")
-    ds_var_ref_concat = xr.open_mfdataset(var_prediction_filepaths, combine="nested", concat_dim="Time")
+    ds_var_ref_concat = xr.open_mfdataset(var_ref_filepaths, combine="nested", concat_dim="Time")
     if vs_config.SEL_VERBOSE_LEVEL >= 1:
         print ("Done concatenating variable datasets for time window", time_window)
     # Save concatenated datasets in nc file
@@ -1188,22 +1188,16 @@ def calculate_multi_time_metrics(time_window):
             )
 
         elif multi_time_metric == "anomaly_correlation_coefficient_standard":
-            # # Interpolate climatology to ref grid
-            # interpolate_prediction_ref(
-            #     ds_prediction_model_filepath=vs_config.FILEPATH_CLIMATOLOGY,
-            #     ds_ref_data_filepath=ds_var_ref_concat,
-            #     output_nc=vs_config.DIR_INPUT_PROCESSED+f"/climatology_mapped_to_ref_{vs_config.REFERENCE_DATA}.nc",
-            #     force_interpolation='y'
-            # )
-            # Read mapped climatology
-            #ds_climatology = xr.open_dataset(vs_config.DIR_INPUT_PROCESSED+f"/climatology_mapped_to_ref_{vs_config.REFERENCE_DATA}.nc", engine="netcdf4")
+            # Get month for calculation
+            month_MM = utils.get_MM_str_from_YYYYMMDDHH_str(date_string=vs_config.DATE_INIT)
+            # Get climatology dataset
             ds_climatology = xr.open_dataset(vs_config.FILEPATH_CLIMATOLOGY, engine="netcdf4")
-
+            # Compute anomaly correlation coefficient for the specified month
             ds_acc = stats.anomaly_correlation_coefficient_standard(
-                var="zgeo", 
-                predictions_monthly=ds_var_prediction_concat.mean(dim="Time", keep_attrs=True).sel(level="50000"),
-                observations_monthly=ds_var_ref_concat.mean(dim="Time", keep_attrs=True).sel(level="50000"),
-                climatology_monthly=ds_climatology.sel(level="50000", Time=7)
+                predictions=ds_var_prediction_concat,
+                observations=ds_var_ref_concat,
+                climatology=ds_climatology,
+                month_MM = month_MM
             )
 
             acc_filepath = (

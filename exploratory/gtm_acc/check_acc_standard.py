@@ -8,16 +8,16 @@ DIR_MONAN_PREOP = "/lustre/projetos/ioper/models/MONAN-WorkFlow-OPER/MONAN_PRE_O
 DIR_GFS_ANALYSIS = "/lustre/projetos/monan_gam/andre.lyra/NetCDFs/vert_struct/GFS"
 DIR_GFS = "/lustre/projetos/monan_atm/guilherme.mendonca/scratch/data/GFS"
 DIR_CARTOPY_DATA = "/lustre/projetos/monan_gam/andre.lyra/cartopy"
-DIR_OUTPUT = f"/lustre/projetos/monan_atm/guilherme.mendonca/MONAN-analysis/analyses/vertical_structure/results/test_acc_standard_gfs_vs_gfs_analysis/output"
+DIR_OUTPUT = f"/lustre/projetos/monan_atm/guilherme.mendonca/MONAN-analysis/analyses/vertical_structure/results/output"
 DIR_OUTPUT_FIGS = f"{DIR_OUTPUT}/figs"
 DIR_OUTPUT_DATA = f"{DIR_OUTPUT}/data"
-DIR_INPUT = f"/lustre/projetos/monan_atm/guilherme.mendonca/MONAN-analysis/analyses/vertical_structure/results/test_acc_standard_gfs_vs_gfs_analysis/input"
+DIR_INPUT = f"/lustre/projetos/monan_atm/guilherme.mendonca/MONAN-analysis/analyses/vertical_structure/results/input"
 DIR_INPUT_INTERMEDIATE = f"{DIR_INPUT}/intermediate"
 DIR_INPUT_PROCESSED = f"{DIR_INPUT}/processed"
 DIR_INPUT_RAW = f"{DIR_INPUT}/raw"
 FILEPATH_CLIMATOLOGY = f"/lustre/projetos/monan_atm/guilherme.mendonca/scratch/data/ERA5/mon/nc_climatology/climatology_in_monan_format.nc"
 # Other relevant input
-PREDICTION_MODEL = "gfs"
+PREDICTION_MODEL = "monan"
 REFERENCE_DATA = "gfs_analysis"
 DATE_INIT = "2026070100"
 DATE_FINAL = "2026070200"
@@ -77,26 +77,38 @@ def apply_pressure_level_mask_in_ref_and_prediction(ds_ref, ds_prediction, APPLY
         # Avoid calculating RMSE or ACC for surface_pressure if it exists in the dataset
         ds_ref = ds_ref.drop_vars("surface_pressure", errors="ignore")
         ds_prediction = ds_prediction.drop_vars("surface_pressure", errors="ignore")
+    
+    return ds_ref, ds_prediction
 
 # Construct filepaths for concatenated variable datasets
 time_window = "120"
 var_prediction_concat_filepath, var_ref_concat_filepath = get_prediction_ref_concat_filepath(time_window)
+
+print (var_prediction_concat_filepath)
+print (var_ref_concat_filepath)
+
 # Read concatenated variable datasets
 ds_var_prediction_concat = xr.open_dataset(var_prediction_concat_filepath, engine="netcdf4")
 ds_var_ref_concat = xr.open_dataset(var_ref_concat_filepath, engine="netcdf4")
+
+# Apply pressure validity mask to both datasets
+ds_var_ref_concat, ds_var_prediction_concat = apply_pressure_level_mask_in_ref_and_prediction(
+    ds_ref=ds_var_ref_concat,
+    ds_prediction=ds_var_prediction_concat,
+    APPLY_PRESSURE_LEVEL_VALIDITY_MASK=True
+)
 
 print ("prediction concat:")
 print (ds_var_prediction_concat)
 print (len(ds_var_prediction_concat.latitude))
 print (len(ds_var_prediction_concat.longitude))
-print (ds_var_prediction_concat["zgeo"].mean(dim="Time").sel(level="50000"))
-print (ds_var_prediction_concat["zgeo"].mean(dim="Time", keep_attrs=True).sel(level="50000"))
+print (ds_var_prediction_concat["zgeo"].mean(dim="Time").sel(level="50000").values)
 
 print ("ref concat:")
 print (ds_var_ref_concat)
 print (len(ds_var_ref_concat.latitude))
 print (len(ds_var_ref_concat.longitude))
-print (ds_var_ref_concat["zgeo"].mean(dim="Time").sel(level="50000"))
+print (ds_var_ref_concat["zgeo"].mean(dim="Time").sel(level="50000").values)
 
 # Read mapped climatology
 #ds_climatology = xr.open_dataset(vs_config.DIR_INPUT_PROCESSED+f"/climatology_mapped_to_ref_{vs_config.REFERENCE_DATA}.nc", engine="netcdf4")
@@ -106,6 +118,7 @@ print ("climatology:")
 print (len(ds_climatology.latitude))
 print (len(ds_climatology.longitude))
 print (ds_climatology.Time)
+print (ds_climatology.level)
 print (ds_climatology["zgeo"].sel(level="50000", Time="20200701"))
 
 # get month for calculation
@@ -113,8 +126,7 @@ month = utils.get_MM_str_from_YYYYMMDDHH_str(date_string=DATE_INIT)
 
 print (month)
 
-ds_acc = stats.anomaly_correlation_coefficient_standard(
-    var="zgeo", 
+ds_acc = stats.anomaly_correlation_coefficient_standard( 
     predictions=ds_var_prediction_concat,
     observations=ds_var_ref_concat,
     climatology=ds_climatology,
