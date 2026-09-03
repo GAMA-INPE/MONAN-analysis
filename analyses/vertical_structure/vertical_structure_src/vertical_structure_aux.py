@@ -750,8 +750,11 @@ def write_regional_summary_csv(
     if not getattr(vs_config, "WRITE_REGIONAL_SUMMARY_CSV", True):
         return
 
+    # Initialize rows variable
     rows = []
 
+    # Check if Time is in ds.dims; if not, set time_values to [None] to handle datasets without a 
+    # Time dimension
     if "Time" in ds.dims:
         if date_list is not None:
             ds = ds.assign_coords(Time=date_list)
@@ -760,6 +763,7 @@ def write_regional_summary_csv(
     else:
         time_values = [None]
 
+    # Loop over regions, variables, levels, and time values to compute statistics and populate rows
     for region in vs_config.SUMMARY_DOMAINS_TO_ANALYZE:
         ds_region = preprocess.subset_region(ds, region)
 
@@ -777,18 +781,21 @@ def write_regional_summary_csv(
 
                 for time_value in time_values:
                     if time_value is not None:
+                        # Compute spatial mean, min, max, std values for each time step in dataset 
                         mean_value = utils.get_scalar_value(mean_da.sel(Time=time_value))
                         min_value = utils.get_scalar_value(min_da.sel(Time=time_value))
                         max_value = utils.get_scalar_value(max_da.sel(Time=time_value))
                         std_value = utils.get_scalar_value(std_da.sel(Time=time_value))
                         valid_date = str(time_value)
                     else:
+                        # Compute spatial mean, min, max, std values
                         mean_value = utils.get_scalar_value(mean_da)
                         min_value = utils.get_scalar_value(min_da)
                         max_value = utils.get_scalar_value(max_da)
                         std_value = utils.get_scalar_value(std_da)
                         valid_date = None
 
+                    # Add computed values to rows list
                     rows.append(
                         {
                             "summary_type": summary_type,
@@ -808,7 +815,9 @@ def write_regional_summary_csv(
                         }
                     )
 
+    # If not existent, create directory for output CSV and save the summary CSV
     os.makedirs(os.path.dirname(output_csv), exist_ok=True)
+    # Save the summary CSV using pandas DataFrame
     pd.DataFrame(rows).to_csv(output_csv, index=False)
     if vs_config.SEL_VERBOSE_LEVEL >= 1:
         print(f"Regional summary CSV saved: {output_csv}")
@@ -1165,33 +1174,111 @@ def calculate_multi_time_metrics(time_window):
             month_MM = utils.get_MM_str_from_YYYYMMDDHH_str(date_string=vs_config.DATE_INIT)
             # Get climatology dataset
             ds_climatology = xr.open_dataset(vs_config.FILEPATH_CLIMATOLOGY, engine="netcdf4")
-            # Compute anomaly correlation coefficient for the specified month
-            ds_acc_standard = stats.anomaly_correlation_coefficient_standard_spatial_field(
-                predictions=ds_var_prediction_concat,
-                observations=ds_var_ref_concat,
-                climatology=ds_climatology,
-                month_MM = month_MM
-            )
-
+            # Build filepath for saving standard anomaly correlation coefficient
             acc_standard_filepath = (
                 f"{vs_config.DIR_OUTPUT_DATA}/date_multiple_time_window_{time_window}/"
                 f"{multi_time_metric}_date_from_{vs_config.DATE_INIT}_to_"
-                f"{vs_config.DATE_FINAL}_time_window_{time_window}.nc"
+                f"{vs_config.DATE_FINAL}_time_window_{time_window}_summary.csv"
             )
-
-            ds_acc_standard.to_netcdf(acc_standard_filepath)
-
-            acc_standard_summary_csv = acc_standard_filepath.replace(".nc", "_summary.csv")
-
-            write_regional_summary_csv(
-                ds=ds_acc_standard,
+            
+            # Compute anomaly correlation coefficient for the specified month, and save it to csv
+            write_regional_summary_csv_for_acc_standard(
+                ds_prediction=ds_var_prediction_concat,
+                ds_ref=ds_var_ref_concat,
+                ds_climatology=ds_climatology,
+                month_MM=month_MM,
                 metric="anomaly_correlation_coefficient_standard",
-                output_csv=acc_standard_summary_csv,
+                output_csv=acc_standard_filepath,
                 time_window=time_window,
                 summary_type="mean_period",
                 date_init=vs_config.DATE_INIT,
                 date_final=vs_config.DATE_FINAL,
+                date_list=None
             )
+
+def write_regional_summary_csv_for_acc_standard(
+    ds_prediction,
+    ds_ref,
+    ds_climatology,
+    month_MM,
+    metric,
+    output_csv,
+    time_window,
+    summary_type,
+    date_init=None,
+    date_final=None,
+    date_list=None,
+):
+    if not getattr(vs_config, "WRITE_REGIONAL_SUMMARY_CSV", True):
+        return
+
+    # Initialize rows variable
+    rows = []
+
+    # Loop over regions, variables, levels, and time values to compute statistics and populate rows
+    for region in vs_config.SUMMARY_DOMAINS_TO_ANALYZE:
+        # Subset regions for prediction and ref data
+        ds_prediction_region = preprocess.subset_region(ds_prediction, region)
+        ds_ref_region = preprocess.subset_region(ds_ref, region)
+        ds_climatology_region = preprocess.subset_region(ds_climatology, region)
+
+        # Calculate standard ACC as spatial field for the region
+        ds_acc_standard_spatial_field = stats.anomaly_correlation_coefficient_standard_spatial_field(
+            predictions=ds_prediction_region,
+            observations=ds_ref_region,
+            climatology=ds_climatology_region,
+            month_MM = month_MM
+        )
+
+        # Loop over each var in vs_config.VARIABLES_TO_ANALYZE and check if it exists in 
+        # ds_acc_standard_region
+        for var in vs_config.VARIABLES_TO_ANALYZE:
+            if var not in ds_acc_standard_spatial_field:
+                continue
+
+            # Loop over each level in vs_config.VERTICAL_LEVELS_TO_ANALYZE
+            for level in vs_config.VERTICAL_LEVELS_TO_ANALYZE:
+                da = ds_acc_standard_spatial_field[var].sel(level=float(level))
+
+                # Compute spatial mean of ds_acc_standard_spatial_field, thus obtaining
+                # the standard ACC value for the region
+                mean_da = preprocess.spatial_mean(da)
+                min_da = preprocess.spatial_min(da)
+                max_da = preprocess.spatial_max(da)
+                std_da = preprocess.spatial_std(da)
+                # Get values as scalars
+                mean_value = utils.get_scalar_value(mean_da)
+                min_value = utils.get_scalar_value(min_da)
+                max_value = utils.get_scalar_value(max_da)
+                std_value = utils.get_scalar_value(std_da)
+                valid_date = None
+
+                # Add computed values to rows list
+                rows.append(
+                    {
+                        "summary_type": summary_type,
+                        "date": valid_date,
+                        "date_init": date_init,
+                        "date_final": date_final,
+                        "time_window": time_window,
+                        "metric": metric,
+                        "variable": var,
+                        "level_pa": int(float(level)),
+                        "level_hpa": int(float(level) / 100.0),
+                        "region": region,
+                        "mean": mean_value,
+                        "min": min_value,
+                        "max": max_value,
+                        "std": std_value,
+                    }
+                )
+
+    # If not existent, create directory for output CSV and save the summary CSV
+    os.makedirs(os.path.dirname(output_csv), exist_ok=True)
+    # Save the summary CSV using pandas DataFrame
+    pd.DataFrame(rows).to_csv(output_csv, index=False)
+    if vs_config.SEL_VERBOSE_LEVEL >= 1:
+        print(f"Regional summary CSV saved: {output_csv}")
 
 def plot_mean_metrics_for_all_dates_and_each_time_window():
     for time_window in vs_config.TIME_WINDOWS_TO_ANALYZE:
