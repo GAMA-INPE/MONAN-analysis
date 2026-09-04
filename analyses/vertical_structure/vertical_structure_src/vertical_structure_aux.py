@@ -44,7 +44,7 @@ import pandas as pd
 import numpy as np
 import subprocess
 import importlib
-from concurrent.futures import ProcessPoolExecutor, as_completed
+#from concurrent.futures import ProcessPoolExecutor, as_completed
 
 #===================================================================================================
 # Functions for single run
@@ -494,7 +494,7 @@ def calculate_statistics(ds_ref_filepath, ds_prediction_filepath):
     # We will not care about the domain now: since variables are all in
     # the same grid, we can compute each metric for
     # the whole grid and then subset it for different domains.
-    if "bias" in vs_config.STATS_METRICS_TO_ANALYZE:
+    if "bias" in vs_config.STATS_SPATIAL_METRICS_TO_ANALYZE:
         # Compute bias
         ds_bias = stats.bias(predictions=ds_prediction, observations=ds_ref)
 
@@ -519,7 +519,7 @@ def calculate_statistics(ds_ref_filepath, ds_prediction_filepath):
             date_final=date_in_string,
         )
 
-    if "relative_error" in vs_config.STATS_METRICS_TO_ANALYZE:
+    if "relative_error" in vs_config.STATS_SPATIAL_METRICS_TO_ANALYZE:
         # Compute relative error
         ds_relative_error = stats.relative_error(
             predictions=ds_prediction,
@@ -847,7 +847,7 @@ def cp_config_files():
 #===================================================================================================
 # Functions for multiple run
 #===================================================================================================
-# Tentative functions for running this in parallel (CURRENTLY NOT WORKING!):
+# TODO: Tentative functions for running this in parallel (2026-08: CURRENTLY NOT WORKING!)
 # def process_date_and_time_window(date, time_window, vs_config_dir):
 #     """
 #     Process a single combination of date and time window.
@@ -984,7 +984,7 @@ def concatenate_stats_datasets(date_list,time_window):
     # Create folder to save concatenated datasets
     os.makedirs(vs_config.DIR_OUTPUT_DATA+f"/date_multiple_time_window_{time_window}", exist_ok=True)
     # Construct filepaths for stats datasets to be concatenated
-    for stat in vs_config.STATS_METRICS_TO_ANALYZE:
+    for stat in vs_config.STATS_SPATIAL_METRICS_TO_ANALYZE:
         stat_filepaths = []
         for date_str in date_list:
             stat_filepath = f"{vs_config.DIR_OUTPUT_DATA}/date_{date_str}_time_window_{time_window}/{stat}_date_{date_str}_time_window_{time_window}.nc"
@@ -1074,7 +1074,7 @@ def calculate_mean_single_time_metrics(time_window):
     # Create folder to save mean stats metrics datasets
     os.makedirs(vs_config.DIR_OUTPUT_DATA+f"/date_multiple_time_window_{time_window}", exist_ok=True)
     # Construct filepaths for concatenated stats datasets
-    for stat in vs_config.STATS_METRICS_TO_ANALYZE:
+    for stat in vs_config.STATS_SPATIAL_METRICS_TO_ANALYZE:
         stat_concat_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/{stat}_date_concat_from_{vs_config.DATE_INIT}_to_{vs_config.DATE_FINAL}_time_window_{time_window}.nc"
         # Read concatenated dataset
         ds_stat_concat = xr.open_dataset(stat_concat_filepath, engine="netcdf4")
@@ -1113,9 +1113,9 @@ def calculate_multi_time_metrics(time_window):
 
     # Calculate and save multi-time metrics across all dates for each variable, level and domain
     ## Here we could calculate any metric that involves time averages, such as anomaly correlation coefficient or rmse
-    for multi_time_metric in vs_config.MULTI_TIME_STATS_METRICS_TO_ANALYZE:
+    for multi_time_spatial_metric in vs_config.MULTI_TIME_STATS_SPATIAL_METRICS_TO_ANALYZE:
 
-        if multi_time_metric == "rmse":
+        if multi_time_spatial_metric == "rmse":
             ds_rmse = stats.rmse(
                 predictions=ds_var_prediction_concat,
                 observations=ds_var_ref_concat,
@@ -1124,7 +1124,7 @@ def calculate_multi_time_metrics(time_window):
 
             rmse_filepath = (
                 f"{vs_config.DIR_OUTPUT_DATA}/date_multiple_time_window_{time_window}/"
-                f"{multi_time_metric}_date_from_{vs_config.DATE_INIT}_to_"
+                f"{multi_time_spatial_metric}_date_from_{vs_config.DATE_INIT}_to_"
                 f"{vs_config.DATE_FINAL}_time_window_{time_window}.nc"
             )
 
@@ -1142,7 +1142,7 @@ def calculate_multi_time_metrics(time_window):
                 date_final=vs_config.DATE_FINAL,
             )
 
-        elif multi_time_metric == "anomaly_correlation_coefficient":
+        elif multi_time_spatial_metric == "anomaly_correlation_coefficient":
             ds_acc = stats.anomaly_correlation_coefficient(
                 predictions=ds_var_prediction_concat,
                 observations=ds_var_ref_concat,
@@ -1151,7 +1151,7 @@ def calculate_multi_time_metrics(time_window):
 
             acc_filepath = (
                 f"{vs_config.DIR_OUTPUT_DATA}/date_multiple_time_window_{time_window}/"
-                f"{multi_time_metric}_date_from_{vs_config.DATE_INIT}_to_"
+                f"{multi_time_spatial_metric}_date_from_{vs_config.DATE_INIT}_to_"
                 f"{vs_config.DATE_FINAL}_time_window_{time_window}.nc"
             )
 
@@ -1169,7 +1169,9 @@ def calculate_multi_time_metrics(time_window):
                 date_final=vs_config.DATE_FINAL,
             )
 
-        elif multi_time_metric == "anomaly_correlation_coefficient_standard":
+    for multi_time_summary_metric in vs_config.MULTI_TIME_STATS_SUMMARY_METRICS_TO_ANALYZE:
+        
+        if multi_time_summary_metric == "anomaly_correlation_coefficient_standard":
             # Get month for calculation
             month_MM = utils.get_MM_str_from_YYYYMMDDHH_str(date_string=vs_config.DATE_INIT)
             # Get climatology dataset
@@ -1177,7 +1179,7 @@ def calculate_multi_time_metrics(time_window):
             # Build filepath for saving standard anomaly correlation coefficient
             acc_standard_filepath = (
                 f"{vs_config.DIR_OUTPUT_DATA}/date_multiple_time_window_{time_window}/"
-                f"{multi_time_metric}_date_from_{vs_config.DATE_INIT}_to_"
+                f"{multi_time_summary_metric}_date_from_{vs_config.DATE_INIT}_to_"
                 f"{vs_config.DATE_FINAL}_time_window_{time_window}_summary.csv"
             )
             
@@ -1217,7 +1219,7 @@ def write_regional_summary_csv_for_acc_standard(
 
     # Loop over regions, variables, levels, and time values to compute statistics and populate rows
     for region in vs_config.SUMMARY_DOMAINS_TO_ANALYZE:
-        # Subset regions for prediction and ref data
+        # Subset regions for prediction, ref, and climatology data
         ds_prediction_region = preprocess.subset_region(ds_prediction, region)
         ds_ref_region = preprocess.subset_region(ds_ref, region)
         ds_climatology_region = preprocess.subset_region(ds_climatology, region)
@@ -1234,6 +1236,8 @@ def write_regional_summary_csv_for_acc_standard(
         # ds_acc_standard_region
         for var in vs_config.VARIABLES_TO_ANALYZE:
             if var not in ds_acc_standard_spatial_field:
+                if vs_config.SEL_VERBOSE_LEVEL >= 1:
+                    print(f"Variable {var} not found in ACC standard spatial field for region {region}. Skipping.")
                 continue
 
             # Loop over each level in vs_config.VERTICAL_LEVELS_TO_ANALYZE
@@ -1299,10 +1303,10 @@ def plot_mean_metrics(time_window):
         for domain in vs_config.DOMAINS_TO_ANALYZE:
             os.makedirs(vs_config.DIR_OUTPUT_FIGS+f"/date_multiple_time_window_{time_window}/var_{var}/domain_{domain}", exist_ok=True)
     # Construct filepaths for mean stats metrics datasets
-    for metric in (vs_config.STATS_METRICS_TO_ANALYZE+vs_config.MULTI_TIME_STATS_METRICS_TO_ANALYZE):        
-        if metric in vs_config.STATS_METRICS_TO_ANALYZE:
+    for metric in (vs_config.STATS_SPATIAL_METRICS_TO_ANALYZE+vs_config.MULTI_TIME_STATS_SPATIAL_METRICS_TO_ANALYZE):        
+        if metric in vs_config.STATS_SPATIAL_METRICS_TO_ANALYZE:
             stat_mean_filepath = f"{vs_config.DIR_OUTPUT_DATA}/date_multiple_time_window_{time_window}/mean_{metric}_date_from_{vs_config.DATE_INIT}_to_{vs_config.DATE_FINAL}_time_window_{time_window}.nc"
-        elif metric in vs_config.MULTI_TIME_STATS_METRICS_TO_ANALYZE:
+        elif metric in vs_config.MULTI_TIME_STATS_SPATIAL_METRICS_TO_ANALYZE:
             stat_mean_filepath = f"{vs_config.DIR_OUTPUT_DATA}/date_multiple_time_window_{time_window}/{metric}_date_from_{vs_config.DATE_INIT}_to_{vs_config.DATE_FINAL}_time_window_{time_window}.nc"
         # Read dataset with mean values of stat metric across all dates for each variable, level and domain
         ds_stat_mean = xr.open_dataset(stat_mean_filepath, engine="netcdf4")
@@ -1316,14 +1320,14 @@ def plot_mean_metrics(time_window):
                 for level in vs_config.VERTICAL_LEVELS_TO_ANALYZE:
                     if vs_config.SEL_VERBOSE_LEVEL >= 1:
                         print ("level:", level)
-                    if metric in vs_config.STATS_METRICS_TO_ANALYZE:
+                    if metric in vs_config.STATS_SPATIAL_METRICS_TO_ANALYZE:
                         output_filepath = (f"{vs_config.DIR_OUTPUT_FIGS}/date_multiple_"+
                                          f"time_window_{time_window}/"+
                                          f"var_{var}/domain_{domain}/"+
                                          f"metric_mean_{metric}_var_{var}_level_{level}_"+
                                          f"domain_{domain}_date_from_{vs_config.DATE_INIT}_to_{vs_config.DATE_FINAL}_"+
                                          f"time_window_{time_window}.png")
-                    elif metric in vs_config.MULTI_TIME_STATS_METRICS_TO_ANALYZE:
+                    elif metric in vs_config.MULTI_TIME_STATS_SPATIAL_METRICS_TO_ANALYZE:
                         output_filepath = (f"{vs_config.DIR_OUTPUT_FIGS}/date_multiple_"+
                                          f"time_window_{time_window}/"+
                                          f"var_{var}/domain_{domain}/"+
@@ -1390,7 +1394,7 @@ def generate_lat_pressure_profile_plots(time_window):
     metrics_to_plot = getattr(
         vs_config,
         "LAT_PRESSURE_PROFILE_METRICS_TO_PLOT",
-        vs_config.STATS_METRICS_TO_ANALYZE,
+        vs_config.STATS_SPATIAL_METRICS_TO_ANALYZE,
     )
     # Get variables for lat-pressure profile plots; if no specific variables for that were given
     # in vertical_structure_config, then get those from STATS_METRICS_TO_ANALYZE
@@ -1416,14 +1420,14 @@ def generate_lat_pressure_profile_plots(time_window):
 
     # Get metrics filepaths
     for metric in metrics_to_plot:
-        if metric in vs_config.STATS_METRICS_TO_ANALYZE:
+        if metric in vs_config.STATS_SPATIAL_METRICS_TO_ANALYZE:
             metric_filepath = (
                 f"{vs_config.DIR_INPUT_PROCESSED}/"
                 f"{metric}_date_concat_from_{vs_config.DATE_INIT}_to_"
                 f"{vs_config.DATE_FINAL}_time_window_{time_window}.nc"
             )
 
-        elif metric in vs_config.MULTI_TIME_STATS_METRICS_TO_ANALYZE:
+        elif metric in vs_config.MULTI_TIME_STATS_SPATIAL_METRICS_TO_ANALYZE:
             metric_filepath = (
                 f"{vs_config.DIR_OUTPUT_DATA}/"
                 f"date_multiple_time_window_{time_window}/"

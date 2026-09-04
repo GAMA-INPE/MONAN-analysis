@@ -94,9 +94,15 @@ INTERPOL_TYPE = "prediction_to_ref"
 #===================================================================================================
 # Statistics configurations
 #===================================================================================================
-STATS_METRICS_TO_ANALYZE = [
+# Single-time stats metrics (metrics that can be calculated for a single time instant), which can be 
+# spatially plotted over a map (e.g. bias, relative error)
+STATS_SPATIAL_METRICS_TO_ANALYZE = [
     "bias",
     "relative_error"
+    ]
+# Single-time stats metrics (metrics that can be calculated for a single time instant), which cannot
+# be spatially plotted over a map (summary only)
+STATS_SUMMARY_METRICS_TO_ANALYZE = [
     ]
 # Whether to write a CSV file with the regional summary of statistics
 WRITE_REGIONAL_SUMMARY_CSV = True
@@ -225,10 +231,16 @@ TIME_WINDOWS_TO_ANALYZE = [
     #"96",
     "120"
     ]
-# Multi-time stats metrics (metrics that need multiple time instants for their definition, e.g. RMSE, anomaly correlation coefficient)
-MULTI_TIME_STATS_METRICS_TO_ANALYZE = [
+# Multi-time stats metrics (metrics that need multiple time instants for their definition, 
+# e.g. RMSE, anomaly correlation coefficient), that can be spatially plotted over a map
+MULTI_TIME_STATS_SPATIAL_METRICS_TO_ANALYZE = [
     "rmse",
     "anomaly_correlation_coefficient",
+    ]
+# Multi-time stats metrics (metrics that need multiple time instants for their definition, 
+# e.g. RMSE, anomaly correlation coefficient), that cannot be spatially plotted over a map 
+# (summary only)
+MULTI_TIME_STATS_SUMMARY_METRICS_TO_ANALYZE = [
     "anomaly_correlation_coefficient_standard"
     ]
 #===================================================================================================

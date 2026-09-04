@@ -278,9 +278,10 @@ def anomaly_correlation_coefficient_standard_spatial_field(predictions, observat
     """
     Calculate the anomaly correlation coefficient (ACC) for a specific variable between monthly 
     predictions and observations, using the standard definition employed in operational centers (1,2,3,4).
-    The only difference between this function and anomaly_correlation_coefficient_standard is that 
+    The only difference between this function and anomaly_correlation_coefficient_standard() is that 
     this function returns the ACC as a spatial field, i.e. the spatial mean is not calculated for 
-    the numerator.
+    the numerator. This may be useful when the user wants to first calculate the ACC for each grid 
+    point in a spatial field to only afterwards calculate the final spatial mean.
 
     Mathematically:
 
