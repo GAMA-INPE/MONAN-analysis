@@ -29,7 +29,7 @@ import pandas as pd
 
 # Configuration
 # Directory containing output_YYYYMMDDHH_to_YYYYMMDDHH directories.
-BASE_DIR = Path("/lustre/projetos/monan_atm/guilherme.mendonca/MONAN-analysis/analyses/vertical_structure/results/gfs_202606_to_202607")
+BASE_DIR = Path("/lustre/projetos/monan_atm/guilherme.mendonca/MONAN-analysis/analyses/vertical_structure/results/monan_202606_to_202608")
 
 # Metric filename prefix.
 # Options:
@@ -37,7 +37,7 @@ BASE_DIR = Path("/lustre/projetos/monan_atm/guilherme.mendonca/MONAN-analysis/an
 #   "mean_relative_error"
 #   "rmse"
 #   "anomaly_correlation_coefficient"
-METRIC = "anomaly_correlation_coefficient"
+METRIC = "anomaly_correlation_coefficient_standard"
 
 # Variable name as stored in the CSV files.
 # Common options:
