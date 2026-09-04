@@ -11,10 +11,11 @@ ln -sf /opt/cray/pe/netcdf-hdf5parallel/4.9.0.15/CRAYCLANG/18.0/lib/libnetcdf.so
 export LD_LIBRARY_PATH="$HOME/libfix_netcdf:/opt/cray/pe/netcdf-hdf5parallel/4.9.0.15/CRAYCLANG/18.0/lib:/opt/cray/libfabric/1.22.0/lib64:${LD_LIBRARY_PATH:-}"
 
 WGRIB2="/p/app/wgrib2/3.8.0/bin/wgrib2"
-BASE_IN="/oper/dados/ioper/tempo/GFS/0p25/brutos"
+#BASE_IN="/oper/dados/ioper/tempo/GFS/0p25/brutos"
+BASE_IN="/p/projetos/ioper/data/external/gfs_0p25"
 
 ANO="2026"
-MES="08"
+MES="05"
 
 DIR_OUT="/lustre/projetos/monan_atm/guilherme.mendonca/scratch/data/GFS/${ANO}${MES}"
 mkdir -p "${DIR_OUT}"
