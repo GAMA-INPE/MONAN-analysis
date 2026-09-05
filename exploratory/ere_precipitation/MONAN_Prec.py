@@ -49,12 +49,14 @@ parser.add_argument('OUTPUT_PATH', type=str, help='Caminho base para os arquivos
 parser.add_argument('PREFIXO_ARQ', type=str, help='Prefixo para os arquivos de entrada do MONAN (Ex: MONAN_DIAG_G_POS_GFS_)')
 parser.add_argument('SUFIXO_ARQ', type=str, help='Sufixo para os arquivos de entrada do MONAN (Ex: .00.00.x655362L55.nc)')
 parser.add_argument('GENERATE_MAPS', type=int, help='Gerar mapas? (1 para True, 0 para False)')
+parser.add_argument('ANALYSIS_NAME', type=str, help='Nome do experimento (ex: taylor, ysu, mynn)')
 
 args = parser.parse_args()
 
 # Processamento dos caminhos de entrada e saída
 MONAN_PATH = Path(args.MONAN_PATH)
-OUTPUT_PATH = Path(args.OUTPUT_PATH) / "MONAN"
+MODEL_NAME = args.ANALYSIS_NAME
+OUTPUT_PATH = Path(args.OUTPUT_PATH) / MODEL_NAME
 PREFIXO_ARQ = args.PREFIXO_ARQ
 SUFIXO_ARQ = args.SUFIXO_ARQ
 GENERATE_MAPS = args.GENERATE_MAPS
@@ -243,12 +245,12 @@ for i in range(num_dias):
 
     # Titulo
         plt.title(
-        f'MONAN {data_inicial}+{data_str_e} - 24h prec accum for {Fct}h \n' 
+        f'{MODEL_NAME} {data_inicial}+{data_str_e} - 24h prec accum for {Fct}h \n' 
         f'Global - {max_str} | {media_str}', 
         fontsize=12
         )
     # Salvar figura
-        nome_arquivo = f"MONAN_24precacum_{data_inicial}_{data_str_e}_GLB.png"
+        nome_arquivo = f"{MODEL_NAME}_24precacum_{data_inicial}_{data_str_e}_GLB.png"
         caminho_out = f"{OUTPUT_PATH}/{args.ANO}{args.MES}/{data_inicial}/"
         os.makedirs(caminho_out, exist_ok=True)
         plt.savefig(os.path.join(caminho_out, nome_arquivo), dpi=300, bbox_inches="tight")
@@ -324,12 +326,12 @@ for i in range(num_dias):
 
     # Titulo
         plt.title(
-        f'MONAN {data_inicial}+{data_str_e} - prec24h {Fct}h\n' 
+        f'{MODEL_NAME} {data_inicial}+{data_str_e} - prec24h {Fct}h\n' 
         f'AMS - {max_str_AMS} | {media_str_AMS}', 
         fontsize=12
         )
     # Salvar figura
-        nome_arquivo = f"MONAN_24precacum_{data_inicial}_{data_str_e}_AMS.png"
+        nome_arquivo = f"{MODEL_NAME}_24precacum_{data_inicial}_{data_str_e}_AMS.png"
         caminho_out = f"{OUTPUT_PATH}/{args.ANO}{args.MES}/{data_inicial}/"
         plt.savefig(os.path.join(caminho_out, nome_arquivo), dpi=300, bbox_inches="tight")
         plt.close(fig)
@@ -405,12 +407,12 @@ for i in range(num_dias):
 
     # Titulo
         plt.title(
-        f'MONAN {data_inicial}+{data_str_e} - 24h prec accum for {Fct}h \n' 
+        f'{MODEL_NAME} {data_inicial}+{data_str_e} - 24h prec accum for {Fct}h \n' 
         f'ACC - {max_str_ACC} | {media_str_ACC}', 
         fontsize=12
         )
     # Salvar figura
-        nome_arquivo = f"MONAN_24precacum_{data_inicial}_{data_str_e}_ACC.png"
+        nome_arquivo = f"{MODEL_NAME}_24precacum_{data_inicial}_{data_str_e}_ACC.png"
         caminho_out = f"{OUTPUT_PATH}/{args.ANO}{args.MES}/{data_inicial}/"
         plt.savefig(os.path.join(caminho_out, nome_arquivo), dpi=300, bbox_inches="tight")
         plt.close(fig)
@@ -460,7 +462,7 @@ for i in range(num_dias):
 
 
 # Salva o arquivo NetCDF
-    nome_arquivo = f"MONAN_Precipitation_24h_acum_{data_inicial}_{data_str_e}_{Fct}h.nc"
+    nome_arquivo = f"{MODEL_NAME}_Precipitation_24h_acum_{data_inicial}_{data_str_e}_{Fct}h.nc"
     caminho_netcdf = Path(OUTPUT_PATH) / data_inicial / nome_arquivo
     caminho_netcdf.parent.mkdir(parents=True, exist_ok=True)
     ds.to_netcdf(caminho_netcdf, encoding=encoding, format='NETCDF4')

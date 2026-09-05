@@ -41,12 +41,14 @@ parser.add_argument("P_LIMIAR", type=int)
 # Argumentos dos caminhos de entrada e saída
 parser.add_argument('NETCDF_PATH', type=str, help='Caminho base para os arquivos de comparação (NetCDF)')
 parser.add_argument('OUTPUT_PATH', type=str, help='Caminho base para os arquivos de saída (imagens e NetCDF)')
+parser.add_argument('ANALYSIS_NAME', type=str, help='Nome do experimento (ex: taylor, ysu, mynn)')
 
 args = parser.parse_args()
 
 # Processamento dos caminhos de entrada e saída
 NETCDF_PATH = Path(args.NETCDF_PATH)
 OUTPUT_PATH = Path(args.OUTPUT_PATH)
+MODEL_NAME = args.ANALYSIS_NAME
 
 data_ini = datetime.datetime(
     int(args.ANO),
@@ -79,17 +81,17 @@ regioes = {
     "GLB": {
         "slice": None,
         "txt": f"{txt_dir}/"
-               f"Skill_scores_MONAN_GLB_{data_ini_str}_thr{int(THRESHOLD_MM)}mm.txt"
+             f"Skill_scores_{MODEL_NAME}_GLB_{data_ini_str}_thr{int(THRESHOLD_MM)}mm.txt"
     },
     "AMS": {
         "slice": sl_AMS,
         "txt": f"{txt_dir}/"
-               f"Skill_scores_MONAN_AMS_{data_ini_str}_thr{int(THRESHOLD_MM)}mm.txt"
+             f"Skill_scores_{MODEL_NAME}_AMS_{data_ini_str}_thr{int(THRESHOLD_MM)}mm.txt"
     },
     "ACC": {
         "slice": sl_ACC,
         "txt": f"{txt_dir}/"
-               f"Skill_scores_MONAN_ACC_{data_ini_str}_thr{int(THRESHOLD_MM)}mm.txt"
+             f"Skill_scores_{MODEL_NAME}_ACC_{data_ini_str}_thr{int(THRESHOLD_MM)}mm.txt"
     }
 }
 
@@ -155,7 +157,7 @@ def skill_agregado(H, M, F, C, slc=None):
 for reg, info in regioes.items():
     if not os.path.exists(info["txt"]):
         with open(info["txt"], "w") as f:
-            f.write("# Skill Scores MONAN\n")
+            f.write(f"# Skill Scores {MODEL_NAME}\n")
             f.write(f"# Regiao = {reg}\n")
             f.write(f"# Threshold = {THRESHOLD_MM} mm / 24h\n")
             f.write(f"# Ciclo = {data_ini_str}\n\n")
@@ -198,8 +200,8 @@ for lead in lead_times:
 
     monan_nc = (
         f"{OUTPUT_PATH}"
-        f"/MONAN/{ciclo_str}/"
-        f"MONAN_Precipitation_24h_acum_{data_ini_str}_{data_fim_str}_{lead:03d}h.nc"
+        f"/{MODEL_NAME}/{ciclo_str}/"
+        f"{MODEL_NAME}_Precipitation_24h_acum_{data_ini_str}_{data_fim_str}_{lead:03d}h.nc"
     )
 
     bam_nc = (
@@ -233,7 +235,7 @@ for lead in lead_times:
     )
 
     modelos_contingencia = {
-        "MONAN": monan_nc,
+        MODEL_NAME: monan_nc,
     }
 
     if os.path.exists(bam_nc):
@@ -309,9 +311,9 @@ for lead in lead_times:
 
         with open(txt_out, "a") as f:
             for ref, H, M, F_, C_ in [
-                ("GPM",   resultados_modelo["MONAN"]["H_GPM"],   resultados_modelo["MONAN"]["M_GPM"],   resultados_modelo["MONAN"]["F_GPM"],   resultados_modelo["MONAN"]["C_GPM"]),
-                ("GSMAP", resultados_modelo["MONAN"]["H_GSMAP"], resultados_modelo["MONAN"]["M_GSMAP"], resultados_modelo["MONAN"]["F_GSMAP"], resultados_modelo["MONAN"]["C_GSMAP"]),
-                ("MSWEP", resultados_modelo["MONAN"]["H_MSWEP"], resultados_modelo["MONAN"]["M_MSWEP"], resultados_modelo["MONAN"]["F_MSWEP"], resultados_modelo["MONAN"]["C_MSWEP"]),
+                ("GPM",   resultados_modelo[MODEL_NAME]["H_GPM"],   resultados_modelo[MODEL_NAME]["M_GPM"],   resultados_modelo[MODEL_NAME]["F_GPM"],   resultados_modelo[MODEL_NAME]["C_GPM"]),
+                ("GSMAP", resultados_modelo[MODEL_NAME]["H_GSMAP"], resultados_modelo[MODEL_NAME]["M_GSMAP"], resultados_modelo[MODEL_NAME]["F_GSMAP"], resultados_modelo[MODEL_NAME]["C_GSMAP"]),
+                ("MSWEP", resultados_modelo[MODEL_NAME]["H_MSWEP"], resultados_modelo[MODEL_NAME]["M_MSWEP"], resultados_modelo[MODEL_NAME]["F_MSWEP"], resultados_modelo[MODEL_NAME]["C_MSWEP"]),
             ]:
                 acc, pod, pofd, far, csi, f1 = skill_agregado(H, M, F_, C_, slc)
 
@@ -357,10 +359,7 @@ for lead in lead_times:
             }
         )
 
-        if modelo_nome == "MONAN":
-            out_dir = Path(f"{OUTPUT_PATH}/precip_24h/CONTINGENCIA/{data_ini_str}")
-        else:
-            out_dir = Path(f"{OUTPUT_PATH}/precip_24h/CONTINGENCIA_{modelo_nome}/{data_ini_str}")
+        out_dir = Path(f"{OUTPUT_PATH}/precip_24h/CONTINGENCIA_{modelo_nome}/{data_ini_str}")
 
         out_dir.mkdir(parents=True, exist_ok=True)
 

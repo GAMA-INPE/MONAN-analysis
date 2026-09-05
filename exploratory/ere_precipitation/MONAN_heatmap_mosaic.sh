@@ -30,8 +30,8 @@ for METRIC in "${METRICS[@]}"; do
     # B1 B2
     # C1 C2
 
-    A1="${DATA_DIR}heatmap_${METRIC}_MONAN_AMS_MSWEP.png"
-    A2="${DATA_DIR}heatmap_${METRIC}_MONAN_GLB_MSWEP.png"
+    A1="${DATA_DIR}heatmap_${METRIC}_${ANALYSIS_NAME}_AMS_MSWEP.png"
+    A2="${DATA_DIR}heatmap_${METRIC}_${ANALYSIS_NAME}_GLB_MSWEP.png"
     B1="${DATA_DIR}heatmap_${METRIC}_BAM_AMS_MSWEP.png"
     B2="${DATA_DIR}heatmap_${METRIC}_BAM_GLB_MSWEP.png"
     C1="${DATA_DIR}heatmap_${METRIC}_GFS_AMS_MSWEP.png"

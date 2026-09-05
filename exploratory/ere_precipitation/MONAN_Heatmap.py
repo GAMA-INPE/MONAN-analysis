@@ -92,7 +92,7 @@ os.makedirs(DIR_22, exist_ok=True)
 os.makedirs(DIR_23, exist_ok=True)
 
 CORES_MODELO = {
-    "MONAN": "red",
+    ANALYSIS_NAME: "red",
     "BAM": "green",
     "GFS": "black"
 }
@@ -103,7 +103,7 @@ ESTILO_REF = {
     "MSWEP": {"linestyle": ":",  "marker": "^"}
 }
 
-ORDEM_MODELOS = ["MONAN", "BAM", "GFS"]
+ORDEM_MODELOS = [ANALYSIS_NAME, "BAM", "GFS"]
 
 # Fixar valores máximo e mínimo para as barras de cores dos heatmaps
 # (opcional, pode ser ajustado dinamicamente)

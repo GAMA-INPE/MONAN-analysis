@@ -21,7 +21,7 @@ PROCESSO=$3
 OUTPUT_PATH=$4
 ANALYSIS_NAME=$5
 THRESHOLD=$6
-MODEL=${7:-MONAN}
+MODEL=${7:-${ANALYSIS_NAME}}
 
 ANO=${INI_VALID:0:4}
 MES=${INI_VALID:4:2}
@@ -32,12 +32,8 @@ if [ ${PROCESSO} == "bias" ]; then
 elif [ ${PROCESSO} == "rmse" ]; then
     DIR_BASE=${OUTPUT_PATH}precip_24h/RMSE
 elif [ ${PROCESSO} == "skill" ]; then
-    DIR_BASE=${OUTPUT_PATH}precip_24h/CONTINGENCIA
+    DIR_BASE=${OUTPUT_PATH}precip_24h/CONTINGENCIA_${MODEL}
     THR=thr${THRESHOLD}mm
-
-    if [ "${MODEL}" == "BAM" ] || [ "${MODEL}" == "GFS" ]; then
-        DIR_BASE=${OUTPUT_PATH}precip_24h/CONTINGENCIA_${MODEL}
-    fi
 else
     echo "Processo desconhecido: ${PROCESSO}. Use 'bias', 'rmse' ou 'skill'."
     exit 1
@@ -145,9 +141,9 @@ else
 
                 # Construct expected NetCDF filename
                 if [ ${PROCESSO} == "bias" ]; then
-                    ARQ="${DIR_BASE}/${DATA_ROD}/Bias_MONAN_Prec_${DATA_ROD}_${PRAZO3}h.nc"
+                    ARQ="${DIR_BASE}/${DATA_ROD}/Bias_${MODEL}_Prec_${DATA_ROD}_${PRAZO3}h.nc"
                 elif [ ${PROCESSO} == "rmse" ]; then
-                    ARQ="${DIR_BASE}/${DATA_ROD}/RMSE_MONAN_Prec_${DATA_ROD}_${PRAZO3}h.nc"
+                    ARQ="${DIR_BASE}/${DATA_ROD}/RMSE_${MODEL}_Prec_${DATA_ROD}_${PRAZO3}h.nc"
                 fi
 
                 if [ -f "${ARQ}" ]; then
@@ -167,9 +163,9 @@ else
 
         # Use CDO to compute the ensemble mean of all the collected files
         if [ ${PROCESSO} == "bias" ]; then
-            cdo ensmean $(cat ${LISTA}) ${OUTPUT_DIR}/Bias_MONAN_Prec_${ANO}${MES}_mean_${PRAZO3}h.nc
+            cdo ensmean $(cat ${LISTA}) ${OUTPUT_DIR}/Bias_${MODEL}_Prec_${ANO}${MES}_mean_${PRAZO3}h.nc
         elif [ ${PROCESSO} == "rmse" ]; then
-            cdo ensmean $(cat ${LISTA}) ${OUTPUT_DIR}/RMSE_MAE_MONAN_Prec_${ANO}${MES}_mean_${PRAZO3}h.nc
+            cdo ensmean $(cat ${LISTA}) ${OUTPUT_DIR}/RMSE_MAE_${MODEL}_Prec_${ANO}${MES}_mean_${PRAZO3}h.nc
         fi
 
     done

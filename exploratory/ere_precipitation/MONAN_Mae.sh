@@ -7,12 +7,13 @@
 DATA_INI=$1
 PRAZO_MAX=$2
 OUTPUT_PATH=$3
+MODEL_NAME=${4:-MONAN}
 
 echo "Montagem de figuras para: "$DATA_INI" "$PRAZO_MAX  
 
 DATA_INI_EPOCH=$(date -u -d "${DATA_INI:0:4}-${DATA_INI:4:2}-${DATA_INI:6:2} ${DATA_INI:8:2}:00:00" +%s)
 
-BASE_MONAN="${OUTPUT_PATH}/MONAN/${DATA_INI:0:4}${DATA_INI:4:2}/${DATA_INI}"
+BASE_MONAN="${OUTPUT_PATH}/${MODEL_NAME}/${DATA_INI:0:4}${DATA_INI:4:2}/${DATA_INI}"
 BASE_BIAS="${OUTPUT_PATH}/MAE/${DATA_INI:0:4}${DATA_INI:4:2}/${DATA_INI}"
 
 DIR_TRAB=$(pwd)
@@ -33,10 +34,10 @@ for prazo in $(seq 24 24 ${PRAZO_MAX}); do
     echo "Processando prazo ${PRAZO3}h"
 
     # Arquivos de entrada
-    IMG_MONAN="${BASE_MONAN}/MONAN_24precacum_${DATA_INI}_${DATA_FIM}_${dom}.png"
-    IMG_GPM="${BASE_BIAS}/MAE_MONAN_GPM_${dom}_${PRAZO3}h.png"
-    IMG_GSMAP=${BASE_BIAS}/"MAE_MONAN_GSMAP_${dom}_${PRAZO3}h.png"
-    IMG_MSWEP=${BASE_BIAS}/"MAE_MONAN_MSWEP_${dom}_${PRAZO3}h.png"
+    IMG_MONAN="${BASE_MONAN}/${MODEL_NAME}_24precacum_${DATA_INI}_${DATA_FIM}_${dom}.png"
+    IMG_GPM="${BASE_BIAS}/MAE_${MODEL_NAME}_GPM_${dom}_${PRAZO3}h.png"
+    IMG_GSMAP=${BASE_BIAS}/"MAE_${MODEL_NAME}_GSMAP_${dom}_${PRAZO3}h.png"
+    IMG_MSWEP=${BASE_BIAS}/"MAE_${MODEL_NAME}_MSWEP_${dom}_${PRAZO3}h.png"
 
     # Arquivos temp
     TMP1="tmp_monan_${PRAZO3}.png"
@@ -45,7 +46,7 @@ for prazo in $(seq 24 24 ${PRAZO_MAX}); do
     TMP4="tmp_mswep_${PRAZO3}.png"
 
     # Arquivo de saida
-    OUT="MAE_MONAN_${dom}_${PRAZO3}.png"
+    OUT="MAE_${MODEL_NAME}_${dom}_${PRAZO3}.png"
 
     # Padroniza 
     convert ${IMG_MONAN} \

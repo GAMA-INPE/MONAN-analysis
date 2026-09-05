@@ -62,12 +62,14 @@ parser.add_argument('PRAZO_H', type=int, help='Prazo total da previsao em horas 
 parser.add_argument('NETCDF_PATH', type=str, help='Caminho base para os arquivos de entrada (NetCDF)')
 parser.add_argument('MONAN_PATH', type=str, help='Caminho base para os arquivos de saída (imagens e NetCDF)')
 parser.add_argument('GENERATE_MAPS', type=int, help='Gerar mapas? (1 para True, 0 para False)')
+parser.add_argument('ANALYSIS_NAME', type=str, help='Nome do experimento (ex: taylor, ysu, mynn)')
 
 args = parser.parse_args()
 
 # Processamento dos caminhos de entrada e saída
 NETCDF_PATH = Path(args.NETCDF_PATH)
 MONAN_PATH = Path(args.MONAN_PATH)
+MODEL_NAME = args.ANALYSIS_NAME
 
 # Processamento do argumento para gerar mapas
 GENERATE_MAPS = args.GENERATE_MAPS
@@ -97,8 +99,8 @@ for lead in lead_times:
 # Caminhos dos arquivos
     monan_nc = (
         f"{MONAN_PATH}"
-        f"/MONAN/{ciclo_str}/"
-        f"MONAN_Precipitation_24h_acum_"
+        f"/{MODEL_NAME}/{ciclo_str}/"
+        f"{MODEL_NAME}_Precipitation_24h_acum_"
         f"{data_ini_mod_str}_{data_fim_mod_str}_{lead:03d}h.nc"
     )
 
@@ -152,20 +154,20 @@ for lead in lead_times:
 
     gpm_remap = (
         f"{NETCDF_PATH}"
-        f"/Remapped_30km/GPM_IMERG/{data_fim_obs_str}00/"
-        f"GPM_IMERG_Precipitation_24h_accum_{data_fim_obs_str}00_MONAN_30km.nc"
+        f"/Remapped_30km/{MODEL_NAME}/GPM_IMERG/{data_fim_obs_str}00/"
+        f"GPM_IMERG_Precipitation_24h_accum_{data_fim_obs_str}00_{MODEL_NAME}_30km.nc"
     )
 
     gsmap_remap = (
         f"{NETCDF_PATH}"
-        f"/Remapped_30km/GSMAP/{data_fim_obs_str}00/"
-        f"GSMAP_Precipitation_24h_accum_{data_fim_obs_str}00_MONAN_30km.nc"
+        f"/Remapped_30km/{MODEL_NAME}/GSMAP/{data_fim_obs_str}00/"
+        f"GSMAP_Precipitation_24h_accum_{data_fim_obs_str}00_{MODEL_NAME}_30km.nc"
     )
 
     mswep_remap = (
         f"{NETCDF_PATH}"
-        f"/Remapped_30km/MSWEP/{data_fim_obs_str}00/"
-        f"MSWEP_Precipitation_24h_accum_{data_fim_obs_str}00_MONAN_30km.nc"
+        f"/Remapped_30km/{MODEL_NAME}/MSWEP/{data_fim_obs_str}00/"
+        f"MSWEP_Precipitation_24h_accum_{data_fim_obs_str}00_{MODEL_NAME}_30km.nc"
     )
 
     os.makedirs(os.path.dirname(gpm_remap), exist_ok=True)
@@ -304,20 +306,20 @@ for lead in lead_times:
     # Plot e salvamento Global
         plot_diff(
         diff_monan_gpm,
-        f"Bias {lead:03d}h MONAN vs GPM IMERG \n Global - {media_str_gpm}",
-        f"diff_MONAN_GPM_GLB_{lead:03d}h.png"
+        f"Bias {lead:03d}h {MODEL_NAME} vs GPM IMERG \n Global - {media_str_gpm}",
+        f"diff_{MODEL_NAME}_GPM_GLB_{lead:03d}h.png"
         )
 
         plot_diff(
         diff_monan_gsmap,
-        f"Bias {lead:03d}h MONAN vs GSMAP \n Global - {media_str_gsmap}",
-        f"diff_MONAN_GSMAP_GLB_{lead:03d}h.png"
+        f"Bias {lead:03d}h {MODEL_NAME} vs GSMAP \n Global - {media_str_gsmap}",
+        f"diff_{MODEL_NAME}_GSMAP_GLB_{lead:03d}h.png"
         )
 
         plot_diff(
         diff_monan_mswep,
-        f"Bias {lead:03d}h MONAN vs MSWEP \n Global - {media_str_mswep}",
-        f"diff_MONAN_MSWEP_GLB_{lead:03d}h.png"
+        f"Bias {lead:03d}h {MODEL_NAME} vs MSWEP \n Global - {media_str_mswep}",
+        f"diff_{MODEL_NAME}_MSWEP_GLB_{lead:03d}h.png"
         )
         
         
@@ -370,20 +372,20 @@ for lead in lead_times:
     # Plot e salvamento AMS
         plot_diff_AMS(
         diff_monan_gpm,
-        f"Bias {lead:03d}h MONAN {data_ini_mod_str} vs GPM IMERG \n AMS - {media_str_gpm_AMS}",
-        f"diff_MONAN_GPM_AMS_{lead:03d}h.png"
+        f"Bias {lead:03d}h {MODEL_NAME} {data_ini_mod_str} vs GPM IMERG \n AMS - {media_str_gpm_AMS}",
+        f"diff_{MODEL_NAME}_GPM_AMS_{lead:03d}h.png"
         )
 
         plot_diff_AMS(
         diff_monan_gsmap,
-        f"Bias {lead:03d}h MONAN {data_ini_mod_str} vs GSMAP \n AMS - {media_str_gsmap_AMS}",
-        f"diff_MONAN_GSMAP_AMS_{lead:03d}h.png"
+        f"Bias {lead:03d}h {MODEL_NAME} {data_ini_mod_str} vs GSMAP \n AMS - {media_str_gsmap_AMS}",
+        f"diff_{MODEL_NAME}_GSMAP_AMS_{lead:03d}h.png"
         )
 
         plot_diff_AMS(
         diff_monan_mswep,
-        f"Bias {lead:03d}h MONAN {data_ini_mod_str} vs MSWEP \n AMS - {media_str_mswep_AMS}",
-        f"diff_MONAN_MSWEP_AMS_{lead:03d}h.png"
+        f"Bias {lead:03d}h {MODEL_NAME} {data_ini_mod_str} vs MSWEP \n AMS - {media_str_mswep_AMS}",
+        f"diff_{MODEL_NAME}_MSWEP_AMS_{lead:03d}h.png"
         )
 
 
@@ -437,20 +439,20 @@ for lead in lead_times:
     # Plot e salvamento ACC
         plot_diff_AMS(
         diff_monan_gpm,
-        f"Bias {lead:03d}h MONAN {data_ini_mod_str} vs GPM IMERG \n ACC - {media_str_gpm_ACC}",
-        f"diff_MONAN_GPM_ACC_{lead:03d}h.png"
+        f"Bias {lead:03d}h {MODEL_NAME} {data_ini_mod_str} vs GPM IMERG \n ACC - {media_str_gpm_ACC}",
+        f"diff_{MODEL_NAME}_GPM_ACC_{lead:03d}h.png"
         )
 
         plot_diff_AMS(
         diff_monan_gsmap,
-        f"Bias {lead:03d}h MONAN {data_ini_mod_str} vs GSMAP \n ACC - {media_str_gsmap_ACC}",
-        f"diff_MONAN_GSMAP_ACC_{lead:03d}h.png"
+        f"Bias {lead:03d}h {MODEL_NAME} {data_ini_mod_str} vs GSMAP \n ACC - {media_str_gsmap_ACC}",
+        f"diff_{MODEL_NAME}_GSMAP_ACC_{lead:03d}h.png"
         )
 
         plot_diff_AMS(
         diff_monan_mswep,
-        f"Bias {lead:03d}h MONAN {data_ini_mod_str} vs MSWEP \n ACC - {media_str_mswep_ACC}",
-        f"diff_MONAN_MSWEP_ACC_{lead:03d}h.png"
+        f"Bias {lead:03d}h {MODEL_NAME} {data_ini_mod_str} vs MSWEP \n ACC - {media_str_mswep_ACC}",
+        f"diff_{MODEL_NAME}_MSWEP_ACC_{lead:03d}h.png"
         )
 
 
@@ -513,7 +515,7 @@ for lead in lead_times:
 
 
 # Salva o arquivo NetCDF
-    nome_arquivo = f"Bias_MONAN_Prec_{data_ini_mod_str}_{lead:03d}h.nc"
+    nome_arquivo = f"Bias_{MODEL_NAME}_Prec_{data_ini_mod_str}_{lead:03d}h.nc"
     caminho_netcdf = Path(MONAN_PATH) / "Bias" / data_ini_mod_str / nome_arquivo
     caminho_netcdf.parent.mkdir(parents=True, exist_ok=True)
     ds.to_netcdf(caminho_netcdf, encoding=encoding, format='NETCDF4')  
@@ -522,6 +524,6 @@ for lead in lead_times:
 if GENERATE_MAPS:
     # Roda o script para recortar e juntar as figuras
     subprocess.run(
-        ["bash", "MONAN_Bias.sh", f"{data_ini_mod_str}", f"{prazo_total}", f"{MONAN_PATH}"],
+        ["bash", "MONAN_Bias.sh", f"{data_ini_mod_str}", f"{prazo_total}", f"{MONAN_PATH}", f"{MODEL_NAME}"],
         check=True
 )  

@@ -65,7 +65,7 @@ PRAZO_INICIAL = 24
 PRAZO_FINAL   = 120
 PASSO_PRAZO   = 24
 
-MODELOS = ["MONAN", "BAM", "GFS"]
+MODELOS = [ANALYSIS_NAME, "BAM", "GFS"]
 REFERENCIAS = ["GPM", "GSMAP", "MSWEP"]
 
 #Input directories
@@ -263,19 +263,11 @@ for lead in range(PRAZO_INICIAL, PRAZO_FINAL + 1, PASSO_PRAZO):
         dados = {}
 
         for modelo in MODELOS:
-
-            if modelo in ["MONAN", "BAM", "GFS"]:
-                nc= (
-                    f"{DIR_MONAN}/"
-                    f"CONT_{modelo}_{ANO}{MES:02d}_sum_"
-                    f"{lead:03d}h_thr{int(THRESHOLD)}mm.nc"
-                )
-            else:
-                nc = (
-                    f"{DIR_REFERENCE}/"
-                    f"CONT_{modelo}_{ANO}{MES:02d}_sum_"
-                    f"{lead:03d}h_thr{int(THRESHOLD)}mm.nc"
-                )
+            nc = (
+                f"{DIR_MONAN}/"
+                f"CONT_{modelo}_{ANO}{MES:02d}_sum_"
+                f"{lead:03d}h_thr{int(THRESHOLD)}mm.nc"
+            )
 
             ds = xr.open_dataset(nc)
 

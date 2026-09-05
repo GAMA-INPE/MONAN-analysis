@@ -53,12 +53,14 @@ parser.add_argument("PRAZO_H", type=int)
 parser.add_argument('NETCDF_PATH', type=str, help='Caminho base para os arquivos de entrada (NetCDF)')
 parser.add_argument('OUTPUT_PATH', type=str, help='Caminho base para os arquivos de saída (imagens e NetCDF)')
 parser.add_argument('GENERATE_MAPS', type=int, help='Gerar mapas? (1 para True, 0 para False)')
+parser.add_argument('ANALYSIS_NAME', type=str, help='Nome do experimento (ex: taylor, ysu, mynn)')
 
 args = parser.parse_args()
 
 # Processamento dos caminhos de entrada e saída
 NETCDF_PATH = Path(args.NETCDF_PATH)
 OUTPUT_PATH = Path(args.OUTPUT_PATH)
+MODEL_NAME = args.ANALYSIS_NAME
 
 # Processamento do argumento para gerar mapas
 GENERATE_MAPS = args.GENERATE_MAPS
@@ -164,8 +166,8 @@ for lead in lead_times:
 # Caminhos dos arquivos
     monan_nc = (
         f"{OUTPUT_PATH}"
-        f"/MONAN/{ciclo_str}/"
-        f"MONAN_Precipitation_24h_acum_{data_ini_str}_{data_fim_str}_{lead:03d}h.nc"
+        f"/{MODEL_NAME}/{ciclo_str}/"
+        f"{MODEL_NAME}_Precipitation_24h_acum_{data_ini_str}_{data_fim_str}_{lead:03d}h.nc"
     )
 
     gpm_nc = (
@@ -193,20 +195,20 @@ for lead in lead_times:
 
     gpm_remap = (
         f"{NETCDF_PATH}"
-        f"/Remapped_30km/GPM_IMERG/{data_fim_str}00/"
-        f"GPM_IMERG_Precipitation_24h_accum_{data_fim_str}00_MONAN_30km.nc"
+        f"/Remapped_30km/{MODEL_NAME}/GPM_IMERG/{data_fim_str}00/"
+        f"GPM_IMERG_Precipitation_24h_accum_{data_fim_str}00_{MODEL_NAME}_30km.nc"
     )
 
     gsmap_remap = (
         f"{NETCDF_PATH}"
-        f"/Remapped_30km/GSMAP/{data_fim_str}00/"
-        f"GSMAP_Precipitation_24h_accum_{data_fim_str}00_MONAN_30km.nc"
+        f"/Remapped_30km/{MODEL_NAME}/GSMAP/{data_fim_str}00/"
+        f"GSMAP_Precipitation_24h_accum_{data_fim_str}00_{MODEL_NAME}_30km.nc"
     )
 
     mswep_remap = (
         f"{NETCDF_PATH}"
-        f"/Remapped_30km/MSWEP/{data_fim_str}00/"
-        f"MSWEP_Precipitation_24h_accum_{data_fim_str}00_MONAN_30km.nc"
+        f"/Remapped_30km/{MODEL_NAME}/MSWEP/{data_fim_str}00/"
+        f"MSWEP_Precipitation_24h_accum_{data_fim_str}00_{MODEL_NAME}_30km.nc"
     )
 
     os.makedirs(os.path.dirname(gpm_remap), exist_ok=True)
@@ -261,20 +263,20 @@ for lead in lead_times:
 
         plot_rmse(
             abs_err_gpm,
-            f"MAE {lead:03d}h MONAN vs GPM IMERG\nGlobal - Corr={corr_gpm:.2f} RMSE={rmse_med_gpm:.2f} mm",
-            os.path.join(fig_dir, f"MAE_MONAN_GPM_GLB_{lead:03d}h.png")
+            f"MAE {lead:03d}h {MODEL_NAME} vs GPM IMERG\nGlobal - Corr={corr_gpm:.2f} RMSE={rmse_med_gpm:.2f} mm",
+            os.path.join(fig_dir, f"MAE_{MODEL_NAME}_GPM_GLB_{lead:03d}h.png")
         )
 
         plot_rmse(
             abs_err_gsmap,
-            f"MAE {lead:03d}h MONAN vs GSMAP\nGlobal - Corr={corr_gsmap:.2f} RMSE={rmse_med_gsmap:.2f} mm",
-            os.path.join(fig_dir, f"MAE_MONAN_GSMAP_GLB_{lead:03d}h.png")
+            f"MAE {lead:03d}h {MODEL_NAME} vs GSMAP\nGlobal - Corr={corr_gsmap:.2f} RMSE={rmse_med_gsmap:.2f} mm",
+            os.path.join(fig_dir, f"MAE_{MODEL_NAME}_GSMAP_GLB_{lead:03d}h.png")
         )
 
         plot_rmse(
             abs_err_mswep,
-            f"MAE {lead:03d}h MONAN vs MSWEP\nGlobal - Corr={corr_mswep:.2f} RMSE={rmse_med_mswep:.2f} mm",
-            os.path.join(fig_dir, f"MAE_MONAN_MSWEP_GLB_{lead:03d}h.png")
+            f"MAE {lead:03d}h {MODEL_NAME} vs MSWEP\nGlobal - Corr={corr_mswep:.2f} RMSE={rmse_med_mswep:.2f} mm",
+            os.path.join(fig_dir, f"MAE_{MODEL_NAME}_MSWEP_GLB_{lead:03d}h.png")
         )
 
     # ===============================
@@ -284,25 +286,25 @@ for lead in lead_times:
 
         plot_rmse(
             abs_err_gpm.sel(**sl_AMS),
-            f"MAE {lead:03d}h MONAN vs GPM IMERG\nAMS - Corr={correlacao_espacial(monan.sel(**sl_AMS), gpm.sel(**sl_AMS)):.2f} "
+            f"MAE {lead:03d}h {MODEL_NAME} vs GPM IMERG\nAMS - Corr={correlacao_espacial(monan.sel(**sl_AMS), gpm.sel(**sl_AMS)):.2f} "
             f"RMSE={rmse_medio(diff_gpm.sel(**sl_AMS)):.2f} mm",
-            os.path.join(fig_dir, f"MAE_MONAN_GPM_AMS_{lead:03d}h.png"),
+            os.path.join(fig_dir, f"MAE_{MODEL_NAME}_GPM_AMS_{lead:03d}h.png"),
             extent=[-85, -20, -55, 20]
         )
 
         plot_rmse(
             abs_err_gsmap.sel(**sl_AMS),
-            f"MAE {lead:03d}h MONAN vs GSMAP\nAMS = Corr={correlacao_espacial(monan.sel(**sl_AMS), gsmap.sel(**sl_AMS)):.2f} "
+            f"MAE {lead:03d}h {MODEL_NAME} vs GSMAP\nAMS = Corr={correlacao_espacial(monan.sel(**sl_AMS), gsmap.sel(**sl_AMS)):.2f} "
             f"RMSE={rmse_medio(diff_gsmap.sel(**sl_AMS)):.2f} mm",
-            os.path.join(fig_dir, f"MAE_MONAN_GSMAP_AMS_{lead:03d}h.png"),
+            os.path.join(fig_dir, f"MAE_{MODEL_NAME}_GSMAP_AMS_{lead:03d}h.png"),
             extent=[-85, -20, -55, 20]
         )
 
         plot_rmse(
             abs_err_mswep.sel(**sl_AMS),
-            f"MAE {lead:03d}h MONAN vs MSWEP\nAMS - Corr={correlacao_espacial(monan.sel(**sl_AMS), mswep.sel(**sl_AMS)):.2f} "
+            f"MAE {lead:03d}h {MODEL_NAME} vs MSWEP\nAMS - Corr={correlacao_espacial(monan.sel(**sl_AMS), mswep.sel(**sl_AMS)):.2f} "
             f"RMSE={rmse_medio(diff_mswep.sel(**sl_AMS)):.2f} mm",
-            os.path.join(fig_dir, f"MAE_MONAN_MSWEP_AMS_{lead:03d}h.png"),
+            os.path.join(fig_dir, f"MAE_{MODEL_NAME}_MSWEP_AMS_{lead:03d}h.png"),
             extent=[-85, -20, -55, 20]
         )
 
@@ -313,25 +315,25 @@ for lead in lead_times:
 
         plot_rmse(
             abs_err_gpm.sel(**sl_ACC),
-            f"MAE {lead:03d}h MONAN vs GPM IMERG\nACC - Corr={correlacao_espacial(monan.sel(**sl_ACC), gpm.sel(**sl_ACC)):.2f} "
+            f"MAE {lead:03d}h {MODEL_NAME} vs GPM IMERG\nACC - Corr={correlacao_espacial(monan.sel(**sl_ACC), gpm.sel(**sl_ACC)):.2f} "
             f"RMSE={rmse_medio(diff_gpm.sel(**sl_ACC)):.2f} mm",
-            os.path.join(fig_dir, f"MAE_MONAN_GPM_ACC_{lead:03d}h.png"),
+            os.path.join(fig_dir, f"MAE_{MODEL_NAME}_GPM_ACC_{lead:03d}h.png"),
             extent=[-118, -35, -10, 35]
         )
 
         plot_rmse(
             abs_err_gsmap.sel(**sl_ACC),
-            f"MAE {lead:03d}h MONAN vs GSMAP\nACC - Corr={correlacao_espacial(monan.sel(**sl_ACC), gsmap.sel(**sl_ACC)):.2f} "
+            f"MAE {lead:03d}h {MODEL_NAME} vs GSMAP\nACC - Corr={correlacao_espacial(monan.sel(**sl_ACC), gsmap.sel(**sl_ACC)):.2f} "
             f"RMSE={rmse_medio(diff_gsmap.sel(**sl_ACC)):.2f} mm",
-            os.path.join(fig_dir, f"MAE_MONAN_GSMAP_ACC_{lead:03d}h.png"),
+            os.path.join(fig_dir, f"MAE_{MODEL_NAME}_GSMAP_ACC_{lead:03d}h.png"),
             extent=[-118, -35, -10, 35]
         )
 
         plot_rmse(
             abs_err_mswep.sel(**sl_ACC),
-            f"MAE {lead:03d}h MONAN vs MSWEP\nACC - Corr={correlacao_espacial(monan.sel(**sl_ACC), mswep.sel(**sl_ACC)):.2f} "
+            f"MAE {lead:03d}h {MODEL_NAME} vs MSWEP\nACC - Corr={correlacao_espacial(monan.sel(**sl_ACC), mswep.sel(**sl_ACC)):.2f} "
             f"RMSE={rmse_medio(diff_mswep.sel(**sl_ACC)):.2f} mm",
-            os.path.join(fig_dir, f"MAE_MONAN_MSWEP_ACC_{lead:03d}h.png"),
+            os.path.join(fig_dir, f"MAE_{MODEL_NAME}_MSWEP_ACC_{lead:03d}h.png"),
             extent=[-118, -35, -10, 35]
         )
 
@@ -360,7 +362,7 @@ for lead in lead_times:
     out_dir.mkdir(parents=True, exist_ok=True)
 
     ds_out.to_netcdf(
-        out_dir / f"RMSE_MONAN_Prec_{data_ini_str}_{lead:03d}h.nc",
+        out_dir / f"RMSE_{MODEL_NAME}_Prec_{data_ini_str}_{lead:03d}h.nc",
         format="NETCDF4"
     )
 
@@ -368,6 +370,6 @@ for lead in lead_times:
 if GENERATE_MAPS:
     # Roda o script para recortar e juntar as figuras
     subprocess.run(
-        ["bash", "MONAN_Mae.sh", f"{data_ini_str}", f"{prazo_total}", f"{OUTPUT_PATH}"],
+        ["bash", "MONAN_Mae.sh", f"{data_ini_str}", f"{prazo_total}", f"{OUTPUT_PATH}", f"{MODEL_NAME}"],
         check=True
 )

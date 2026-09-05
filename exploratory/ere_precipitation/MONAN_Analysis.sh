@@ -25,6 +25,18 @@ MEAN_RMSE="MONAN_mean_RMSE.py"          # Mean_RMSE_MONAN_BAM_GFS.py
 MEAN_SKILL="MONAN_mean_Skill.py"        # Mean_Skill_score_MONAN_BAM_GFS.py
 HEATMAP="MONAN_Heatmap.py"              # Plot_Series_Heatmap_skill_score_MONAN_BAM_GFS.py
 MOSAIC="MONAN_heatmap_mosaic.sh"        # Heatmap mosaic for final report
+COMPARE="MONAN_model_mosaic.sh"         # Mosaic comparing models for final report
+
+#########################################################################
+# MONAN simulation output directories (one for each experiment version) #
+# Usage:                                                                #
+# MONAN[experiment]="/path/to/experiment/data"                          #
+#########################################################################
+
+declare -A MONAN
+
+MONAN[MONAN_standard]="/p/projetos/monan_atm/eduardo.eras/MONAN_2_0/Output/dataout_vanilla"
+MONAN[MONAN_develop]="/p/projetos/monan_atm/eduardo.eras/MONAN_2_0/Output/dataout_develop"
 
 #####################################################################
 # Input and output directories                                      #
@@ -36,7 +48,6 @@ MOSAIC="MONAN_heatmap_mosaic.sh"        # Heatmap mosaic for final report
 # SUFIXO_ARQ: Suffix for the MONAN output files                     #
 #####################################################################
 
-MONAN_PATH="/p/projetos/monan_atm/eduardo.eras/SandBox/output/taylor"
 NETCDF_PATH="/p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/NetCDFs"
 OUTPUT_PATH="/p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/output"
 LISTA_PATH="/p/projetos/monan_atm/eduardo.eras/MONAN-analysis/exploratory/ere_precipitation/listas_medias"
@@ -47,6 +58,7 @@ SUFIXO_ARQ=".00.00.x655362L55.nc"
 # Erase old output files to avoid confusion (optional, be careful!) #
 # Set ERASE=1 to enable, ERASE=0 to disable                         #
 #####################################################################
+
 ERASE=1
 
 ##########################################################
@@ -74,17 +86,11 @@ LENGTH=120
 
 THRESHOLD=(1 2 5 10 20 50)
 
-######################################
-# Analysis name for output directory #
-######################################
-# e.g., "full_range", "short_test", etc.
-ANALYSIS_NAME="taylor_analysis"
-#ANALYSIS_NAME="Test_Mosaic"
-
 ##################################
 # Generate Plot Maps?            #
 # Set to 1 for True, 0 for False #
 ##################################
+
 GENERATE_MAPS=0
 
 ####################################################
@@ -143,9 +149,9 @@ conda activate workspace
 
 #Function to print headers for better readability
 print_header() {
-    echo -e "\n################################################################"
+    echo -e "\n################################################################################"
     echo "$1"
-    echo -e "################################################################\n"
+    echo -e "################################################################################\n"
 }
 
 print_status() {
@@ -155,6 +161,10 @@ print_status() {
 }
 
 base_analysis() {
+
+    ANALYSIS_NAME=$1
+    MONAN_PATH=$2
+
     #Convert dates to Unix timestamps for looping
     start_ts=$(date -d "$START_DATE" +%s)
     end_ts=$(date -d "$END_DATE" +%s)
@@ -177,26 +187,30 @@ base_analysis() {
 
         #Run the analysis scripts
         print_status "24 hours precipitation accumulation"
-        python ${PREC} ${year} ${month} ${day} ${hour} ${LENGTH} ${MONAN_PATH} ${OUTPUT_PATH} ${PREFIXO_ARQ} ${SUFIXO_ARQ} ${GENERATE_MAPS}
+        python ${PREC} ${year} ${month} ${day} ${hour} ${LENGTH} ${MONAN_PATH} ${OUTPUT_PATH} ${PREFIXO_ARQ} ${SUFIXO_ARQ} ${GENERATE_MAPS} ${ANALYSIS_NAME}
 
         print_status "Bias analysis"
-        python ${BIAS} ${year} ${month} ${day} ${hour} ${LENGTH} ${NETCDF_PATH} ${OUTPUT_PATH} ${GENERATE_MAPS}
+        python ${BIAS} ${year} ${month} ${day} ${hour} ${LENGTH} ${NETCDF_PATH} ${OUTPUT_PATH} ${GENERATE_MAPS} ${ANALYSIS_NAME}
 
         print_status "MAE analysis"
-        python ${MAE} ${year} ${month} ${day} ${hour} ${LENGTH} ${NETCDF_PATH} ${OUTPUT_PATH} ${GENERATE_MAPS}
+        python ${MAE} ${year} ${month} ${day} ${hour} ${LENGTH} ${NETCDF_PATH} ${OUTPUT_PATH} ${GENERATE_MAPS} ${ANALYSIS_NAME}
 
         print_status "Skill score analysis"
         for THR in "${THRESHOLD[@]}"; do
             print_status "Skill score analysis for threshold: ${THR} mm"
-            python ${SKILL} ${year} ${month} ${day} ${hour} ${LENGTH} ${THR} ${NETCDF_PATH} ${OUTPUT_PATH}
+            python ${SKILL} ${year} ${month} ${day} ${hour} ${LENGTH} ${THR} ${NETCDF_PATH} ${OUTPUT_PATH} ${ANALYSIS_NAME}
         done
 
     done
 }
 
 monthly_analysis() {
+
+    ANALYSIS_NAME=$1
+    MONAN_PATH=$2
+    
     processes=("bias" "rmse" "skill")
-    skill_models=("MONAN" "BAM" "GFS")
+    skill_models=("${ANALYSIS_NAME}" "BAM" "GFS")
     ini_valid=$(date -d "${START_DATE} 00:00" +%Y%m%d%H)
     fim_valid=$(date -d "${END_DATE} 23:00" +%Y%m%d%H)
     for proc in "${processes[@]}"; do
@@ -209,12 +223,15 @@ monthly_analysis() {
                 done
             done
         else
-            bash ${MONTHLY_MEAN} ${ini_valid} ${fim_valid} ${proc} ${OUTPUT_PATH} ${ANALYSIS_NAME} 
+            bash ${MONTHLY_MEAN} ${ini_valid} ${fim_valid} ${proc} ${OUTPUT_PATH} ${ANALYSIS_NAME}
         fi
     done
 }
 
 mean_analysis() {
+
+    ANALYSIS_NAME=$1
+
     print_status "Mean bias, MAE, RMSE and skill score across all lead times"
     ano=${START_DATE:0:4}
     mes=${START_DATE:5:2}
@@ -227,6 +244,9 @@ mean_analysis() {
 }
 
 skill_analysis() {
+
+    ANALYSIS_NAME=$1
+
     print_status "Mean skill score across all lead times for different thresholds"
     ano=${START_DATE:0:4}
     mes=${START_DATE:5:2}
@@ -236,6 +256,9 @@ skill_analysis() {
 }
 
 heatmap_analysis() {
+
+    ANALYSIS_NAME=$1
+    
     print_status "Generating heatmaps for skill scores"
     ano=${START_DATE:0:4}
     mes=${START_DATE:5:2}
@@ -245,6 +268,9 @@ heatmap_analysis() {
 }
 
 mosaic_analysis() {
+
+    ANALYSIS_NAME=$1
+
     print_status "Generating heatmap mosaic for final report"
     bash ${MOSAIC} ${OUTPUT_PATH} ${ANALYSIS_NAME}
 }
@@ -271,7 +297,6 @@ START_TIME=$(date +%s)
 
 #Normalize paths by ensuring they end with a slash
 NETCDF_PATH=${NETCDF_PATH%/}/
-MONAN_PATH=${MONAN_PATH%/}/
 OUTPUT_PATH=${OUTPUT_PATH%/}/
 #Mean lists path have no trailing slash
 LISTA_PATH=${LISTA_PATH%/}
@@ -279,30 +304,55 @@ LISTA_PATH=${LISTA_PATH%/}
 #Erase old output files if the flag is set
 if [ $ERASE -eq 1 ]; then
     rm -rf ${OUTPUT_PATH}/*
-    rm -rf ${LISTA_PATH}/*
 fi
 
-# Run the analysis functions in sequence ###################################
-if [ $RUN_BASE_ANALYSIS -eq 1 ]; then
-    base_analysis
-fi
-if [ $RUN_MONTHLY_ANALYSIS -eq 1 ]; then
-    monthly_analysis
-fi
-if [ $RUN_MEAN_ANALYSIS -eq 1 ]; then
-    if [ $GENERATE_MAPS -eq 1 ]; then
-        mean_analysis
+# Run the analysis functions in sequence
+for analysis in "${!MONAN[@]}"; do
+
+    # Erase mean lists cache
+    rm -rf ${LISTA_PATH}/*
+
+    #Normalize path by ensuring it ends with a slash
+    path="${MONAN[$analysis]%/}/"
+
+    #Print header for the current analysis
+    header="Running ${analysis} using ${path}"
+    print_header "$header"
+
+    if [ $RUN_BASE_ANALYSIS -eq 1 ]; then
+        base_analysis "$analysis" "$path"
     fi
+    if [ $RUN_MONTHLY_ANALYSIS -eq 1 ]; then
+        monthly_analysis "$analysis" "$path"
+    fi
+    if [ $RUN_MEAN_ANALYSIS -eq 1 ]; then
+        if [ $GENERATE_MAPS -eq 1 ]; then
+            mean_analysis "$analysis"
+        fi
+    fi
+    if [ $RUN_SKILL_ANALYSIS -eq 1 ]; then
+        skill_analysis "$analysis"
+    fi
+    if [ $RUN_HEATMAP_ANALYSIS -eq 1 ]; then
+        heatmap_analysis "$analysis"
+    fi
+    if [ $RUN_MOSAIC_ANALYSIS -eq 1 ]; then
+        mosaic_analysis "$analysis"
+    fi
+
+done
+
+# After all individual analyses are done, we can run the final comparison mosaic if there are multiple experiments
+if (( ${#MONAN[@]} > 1 )); then
+    ARGS=()
+
+    for analysis in "${!MONAN[@]}"; do
+        ARGS+=("${analysis}")
+    done
+
+    ./${COMPARE} "${OUTPUT_PATH}" "${ARGS[@]}"
 fi
-if [ $RUN_SKILL_ANALYSIS -eq 1 ]; then
-    skill_analysis
-fi
-if [ $RUN_HEATMAP_ANALYSIS -eq 1 ]; then
-    heatmap_analysis
-fi
-if [ $RUN_MOSAIC_ANALYSIS -eq 1 ]; then
-    mosaic_analysis
-fi
+
 #############################################################################
 
 # Record the end time and calculate elapsed time

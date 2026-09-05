@@ -114,11 +114,11 @@ def plot_bias_mensal(ano, mes, lead):
     )
 
     ds_monan = xr.open_dataset(
-        f"{OUTPUT_PATH}/{ANALYSIS_NAME}/Bias_MONAN_Prec_{ano}{mes:02d}_mean_{lead:03d}h.nc"
+        f"{OUTPUT_PATH}/{ANALYSIS_NAME}/Bias_{ANALYSIS_NAME}_Prec_{ano}{mes:02d}_mean_{lead:03d}h.nc"
     )
 
     models = [
-        ("MONAN", ds_monan, ["bias_monangpm", "bias_monangsmap", "bias_monanmswep"]),
+        (ANALYSIS_NAME, ds_monan, ["bias_monangpm", "bias_monangsmap", "bias_monanmswep"]),
         ("BAM",   ds_bam,   ["bias_bamgpm",   "bias_bamgsmap",   "bias_bammswep"]),
         ("GFS",   ds_gfs,   ["bias_gfsgpm",   "bias_gfsgsmap",   "bias_gfsmswep"])
     ]

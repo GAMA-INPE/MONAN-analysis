@@ -127,11 +127,11 @@ def plot_rmse_mensal(ano, mes, lead):
     )
 
     ds_monan = xr.open_dataset(
-        f"{OUTPUT_PATH}/{ANALYSIS_NAME}/RMSE_MAE_MONAN_Prec_{ano}{mes:02d}_mean_{lead:03d}h.nc"
+        f"{OUTPUT_PATH}/{ANALYSIS_NAME}/RMSE_MAE_{ANALYSIS_NAME}_Prec_{ano}{mes:02d}_mean_{lead:03d}h.nc"
     )
 
     models = [
-        ("MONAN", ds_monan, ["sqerr_monangpm", "sqerr_monangsmap", "sqerr_monanmswep"]),
+        (ANALYSIS_NAME, ds_monan, ["sqerr_monangpm", "sqerr_monangsmap", "sqerr_monanmswep"]),
         ("BAM",   ds_bam,   ["sqerr_bamgpm",   "sqerr_bamgsmap",   "sqerr_bammswep"]),
         ("GFS",   ds_gfs,   ["sqerr_gfsgpm",   "sqerr_gfsgsmap",   "sqerr_gfsmswep"])
     ]
