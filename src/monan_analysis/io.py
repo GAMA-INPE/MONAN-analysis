@@ -29,22 +29,44 @@ import xarray as xr
 def example_function_io():
     print ("this is a function imported from the io.py module.")
 
-def get_MONAN_DIAG_filename(date_in_string_init, date_in_string_final,grid_spec,vertical_level_spec,domain_type,initial_condition_type):
+
+def _resolve_grid_string(grid_spec):
+    """Resolve grid string from alias key or accept direct MONAN grid token.
+    Compatibile with previous versions without needing to alter existing code. """
+    valid_keys = ", ".join(sorted(config.GRID_DICT.keys()))
+    if grid_spec in config.GRID_DICT:
+        return config.GRID_DICT[grid_spec]
+    # Also accept raw grid strings, e.g. "x655362_AMAZONIA".
+    elif grid_spec in config.GRID_DICT.values():
+        return grid_spec       
+    else:
+        raise ValueError(
+        f"Grid '{grid_spec}' is not recognized. Use one of GRID_DICT keys ({valid_keys}) "
+        "or pass a direct grid string like 'x655362_AMAZONIA'."
+    )
+
+def get_MONAN_DIAG_filename(date_in_string_init, date_in_string_final,grid_spec,vertical_level_spec,domain_type=None, initial_condition_type=None):
+    """Get the filename for MONAN diagnostic data based on input parameters.
+    Compatibile with previous versions without needing to alter existing code. """
+
     # Get grid string
-    try:
-        GRID_STRING = config.GRID_DICT[grid_spec]
-    except:
-        raise ValueError(f"Grid '{grid_spec}' is not recognized. Please choose a valid grid.")
-   # Get domain type string
-    try:
-        DOMAIN_TYPE_STRING = config.DOMAIN_TYPE_DICT[domain_type]
-    except:
-        raise ValueError(f"Domain type '{domain_type}' is not recognized. Please choose a valid domain type: 'global' or 'regional'.")
+    GRID_STRING = _resolve_grid_string(grid_spec)
+    # Get domain type string
+    if domain_type is not None:
+        try:
+            DOMAIN_TYPE_STRING = config.DOMAIN_TYPE_DICT[domain_type]
+        except:
+            raise ValueError(f"Domain type '{domain_type}' is not recognized. Please choose a valid domain type: 'global' or 'regional'.")
+    else:
+        DOMAIN_TYPE_STRING = ""
     # Get initial condition type string
-    try:
-        INITIAL_CONDITION_TYPE_STRING = config.INITIAL_CONDITIONS_TYPE_DICT[initial_condition_type]
-    except:
-        raise ValueError(f"Initial condition type '{initial_condition_type}' is not recognized. Please choose a valid initial condition type: 'GFS' or 'ERA5'.")
+    if initial_condition_type is not None:
+        try:
+            INITIAL_CONDITION_TYPE_STRING = config.INITIAL_CONDITIONS_TYPE_DICT[initial_condition_type]
+        except:
+            raise ValueError(f"Initial condition type '{initial_condition_type}' is not recognized. Please choose a valid initial condition type: 'GFS' or 'ERA5'.")
+    else:
+        INITIAL_CONDITION_TYPE_STRING = ""
 
     # Get vertical level string
     try:
@@ -52,11 +74,13 @@ def get_MONAN_DIAG_filename(date_in_string_init, date_in_string_final,grid_spec,
     except:
         raise ValueError(f"Vertical level configuration '{vertical_level_spec}' is not recognized. " 
                          + "Please choose a valid configuration.")
-    
-    # filename = (f"{config.PREFIX_MONAN_DIAG_STRING}_{date_in_string_init}_{date_in_string_final}.00.00."
-    #             f"{GRID_STRING}{VERTICAL_LEVEL_STRING}.nc")
-    filename = (f"{config.PREFIX_MONAN_SHORT}_{DOMAIN_TYPE_STRING}_POS_{INITIAL_CONDITION_TYPE_STRING}_{date_in_string_init}_{date_in_string_final}.00.00."
-                f"{GRID_STRING}{VERTICAL_LEVEL_STRING}.nc")
+    # Assembling filename
+    if DOMAIN_TYPE_STRING == "" and INITIAL_CONDITION_TYPE_STRING=="":
+        filename = (f"{config.PREFIX_MONAN_DIAG_STRING}_{date_in_string_init}_{date_in_string_final}.00.00."
+                    f"{GRID_STRING}{VERTICAL_LEVEL_STRING}.nc")
+    else:
+        filename = (f"{config.PREFIX_MONAN_SHORT}_{DOMAIN_TYPE_STRING}_POS_{INITIAL_CONDITION_TYPE_STRING}_{date_in_string_init}_{date_in_string_final}.00.00."
+                    f"{GRID_STRING}{VERTICAL_LEVEL_STRING}.nc")
     return filename
 
 def get_MONAN_unstructured_filename(date_in_string_init, date_in_string_final,grid_spec,vertical_level_spec, domain_type, initial_condition_type):
@@ -100,8 +124,9 @@ def get_CERES_dataset_filename(date_in_string, stream_name, edition):
     return filename
 
 def read_ds_monan(year,month,day,hour,time_window,grid_spec,
-                  vertical_level_spec,base_dir,domain_type="global",initial_condition_type="GFS",verbose='n'):
-    """ Read MONAN data and return them as an xarray Dataset."""
+                  vertical_level_spec,base_dir,domain_type="global",initial_condition_type="GFS",flexible_dir='false', verbose='n'):
+    """ Read MONAN data and return them as an xarray Dataset.
+    Compatibile with previous versions without needing to alter existing code. """
     if verbose == 'y':
         print ("Reading MONAN output data...")
     # Get file path for reading MONAN data
@@ -126,10 +151,13 @@ def read_ds_monan(year,month,day,hour,time_window,grid_spec,
         domain_type=domain_type,
         initial_condition_type=initial_condition_type,
         )
-    ## Should receive complete path, the base_dir should be passed complete, as in the unstructured case, to allow for generalization
-    ## Sometimes structured output will be under "Post" directory, sometimes directly under the "{initial_date_init_in_datetime}" directory,
-    ## and other structures are possible
-    filepath = f"{base_dir}/{filename}"
+    ## Can receive complete path, in which case the base_dir should be passed complete, as in the unstructured case, to allow for generalization
+    ## if flexible_dir is set to 'false', keep compatibility with previous behavior
+    ## Only append date_init_in_string if it isn't already one of the last two components of base_dir
+    if flexible_dir=='false':
+        filepath = f"{base_dir}/{date_init_in_string}/{filename}"
+    else:
+        filepath = f"{base_dir}/{filename}"
     if verbose == 'y':
         print(f"Taking data from file: {filepath}")
     # Read dataset using complete path'
@@ -160,7 +188,7 @@ def read_ds_monan_unstructured(date_in_string_init, date_in_string_final, grid_s
     ds_monan = xr.open_dataset(filepath, engine="netcdf4")
     return ds_monan, filepath
 
-def read_ds_gfs(year,month,day,hour,base_dir,stream_name="levels",
+def read_ds_gfs(year,month,day,hour,base_dir,stream_name="levels", 
                 verbose='n'):
     """ Read GFS data and return them as an xarray Dataset."""
     # Get file path for reading GFS data
@@ -177,10 +205,8 @@ def read_ds_gfs(year,month,day,hour,base_dir,stream_name="levels",
     date_year_month_in_string = utils.get_date_as_YYYYMM_str(
         year, month
         )
-    ## Should receive complete path, the base_dir should be passed complete, as in the structured case, to allow for generalization
-    ## Sometimes structured output will be under "Model" directory, sometimes directly under the "{initial_date_init_in_datetime}" directory, 
-    ## and other structures are possible
-    filepath = f"{base_dir}/{filename}"
+    ## Get complete path
+    filepath = f"{base_dir}/{date_year_month_in_string}/{filename}"
     if verbose == 'y':
         print(f"Reading GFS analysis data from file: {filepath}")
     # Read dataset using complete path
