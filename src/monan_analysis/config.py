@@ -49,10 +49,12 @@ VAR_UNITS_DICT = {
     "umeridional": "m/s"
 }
 #===================================================================================================
-# Standard settings for GFS analysis data
+# Standard settings for GFS data
 #===================================================================================================
 # Standard prefix in GFS analysis filenames
 PREFIX_GFS_ANALYSIS_STRING = "GFS_anl"
+# Standard prefix in GFS forecast filenames
+PREFIX_GFS_STRING = "GFS_f"
 # Dictionary mapping GFS var names to MONAN var names
 GFS_TO_MONAN_VAR_DICT = {
     "time": "Time",
