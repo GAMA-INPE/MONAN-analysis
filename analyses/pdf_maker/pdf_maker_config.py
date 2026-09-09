@@ -30,11 +30,18 @@ LAT_MAX = "0"
 LON_MIN = "-60.0"
 LON_MAX = "20.0"
 # Variables for building pdf
-VARIABLES_TO_ANALYZE = [
-    "rtopdpcu",
-    #"uzonal"
-    ]
-# 
+VARIABLES_AND_VALUES_FOR_PDF = {
+    "rtopdpcu": {
+        "min": 0,
+        "max": 20,
+        "bin_size": 1
+    },
+    # "uzonal": {
+    #     "min": -50,
+    #     "max": 50,
+    #     "bin_size": 2
+    # }
+}
 
 #===================================================================================================
 # Log configurations

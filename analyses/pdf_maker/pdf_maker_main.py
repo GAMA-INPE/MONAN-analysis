@@ -3,6 +3,9 @@ import pdf_maker_aux as pdf_aux
 
 def main():
 
+    print ("Creating folder structure...")
+    pdf_aux.create_folder_structure()
+
     print ("Reading and preprocessing input data...")
     pdf_aux.read_and_preprocess_input_data()
 
