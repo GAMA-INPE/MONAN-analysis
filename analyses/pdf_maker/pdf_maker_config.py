@@ -33,8 +33,8 @@ LON_MAX = "20.0"
 VARIABLES_AND_VALUES_FOR_PDF = {
     "rtopdpcu": {
         "min": 0,
-        "max": 20,
-        "bin_size": 1
+        "max": 20000,
+        "bin_size": 1000
     },
     # "uzonal": {
     #     "min": -50,
@@ -46,4 +46,4 @@ VARIABLES_AND_VALUES_FOR_PDF = {
 #===================================================================================================
 # Log configurations
 #===================================================================================================
-VERBOSE = True
+VERBOSE = False
