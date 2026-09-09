@@ -70,7 +70,7 @@ def build_pdf():
 
         # Plot pdf
         plt.figure()
-        plt.bar(bin_edges[:-1], probabilities, width=params["bin_size"], edgecolor='black')
+        plt.bar(bin_edges[:-1], probabilities, width=params["bin_size"], align='edge', edgecolor='black')
         plt.xlabel(f"{variable} ({unit})")
         plt.ylabel('Probability')
         plt.title(f'PDF of {variable}, bin size = {params["bin_size"]}, min = {params["min"]}, max = {params["max"]}')

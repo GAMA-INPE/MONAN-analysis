@@ -34,7 +34,7 @@ VARIABLES_AND_VALUES_FOR_PDF = {
     "rtopdpcu": {
         "min": 0,
         "max": 20000,
-        "bin_size": 1000
+        "bin_size": 20000
     },
     # "uzonal": {
     #     "min": -50,
