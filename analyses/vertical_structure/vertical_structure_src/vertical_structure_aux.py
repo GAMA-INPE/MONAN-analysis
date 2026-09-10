@@ -84,6 +84,11 @@ def read_and_preprocess_prediction_data():
             print("Reading and preprocessing data from prediction model: GFS. Selected routine:"
                   "read_and_preprocess_gfs_prediction_data...")
         return read_and_preprocess_gfs_prediction_data()
+    elif vs_config.PREDICTION_MODEL == "bam":
+        if vs_config.SEL_VERBOSE_LEVEL >= 1:
+            print("Reading and preprocessing data from prediction model: BAM. Selected routine:"
+                  "read_and_preprocess_bam_prediction_data...")
+        return read_and_preprocess_bam_prediction_data()
     else:
         raise ValueError(f"Unsupported prediction model: {vs_config.PREDICTION_MODEL}")
     
@@ -385,6 +390,93 @@ def read_and_preprocess_gfs_analysis_ref_data():
 
     return ds_gfs_in_monan_format_filepath
 
+def read_and_preprocess_bam_prediction_data():
+    # Get date and write it into preprocessed filepath
+    date_in_string = utils.get_date_as_YYYYMMDDHH_str(
+        vs_config.YEAR,
+        vs_config.MONTH,
+        vs_config.DAY,
+        vs_config.HOUR
+    )
+
+    # Define verbosity
+    if vs_config.SEL_VERBOSE_LEVEL >= 2:
+        verbose = "y"
+    else:
+        verbose = "n"
+
+    # Read BAM pressure-level dataset
+    ds_bam, bam_filepath = io.read_ds_bam(
+        year=vs_config.YEAR,
+        month=vs_config.MONTH,
+        day=vs_config.DAY,
+        hour=vs_config.HOUR,
+        time_window=vs_config.TIME_WINDOW,
+        base_dir=vs_config.DIR_BAM,
+        stream_name=vs_config.STREAM_NAME_BAM,
+        verbose=verbose
+    )
+
+    # Configure BAM dataset to match MONAN format
+    ds_bam_in_monan_format = preprocess.get_gfs_data_in_monan_format(
+        ds_gfs=ds_bam,
+        gfs_to_monan_var_dict=config.BAM_TO_MONAN_VAR_DICT
+    )
+
+    # Select pressure-level variables to be used for analysis
+    ds_bam_in_monan_format = ds_bam_in_monan_format[
+        vs_config.VARIABLES_TO_ANALYZE
+    ].sel(
+        level=vs_config.VERTICAL_LEVELS_TO_ANALYZE
+    )
+
+    # Include BAM surface pressure in the same preprocessed dataset when
+    # the pressure-level validity mask is enabled
+    if vs_config.APPLY_PRESSURE_LEVEL_VALIDITY_MASK:
+        ds_bam_sp, bam_sp_filepath = io.read_ds_bam(
+            year=vs_config.YEAR,
+            month=vs_config.MONTH,
+            day=vs_config.DAY,
+            hour=vs_config.HOUR,
+            time_window=vs_config.TIME_WINDOW,
+            base_dir=vs_config.DIR_BAM,
+            stream_name="surface",
+            verbose=verbose
+        )
+
+        # BAM surface pressure is stored in hPa.
+        # Convert it to Pa to match the pressure-level coordinate.
+        surface_pressure = (
+            ds_bam_sp["pslc"]
+            .sortby("latitude")
+            .isel(time=0, drop=True)
+            * 100.0
+        )
+
+        surface_pressure = surface_pressure.rename("surface_pressure")
+        surface_pressure.attrs["units"] = "Pa"
+
+        # Include BAM surface pressure in the pressure-level dataset
+        ds_bam_in_monan_format["surface_pressure"] = surface_pressure
+
+    # Save preprocessed BAM dataset
+    ds_bam_in_monan_format_filepath = (
+        f"{vs_config.DIR_INPUT_INTERMEDIATE}/"
+        f"prediction_{vs_config.PREDICTION_MODEL}_in_monan_format_date_"
+        f"{date_in_string}_time_window_{vs_config.TIME_WINDOW}.nc"
+    )
+
+    ds_bam_in_monan_format.to_netcdf(
+        ds_bam_in_monan_format_filepath
+    )
+
+    # If needed, print preprocessed dataset
+    if vs_config.SEL_VERBOSE_LEVEL >= 1:
+        print("BAM prediction dataset in MONAN data format:")
+        print(ds_bam_in_monan_format)
+
+    return ds_bam_in_monan_format_filepath
+    
 def interpolate_prediction_ref(ds_prediction_model_filepath, ds_ref_data_filepath, output_nc=None,
                                force_interpolation = 'n'):
     if force_interpolation == 'n' and (vs_config.PREDICTION_MODEL == vs_config.REFERENCE_DATA or (vs_config.PREDICTION_MODEL == 'gfs' and vs_config.REFERENCE_DATA == 'gfs_analysis')):
@@ -477,10 +569,11 @@ def calculate_statistics(ds_ref_filepath, ds_prediction_filepath):
     # GFS reference data
     ds_ref = xr.open_dataset(ds_ref_filepath, engine="netcdf4")
 
-    # MONAN prediction data
+    # Prediction model data
     ds_prediction = xr.open_dataset(ds_prediction_filepath, engine="netcdf4")
     
-    # If required, apply pressure-level validity mask based on GFS and MONAN surface pressure
+    # If required, apply pressure-level validity mask based on
+    # reference and prediction-model surface pressure
     ds_ref, ds_prediction = apply_pressure_level_mask_in_ref_and_prediction(
         ds_ref=ds_ref,
         ds_prediction=ds_prediction
