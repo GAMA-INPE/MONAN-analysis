@@ -27,11 +27,24 @@ This file was created with the assistance of GitHub Copilot.
 # Standard settings for MONAN data
 #===================================================================================================
 # Standard prefix in MONAN output filenames
+PREFIX_MONAN_SHORT = "MONAN_DIAG"
+# Global or regional domain specifications
+DOMAIN_TYPE_DICT = {
+    "global": "G",
+    "regional": "R"
+}
+INITIAL_CONDITIONS_TYPE_DICT = {
+    "GFS": "GFS",
+    "ERA5": "ERA"
+}
+# Standard prefix in MONAN output filenames
 PREFIX_MONAN_DIAG_STRING = "MONAN_DIAG_G_POS_GFS"
 # Strings for each grid configuration
 GRID_DICT = {
     "10km_uniform": "x5898242",
-    "24km_uniform": "x1024002"
+    "24km_uniform": "x1024002",
+    "30km_uniform": "x655362",
+    "30km_uniform_Amazonia": "x655362_AMAZONIA"
     }
 # Strings for each vertical level configuration
 VERTICAL_LEVEL_DICT = {
@@ -61,6 +74,85 @@ GFS_TO_MONAN_VAR_DICT = {
     "gh": "zgeo",
     "u": "uzonal",
     "v": "umeridional",
+}
+#===================================================================================================
+# Standard settings for ERA5 analysis data
+#===================================================================================================
+# Dictionary mapping levels to ERA5 name convention
+ERA5_LEVEL_DICT = {"pressure_levels":"pl", "single_levels":"sl"}
+# Dictionary mapping ERA5 var names to MONAN var names
+ERA5_TO_MONAN_VAR_DICT = {
+    "swdnb": {
+        "era5_name" : "ssrd",
+        "era5_longname" :"surface_solar_radiation_downwards"
+        },
+    "swdnbc": {
+        "era5_name" : "ssrdc",
+        "era5_longname" :"surface_solar_radiation_downward_clear_sky",
+        },
+    "lwupt": {        
+        "era5_name": "ttr",
+        "era5_longname" :"top_net_thermal_radiation",
+        },
+    "lwuptc": {
+        "era5_name": "ttrc",
+        "era5_longname": "top_net_thermal_radiation_clear_sky",
+        },
+    "swdnt": {
+        "era5_name" : "tisr",
+        "era5_longname" : "toa_incident_solar_radiation",
+        },
+    "precipc": {
+        "era5_name" : "tclw",
+        "era5_longname" :"total_column_cloud_liquid_water",
+        },
+    "precipi": {
+        "era5_name": "tciw",
+        "era5_longname" :"total_column_cloud_ice_water",
+        },
+    "precipw": {
+        "era5_name" : "tcwv",
+        "era5_longname" :"total_column_water_vapour",
+        },
+
+}
+#===================================================================================================
+# Standard settings for CRES  data
+#===================================================================================================
+CERES_DATASET="CER_SYN1deg"
+CERES_EDITION_DICT={"4A":"Terra-Aqua-MODIS_Edition4A",
+                    "4B":"Terra-Aqua-NOAA20_Edition4B"}
+CERES_CODE_DICT = {"1Hour_Terra-Aqua-MODIS_Edition4A":"407406",
+                   "1Hour_Terra-Aqua-NOAA20_Edition4B":"415412",
+                   "MHour_Terra-Aqua-MODIS_Edition4A":"407406",
+                   "MHour_Terra-Aqua-NOAA20_Edition4B":"407412",}
+# Dictionary mapping CERES var names to MONAN var names
+CERES_TO_MONAN_VAR_DICT = {
+    "swdnb": {
+        "ceres_name" : "adj_all_sw_dn",
+        },
+    "swdnbc": {
+        "ceres_name" : "adj_clr_sw_dn", 
+        },
+    "lwupt": {        
+        "ceres_name" : "adj_all_lw_up", 
+        },
+    "lwuptc": {
+        "ceres_name" : "adj_clr_lw_up", 
+        },
+    "swdnt": {
+       "ceres_name" : "toa_sw_insol", 
+        },
+    "precipc": {
+        "ceres_name" : "adj_cld_lwp", 
+        },
+    "precipi": {
+        "ceres_name" : "adj_cld_iwp", 
+        },
+    "precipw": {
+         "ceres_name" : "adj_pw", 
+        },
+
 }
 #===================================================================================================
 # Domain definitions

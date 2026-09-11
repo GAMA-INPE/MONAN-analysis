@@ -9,3 +9,5 @@ matplotlib
 cartopy
 pytest
 dask
+pyhdf
+scipy
