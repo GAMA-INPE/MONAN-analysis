@@ -39,15 +39,15 @@ def get_date_as_datetime(year,month,day,hour):
     return date_in_datetime
 
 def get_date_as_YYYYMMDDHH_str(year,month,day,hour):
-    date_in_string = f"{year}{month}{day}{hour}" 
+    date_in_string = f"{year}{int(month):02d}{int(day):02d}{int(hour):02d}"
     return date_in_string
 
 def get_date_as_YYYYMMDD_str(year,month,day):
-    date_in_string = f"{year}{month}{day}" 
+    date_in_string = f"{year}{int(month):02d}{int(day):02d}"
     return date_in_string
 
 def get_date_as_YYYYMM_str(year,month):
-    date_in_string = f"{year}{month}" 
+    date_in_string = f"{year}{int(month):02d}"
     return date_in_string
 
 def get_final_date_from_initial_date(date_in_datetime, time_window):
