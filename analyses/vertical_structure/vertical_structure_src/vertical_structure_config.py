@@ -36,13 +36,13 @@ SEL_VERBOSE_LEVEL = 1
 # General analysis configurations
 #===================================================================================================
 # Prediction model to analyze (e.g. "monan", "gfs_analysis" (gfs forecast + assimilation), "gfs", "bam")
-PREDICTION_MODEL = "monan"
+PREDICTION_MODEL = "gfs_analysis"
 # Reference data (e.g. "gfs_analysis", "era5")
 REFERENCE_DATA = "gfs_analysis"
 # Date and forecast time window for analysis
 YEAR = "2026"
-MONTH = "06"
-DAY = "30"
+MONTH = "08"
+DAY = "31"
 HOUR = "00"
 TIME_WINDOW = "120"
 # Domains for spatial analyses (maps)
@@ -196,13 +196,13 @@ PLOT_LIMITS_BY_VAR_METRIC_LEVEL = {
 #DIR_MONAN_PREOP = "/lustre/projetos/monan_adm/monan/ecf_PREOPER/MONAN-WorkFlow-OPER/MONAN_PRE_OPER/MONAN/scripts_CD-CT/dataout/flushout"
 DIR_MONAN_PREOP = "/lustre/projetos/ioper/models/MONAN-WorkFlow-OPER/MONAN_PRE_OPER/posTMP"
 DIR_GFS_ANALYSIS = "/lustre/projetos/monan_gam/andre.lyra/NetCDFs/vert_struct/GFS"
-DIR_GFS = "/lustre/projetos/monan_atm/guilherme.mendonca/scratch/data/GFS"
+DIR_GFS = "/lustre/projetos/monan_gam/andre.lyra/NetCDFs/vert_struct/GFS/"
 DIR_BAM = "/lustre/projetos/monan_gam/andre.lyra/NetCDFs/vert_struct/BAM/"
 DIR_CARTOPY_DATA = "/lustre/projetos/monan_gam/andre.lyra/cartopy"
-DIR_OUTPUT = f"/lustre/projetos/monan_gam/Scripts/MONAN-analysis_clone_guilherme/analyses/vertical_structure/output_2026080100_to_2026083100"
+DIR_OUTPUT = f"/lustre/projetos/monan_gam/Scripts/MONAN-analysis_clone_guilherme/analyses/vertical_structure/output_{PREDICTION_MODEL}"
 DIR_OUTPUT_FIGS = f"{DIR_OUTPUT}/figs"
 DIR_OUTPUT_DATA = f"{DIR_OUTPUT}/data"
-DIR_INPUT = f"/lustre/projetos/monan_gam/Scripts/MONAN-analysis_clone_guilherme/analyses/vertical_structure/input_2026080100_to_2026083100"
+DIR_INPUT = f"/lustre/projetos/monan_gam/Scripts/MONAN-analysis_clone_guilherme/analyses/vertical_structure/input_{PREDICTION_MODEL}"
 DIR_INPUT_INTERMEDIATE = f"{DIR_INPUT}/intermediate"
 DIR_INPUT_PROCESSED = f"{DIR_INPUT}/processed"
 DIR_INPUT_RAW = f"{DIR_INPUT}/raw"
@@ -223,19 +223,24 @@ APPLY_PRESSURE_LEVEL_VALIDITY_MASK = True
 #===================================================================================================
 ####################################################################################################
 # Initial date
-DATE_INIT = "2026060100"
+DATE_INIT = "2026080100"
 # Final date
-DATE_FINAL = "2026063000"
+DATE_FINAL = "2026083100"
 # Date time step in hours
 DATE_TIME_STEP = "24"
 # Time windows to analyze
 TIME_WINDOWS_TO_ANALYZE = [
-    #"00",
-    #"24",
-    #"48",
-    #"72",
-    #"96",
-    "120"
+    "00",
+    "24",
+    "48",
+    "72",
+    "96",
+    "120",
+    "144",
+    "168",
+    "192",
+    "216",
+    "240",
     ]
 # Multi-time stats metrics (metrics that need multiple time instants for their definition, 
 # e.g. RMSE, anomaly correlation coefficient), that can be spatially plotted over a map

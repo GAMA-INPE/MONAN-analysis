@@ -16,8 +16,8 @@ export LD_LIBRARY_PATH="$HOME/libfix_netcdf:/opt/cray/pe/netcdf-hdf5parallel/4.9
 # Configuration
 BASE_IN="/oper/dados/modelo/bam/TQ0666L064/brutos"
 
-ANO="2026"
-MES="07"
+ANO="2025"
+MES="05"
 
 DIR_OUT="/lustre/projetos/monan_gam/andre.lyra/NetCDFs/vert_struct/BAM/${ANO}${MES}"
 
@@ -71,13 +71,10 @@ while [[ "${data}" < "$(date -d "${DATA_FIM} +1 day" +%F)" ]]; do
 
     CICLO="${ymd}${HH}"
 
-    for LEAD in 24 48 72 96 120; do
-
+    for LEAD in 24 48 72 96 120 144 168 192 216 240; do
         FHHH="f$(printf '%03d' ${LEAD})"
 
-        # --------------------------------------------------------
         # Calculate valid date corresponding to forecast lead
-        # --------------------------------------------------------
         VALID=$(date -u -d \
           "${ymd:0:4}-${ymd:4:2}-${ymd:6:2} ${HH}:00 UTC +${LEAD} hours" \
           +%Y%m%d%H)
