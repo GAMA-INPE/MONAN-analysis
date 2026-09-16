@@ -65,6 +65,20 @@ GFS_TO_MONAN_VAR_DICT = {
     "v": "umeridional",
 }
 #===================================================================================================
+# Standard settings for BAM data
+#===================================================================================================
+# Standard settings for BAM data
+PREFIX_BAM_STRING = "BAM_f"
+# Dictionary mapping BAM var names to MONAN var names
+BAM_TO_MONAN_VAR_DICT = {
+    "time": "Time",
+    "temp": "temperature",
+    "umes": "spechum",
+    "zgeo": "zgeo",
+    "uvel": "uzonal",
+    "vvel": "umeridional",
+}
+#===================================================================================================
 # Domain definitions
 #===================================================================================================
 DOMAIN_DICT = {

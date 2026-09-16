@@ -57,6 +57,18 @@ def get_GFS_filename(date_in_string,time_window,stream_name="levels"):
         raise ValueError("Invalid data_type. Must be 'levels' or 'surface'.")
     filename = (f"{config.PREFIX_GFS_STRING}{time_window}_{stream_name}_{date_in_string}.nc")
     return filename
+    
+def get_BAM_filename(date_in_string, time_window, stream_name="levels"):
+    if stream_name not in ["levels", "surface"]:
+        raise ValueError(
+            "Invalid stream_name. Must be 'levels' or 'surface'."
+        )
+    lead = int(time_window)
+    filename = (
+        f"{config.PREFIX_BAM_STRING}{lead:03d}_"
+        f"{stream_name}_{date_in_string}.nc"
+    )
+    return filename   
 
 def read_ds_monan(year,month,day,hour,time_window,grid_spec,
                   vertical_level_spec,base_dir,verbose='n'):
@@ -163,3 +175,51 @@ def read_ds_gfs(year,month,day,hour,time_window,base_dir,stream_name="levels",
     # Read dataset using complete path
     ds_gfs = xr.open_dataset(filepath, engine="netcdf4")
     return ds_gfs, filepath
+
+def read_ds_bam(
+    year,
+    month,
+    day,
+    hour,
+    time_window,
+    base_dir,
+    stream_name="levels",
+    verbose="n",
+):
+    """Read BAM data and return them as an xarray Dataset."""
+    if verbose == "y":
+        print("Reading BAM output data...")
+    # Verification / valid date
+    date_final_in_datetime = utils.get_date_as_datetime(
+        year=year,
+        month=month,
+        day=day,
+        hour=hour,
+    )
+    # Forecast initialization date
+    date_init_in_datetime = utils.get_initial_date_from_final_date(
+        date_in_datetime=date_final_in_datetime,
+        time_window=time_window,
+    )
+    date_init_in_string = date_init_in_datetime.strftime(
+        config.DATE_FORMAT_STRING
+    )
+    filename = get_BAM_filename(
+        date_in_string=date_init_in_string,
+        time_window=time_window,
+        stream_name=stream_name,
+    )
+    date_year_month_in_string = (
+        utils.get_date_as_YYYYMM_str_from_datetime(
+            date_in_datetime=date_init_in_datetime
+        )
+    )
+    filepath = (
+        f"{base_dir}/{date_year_month_in_string}/{filename}"
+    )
+    if verbose == "y":
+        print(f"Reading BAM forecast data from file: {filepath}")
+    # Read dataset using complete path
+    ds_bam = xr.open_dataset(filepath, engine="netcdf4")
+    return ds_bam, filepath
+    
