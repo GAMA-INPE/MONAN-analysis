@@ -52,7 +52,7 @@ VARIABLE = "zgeo"
 LEVEL_HPA = 500
 
 # Forecast leads to plot. Use None to include all available leads.
-TIME_WINDOWS = [24, 48, 72, 96, 120]
+TIME_WINDOWS = [00, 24, 48, 72, 96, 120, 144, 168, 192, 216, 240]
 
 # Regions to plot. Use None to include all regions available in the CSV files.
 REGIONS = [
@@ -126,20 +126,47 @@ REQUIRED_COLUMNS = {
 }
 
 def main() -> None:
-    # files = find_summary_files()
-    # print(f"Found {len(files)} files for metric: {METRIC}")
+    files = find_summary_files()
+    print(f"Found {len(files)} files for metric: {METRIC}")
+
+    # Write files to a text file
+    with open("summary_files.txt", "w") as f:
+        for file in files:
+            f.write(str(file) + "\n")
     
-    # data = load_data(files)
+    data = load_data(files)
+
+    data = data[[
+        'time_window',
+        'mean',
+        'period',
+        'region',
+        'metric',
+        'variable',
+        'level_hpa',
+        'source_file'
+        ]].sort_values(by=['source_file', 'period', 'time_window', 'region']).reset_index(drop=True)
 
     # save data to .csv file
     output_csv_path = "data.csv"
-    #data.to_csv(output_csv_path, index=False)
+    data.to_csv(output_csv_path, index=False)
+
+    # Extract the model name from the source_file column
+    data['model'] = data['source_file'].str.extract(r'output_10d_(\w+)/')[0]
+
+    # Split the data by model
+    models = ['bam', 'monan', 'gfs']
+    for model in models:
+        model_data = data[data['model'] == model]
+        model_data = model_data[['model', 'period', 'region', 'time_window', 'mean']].sort_values(by=['period', 'region', 'time_window'])
+        model_data.to_csv(f'filtered_data_{model}.csv', index=False)
 
     # open saved data
-    data = pd.read_csv(output_csv_path)
+    #data = pd.read_csv(output_csv_path)
+
 
     # plot annual mean ACC for each model, with time_window in x-axis
-    plot_annual_mean_vs_time_window(data=data, metric=METRIC, variable=VARIABLE)
+    #plot_annual_mean_vs_time_window(data=data, metric=METRIC, variable=VARIABLE)
 
     #print (data)
     #print (data.columns)
@@ -224,7 +251,7 @@ def plot_annual_mean_vs_time_window(data: pd.DataFrame, metric: str, variable: s
 def find_summary_files() -> list[Path]:
     """Find summary CSV files for the selected metric."""
     pattern = (
-        f"output_*/data/date_multiple_time_window_*/"
+        f"output_10d_*/data/date_multiple_time_window_*/"
         f"{METRIC}_date_from_*_time_window_*_summary.csv"
     )
     files = sorted(BASE_DIR.glob(pattern))
