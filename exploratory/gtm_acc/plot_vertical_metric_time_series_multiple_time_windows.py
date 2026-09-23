@@ -25,11 +25,15 @@ import sys
 import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 import pandas as pd
+import numpy as np
 
 
 # Configuration
 # Directory containing output_YYYYMMDDHH_to_YYYYMMDDHH directories.
 BASE_DIR = Path("/lustre/projetos/monan_gam/Scripts/MONAN-analysis_clone_guilherme/analyses/vertical_structure")
+
+# Models to include in the analysis.
+MODELS = ["bam", "monan", "gfs"]
 
 # Metric filename prefix.
 # Options:
@@ -52,24 +56,21 @@ VARIABLE = "zgeo"
 LEVEL_HPA = 500
 
 # Forecast leads to plot. Use None to include all available leads.
-TIME_WINDOWS = [00, 24, 48, 72, 96, 120, 144, 168, 192, 216, 240]
+TIME_WINDOWS = [24, 48, 72, 96, 120, 144, 168, 192, 216, 240]
 
 # Regions to plot. Use None to include all regions available in the CSV files.
 REGIONS = [
     "global",
-    "south_america",
-    "central_america_and_caribbean",
     "northern_hemisphere_20_80",
     "southern_hemisphere_20_80",
-    "tropics_20s_20n",
 ]
 
 # Optional temporal filtering based on date_init.
 # Use None to include all dates, or specify a date in "YYYYMMDDHH" format.
 #DATE_INIT_MIN = "2025060100"
 #DATE_INIT_MAX = "2026063000"
-DATE_INIT_MIN = None
-DATE_INIT_MAX = None
+DATE_INIT_MIN = 2025060100
+DATE_INIT_MAX = 2026063000
 
 # Number of subplot columns.
 N_COLUMNS = 2
@@ -126,16 +127,21 @@ REQUIRED_COLUMNS = {
 }
 
 def main() -> None:
+    # Find summary files where metric values are written according to the configuration
+    print (f"Searching for summary files in: {BASE_DIR}")
     files = find_summary_files()
     print(f"Found {len(files)} files for metric: {METRIC}")
 
-    # Write files to a text file
+    # Write files to a text file for reference
     with open("summary_files.txt", "w") as f:
         for file in files:
             f.write(str(file) + "\n")
     
+    # Load and process the data from the summary files
+    print ("Loading and processing data from summary files...")
     data = load_data(files)
 
+    # Select only those columns relevant for the calculation and plotting, and sort the data for easier inspection
     data = data[[
         'time_window',
         'mean',
@@ -147,7 +153,7 @@ def main() -> None:
         'source_file'
         ]].sort_values(by=['source_file', 'period', 'time_window', 'region']).reset_index(drop=True)
 
-    # save data to .csv file
+    # Save data to .csv file
     output_csv_path = "data.csv"
     data.to_csv(output_csv_path, index=False)
 
@@ -155,11 +161,18 @@ def main() -> None:
     data['model'] = data['source_file'].str.extract(r'output_10d_(\w+)/')[0]
 
     # Split the data by model
-    models = ['bam', 'monan', 'gfs']
-    for model in models:
+    print ("Splitting data by model and saving to separate CSV files...")
+    for model in MODELS:
         model_data = data[data['model'] == model]
         model_data = model_data[['model', 'period', 'region', 'time_window', 'mean']].sort_values(by=['period', 'region', 'time_window'])
         model_data.to_csv(f'filtered_data_{model}.csv', index=False)
+
+    # Check that the each filtered data file contains for each period from DATE_INIT_MIN to
+    # DATE_INIT_MAX all region in REGIONS and all time_window in TIME_WINDOWS
+    for model in MODELS:
+        print (f"Checking data duplication and completeness for model: {model}")
+        model_data = pd.read_csv(f'filtered_data_{model}.csv')
+        check_data_duplication_and_completeness(model_data, model)
 
     # open saved data
     #data = pd.read_csv(output_csv_path)
@@ -182,6 +195,55 @@ def main() -> None:
 
     # output_path = plot_time_series(data)
     # print(f"Figure saved to: {output_path}")
+
+def check_data_duplication_and_completeness(data, model) -> None:
+    """
+    Check that for each period from DATE_INIT_MIN to DATE_INIT_MAX, all regions in REGIONS
+    and all time_windows in TIME_WINDOWS are present in the data for each model.
+
+    Parameters:
+        data (pd.DataFrame): Input data containing columns:
+            ['model', 'period', 'region', 'time_window', 'mean']
+    """
+    # Ensure the 'period' column in 'data' is in datetime64[ns] format
+    data['period'] = pd.to_datetime(data['period'], format="%Y-%m-%d")
+
+    # Ensure 'model' is list-like
+    if not isinstance(model, (list, tuple, pd.Series, np.ndarray)):
+        model = [model]
+
+    # Check for duplicates in the data
+    if data.duplicated().any():
+        raise ValueError("Duplicate rows found in the input data. Please ensure the data contains unique rows.")
+    else:
+        print(f"No duplicate rows found in the input data for model: {model}.")
+
+    # Create a complete set of expected combinations
+    expected_periods = pd.date_range(
+        start=pd.to_datetime(DATE_INIT_MIN, format="%Y%m%d%H"),
+        end=pd.to_datetime(DATE_INIT_MAX, format="%Y%m%d%H"),
+        freq='MS'
+    )
+    expected_combinations = pd.MultiIndex.from_product(
+        [model, expected_periods, REGIONS, TIME_WINDOWS],
+        names=['model', 'period', 'region', 'time_window']
+    )
+
+    # Create a DataFrame from the expected combinations
+    expected_df = pd.DataFrame(index=expected_combinations).reset_index()
+
+    # Merge with the actual data to find missing combinations
+    merged_df = expected_df.merge(data, on=['model', 'period', 'region', 'time_window'], how='left', indicator=True)
+
+    # Identify missing combinations
+    missing_combinations = merged_df[merged_df['_merge'] == 'left_only']
+
+    if not missing_combinations.empty:
+        print("Missing combinations of model, period, region, and time_window:")
+        print(missing_combinations[['model', 'period', 'region', 'time_window']])
+        raise ValueError("Data is incomplete. Please check the missing combinations above.")
+    else:
+        print(f"All expected combinations are present for model: {model}.")
 
 def plot_annual_mean_vs_time_window(data: pd.DataFrame, metric: str, variable: str) -> None:
     """
@@ -215,7 +277,7 @@ def plot_annual_mean_vs_time_window(data: pd.DataFrame, metric: str, variable: s
         model_data = data[data['model'] == model].sort_values(by=['period', 'time_window'])
         model_data.to_csv(f'filtered_data_{model}.csv', index=False)
 
-    # # Extract the year from the date column
+    # Extract the year from the date column
     # filtered_data['year'] = pd.to_datetime(filtered_data['date']).dt.year
 
     # # Group by model, time_window, and year, then calculate the annual mean
@@ -342,6 +404,7 @@ def load_data(files: list[Path]) -> pd.DataFrame:
     # for the same month. Keep the summary covering the longest interval.
     data["period_duration"] = data["date_final_dt"] - data["date_init_dt"]
 
+    # Create columns that define a unique group for each summary, to be used for deduplication.
     group_columns = [
         "source_file",
         "date_init_dt",
@@ -352,56 +415,13 @@ def load_data(files: list[Path]) -> pd.DataFrame:
         "level_hpa",
         "region",
     ]
-
-    print ("Data before deduplication:")
-    print(data[group_columns + ["period_duration"]])
-
-    # Identify duplicate rows in the entire DataFrame
-    duplicates = data[data.duplicated()]
-
-    # If you want to check duplicates based on specific columns, e.g., 'source_file' and 'region'
-    duplicates_specific = data[data.duplicated(subset=group_columns)]
-
-    # Print the duplicates
-    print("Duplicate rows:")
-    print(duplicates)
-
-    print("Duplicate rows based on group_columns:")
-    print(duplicates_specific)
-
-    # Save the duplicates to a CSV file for further inspection
-    duplicates_specific.to_csv("duplicates_specific.csv")
-
-        # Identify all rows that are duplicates based on group_columns
-    all_duplicates = data[data.duplicated(subset=group_columns, keep=False)]
-
-    # Separate the first occurrence of each duplicate
-    original_rows = data[data.duplicated(subset=group_columns, keep='first')]
-
-    # Separate the subsequent occurrences of each duplicate
-    duplicate_rows = data[data.duplicated(subset=group_columns, keep=False) & ~data.duplicated(subset=group_columns, keep='first')]
-
-    # Merge duplicates with their original rows
-    matched_duplicates = duplicate_rows.merge(
-        original_rows,
-        on=group_columns,
-        suffixes=('_duplicate', '_original')
-    )
-
-    # Print the matched duplicates
-    print("Duplicate rows and their original rows:")
-    print(matched_duplicates)
-    # save matched_duplicates
-    matched_duplicates.to_csv("matched_duplicates.csv", index=False)
-
+    
+    # Deuplicate the data by keeping the row with the longest period_duration for each unique group.
     data = (
         data.sort_values("period_duration")
         .drop_duplicates(subset=group_columns, keep="last")
         .sort_values(["region", "time_window", "period"])
     )
-
-    print ("Data after deduplication:")
-    print(data[group_columns + ["period_duration"]])
 
     return data
 
