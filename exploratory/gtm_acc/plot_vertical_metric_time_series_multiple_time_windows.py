@@ -287,8 +287,9 @@ def load_data(files: list[Path]) -> pd.DataFrame:
     for path in files:
         try:
             frames.append(read_summary_file(path))
-        except Exception as error:
-            print(f"Warning: skipping {path}: {error}", file=sys.stderr)
+        # Stop execution if any file cannot be read
+        except Exception as e:
+            raise RuntimeError(f"Error reading file {path}: {e}. Please check at least that file.") from e            
 
     if not frames:
         raise RuntimeError("No valid summary CSV file could be read.")
@@ -342,6 +343,9 @@ def load_data(files: list[Path]) -> pd.DataFrame:
     data["period_duration"] = data["date_final_dt"] - data["date_init_dt"]
 
     group_columns = [
+        "source_file",
+        "date_init_dt",
+        "date_final_dt",
         "period",
         "time_window",
         "variable",
@@ -349,11 +353,55 @@ def load_data(files: list[Path]) -> pd.DataFrame:
         "region",
     ]
 
+    print ("Data before deduplication:")
+    print(data[group_columns + ["period_duration"]])
+
+    # Identify duplicate rows in the entire DataFrame
+    duplicates = data[data.duplicated()]
+
+    # If you want to check duplicates based on specific columns, e.g., 'source_file' and 'region'
+    duplicates_specific = data[data.duplicated(subset=group_columns)]
+
+    # Print the duplicates
+    print("Duplicate rows:")
+    print(duplicates)
+
+    print("Duplicate rows based on group_columns:")
+    print(duplicates_specific)
+
+    # Save the duplicates to a CSV file for further inspection
+    duplicates_specific.to_csv("duplicates_specific.csv")
+
+        # Identify all rows that are duplicates based on group_columns
+    all_duplicates = data[data.duplicated(subset=group_columns, keep=False)]
+
+    # Separate the first occurrence of each duplicate
+    original_rows = data[data.duplicated(subset=group_columns, keep='first')]
+
+    # Separate the subsequent occurrences of each duplicate
+    duplicate_rows = data[data.duplicated(subset=group_columns, keep=False) & ~data.duplicated(subset=group_columns, keep='first')]
+
+    # Merge duplicates with their original rows
+    matched_duplicates = duplicate_rows.merge(
+        original_rows,
+        on=group_columns,
+        suffixes=('_duplicate', '_original')
+    )
+
+    # Print the matched duplicates
+    print("Duplicate rows and their original rows:")
+    print(matched_duplicates)
+    # save matched_duplicates
+    matched_duplicates.to_csv("matched_duplicates.csv", index=False)
+
     data = (
         data.sort_values("period_duration")
         .drop_duplicates(subset=group_columns, keep="last")
         .sort_values(["region", "time_window", "period"])
     )
+
+    print ("Data after deduplication:")
+    print(data[group_columns + ["period_duration"]])
 
     return data
 
