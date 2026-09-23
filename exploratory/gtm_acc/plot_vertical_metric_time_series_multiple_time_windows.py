@@ -70,7 +70,7 @@ REGIONS = [
 #DATE_INIT_MIN = "2025060100"
 #DATE_INIT_MAX = "2026063000"
 DATE_INIT_MIN = 2025060100
-DATE_INIT_MAX = 2026063000
+DATE_INIT_MAX = 2026053100
 
 # Number of subplot columns.
 N_COLUMNS = 2
@@ -109,8 +109,8 @@ REGION_LABELS = {
     "global": "Global",
     "south_america": "South America",
     "central_america_and_caribbean": "Central America and Caribbean",
-    "northern_hemisphere_20_80": "Northern Hemisphere, 20 to 80°",
-    "southern_hemisphere_20_80": "Southern Hemisphere, 20 to 80°",
+    "northern_hemisphere_20_80": "Northern Hemisphere, 20° to 80°",
+    "southern_hemisphere_20_80": "Southern Hemisphere, -20° to -80°",
     "tropics_20s_20n": "Tropics, 20°S to 20°N",
 }
 
@@ -174,27 +174,39 @@ def main() -> None:
         model_data = pd.read_csv(f'filtered_data_{model}.csv')
         check_data_duplication_and_completeness(model_data, model)
 
-    # open saved data
-    #data = pd.read_csv(output_csv_path)
+    # For each model, region, and time_window, compute annual means,
+    # and plot annual mean ACC for each model (in same plot, different line), with time_window in x-axis, and ACC in y-axis
+    for model in MODELS:
+        print (f"Calculating annual means for model: {model}")
+        model_data = pd.read_csv(f'filtered_data_{model}.csv')
+        model_data['year'] = pd.to_datetime(model_data['period']).dt.year
+        annual_means = (
+            model_data.groupby(['model', 'region', 'time_window'])['mean']
+            .mean()
+            .reset_index()
+        )
+        annual_means.to_csv(f'annual_means_{model}.csv', index=False)
 
+    # Plot annual mean ACC for each model, with time_window in x-axis
+    for region in REGIONS:
+        plt.figure(figsize=(10, 6))
+        for model in MODELS:
+            # Read annual means for a particular model
+            annual_means = pd.read_csv(f'annual_means_{model}.csv')
+            print (f"Plotting annual mean ACC for region: {region}, model: {model}")
+            regional_annual_mean = annual_means[annual_means['region'] == region]    
+            # Convert time_window from hours to days for x-axis
+            regional_annual_mean['time_window'] = regional_annual_mean['time_window'] / 24
+            plt.plot(regional_annual_mean['time_window'], regional_annual_mean['mean']*100, marker='o', label=model, linewidth=2)
+        plt.xlabel('Forecast day', fontsize=12)
+        plt.ylabel(f'ACC 500 hPa {VARIABLE_LABELS['zgeo']} [%]', fontsize=12)
+        plt.title(f'Annual mean ACC - {REGION_LABELS[region]}', fontsize=14)
+        plt.xticks(regional_annual_mean['time_window'])
+        plt.grid(True, alpha=0.3)
+        plt.legend(title='Model', bbox_to_anchor=(1.05, 1), loc='upper left')
+        plt.tight_layout()
+        plt.savefig(f'annual_mean_ACC_{region}.png', dpi=300, bbox_inches='tight')
 
-    # plot annual mean ACC for each model, with time_window in x-axis
-    #plot_annual_mean_vs_time_window(data=data, metric=METRIC, variable=VARIABLE)
-
-    #print (data)
-    #print (data.columns)
-
-    # print("Variables available in selected files:")
-    # print(", ".join(sorted(pd.concat(
-    #     [pd.read_csv(path, usecols=["variable"]) for path in files],
-    #     ignore_index=True,
-    # )["variable"].dropna().unique())))
-
-    # print("Regions included:")
-    # print(", ".join(get_regions_to_plot(data)))
-
-    # output_path = plot_time_series(data)
-    # print(f"Figure saved to: {output_path}")
 
 def check_data_duplication_and_completeness(data, model) -> None:
     """
@@ -245,70 +257,6 @@ def check_data_duplication_and_completeness(data, model) -> None:
     else:
         print(f"All expected combinations are present for model: {model}.")
 
-def plot_annual_mean_vs_time_window(data: pd.DataFrame, metric: str, variable: str) -> None:
-    """
-    Plot annual mean of a metric and variable vs time_window for each model.
-
-    Parameters:
-        data (pd.DataFrame): Input data containing columns:
-            ['summary_type', 'date', 'date_init', 'date_final', 'time_window', 'metric',
-             'variable', 'level_pa', 'level_hpa', 'region', 'mean', 'min', 'max', 'std',
-             'source_file', 'date_init_dt', 'date_final_dt', 'period', 'period_duration']
-        metric (str): The metric to filter and plot.
-        variable (str): The variable to filter and plot.
-    """
-    # Filter data for the selected metric and variable
-    filtered_data = data[(data['metric'] == metric) & (data['variable'] == variable)]
-
-    # Extract the model name from the source_file column
-    filtered_data['model'] = filtered_data['source_file'].str.extract(r'output_10d_(\w+)/')[0]
-
-    filtered_data[["source_file", "model", "period", "metric", "time_window"]].to_csv('filtered_data_source_and_model.csv', index=False)
-
-    # Read the CSV file
-    data = pd.read_csv('filtered_data_source_and_model.csv')
-
-    # Ensure the 'period' column is treated as a datetime object for proper sorting
-    data['period'] = pd.to_datetime(data['period'])
-
-    # Split the data by model and sort by period
-    models = ['bam', 'monan', 'gfs']
-    for model in models:
-        model_data = data[data['model'] == model].sort_values(by=['period', 'time_window'])
-        model_data.to_csv(f'filtered_data_{model}.csv', index=False)
-
-    # Extract the year from the date column
-    # filtered_data['year'] = pd.to_datetime(filtered_data['date']).dt.year
-
-    # # Group by model, time_window, and year, then calculate the annual mean
-    # annual_means = (
-    #     filtered_data.groupby(['model', 'time_window', 'year'])['mean']
-    #     .mean()
-    #     .reset_index()
-    # )
-
-    # # Group by model and time_window to calculate the mean across years
-    # annual_means = (
-    #     annual_means.groupby(['model', 'time_window'])['mean']
-    #     .mean()
-    #     .reset_index()
-    # )
-
-    # # Pivot the data for plotting
-    # pivot_data = annual_means.pivot(index='time_window', columns='model', values='mean')
-
-    # # Plot the data
-    # plt.figure(figsize=(10, 6))
-    # for model in pivot_data.columns:
-    #     plt.plot(pivot_data.index, pivot_data[model], label=model)
-
-    # plt.xlabel('Time Window')
-    # plt.ylabel('Annual Mean')
-    # plt.title(f'Annual Mean of {metric} ({variable}) vs Time Window')
-    # plt.legend(title='Model', bbox_to_anchor=(1.05, 1), loc='upper left')
-    # plt.tight_layout()
-    # plt.show()
-    # plt.savefig("test.png")
 
 def find_summary_files() -> list[Path]:
     """Find summary CSV files for the selected metric."""
