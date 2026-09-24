@@ -15,8 +15,10 @@ dist/
 # nc files
 *.nc
 
-# csv files
+# csv, txt, log files
 *.csv
+*.txt
+*.log
 
 # output
 output/
