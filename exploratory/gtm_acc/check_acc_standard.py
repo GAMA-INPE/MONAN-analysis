@@ -126,7 +126,7 @@ month = utils.get_MM_str_from_YYYYMMDDHH_str(date_string=DATE_INIT)
 
 print (month)
 
-ds_acc = stats.anomaly_correlation_coefficient_standard( 
+ds_acc = stats.anomaly_correlation_coefficient_standard_monthly( 
     predictions=ds_var_prediction_concat,
     observations=ds_var_ref_concat,
     climatology=ds_climatology,

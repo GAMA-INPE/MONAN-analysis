@@ -1277,7 +1277,7 @@ def calculate_multi_time_metrics(time_window):
             )
             
             # Compute anomaly correlation coefficient for the specified month, and save it to csv
-            write_regional_summary_csv_for_acc_standard(
+            write_regional_summary_csv_for_acc_standard_monthly(
                 ds_prediction=ds_var_prediction_concat,
                 ds_ref=ds_var_ref_concat,
                 ds_climatology=ds_climatology,
@@ -1291,7 +1291,7 @@ def calculate_multi_time_metrics(time_window):
                 date_list=None
             )
 
-def write_regional_summary_csv_for_acc_standard(
+def write_regional_summary_csv_for_acc_standard_monthly(
     ds_prediction,
     ds_ref,
     ds_climatology,
@@ -1318,7 +1318,7 @@ def write_regional_summary_csv_for_acc_standard(
         ds_climatology_region = preprocess.subset_region(ds_climatology, region)
 
         # Calculate standard ACC as spatial field for the region
-        ds_acc_standard_spatial_field = stats.anomaly_correlation_coefficient_standard_spatial_field(
+        ds_acc_standard_spatial_field = stats.anomaly_correlation_coefficient_standard_monthly_spatial_field(
             predictions=ds_prediction_region,
             observations=ds_ref_region,
             climatology=ds_climatology_region,

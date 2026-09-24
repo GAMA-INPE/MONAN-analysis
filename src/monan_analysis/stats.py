@@ -202,11 +202,13 @@ def anomaly_correlation_coefficient(predictions, observations, dim):
 
     return result
 
-def anomaly_correlation_coefficient_standard(predictions, observations, climatology, month_MM, ):
+def anomaly_correlation_coefficient_standard_monthly(predictions, observations, climatology, month_MM):
     """
     Calculate the anomaly correlation coefficient (ACC) for a specific variable between monthly 
-    predictions and observations, using the standard definition employed in operational centers (1,2,3,4).
-    
+    predictions and observations. This definition differs from the standard definition employed in 
+    operational centers (1,2,3,4) in that it calculates the ACC for monthly values of predictions
+    and observations.
+
     The ACC is here defined as the spatial mean of the product of the anomalies of the predictions 
     and observations, divided by the product of the standard deviations of the anomalies of the 
     predictions and observations.
@@ -218,6 +220,9 @@ def anomaly_correlation_coefficient_standard(predictions, observations, climatol
     where
     pred_anom = (predictions_monthly - climatology_monthly) - (predictions_monthly - climatology_monthly).mean(dim=space)
     obs_anom = (observations_monthly - climatology_monthly) - (observations_monthly - climatology_monthly).mean(dim=space)
+
+    The climatology is calculated from ERA5 data [5] for the period 1991-2020, and is provided in the climatology dataset. 
+    The climatology time stamps are written as 2020-MM-01, where MM is the month number.
 
     Parameters:
         predictions_monthly (xr.Dataset): Dataset containing monthly-averaged predictions.
@@ -235,6 +240,11 @@ def anomaly_correlation_coefficient_standard(predictions, observations, climatol
     3. ECMWF Forecaster User Guide, available at: 
     https://confluence.ecmwf.int/spaces/FUG/pages/673551834/Section+12.A+Statistical+Concepts+-+Deterministic+Data#Section12.AStatisticalConceptsDeterministicData-MeasureofSkill-theAnomalyCorrelationCoefficient(ACC)
     4. Livezey et al, Verification of Official Monthly Mean 700-hPa Height Forecasts: An Update, 1995
+    5. ECMWF used to employ 20 years of ERA5 data for this, and is now using re-forecasts initialized
+    with ERA5 data:
+        https://charts.ecmwf.int/products/plwww_m_hr_ccafreachmulti_ts?area=NHem%20Extratropics&parameter=Geopotential%20500hPa
+        https://confluence.ecmwf.int/spaces/FUG/pages/673550781/Section+6.2.2+Anomaly+Correlation+Coefficient
+        (Owens, R G, Hewson, T D (2018). ECMWF Forecast User Guide. Reading: ECMWF. doi: 10.21957/m1cs7h)
     """
     if not isinstance(predictions, xr.Dataset) or not isinstance(observations, xr.Dataset) \
         or not isinstance(climatology, xr.Dataset):
@@ -274,11 +284,14 @@ def anomaly_correlation_coefficient_standard(predictions, observations, climatol
 
     return result
 
-def anomaly_correlation_coefficient_standard_spatial_field(predictions, observations, climatology, month_MM, ):
+def anomaly_correlation_coefficient_standard_monthly_spatial_field(predictions, observations, climatology, month_MM, ):
     """
     Calculate the anomaly correlation coefficient (ACC) for a specific variable between monthly 
-    predictions and observations, using the standard definition employed in operational centers (1,2,3,4).
-    The only difference between this function and anomaly_correlation_coefficient_standard() is that 
+    predictions and observations. This definition differs from the standard definition employed in 
+    operational centers (1,2,3,4) in that it calculates the ACC for monthly values of predictions
+    and observations.
+    
+    The only difference between this function and anomaly_correlation_coefficient_standard_monthly() is that 
     this function returns the ACC as a spatial field, i.e. the spatial mean is not calculated for 
     the numerator. This may be useful when the user wants to first calculate the ACC for each grid 
     point in a spatial field to only afterwards calculate the final spatial mean.
@@ -290,6 +303,9 @@ def anomaly_correlation_coefficient_standard_spatial_field(predictions, observat
     where
     pred_anom = (predictions_monthly - climatology_monthly) - (predictions_monthly - climatology_monthly).mean(dim=space)
     obs_anom = (observations_monthly - climatology_monthly) - (observations_monthly - climatology_monthly).mean(dim=space)
+
+    The climatology is calculated from ERA5 data [5] for the period 1991-2020, and is provided in the climatology dataset. 
+    The climatology time stamps are written as 2020-MM-01, where MM is the month number.
 
     Parameters:
         predictions_monthly (xr.Dataset): Dataset containing monthly-averaged predictions.
@@ -307,6 +323,11 @@ def anomaly_correlation_coefficient_standard_spatial_field(predictions, observat
     3. ECMWF Forecaster User Guide, available at: 
     https://confluence.ecmwf.int/spaces/FUG/pages/673551834/Section+12.A+Statistical+Concepts+-+Deterministic+Data#Section12.AStatisticalConceptsDeterministicData-MeasureofSkill-theAnomalyCorrelationCoefficient(ACC)
     4. Livezey et al, Verification of Official Monthly Mean 700-hPa Height Forecasts: An Update, 1995
+    5. ECMWF used to employ 20 years of ERA5 data for this, and is now using re-forecasts initialized
+    with ERA5 data:
+        https://charts.ecmwf.int/products/plwww_m_hr_ccafreachmulti_ts?area=NHem%20Extratropics&parameter=Geopotential%20500hPa
+        https://confluence.ecmwf.int/spaces/FUG/pages/673550781/Section+6.2.2+Anomaly+Correlation+Coefficient
+        (Owens, R G, Hewson, T D (2018). ECMWF Forecast User Guide. Reading: ECMWF. doi: 10.21957/m1cs7h)
     """
     if not isinstance(predictions, xr.Dataset) or not isinstance(observations, xr.Dataset) \
         or not isinstance(climatology, xr.Dataset):
