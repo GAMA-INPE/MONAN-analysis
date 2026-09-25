@@ -157,7 +157,18 @@ def build_file_dict_for_lead(lead: int) -> dict:
 
     for reference in pa_config.OBS_REFERENCE_LIST:
         obs_nc = get_obs_filepath(reference, valid_str)
-        remap_nc = obs_nc.replace(".nc", "_MONAN_grid.nc")
+        remap_dir = os.path.join(
+            pa_config.DIR_INPUT_PROCESSED,
+            file_dict["cycle_str"],
+        )
+
+        os.makedirs(remap_dir, exist_ok=True)
+
+        remap_nc = os.path.join(
+            remap_dir,
+            f"{reference}_{valid_str}_{pa_config.EXPERIMENT_TAG}_grid.nc",
+        )        
+
         file_dict["refs"][reference] = {"obs_nc": obs_nc, "remap_nc": remap_nc}
 
     return file_dict
@@ -550,7 +561,7 @@ def remap_cdo(obs_nc: str, out_nc: str, ref_nc: str, overwrite: bool = False) ->
         log(f"Remapped file already exists: {out_nc}", level=2)
         return
     os.makedirs(os.path.dirname(out_nc), exist_ok=True)
-    monan_preprocess.map_data_to_different_grid_with_cdo(ref_nc=ref_nc, input_nc=obs_nc, output_nc=out_nc)
+    monan_preprocess.map_data_to_different_grid_with_cdo(ref_nc, obs_nc, out_nc)
 
 
 def remap_observations_to_monan_grid(file_dict: dict) -> None:
@@ -568,6 +579,191 @@ def remap_observations_to_monan_grid(file_dict: dict) -> None:
 # MONAN accumulation generation
 # =================================================================================================
 def generate_monan_24h_accumulations() -> None:
+
+    if pa_config.MONAN_INPUT_MODE == "single_time_series":
+        generate_monan_24h_accumulations_single_file()
+        return
+
+    if pa_config.MONAN_INPUT_MODE == "flushout":
+        generate_monan_24h_accumulations_flushout()
+        return
+
+    raise ValueError(
+        f"Unsupported MONAN_INPUT_MODE: "
+        f"{pa_config.MONAN_INPUT_MODE}"
+    )
+
+def generate_monan_24h_accumulations_single_file() -> None:
+
+    input_file = pa_config.MONAN_INPUT_FILE
+
+    if not os.path.exists(input_file):
+        raise FileNotFoundError(
+            f"MONAN input file not found:\n{input_file}"
+        )
+
+    cycle_dt = get_cycle_datetime()
+    cycle_str = get_cycle_str()
+
+    log(f"Reading MONAN time-series file: {input_file}", level=1)
+
+    with xr.open_dataset(input_file, engine="netcdf4") as ds:
+
+        time_name = pa_config.MONAN_TIME_DIM_NAME
+
+        if time_name not in ds.coords:
+            raise ValueError(
+                f"Time coordinate '{time_name}' not found in MONAN file."
+            )
+
+        if pa_config.MONAN_RAINC_NAME not in ds:
+            raise ValueError(
+                f"Variable '{pa_config.MONAN_RAINC_NAME}' not found."
+            )
+
+        if pa_config.MONAN_RAINNC_NAME not in ds:
+            raise ValueError(
+                f"Variable '{pa_config.MONAN_RAINNC_NAME}' not found."
+            )
+
+        for lead in get_lead_times():
+
+            end_dt = monan_utils.get_final_date_from_initial_date(
+                cycle_dt,
+                lead,
+            )
+
+            start_dt = monan_utils.get_initial_date_from_final_date(
+                end_dt,
+                pa_config.ACCUM_WINDOW_H,
+            )
+
+            start_str = start_dt.strftime(pa_config.DATE_FORMAT_STRING)
+            end_str = end_dt.strftime(pa_config.DATE_FORMAT_STRING)
+
+            log(
+                f"MONAN accumulation {lead:03d} h: "
+                f"{start_str} -> {end_str}",
+                level=1,
+            )
+
+            start_time = np.datetime64(start_dt)
+            end_time = np.datetime64(end_dt)
+
+            available_times = ds[time_name].values
+
+            if start_time not in available_times:
+                raise ValueError(
+                    f"Start time {start_time} not available in {input_file}"
+                )
+
+            if end_time not in available_times:
+                raise ValueError(
+                    f"End time {end_time} not available in {input_file}"
+                )
+
+            hourly_precip = (
+                ds[pa_config.MONAN_RAINNC_NAME]
+                + ds[pa_config.MONAN_RAINC_NAME]
+            )
+
+            window_precip = hourly_precip.where(
+                (ds[time_name] > start_time)
+                & (ds[time_name] <= end_time),
+                drop=True,
+            )
+
+            n_times = window_precip.sizes[time_name]
+
+            log(
+                f"Summing {n_times} hourly precipitation fields: "
+                f"{str(window_precip[time_name].values[0])} -> "
+                f"{str(window_precip[time_name].values[-1])}",
+                level=1,
+            )
+
+            if n_times != pa_config.ACCUM_WINDOW_H:
+                raise ValueError(
+                    f"Expected {pa_config.ACCUM_WINDOW_H} hourly precipitation fields "
+                    f"between {start_time} and {end_time}, but found {n_times}."
+                )
+
+            precip = (
+                window_precip
+                .sum(dim=time_name, skipna=False)
+                .squeeze()
+                .rename(pa_config.PRECIP_VAR_NAME)
+                .astype("float32")
+            )
+
+            precip = _normalize_precip_coords(precip)
+
+            # Diagnostic only. Do not modify negative values silently.
+            n_negative = int((precip < 0).sum().item())
+
+            if n_negative > 0:
+                log(
+                    f"WARNING: {n_negative} negative values found "
+                    f"in {lead:03d} h accumulation.",
+                    level=0,
+                )
+
+            output_nc = get_monan_24h_filepath(
+                cycle_str,
+                end_str,
+                lead,
+            )
+
+            save_precip_dataset(
+                precip,
+                output_nc,
+                attrs={
+                    "description": "MONAN 24 h accumulated precipitation",
+                    "experiment": pa_config.EXPERIMENT_TAG,
+                    "cycle": cycle_str,
+                    "lead_time_h": lead,
+                    "start_time": start_str,
+                    "end_time": end_str,
+                    "accumulation_method": "sum of hourly rainc + rainnc fields",
+                    "number_of_time_steps": n_times,
+                },
+            )
+
+            log(f"Saved: {output_nc}", level=1)
+
+            if pa_config.RUN_PLOTTING:
+
+                fig_dir = os.path.join(
+                    pa_config.DIR_OUTPUT_FIG_MONAN,
+                    get_yearmonth_str(),
+                    get_cycle_str(),
+                )
+
+                os.makedirs(fig_dir, exist_ok=True)
+
+                for domain_name in pa_config.DOMAINS:
+
+                    title, _, _ = get_monan_accum_title_and_stats(
+                        precip=precip,
+                        domain_name=domain_name,
+                        lead=lead,
+                        valid_str=end_str,
+                    )
+
+                    out_fig = os.path.join(
+                        fig_dir,
+                        f"MONAN_24precacum_"
+                        f"{get_cycle_str()}_{end_str}_{domain_name}.png",
+                    )
+
+                    plot_monan_accum_map_custom(
+                        data=precip,
+                        title=title,
+                        output_filepath=out_fig,
+                        domain_name=domain_name,
+                    )
+
+def generate_monan_24h_accumulations_flushout() -> None:
     for pair in build_monan_flushout_filepairs():
         output_nc = pair["output_nc"]
         if os.path.exists(output_nc) and not pa_config.OVERWRITE_OUTPUTS:
@@ -640,14 +836,64 @@ def generate_monan_24h_accumulations() -> None:
 # =================================================================================================
 # Skill metrics
 # =================================================================================================
-def binary_contingency(pred: xr.DataArray, obs: xr.DataArray, threshold_mm: float) -> dict[str, int]:
+def binary_contingency_fields(
+    pred: xr.DataArray,
+    obs: xr.DataArray,
+    threshold_mm: float,
+) -> dict[str, xr.DataArray]:
+
+    pred, obs = xr.align(pred, obs, join="exact")
+
+    valid = np.isfinite(pred) & np.isfinite(obs)
+
     pred_event = pred >= threshold_mm
     obs_event = obs >= threshold_mm
-    h = int(((pred_event) & (obs_event)).sum().item())
-    m = int(((~pred_event) & (obs_event)).sum().item())
-    f = int(((pred_event) & (~obs_event)).sum().item())
-    c = int(((~pred_event) & (~obs_event)).sum().item())
-    return {"H": h, "M": m, "F": f, "C": c}
+
+    fields = {
+        "H": xr.where(
+            valid & pred_event & obs_event, 1, 0
+        ).astype("int8"),
+
+        "M": xr.where(
+            valid & ~pred_event & obs_event, 1, 0
+        ).astype("int8"),
+
+        "F": xr.where(
+            valid & pred_event & ~obs_event, 1, 0
+        ).astype("int8"),
+
+        "C": xr.where(
+            valid & ~pred_event & ~obs_event, 1, 0
+        ).astype("int8"),
+
+        "VALID": valid.astype("int8"),
+    }
+
+    fields["H"].attrs["long_name"] = "hits"
+    fields["M"].attrs["long_name"] = "misses"
+    fields["F"].attrs["long_name"] = "false alarms"
+    fields["C"].attrs["long_name"] = "correct negatives"
+    fields["VALID"].attrs["long_name"] = "valid forecast-observation pairs"
+
+    return fields
+
+
+def binary_contingency(
+    pred: xr.DataArray,
+    obs: xr.DataArray,
+    threshold_mm: float,
+) -> dict[str, int]:
+
+    fields = binary_contingency_fields(
+        pred,
+        obs,
+        threshold_mm,
+    )
+
+    return {
+        name: int(fields[name].astype("int64").sum().item())
+        for name in ("H", "M", "F", "C")
+    }
 
 
 def compute_skill_scores(h: int, m: int, f: int, c: int) -> dict[str, float]:
@@ -661,7 +907,12 @@ def compute_skill_scores(h: int, m: int, f: int, c: int) -> dict[str, float]:
     return {"ACC": acc, "POD": pod, "POFD": pofd, "FAR": far, "CSI": csi, "F1": f1}
 
 
-def initialize_skill_txt(file_dict: dict, threshold_mm: float) -> str:
+def initialize_skill_txt(
+    file_dict: dict,
+    threshold_mm: float,
+    lead: int,
+) -> str:
+
     txt_dir = os.path.join(
         pa_config.DIR_OUTPUT_TXT_SKILL,
         file_dict["yearmonth_str"],
@@ -674,9 +925,21 @@ def initialize_skill_txt(file_dict: dict, threshold_mm: float) -> str:
         f"skill_{file_dict['cycle_str']}_thr{int(threshold_mm)}mm.txt"
     )
 
-    if not os.path.exists(txt_path) or pa_config.OVERWRITE_OUTPUTS:
+    first_lead = get_lead_times()[0]
+
+    if (
+        not os.path.exists(txt_path)
+        or (
+            pa_config.OVERWRITE_OUTPUTS
+            and lead == first_lead
+        )
+    ):
         with open(txt_path, "w", encoding="utf-8") as fobj:
-            fobj.write("lead_h reference domain threshold_mm H M F C ACC POD POFD FAR CSI F1\n")
+            fobj.write(
+                "lead_h reference domain threshold_mm "
+                "H M F C ACC POD POFD FAR CSI F1\n"
+            )
+
     return txt_path
 
 
@@ -764,19 +1027,124 @@ def run_squared_error_analysis(lead: int, file_dict: dict, data_dict: Dict[str, 
 
 def run_skill_analysis(lead: int, threshold_mm: float, file_dict: dict, data_dict: Dict[str, xr.DataArray]) -> None:
     monan = data_dict["MONAN"]
-    txt_path = initialize_skill_txt(file_dict, threshold_mm) if pa_config.SAVE_SKILL_TXT else None
+    txt_path = (
+        initialize_skill_txt(
+            file_dict,
+            threshold_mm,
+            lead,
+        )
+        if pa_config.SAVE_SKILL_TXT
+        else None
+    )
     for reference in pa_config.OBS_REFERENCE_LIST:
         obs = data_dict[reference]
         for domain_name in pa_config.DOMAINS:
             pred_dom = subset_domain(monan, domain_name)
             obs_dom = subset_domain(obs, domain_name)
-            cont = binary_contingency(pred_dom, obs_dom, threshold_mm)
-            scores = compute_skill_scores(cont["H"], cont["M"], cont["F"], cont["C"])
+            cont_fields = binary_contingency_fields(
+                pred_dom,
+                obs_dom,
+                threshold_mm,
+            )
+            cont = {
+                name: int(
+                    cont_fields[name]
+                    .astype("int64")
+                    .sum()
+                    .item()
+                )
+                for name in ("H", "M", "F", "C")
+            }
+            scores = compute_skill_scores(
+                cont["H"],
+                cont["M"],
+                cont["F"],
+                cont["C"],
+            )
             if txt_path is not None:
                 append_skill_txt(txt_path, lead, reference, domain_name, threshold_mm, scores, cont)
             if pa_config.SAVE_SKILL_NETCDF:
-                score_vars = {name: xr.DataArray(value) for name, value in scores.items()}
-                ds_out = xr.Dataset(score_vars)
+                score_vars = {
+                    name: xr.DataArray(np.float64(value))
+                    for name, value in scores.items()
+                }
+
+                count_vars = {
+                    "H_total": xr.DataArray(np.int64(cont["H"])),
+                    "M_total": xr.DataArray(np.int64(cont["M"])),
+                    "F_total": xr.DataArray(np.int64(cont["F"])),
+                    "C_total": xr.DataArray(np.int64(cont["C"])),
+                    "N_total": xr.DataArray(
+                        np.int64(
+                            cont["H"]
+                            + cont["M"]
+                            + cont["F"]
+                            + cont["C"]
+                        )
+                    ),
+                }
+
+                ds_out = xr.Dataset(
+                    {
+                        "H": cont_fields["H"],
+                        "M": cont_fields["M"],
+                        "F": cont_fields["F"],
+                        "C": cont_fields["C"],
+                        "VALID": cont_fields["VALID"],
+                    }
+                )
+
+                ds_out.attrs.update(
+                    {
+                        "description": (
+                            "Binary precipitation contingency fields "
+                            "used for categorical skill-score calculation"
+                        ),
+                        "experiment": pa_config.EXPERIMENT_TAG,
+                        "reference": reference,
+                        "domain": domain_name,
+                        "forecast_cycle": file_dict["cycle_str"],
+                        "valid_time": file_dict["valid_str"],
+                        "lead_time_h": int(lead),
+                        "threshold_mm_24h": float(threshold_mm),
+                        "contingency_definition": (
+                            "H=hit, M=miss, F=false alarm, "
+                            "C=correct negative"
+                        ),
+                        "missing_data_handling": (
+                            "Grid points with non-finite forecast or observation "
+                            "are zero in H/M/F/C and VALID=0"
+                        ),
+                    }
+                )
+
+                if "lat" in ds_out.coords:
+                    ds_out["lat"].attrs.update(
+                        {
+                            "standard_name": "latitude",
+                            "units": "degrees_north",
+                            "axis": "Y",
+                        }
+                    )
+
+                if "lon" in ds_out.coords:
+                    ds_out["lon"].attrs.update(
+                        {
+                            "standard_name": "longitude",
+                            "units": "degrees_east",
+                            "axis": "X",
+                        }
+                    )
+
+                encoding = {
+                    name: {
+                        "dtype": "int8",
+                        "zlib": True,
+                        "complevel": 1,
+                    }
+                    for name in ("H", "M", "F", "C", "VALID")
+                }
+
                 out_dir = os.path.join(
                     pa_config.DIR_OUTPUT_DATA_SKILL,
                     file_dict["yearmonth_str"],
@@ -788,8 +1156,12 @@ def run_skill_analysis(lead: int, threshold_mm: float, file_dict: dict, data_dic
                     out_dir,
                     f"skill_{reference}_{domain_name}_{file_dict['cycle_str']}_{lead:03d}h_thr{int(threshold_mm)}mm.nc",
                 )
-                ds_out.to_netcdf(out_nc)
 
+                ds_out.to_netcdf(
+                    out_nc,
+                    engine="netcdf4",
+                    encoding=encoding,
+                )
 
 # =================================================================================================
 # Copy config files for reproducibility

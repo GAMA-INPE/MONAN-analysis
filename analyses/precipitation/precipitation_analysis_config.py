@@ -41,8 +41,8 @@ SEL_VERBOSE_LEVEL = 2
 # Forecast cycle configuration
 # =================================================================================================
 YEAR = "2026"
-MONTH = "02"
-DAY = "01"
+MONTH = "01"
+DAY = "10"
 HOUR = "00"
 
 FORECAST_TOTAL_H = 120
@@ -58,6 +58,17 @@ MONAN_FILE_PREFIX = monan_config.PREFIX_MONAN_DIAG_STRING
 MONAN_GRID_STRING = monan_config.GRID_DICT[GRID_SPEC]
 MONAN_VERTICAL_LEVEL_STRING = monan_config.VERTICAL_LEVEL_DICT[VERTICAL_LEVEL_SPEC]
 DATE_FORMAT_STRING = monan_config.DATE_FORMAT_STRING
+
+# =================================================================================================
+# MONAN input configuration
+# =================================================================================================
+MONAN_INPUT_MODE = "single_time_series" # Options: "single_time_series" or "flushout"
+MONAN_INPUT_FILE = (f"/lustre/projetos/monan_adm/saulo.freitas/for_AndreLyra/"
+    f"ams_car_01to10Jan2026_5days_fcst/MONAN_NEW/"
+    f"for_dc_all_diag_dc.{YEAR}-{MONTH}-{DAY}_{HOUR}.00.00.nc"
+)
+MONAN_TIME_DIM_NAME = "Time"
+EXPERIMENT_TAG = "MONAN_NEW_AMS_CAR"
 
 # =================================================================================================
 # Analysis switches
@@ -97,33 +108,40 @@ SKILL_METRICS_TO_SAVE = ["ACC", "POD", "POFD", "FAR", "CSI", "F1"]
 # lon is kept in 0 to 360 to match the current MONAN precipitation workflow
 # =================================================================================================
 DOMAINS = {
-    "GLB": {
-        "monan_domain_key": "global",
+#    "GLB": {
+#        "monan_domain_key": "global",
+#        "slice": None,
+#        "extent": None,
+#        "xticks": list(range(-180, 181, 60)),
+#        "yticks": list(range(-60, 61, 30)),
+#    },
+#    "AMS": {
+#        "monan_domain_key": "south_america",
+#        "slice": {
+#           "lat": slice(*monan_config.DOMAIN_DICT["south_america"]["lat"]),
+#            "lon": slice(*monan_config.DOMAIN_DICT["south_america"]["lon"]),
+#        },
+#        "extent": [-85, -20, -55, 20],
+#        "xticks": list(range(-80, -19, 10)),
+#        "yticks": list(range(-50, 21, 10)),
+#    },
+#    "ACC": {
+#        "monan_domain_key": "central_america_and_caribbean",
+#        "slice": {
+#            "lat": slice(*monan_config.DOMAIN_DICT["central_america_and_caribbean"]["lat"]),
+#            "lon": slice(*monan_config.DOMAIN_DICT["central_america_and_caribbean"]["lon"]),
+#        },
+#        "extent": [-118, -35, -10, 35],
+#        "xticks": list(range(-110, -34, 10)),
+#        "yticks": list(range(-10, 36, 10)),
+#    },
+    "REG": {
+        "monan_domain_key": None,
         "slice": None,
-        "extent": None,
-        "xticks": list(range(-180, 181, 60)),
-        "yticks": list(range(-60, 61, 30)),
-    },
-    "AMS": {
-        "monan_domain_key": "south_america",
-        "slice": {
-            "lat": slice(*monan_config.DOMAIN_DICT["south_america"]["lat"]),
-            "lon": slice(*monan_config.DOMAIN_DICT["south_america"]["lon"]),
-        },
-        "extent": [-85, -20, -55, 20],
-        "xticks": list(range(-80, -19, 10)),
-        "yticks": list(range(-50, 21, 10)),
-    },
-    "ACC": {
-        "monan_domain_key": "central_america_and_caribbean",
-        "slice": {
-            "lat": slice(*monan_config.DOMAIN_DICT["central_america_and_caribbean"]["lat"]),
-            "lon": slice(*monan_config.DOMAIN_DICT["central_america_and_caribbean"]["lon"]),
-        },
-        "extent": [-118, -35, -10, 35],
-        "xticks": list(range(-110, -34, 10)),
-        "yticks": list(range(-10, 36, 10)),
-    },
+        "extent": [-100, -25, -55, 35],
+        "xticks": list(range(-100, -24, 10)),
+        "yticks": list(range(-50, 31, 10)),
+    },    
 }
 
 # =================================================================================================
@@ -186,21 +204,20 @@ DIR_MONAN_PREOP = (
     "/lustre/projetos/monan_adm/monan/ecf_PREOPER/"
     "MONAN-WorkFlow-OPER/MONAN_PRE_OPER/MONAN/scripts_CD-CT/dataout/flushout"
 )
-DIR_NETCDF_MONAN_24H = "/lustre/projetos/monan_gam/andre.lyra/NetCDFs/precip_24h/MONAN"
+DIR_NETCDF_MONAN_24H = f"precip_24h/{EXPERIMENT_TAG}"
 DIR_NETCDF_GPM_24H = "/lustre/projetos/monan_gam/andre.lyra/NetCDFs/precip_24h/GPM_IMERG"
 DIR_NETCDF_GSMAP_24H = "/lustre/projetos/monan_gam/andre.lyra/NetCDFs/precip_24h/GSMAP"
 DIR_NETCDF_MSWEP_24H = "/lustre/projetos/monan_gam/andre.lyra/NetCDFs/precip_24h/MSWEP"
-DIR_NETCDF_CONTINGENCY = "/lustre/projetos/monan_gam/andre.lyra/NetCDFs/precip_24h/CONTINGENCIA"
 
 DIR_CARTOPY_DATA = "/lustre/projetos/monan_gam/andre.lyra/cartopy"
 
 BASE_ANALYSIS_DIR = "/lustre/projetos/monan_gam/Scripts/MONAN-analysis/analyses/precipitation"
-DIR_INPUT = f"{BASE_ANALYSIS_DIR}/input"
+DIR_INPUT = f"{BASE_ANALYSIS_DIR}/input/{EXPERIMENT_TAG}"
 DIR_INPUT_RAW = f"{DIR_INPUT}/raw"
 DIR_INPUT_INTERMEDIATE = f"{DIR_INPUT}/intermediate"
 DIR_INPUT_PROCESSED = f"{DIR_INPUT}/processed"
 
-DIR_OUTPUT = f"{BASE_ANALYSIS_DIR}/output"
+DIR_OUTPUT = f"{BASE_ANALYSIS_DIR}/output/{EXPERIMENT_TAG}"
 
 DIR_OUTPUT_DATA = f"{DIR_OUTPUT}/data"
 DIR_OUTPUT_DATA_BIAS = os.path.join(DIR_OUTPUT_DATA, "Bias")
