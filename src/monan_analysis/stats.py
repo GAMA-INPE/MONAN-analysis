@@ -160,48 +160,6 @@ def rmse(predictions, observations, dim):
     
     return result
 
-def anomaly_correlation_coefficient(predictions, observations, dim):
-    """
-    Calculate the anomaly correlation coefficient between predictions and observations.
-    
-    The anomaly correlation coefficient is here defined as the mean of the product of the anomalies 
-    of the predictions and observations, divided by the product of the standard deviations of the 
-    anomalies of the predictions and observations. 
-    This definition follows roughly that of (1), except that in (1) the anomalies are calculated by 
-    subtracting the climatological mean of the variable and then again its spatial mean, while here 
-    we subtract only the mean of the variable over the dimension specified by the user in the dim argument. 
-    The user is expected to calculate the anomalies as she/he sees fit.
-
-    Mathematically, we define
-
-    ACC = (pred_anom * obs_anom).mean(dim=dim) / ((pred_anom ** 2).mean() ** 0.5 * (obs_anom ** 2).mean() ** 0.5),
-
-    where
-    pred_anom = predictions - predictions.mean()
-    obs_anom = observations - observations.mean()
-    n = number of components in the field
-
-    Reference:
-    1. Jolliffe and Stephenson, Forecast Verification: A Practitioner's Guide in Atmospheric Science, 2003
-    """
-    if not isinstance(predictions, xr.Dataset) or not isinstance(observations, xr.Dataset):
-        raise TypeError("Both predictions and observations must be xarray Datasets.")
-    
-    result = predictions.copy()
-    for var in predictions.data_vars:
-        pred_anom = predictions[var] - predictions[var].mean(dim=dim)
-        obs_anom = observations[var] - observations[var].mean(dim=dim)
-        result[var] = (pred_anom * obs_anom).mean(dim=dim) / (
-            (pred_anom ** 2).mean(dim=dim) ** 0.5 *
-            (obs_anom ** 2).mean(dim=dim) ** 0.5
-        )
-
-    # Explicitly drop the specified dimension from the result dataset
-    if dim in result.dims:
-        result = result.drop_dims(dim)
-
-    return result
-
 def anomaly_correlation_coefficient_standard_spatial_field(predictions, observations, climatology, month_MM, ):
     """
     Calculate the anomaly correlation coefficient (ACC) for a specific variable between monthly 
@@ -447,6 +405,49 @@ def anomaly_correlation_coefficient_standard_monthly_spatial_field(predictions, 
             (preprocess.spatial_mean(pred_anom ** 2)) ** 0.5 *
             (preprocess.spatial_mean(obs_anom ** 2)) ** 0.5
         )
+
+    return result
+
+def anomaly_correlation_coefficient_in_dim(predictions, observations, dim):
+    """
+    Calculate the anomaly correlation coefficient between predictions and observationsv along the
+    dimension defined by the user.
+    
+    The anomaly correlation coefficient is here defined as the mean of the product of the anomalies 
+    of the predictions and observations, divided by the product of the standard deviations of the 
+    anomalies of the predictions and observations. 
+    This definition follows roughly that of (1), except that in (1) the anomalies are calculated by 
+    subtracting the climatological mean of the variable and then again its spatial mean, while here 
+    we subtract only the mean of the variable over the dimension specified by the user in the dim argument. 
+    The user is expected to calculate the anomalies as she/he sees fit.
+
+    Mathematically, we define
+
+    ACC = (pred_anom * obs_anom).mean(dim=dim) / ((pred_anom ** 2).mean() ** 0.5 * (obs_anom ** 2).mean() ** 0.5),
+
+    where
+    pred_anom = predictions - predictions.mean()
+    obs_anom = observations - observations.mean()
+    n = number of components in the field
+
+    Reference:
+    1. Jolliffe and Stephenson, Forecast Verification: A Practitioner's Guide in Atmospheric Science, 2003
+    """
+    if not isinstance(predictions, xr.Dataset) or not isinstance(observations, xr.Dataset):
+        raise TypeError("Both predictions and observations must be xarray Datasets.")
+    
+    result = predictions.copy()
+    for var in predictions.data_vars:
+        pred_anom = predictions[var] - predictions[var].mean(dim=dim)
+        obs_anom = observations[var] - observations[var].mean(dim=dim)
+        result[var] = (pred_anom * obs_anom).mean(dim=dim) / (
+            (pred_anom ** 2).mean(dim=dim) ** 0.5 *
+            (obs_anom ** 2).mean(dim=dim) ** 0.5
+        )
+
+    # Explicitly drop the specified dimension from the result dataset
+    if dim in result.dims:
+        result = result.drop_dims(dim)
 
     return result
 
