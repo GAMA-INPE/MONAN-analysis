@@ -3,8 +3,8 @@
 module load cdo
 
 # Define source and destination directories
-SOURCE_DIR="/lustre/projetos/monan_atm/guilherme.mendonca/scratch/data/ERA5/mon/grib"  # Replace with the folder containing GRIB files
-DEST_DIR="/lustre/projetos/monan_atm/guilherme.mendonca/scratch/data/ERA5/mon/nc"  # Replace with the folder for NetCDF files
+SOURCE_DIR="/lustre/projetos/monan_atm/guilherme.mendonca/scratch/data/ERA5/hourly/grib"  # Replace with the folder containing GRIB files
+DEST_DIR="/lustre/projetos/monan_atm/guilherme.mendonca/scratch/data/ERA5/hourly/nc"  # Replace with the folder for NetCDF files
 
 # Create the destination directory if it doesn't exist
 mkdir -p "$DEST_DIR"
