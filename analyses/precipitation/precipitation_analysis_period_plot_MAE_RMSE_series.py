@@ -83,6 +83,7 @@ import xarray as xr
 EXPERIMENTS = (
     ("MONAN_CTL_AMS_CAR", "CTL"),
     ("MONAN_NEW_AMS_CAR", "NEW"),
+    ("MONAN_NEW2_AMS_CAR", "NEW2")    
 )
 
 REFERENCES = ("GPM", "GSMAP", "MSWEP")
@@ -149,10 +150,19 @@ FULL_DOMAIN_NAME = "Full REG domain"
 
 DEFAULT_REGIONS = tuple(REGIONS)
 
-# =============================================================================
-# Date helpers
-# =============================================================================
+EXPERIMENT_LABELS = tuple(
+    label for _, label in EXPERIMENTS
+)
 
+EXPERIMENT_FILENAME_LABEL = "_vs_".join(
+    EXPERIMENT_LABELS
+)
+
+EXPERIMENT_TITLE_LABEL = " vs ".join(
+    EXPERIMENT_LABELS
+)
+
+# Date helpers
 def parse_cycle(cycle: str) -> datetime:
     """Parse YYYYMMDDHH."""
     try:
@@ -178,10 +188,7 @@ def valid_period(
     )
 
 
-# =============================================================================
 # Paths
-# =============================================================================
-
 def input_path(
     base_dir: Path,
     experiment: str,
@@ -562,10 +569,7 @@ def write_csv(
     print(f"CSV saved: {output_path}")
 
 
-# =============================================================================
 # Plotting
-# =============================================================================
-
 def select_rows(
     rows: list[dict],
     metric: str,
@@ -624,22 +628,30 @@ def plot_full_domain_metric(
     ymax = max(figure_values)
     y_upper = ymax * 1.10 if ymax > 0.0 else 1.0
 
-    line_styles = {
-        "CTL": {
+    line_styles = (
+        {
             "linestyle": "-",
             "marker": "o",
         },
-        "NEW": {
+        {
             "linestyle": "--",
             "marker": "s",
         },
-    }
+        {
+            "linestyle": "-.",
+            "marker": "^",
+        },
+        {
+            "linestyle": ":",
+            "marker": "D",
+        },
+    )
 
     for col, reference in enumerate(REFERENCES):
 
         ax = axes[col]
 
-        for experiment_label in ("CTL", "NEW"):
+        for exp_index, (_, experiment_label) in enumerate(EXPERIMENTS):
 
             series_rows = select_rows(
                 rows=rows,
@@ -665,7 +677,9 @@ def plot_full_domain_metric(
                 linewidth=1.8,
                 markersize=5.0,
                 label=experiment_label,
-                **line_styles[experiment_label],
+                **line_styles[
+                    exp_index % len(line_styles)
+                ],
             )
 
         ax.set_title(
@@ -694,13 +708,14 @@ def plot_full_domain_metric(
         handles,
         labels,
         loc="upper center",
-        ncol=2,
+        ncol=len(EXPERIMENTS),
         frameon=False,
         bbox_to_anchor=(0.5, 0.92),
     )
 
     fig.suptitle(
-        f"Full REG domain {metric} by forecast lead\n"
+        f"Full REG domain {metric} by forecast lead | "
+        f"{EXPERIMENT_TITLE_LABEL}\n"
         f"Initialization cycles: "
         f"{start_cycle}–{end_cycle}",
         fontsize=14,
@@ -726,8 +741,8 @@ def plot_full_domain_metric(
     )
 
     output_path = output_dir / (
-        f"{metric}_CTL_vs_NEW_full_REG_"
-        f"{period}.png"
+        f"{metric}_{EXPERIMENT_FILENAME_LABEL}_"
+        f"full_REG_{period}.png"
     )
 
     fig.savefig(
@@ -792,22 +807,30 @@ def plot_metric_reference(
     ymax = max(figure_values)
     y_upper = ymax * 1.10 if ymax > 0.0 else 1.0
 
-    line_styles = {
-        "CTL": {
+    line_styles = (
+        {
             "linestyle": "-",
             "marker": "o",
         },
-        "NEW": {
+        {
             "linestyle": "--",
             "marker": "s",
         },
-    }
+        {
+            "linestyle": "-.",
+            "marker": "^",
+        },
+        {
+            "linestyle": ":",
+            "marker": "D",
+        },
+    )
 
     for idx, region_code in enumerate(region_codes):
         ax = axes_flat[idx]
         cfg = REGIONS[region_code]
 
-        for experiment_label in ("CTL", "NEW"):
+        for exp_index, (_, experiment_label) in enumerate(EXPERIMENTS):
             series_rows = select_rows(
                 rows=rows,
                 metric=metric,
@@ -828,7 +851,7 @@ def plot_metric_reference(
                 linewidth=1.8,
                 markersize=5.0,
                 label=experiment_label,
-                **line_styles[experiment_label],
+                **line_styles[exp_index % len(line_styles)],
             )
 
         ax.set_title(
@@ -859,10 +882,10 @@ def plot_metric_reference(
         handles,
         labels,
         loc="upper center",
-        ncol=2,
+        ncol=len(EXPERIMENTS),
         frameon=False,
-        bbox_to_anchor=(0.5, 0.945),
-    )
+        bbox_to_anchor=(0.5, 0.92),
+    )  
 
     fig.suptitle(
         f"Regional {metric} by forecast lead — "
@@ -890,7 +913,7 @@ def plot_metric_reference(
     )
 
     output_path = output_dir / (
-        f"{metric}_{reference}_CTL_vs_NEW_"
+        f"{metric}_{reference}_{EXPERIMENT_FILENAME_LABEL}_"
         f"regional_series_{period}.png"
     )
 
@@ -1026,7 +1049,7 @@ def main() -> None:
     )
 
     print("=" * 80)
-    print("Regional continuous-metric lead series: CTL vs NEW")
+    print("Regional continuous-metric lead series: " f"{EXPERIMENT_TITLE_LABEL}")
     print(f"Period definition: forecast initialization cycles")
     print(f"Start cycle: {args.start_cycle}")
     print(f"End cycle:   {args.end_cycle}")

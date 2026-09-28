@@ -409,7 +409,8 @@ def plot_period_metric(
     output_dir.mkdir(parents=True, exist_ok=True)
 
     output_file = output_dir / (
-        f"{metric}_CTL_vs_NEW_REG_{period}_p{lead:03d}h.png"
+        f"{metric}_{EXPERIMENTS[0][1]}_vs_{EXPERIMENTS[1][1]}_"
+        f"REG_{period}_p{lead:03d}h.png"
     )
 
     fig.savefig(

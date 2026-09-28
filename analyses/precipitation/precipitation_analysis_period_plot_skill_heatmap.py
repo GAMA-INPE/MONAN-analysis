@@ -32,7 +32,7 @@ import pandas as pd
 
 REGION_ANALYSIS = "REG"
 REFERENCES = ("GPM", "GSMAP", "MSWEP")
-EXPERIMENTS = ("CTL", "NEW")
+EXPERIMENTS = ("CTL", "NEW2")
 
 METRICS = (
     "ETS",
@@ -96,7 +96,7 @@ def parse_txt_file(file_path, period):
     name = os.path.basename(file_path)
 
     match = re.match(
-        rf"Skill_(CTL|NEW)_{REGION_ANALYSIS}_"
+        rf"Skill_(CTL|NEW2)_{REGION_ANALYSIS}_"
         rf"{re.escape(period)}_thr([0-9]+(?:p[0-9]+)?)mm\.txt$",
         name,
     )
@@ -295,7 +295,7 @@ def plot_metric_2x3(df, period, metric, output_dir):
         cbar.set_label(metric, fontsize=11)
 
     fig.suptitle(
-        f"{metric} heatmap | CTL vs NEW | {REGION_ANALYSIS}\n"
+        f"{metric} heatmap | CTL vs NEW2 | {REGION_ANALYSIS}\n"
         f"Initialization cycles: {period.replace('_', '–')}",
         fontsize=15,
         y=0.98,
@@ -304,7 +304,7 @@ def plot_metric_2x3(df, period, metric, output_dir):
     output_dir.mkdir(parents=True, exist_ok=True)
 
     out = output_dir / (
-        f"heatmap_{metric}_CTL_vs_NEW_{REGION_ANALYSIS}_{period}.png"
+        f"heatmap_{metric}_CTL_vs_NEW2_{REGION_ANALYSIS}_{period}.png"
     )
 
     fig.savefig(

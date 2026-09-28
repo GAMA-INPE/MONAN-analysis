@@ -64,11 +64,11 @@ DATE_FORMAT_STRING = monan_config.DATE_FORMAT_STRING
 # =================================================================================================
 MONAN_INPUT_MODE = "single_time_series" # Options: "single_time_series" or "flushout"
 MONAN_INPUT_FILE = (f"/lustre/projetos/monan_adm/saulo.freitas/for_AndreLyra/"
-    f"ams_car_01to10Jan2026_5days_fcst/MONAN_NEW/"
+    f"ams_car_01to10Jan2026_5days_fcst/MONAN_NEW2/"
     f"for_dc_all_diag_dc.{YEAR}-{MONTH}-{DAY}_{HOUR}.00.00.nc"
 )
 MONAN_TIME_DIM_NAME = "Time"
-EXPERIMENT_TAG = "MONAN_NEW_AMS_CAR"
+EXPERIMENT_TAG = "MONAN_NEW2_AMS_CAR"
 
 # =================================================================================================
 # Analysis switches
