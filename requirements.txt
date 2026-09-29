@@ -10,3 +10,4 @@ cartopy
 pytest
 dask
 cdsapi
+jdcal
