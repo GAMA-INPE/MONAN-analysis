@@ -23,20 +23,24 @@ import argparse
 from pathlib import Path
 
 import matplotlib.pyplot as plt
-from matplotlib.colors import BoundaryNorm
+from matplotlib.colors import BoundaryNorm, TwoSlopeNorm
 import numpy as np
 import pandas as pd
 
 
-# ============================================================
 # Configuration
-# ============================================================
+# Input directory
+BASE_FSS = Path("FSS_results_CTL_x_NEW_x_NEW2")
+# Output directory
+OUTDIR_FIG = Path("FSS_Figures_CTL_x_NEW_x_NEW2")
 
-BASE_FSS = Path("FSS_results_CTL_x_NEW")
-OUTDIR_FIG = Path("FSS_Figures_CTL_x_NEW")
+# Always compare two experiments
+EXPERIMENT_CTL = "MONAN_NEW_AMS_CAR"
+EXPERIMENT_NEW = "MONAN_NEW2_AMS_CAR"
 
-EXPERIMENT_CTL = "MONAN_CTL_AMS_CAR"
-EXPERIMENT_NEW = "MONAN_NEW_AMS_CAR"
+# Short labels used in figure titles and panel headers.
+EXPERIMENT_CTL_LABEL = "NEW"
+EXPERIMENT_NEW_LABEL = "NEW2"
 
 REFERENCES = ["GPM", "GSMAP", "MSWEP"]
 
@@ -64,23 +68,18 @@ FSS_REFERENCE_LEVEL = 0.5
 
 CMAP_DELTA = "RdBu_r"
 
-# Initial symmetric range for Delta FSS.
-# If None, the range is determined automatically from the
-# maximum absolute Delta FSS for each reference.
-DELTA_LIMIT = None
+# Symmetric Delta FSS colour scale.
+# Fixed range can be set or None to determine automatically
+DELTA_LIMIT = 0.10
 
 DPI = 150
 
-
-# ============================================================
 # Command-line arguments
-# ============================================================
-
 def parse_args():
     parser = argparse.ArgumentParser(
         description=(
-            "Plot FSS comparison between MONAN_CTL_AMS_CAR "
-            "and MONAN_NEW_AMS_CAR."
+            "Plot FSS comparison between MONAN controle and "
+            "MONAN experiments."
         )
     )
 
@@ -328,6 +327,30 @@ def prepare_comparison(df_ctl, df_new, reference):
             f"for {reference}."
         )
 
+    grid_columns = [
+        "grid_dlat_deg",
+        "grid_dlon_deg",
+        "grid_dy_km",
+        "grid_dx_km",
+        "window_lat_km",
+        "window_lon_km",
+    ]
+
+    for column in grid_columns:
+        if not np.allclose(
+            ctl[column].to_numpy(),
+            new[column].to_numpy(),
+            rtol=0.0,
+            atol=1.0e-6,
+            equal_nan=True,
+        ):
+            raise ValueError(
+                f"{column} differs between "
+                f"{EXPERIMENT_CTL_LABEL} and {EXPERIMENT_NEW_LABEL}. "
+                "FSS values based on the same window_points would not "
+                "represent the same physical spatial scale."
+            )
+
     comparison = ctl[
         [
             "reference",
@@ -516,8 +539,8 @@ def plot_ctl_new(comparison, reference, output_dir):
     last_im = None
 
     experiment_columns = [
-        ("fss_ctl", "MONAN CTL"),
-        ("fss_new", "MONAN NEW"),
+        ("fss_ctl", EXPERIMENT_CTL_LABEL),
+        ("fss_new", EXPERIMENT_NEW_LABEL),
     ]
 
     for row, threshold in enumerate(THRESHOLDS):
@@ -609,7 +632,7 @@ def plot_ctl_new(comparison, reference, output_dir):
 
     fig.suptitle(
         (
-            f"FSS | MONAN CTL vs MONAN NEW | {reference}\n"
+            f"FSS | {EXPERIMENT_CTL_LABEL} vs {EXPERIMENT_NEW_LABEL} | {reference}\n"
             "24-h accumulated precipitation"
         ),
         fontsize=15,
@@ -642,7 +665,7 @@ def plot_ctl_new(comparison, reference, output_dir):
 
     output = (
         Path(output_dir)
-        / f"FSS_CTL_vs_NEW_{reference}.png"
+        / f"FSS_{EXPERIMENT_CTL_LABEL}_vs_{EXPERIMENT_NEW_LABEL}_{reference}.png"
     )
 
     fig.savefig(
@@ -703,6 +726,18 @@ def plot_delta_fss(comparison, reference, output_dir):
     else:
         delta_limit = float(DELTA_LIMIT)
 
+    delta_norm = TwoSlopeNorm(
+        vmin=-delta_limit,
+        vcenter=0.0,
+        vmax=delta_limit,
+    )
+
+    delta_ticks = np.linspace(
+        -delta_limit,
+        delta_limit,
+        9,
+    )
+
     fig, axes = plt.subplots(
         nrows=2,
         ncols=3,
@@ -733,8 +768,7 @@ def plot_delta_fss(comparison, reference, output_dir):
             origin="lower",
             aspect="auto",
             cmap=CMAP_DELTA,
-            vmin=-delta_limit,
-            vmax=delta_limit,
+            norm=delta_norm,
             interpolation="nearest",
         )
 
@@ -796,7 +830,7 @@ def plot_delta_fss(comparison, reference, output_dir):
 
     fig.suptitle(
         (
-            f"Delta FSS = MONAN NEW - MONAN CTL | {reference}\n"
+            f"Delta FSS = {EXPERIMENT_NEW_LABEL} - {EXPERIMENT_CTL_LABEL} | {reference}\n"
             "24-h accumulated precipitation"
         ),
         fontsize=15,
@@ -819,16 +853,22 @@ def plot_delta_fss(comparison, reference, output_dir):
     cbar = fig.colorbar(
         last_im,
         cax=cbar_ax,
+        ticks=delta_ticks,
+        extend="both",
+    )
+
+    cbar.ax.set_yticklabels(
+        [f"{value:.3f}" for value in delta_ticks]
     )
 
     cbar.set_label(
-        "Delta FSS (NEW - CTL)",
+        f"Delta FSS ({EXPERIMENT_NEW_LABEL} - {EXPERIMENT_CTL_LABEL})",
         fontsize=11,
     )
 
     output = (
         Path(output_dir)
-        / f"Delta_FSS_NEW_minus_CTL_{reference}.png"
+        / f"Delta_FSS_{EXPERIMENT_NEW_LABEL}_minus_{EXPERIMENT_CTL_LABEL}_{reference}.png"
     )
 
     fig.savefig(
@@ -866,7 +906,7 @@ def main():
 
     print("")
     print("=" * 70)
-    print("FSS plotting: MONAN CTL x MONAN NEW")
+    print("FSS plotting: ")
     print("=" * 70)
     print(f"Input directory : {base_dir}")
     print(f"Output directory: {output_dir}")

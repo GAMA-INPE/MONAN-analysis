@@ -37,27 +37,29 @@ import monan_analysis.stats as stats
 import monan_analysis.preprocess as preprocess
 
 
-# ----------------------------------------------------------------------
 # Configuration
-# ----------------------------------------------------------------------
 
+# Input directories
 BASE_PRECIP = Path("../../analyses/precipitation/precip_24h")
-
 BASE_REFERENCE = Path("../../analyses/precipitation/input")
+# Output directory
+OUTDIR_FSS = Path("FSS_results_CTL_x_NEW_x_NEW2")
 
-OUTDIR_FSS = Path("FSS_results_CTL_x_NEW")
-
+# One or more experiments to process
 EXPERIMENTS = [
     "MONAN_CTL_AMS_CAR",
     "MONAN_NEW_AMS_CAR",
+    "MONAN_NEW2_AMS_CAR",
 ]
 
+# One or more observational references to process
 REFERENCES = [
     "GPM",
     "GSMAP",
     "MSWEP",
 ]
 
+# List of cycles to process
 CYCLES = [
     "2026010100",
     "2026010200",
@@ -71,6 +73,7 @@ CYCLES = [
     "2026011000",
 ]
 
+# List of lead times (in hours) to process
 LEADS = [
     24,
     48,
@@ -79,6 +82,7 @@ LEADS = [
     120,
 ]
 
+# List of precipitation thresholds (in mm) to process
 THRESHOLDS = [
     1,
     2,
@@ -88,6 +92,7 @@ THRESHOLDS = [
     50,
 ]
 
+# List of window sizes (in grid points) to process
 WINDOW_SIZES = [
     1,
     3,
@@ -106,8 +111,8 @@ def parse_args():
 
     parser = argparse.ArgumentParser(
         description=(
-            "Calculates FSS for the MONAN_CTL_AMS_CAR and "
-            "MONAN_NEW_AMS_CAR experiments."
+            "Calculates FSS for the MONAN controle and "
+            "MONAN experiments."
         )
     )
 
@@ -116,8 +121,8 @@ def parse_args():
         nargs="+",
         default=["all"],
         help=(
-            "Experiments to process. Use MONAN_CTL_AMS_CAR, "
-            "MONAN_NEW_AMS_CAR, or all. Default: all."
+            "Experiments to process. Use variables defined in EXPERIMENTS, "
+            "Default: all."
         ),
     )
 
@@ -869,10 +874,7 @@ def salva_csv(linhas, path):
         writer.writerows(linhas)
 
 
-# ----------------------------------------------------------------------
 # Main
-# ----------------------------------------------------------------------
-
 def main():
 
     args = parse_args()
@@ -888,6 +890,16 @@ def main():
         REFERENCES,
         "Reference",
     )
+
+    period_start = datetime.strptime(
+        min(CYCLES),
+        "%Y%m%d%H",
+    ).strftime("%Y%m%d")
+
+    period_end = datetime.strptime(
+        max(CYCLES),
+        "%Y%m%d%H",
+    ).strftime("%Y%m%d")
 
     for experimento in experimentos:
 
@@ -910,7 +922,7 @@ def main():
                 outdir_combinacao
                 / (
                     f"FSS_cases_{experimento}_vs_"
-                    f"{referencia}_20260101_20260110.csv"
+                    f"{referencia}_{period_start}_{period_end}.csv"
                 )
             )
 
@@ -918,7 +930,7 @@ def main():
                 outdir_combinacao
                 / (
                     f"FSS_aggregate_{experimento}_vs_"
-                    f"{referencia}_20260101_20260110.csv"
+                    f"{referencia}_{period_start}_{period_end}.csv"
                 )
             )
 
