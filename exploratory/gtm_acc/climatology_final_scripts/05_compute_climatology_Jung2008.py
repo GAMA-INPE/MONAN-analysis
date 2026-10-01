@@ -217,6 +217,7 @@ def calculate_climatology(ds, j_weights_dict, N_Y, N_half, start_year, final_yea
     # to calculate the year-climatology for that specific year. These values will be then summed over
     # all years to obtain the final climatology dataset ds_climatology. The final climatology dataset 
     # will be then converted to MONAN format.
+    sum_for_each_year = xr.zeros_like(ds_climatology)
     for year in range(start_year, final_year + 1):
         ds_year = xr.zeros_like(ds.sel(time=ds.time.dt.year == year))
         if verbose:
@@ -256,12 +257,13 @@ def calculate_climatology(ds, j_weights_dict, N_Y, N_half, start_year, final_yea
                 time_gregorian_for_julian_day = ds_year["time"].where(ds_year.time_julian == julian_day, drop=True).values[0]
                 ds_year[var].loc[ds_year.time == time_gregorian_for_julian_day] = sum_for_each_day_of_year[var]
 
-                # Sum over all years k to compute the weighted mean for each day at hour_UTC nu and each grid point
-                ds_climatology[var].loc[ds_climatology.time == time_gregorian_for_julian_day].values += sum_for_each_day_of_year[var].values
-
             if verbose_level2:
                 print (f"Sum for day {jd.to_gregorian(julian_day)}:", sum_for_each_day_of_year)
                 print (f"Year-climatology dataset for year {year} after processing day {jd.to_gregorian(julian_day)}:", ds_year.sel(time=time_gregorian_for_julian_day))
+        # Sum over all years k to compute the weighted mean for each day at hour_UTC nu and each grid point
+        sum_for_each_year.values += ds_year.values
+    
+    ds_climatology = sum_for_each_year.values
     if verbose:
         print ("Final climatology dataset after processing all years:", ds_climatology)
     
@@ -342,6 +344,36 @@ def convert_variables(ds, var_list, input_dir, verbose=False):
     
     return ds
 
+def test_calculate_climatology(N_Y, N_half, start_year, final_year, hour_UTC, var_list, level_list,
+                               verbose_all=True):
+    """
+    Test function for calculate_climatology with a small dataset with all values equal to one.
+    """
+    # Create dataset
+    time = pd.date_range(f"{start_year}-01-01", f"{final_year}-12-31", freq='D')
+    ds = xr.Dataset(
+        {
+            var: (["time", "lat", "lon"], np.ones((len(time), 2, 2))) for var in var_list
+        },
+        coords={
+            "time": time,
+            "lat": [0, 1],
+            "lon": [0, 1],
+        },
+    )
+
+    
+    # Compute weights for each day index j (weights are fixed for fixed N_Y and N_half)
+    j_weights_dict = compute_weights_j(N_half, N_Y, verbose=verbose_all)
+
+    # Calculate climatology
+    ds_climatology = calculate_climatology(ds, j_weights_dict, N_Y, N_half, start_year, final_year, 
+                                           hour_UTC, verbose=True, verbose_level2=True)
+    
+    print ("Climatology dataset for test with all values equal to one:", ds_climatology)
+    print ("Climatology dataset values for test with all values equal to one:", ds_climatology[var_list[0]].values)
+        
+
 if __name__ == "__main__":
     # Set parameters
     # number of years
@@ -362,19 +394,19 @@ if __name__ == "__main__":
     # path to raw data for computing the climatology
     raw_file_path = input_dir+"/"+"concat_era5_hourly_pl_1991_2020.nc"
 
-    # Compute climatology
-    run_climatology_workflow(
-        N_Y=N_Y,
-        N_half=N_half,
-        start_year=start_year,
-        final_year=final_year,
-        hour_UTC=hour_UTC,
-        var_list=var_list,
-        level_list=level_list,
-        input_dir=input_dir,
-        raw_file_path=raw_file_path,
-        verbose_all=True
-    )
+    # # Compute climatology
+    # run_climatology_workflow(
+    #     N_Y=N_Y,
+    #     N_half=N_half,
+    #     start_year=start_year,
+    #     final_year=final_year,
+    #     hour_UTC=hour_UTC,
+    #     var_list=var_list,
+    #     level_list=level_list,
+    #     input_dir=input_dir,
+    #     raw_file_path=raw_file_path,
+    #     verbose_all=True
+    # )
 
     #===============================================================================================
     ## Test functions used in the script
@@ -387,6 +419,8 @@ if __name__ == "__main__":
     ## test_compute_weights_j(N_half, N_Y)
     ## 4) test the compute_weighted_mean function with dummy values
     ## test_compute_weighted_mean(N_half=10, N_Y=30)
+    ## 5) test the calculate_climatology function with a small dataset (e.g., 2 years, 3 days, 1 variable, 1 level)
+    test_calculate_climatology(N_Y=3, N_half=1, start_year=1991, final_year=1993, hour_UTC=0, var_list=["var129"], level_list=[50000])
     #===============================================================================================
 
 

@@ -108,6 +108,7 @@ STATS_SPATIAL_METRICS_TO_ANALYZE = [
 # Single-time stats metrics (metrics that can be calculated for a single time instant), which cannot
 # be spatially plotted over a map (summary only)
 STATS_SUMMARY_METRICS_TO_ANALYZE = [
+    "anomaly_correlation_coefficient_standard"
     ]
 # Whether to write a CSV file with the regional summary of statistics
 WRITE_REGIONAL_SUMMARY_CSV = True
@@ -206,7 +207,7 @@ DIR_INPUT = f"/lustre/projetos/monan_gam/Scripts/MONAN-analysis_clone_guilherme/
 DIR_INPUT_INTERMEDIATE = f"{DIR_INPUT}/intermediate"
 DIR_INPUT_PROCESSED = f"{DIR_INPUT}/processed"
 DIR_INPUT_RAW = f"{DIR_INPUT}/raw"
-FILEPATH_CLIMATOLOGY = f"/lustre/projetos/monan_atm/guilherme.mendonca/scratch/data/ERA5/mon/nc_climatology/climatology_in_monan_format.nc"
+FILEPATH_CLIMATOLOGY = f"/lustre/projetos/monan_atm/guilherme.mendonca/scratch/data/ERA5/mon/nc_climatology/climatology_N_half_10_hour_UTC_0_1991_2020.nc"
 #===================================================================================================
 # Pressure-level validity mask configurations
 #===================================================================================================
@@ -246,13 +247,13 @@ TIME_WINDOWS_TO_ANALYZE = [
 # e.g. RMSE, anomaly correlation coefficient), that can be spatially plotted over a map
 MULTI_TIME_STATS_SPATIAL_METRICS_TO_ANALYZE = [
     "rmse",
-    "anomaly_correlation_coefficient",
+    #"anomaly_correlation_coefficient",
     ]
 # Multi-time stats metrics (metrics that need multiple time instants for their definition, 
 # e.g. RMSE, anomaly correlation coefficient), that cannot be spatially plotted over a map 
 # (summary only)
 MULTI_TIME_STATS_SUMMARY_METRICS_TO_ANALYZE = [
-    "anomaly_correlation_coefficient_standard"
+    #"anomaly_correlation_coefficient_standard"
     ]
 #===================================================================================================
 # Latitude-pressure profile plot configurations
