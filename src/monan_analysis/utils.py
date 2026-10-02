@@ -25,6 +25,7 @@ This file was created with the assistance of GitHub Copilot.
 import datetime
 import argparse
 import monan_analysis.config as config
+import numpy as np
 
 def example_function_utils():
     print ("this is a function imported from the utils.py module.")
@@ -44,6 +45,10 @@ def get_date_as_YYYYMMDDHH_str(year,month,day,hour):
 
 def get_date_as_YYYYMM_str(year,month):
     date_in_string = f"{year}{month}" 
+    return date_in_string
+
+def get_date_as_YYYYMM_str_from_datetime(date_in_datetime):
+    date_in_string = date_in_datetime.strftime("%Y%m")
     return date_in_string
 
 def get_final_date_from_initial_date(date_in_datetime, time_window):
@@ -79,6 +84,42 @@ def get_date_list(date_init, date_final, time_step):
         current_date += datetime.timedelta(hours=int(time_step))
 
     return date_list
+
+def get_MM_str_from_YYYYMMDDHH_str(date_string):
+    # Extract the month (characters at index 4 and 5)
+    month = date_string[4:6]
+    return month
+
+def get_lat_lon_names(ds):
+    lat_candidates = ["lat", "latitude"]
+    lon_candidates = ["lon", "longitude"]
+
+    lat_name = None
+    lon_name = None
+
+    for name in lat_candidates:
+        if name in ds.coords or name in ds.dims:
+            lat_name = name
+            break
+
+    for name in lon_candidates:
+        if name in ds.coords or name in ds.dims:
+            lon_name = name
+            break
+
+    if lat_name is None or lon_name is None:
+        raise ValueError(
+            "Could not identify latitude and longitude coordinates "
+            "in the dataset."
+        )
+
+    return lat_name, lon_name
+
+def get_scalar_value(da):
+    value = da.values
+    if np.size(value) == 0:
+        return np.nan
+    return float(np.asarray(value).squeeze())
 
 def setup_parser():
     """Set up the argument parser with common arguments."""
