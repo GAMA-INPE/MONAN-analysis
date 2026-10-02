@@ -104,6 +104,8 @@ WINDOW_SIZES = [
 
 VAR_PREC = "prec"
 
+# Approximate length of one degree of arc at the Earth's surface (km),
+# to estimate grid resolution in kilometers.
 EARTH_KM_PER_DEGREE = 111.32
 
 # Argument parser for command-line options.
@@ -111,7 +113,7 @@ def parse_args():
 
     parser = argparse.ArgumentParser(
         description=(
-            "Calculates FSS for the MONAN controle and "
+            "Calculates FSS for the MONAN control run and "
             "MONAN experiments."
         )
     )
