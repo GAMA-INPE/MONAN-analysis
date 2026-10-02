@@ -411,7 +411,7 @@ if __name__ == "__main__":
     # number of years
     N_Y = 30
     # number of days for each side of time window (21-d centered window)
-    N_half = 10
+    N_half = 1
     # initial and final year
     start_year = 1991
     final_year = 2020
@@ -426,19 +426,19 @@ if __name__ == "__main__":
     # path to raw data for computing the climatology
     raw_file_path = input_dir+"/"+"concat_era5_hourly_pl_1991_2020.nc"
 
-    # # Compute climatology
-    # run_climatology_workflow(
-    #     N_Y=N_Y,
-    #     N_half=N_half,
-    #     start_year=start_year,
-    #     final_year=final_year,
-    #     hour_UTC=hour_UTC,
-    #     var_list=var_list,
-    #     level_list=level_list,
-    #     input_dir=input_dir,
-    #     raw_file_path=raw_file_path,
-    #     verbose_all=True
-    # )
+    # Compute climatology
+    run_climatology_workflow(
+        N_Y=N_Y,
+        N_half=N_half,
+        start_year=start_year,
+        final_year=final_year,
+        hour_UTC=hour_UTC,
+        var_list=var_list,
+        level_list=level_list,
+        input_dir=input_dir,
+        raw_file_path=raw_file_path,
+        verbose_all=True
+    )
 
     #===============================================================================================
     ## Test functions used in the script
@@ -452,7 +452,7 @@ if __name__ == "__main__":
     ## 4) test the compute_weighted_mean function with dummy values
     ## test_compute_weighted_mean(N_half=10, N_Y=30)
     ## 5) test the calculate_climatology function with a small dataset (e.g., 2 years, 3 days, 1 variable, 1 level)
-    test_calculate_climatology(N_Y=2, N_half=1, start_year=1991, final_year=1992, hour_UTC=0, var_list=["var129", "var128"], level_list=[50000, 10000])
+    ## test_calculate_climatology(N_Y=2, N_half=1, start_year=1991, final_year=1992, hour_UTC=0, var_list=["var129", "var128"], level_list=[50000, 10000])
     #===============================================================================================
 
 

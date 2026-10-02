@@ -33,9 +33,9 @@ date_original_jan = '1991-01-01'
 date_original_jun = '1994-06-17'
 date_original_dec = '2020-12-31'
 ## climatology dates (only 1991)
-date_climatology_jan = '1991-01-01'
-date_climatology_jun = '1991-06-17'
-date_climatology_dec = '1991-12-31'
+date_climatology_jan = 1
+date_climatology_jun = 168
+date_climatology_dec = 365
 
 # plot fields separately and also difference for each date
 # Extract var129 at 500 hPa for the specified dates
@@ -59,8 +59,8 @@ fig, axes = plt.subplots(3, 3, figsize=(18, 12), subplot_kw={'projection': ccrs.
 # january dates
 # Extract data
 var1_jan = ds_original['zgeo'].sel(plev=level_500, time=date_original_jan)
-var2_jan = ds_climatology_N_half_1['zgeo'].sel(plev=level_500, time=date_climatology_jan)
-var3_jan = ds_climatology_N_half_10['zgeo'].sel(plev=level_500, time=date_climatology_jan)
+var2_jan = ds_climatology_N_half_1['zgeo'].sel(plev=level_500, dayofyear=date_climatology_jan)
+var3_jan = ds_climatology_N_half_10['zgeo'].sel(plev=level_500, dayofyear=date_climatology_jan)
 # Plot all maps
 plot_map(var1_jan, f"ds_original: {date_original_jan}", axes[0, 0])
 plot_map(var2_jan, f"ds_climatology_N_half_1: {date_climatology_jan}", axes[0, 1])
@@ -69,8 +69,8 @@ plot_map(var3_jan, f"ds_climatology_N_half_10: {date_climatology_jan}", axes[0, 
 # june dates
 # Extract data
 var1_jun = ds_original['zgeo'].sel(plev=level_500, time=date_original_jun)
-var2_jun = ds_climatology_N_half_1['zgeo'].sel(plev=level_500, time=date_climatology_jun)
-var3_jun = ds_climatology_N_half_10['zgeo'].sel(plev=level_500, time=date_climatology_jun)
+var2_jun = ds_climatology_N_half_1['zgeo'].sel(plev=level_500, dayofyear=date_climatology_jun)
+var3_jun = ds_climatology_N_half_10['zgeo'].sel(plev=level_500, dayofyear=date_climatology_jun)
 # Plot all maps
 plot_map(var1_jun, f"ds_original: {date_original_jun}", axes[1, 0])
 plot_map(var2_jun, f"ds_climatology_N_half_1: {date_climatology_jun}", axes[1, 1])
@@ -79,8 +79,8 @@ plot_map(var3_jun, f"ds_climatology_N_half_10: {date_climatology_jun}", axes[1, 
 # december dates
 # Extract data
 var1_dec = ds_original['zgeo'].sel(plev=level_500, time=date_original_dec)
-var2_dec = ds_climatology_N_half_1['zgeo'].sel(plev=level_500, time=date_climatology_dec)
-var3_dec = ds_climatology_N_half_10['zgeo'].sel(plev=level_500, time=date_climatology_dec)
+var2_dec = ds_climatology_N_half_1['zgeo'].sel(plev=level_500, dayofyear=date_climatology_dec)
+var3_dec = ds_climatology_N_half_10['zgeo'].sel(plev=level_500, dayofyear=date_climatology_dec)
 # Plot all maps
 plot_map(var1_dec, f"ds_original: {date_original_dec}", axes[2, 0])
 plot_map(var2_dec, f"ds_climatology_N_half_1: {date_climatology_dec}", axes[2, 1])
