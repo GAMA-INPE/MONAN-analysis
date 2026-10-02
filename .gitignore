@@ -1,3 +1,6 @@
+# file with personal configurations
+*personal_config.py
+
 # setuptools / editable install artifacts
 *.egg-info/
 *.egg-link
