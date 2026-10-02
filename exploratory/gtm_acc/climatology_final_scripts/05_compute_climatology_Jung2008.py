@@ -176,10 +176,13 @@ def calculate_climatology(ds, j_weights_dict, N_Y, N_half, start_year, final_yea
     vertical levels.
 
     Parameters:
-    ds (xarray.Dataset): The input dataset containing the variable.
-    var (str): The variable name to calculate the climatology for.
-    N_half (int): Half the window size for smoothing.
-    verbose (bool): If True, prints progress information.
+    ds (xarray.Dataset): The input dataset containing the variable to compute climatology for.
+    j_weights_dict (dict): A dictionary containing the weights for each day index j.
+    N_Y (int): The number of years in the climatology period.
+    N_half (int): The number of days on each side of the time window for smoothing.
+    start_year (int): The starting year of the climatology period.
+    final_year (int): The ending year of the climatology period.
+    hour_UTC (int): The hour of the day in UTC for which to compute the climatology.
 
     Returns:
     xarray.DataArray: The climatology dataset with smoothed values for each day of the year.
@@ -219,6 +222,9 @@ def calculate_climatology(ds, j_weights_dict, N_Y, N_half, start_year, final_yea
     # will be then converted to MONAN format.
     sum_for_each_year = xr.zeros_like(ds_climatology)
     for year in range(start_year, final_year + 1):
+        # TODO: instead of defining ds_year, simply find the indices of the days in ds that 
+        # correspond to the current year and use them to select the data for that year. 
+        # This will avoid creating a new dataset for each year and will save memory.
         ds_year = xr.zeros_like(ds.sel(time=ds.time.dt.year == year))
         if verbose:
             print(f"Processing year: {year}")
@@ -226,12 +232,11 @@ def calculate_climatology(ds, j_weights_dict, N_Y, N_half, start_year, final_yea
         # Compute the year-climatology for each day in the year
         for julian_day in ds_year.time_julian:
             julian_day = float(julian_day.values)
-            if verbose_level2:
-                print ("reference julian day:", julian_day)
-                print ("reference gregorian day:", jd.to_gregorian(julian_day))
             # Define sum for each day of year as dataset with same shape as ds for that particular day
             sum_for_each_day_of_year = xr.zeros_like(ds.where(ds['time_julian'] == julian_day, drop=True))
             # Do calculations for each variable
+            # TODO: remove this loop on var: calculations can be done for all vars at once by 
+            # having datasets with exactly the same structure!
             for var in ds_year.data_vars:
                 for j in range(-N_half, N_half + 1):
                     # Get julian day j
@@ -239,6 +244,8 @@ def calculate_climatology(ds, j_weights_dict, N_Y, N_half, start_year, final_yea
                     # Calculate the periodic Julian day
                     periodic_julian_day_j = periodic_julian_day(j=julian_day_j, j0=J_start, period=Delta_J)
                     if verbose_level2:
+                        print ("reference julian day:", julian_day)
+                        print ("reference gregorian day:", jd.to_gregorian(julian_day))
                         print (f"periodic julian day for j index {j}:", periodic_julian_day_j)
                         print (f"corresponding gregorian date:", jd.to_gregorian(periodic_julian_day_j))
                     # Get data from original dataset for that periodic day
@@ -253,6 +260,11 @@ def calculate_climatology(ds, j_weights_dict, N_Y, N_half, start_year, final_yea
                         print (f"Weight for j index {j}:", j_weights_dict[j])
                         print (f"Weight times data for j index {j}:", weights_times_data[var])
                         print (f"Sum for each day of year after adding j index {j}:", sum_for_each_day_of_year[var])
+                # TODO: this sum takes into account different dates in different years, but the sum 
+                # is being assigned to a specific day in the year-climatology dataset. Remove the
+                # loop on var, remove the time domain temporarily, do the sum for all vars at once,
+                # then assign the sum to the corresponding day in the year-climatology dataset. 
+
                 # Assign sum_for_each_day_of_year[var] to the corresponding day and var in the year-climatology dataset
                 time_gregorian_for_julian_day = ds_year["time"].where(ds_year.time_julian == julian_day, drop=True).values[0]
                 ds_year[var].loc[ds_year.time == time_gregorian_for_julian_day] = sum_for_each_day_of_year[var]
@@ -263,6 +275,8 @@ def calculate_climatology(ds, j_weights_dict, N_Y, N_half, start_year, final_yea
         # Sum over all years k to compute the weighted mean for each day at hour_UTC nu and each grid point
         sum_for_each_year.values += ds_year.values
     
+    # TODO: assign dayofyear as coordinate and dimension for both sides so that we can perform the
+    # sum without problems.
     ds_climatology = sum_for_each_year.values
     if verbose:
         print ("Final climatology dataset after processing all years:", ds_climatology)
