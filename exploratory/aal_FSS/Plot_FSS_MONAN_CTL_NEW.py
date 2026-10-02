@@ -77,7 +77,7 @@ DPI = 150
 def parse_args():
     parser = argparse.ArgumentParser(
         description=(
-            "Plot FSS comparison between MONAN controle and "
+            "Plot FSS comparison between MONAN control run and "
             "MONAN experiments."
         )
     )
