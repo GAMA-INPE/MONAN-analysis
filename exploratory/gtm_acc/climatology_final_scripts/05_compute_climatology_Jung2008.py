@@ -210,7 +210,7 @@ def calculate_climatology(ds, j_weights_dict, N_Y, N_half, start_year, final_yea
     Delta_J = J_final - J_start
 
     # Define final climatology dataset
-    ds_climatology = xr.zeros_like(ds.where(ds.time.dt.year == start_year, drop=True))  # Initialize with the shape of the final year
+    ds_climatology = xr.zeros_like(ds.where(ds.time.dt.year == start_year, drop=True))  # Initialize with the shape of the start year
     # Define time coordinate as dayofyear instead of time
     ds_climatology = ds_climatology.assign_coords(dayofyear=("time", ds_climatology.time.dt.dayofyear.values))
     ds_climatology = ds_climatology.swap_dims({"time": "dayofyear"})
@@ -283,10 +283,16 @@ def calculate_climatology(ds, j_weights_dict, N_Y, N_half, start_year, final_yea
 
             if verbose_level2:
                 print (f"\nSum for day {jd.to_gregorian(julian_day)}:", sum_for_each_day_of_year)
-                print (f"Year-climatology dataset for year {year} after processing day {jd.to_gregorian(julian_day)}:", ds_year.loc[dict(dayofyear=dayofyear)])
+                print (f"Year-climatology dataset for year {year} after processing day {jd.to_gregorian(julian_day)}:", ds_year)
         
         # Sum over all years k to compute the weighted mean for each day at hour_UTC nu and each grid point
+        if verbose_level2:
+            print (f"\nSum for each year before adding year {year}:", sum_for_each_year)
+        # NOTE: for leap years, the sum is performed over the first 365 days only, while the day 366
+        # is ignored!
         sum_for_each_year = sum_for_each_year + ds_year
+        if verbose_level2:
+            print (f"\nSum for each year after adding year {year}:", sum_for_each_year)
     
     ds_climatology = sum_for_each_year
     if verbose:
@@ -446,7 +452,7 @@ if __name__ == "__main__":
     ## 4) test the compute_weighted_mean function with dummy values
     ## test_compute_weighted_mean(N_half=10, N_Y=30)
     ## 5) test the calculate_climatology function with a small dataset (e.g., 2 years, 3 days, 1 variable, 1 level)
-    test_calculate_climatology(N_Y=3, N_half=3, start_year=1991, final_year=1993, hour_UTC=0, var_list=["var129", "var128"], level_list=[50000, 10000])
+    test_calculate_climatology(N_Y=2, N_half=1, start_year=1991, final_year=1992, hour_UTC=0, var_list=["var129", "var128"], level_list=[50000, 10000])
     #===============================================================================================
 
 
