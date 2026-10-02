@@ -345,11 +345,8 @@ def read_and_preprocess_gfs_analysis_ref_data():
     )
 
     # Select pressure-level variables to be used for analysis
-    ds_gfs_in_monan_format = ds_gfs_in_monan_format[
-        vs_config.VARIABLES_TO_ANALYZE
-    ].sel(
-        level=vs_config.VERTICAL_LEVELS_TO_ANALYZE
-    )
+    ds_gfs_in_monan_format = ds_gfs_in_monan_format[vs_config.VARIABLES_TO_ANALYZE].sel(
+        level=vs_config.VERTICAL_LEVELS_TO_ANALYZE)
 
     # Include GFS surface pressure in the same preprocessed dataset when
     # the pressure-level validity mask is enabled
@@ -644,8 +641,6 @@ def calculate_statistics(ds_ref_filepath, ds_prediction_filepath):
         )
     
     if "anomaly_correlation_coefficient_standard" in vs_config.STATS_SUMMARY_METRICS_TO_ANALYZE:
-        # Get month for calculation
-        month_MM = utils.get_MM_str_from_YYYYMMDDHH_str(date_string=vs_config.DATE_INIT)
         # Get climatology dataset
         ds_climatology = xr.open_dataset(vs_config.FILEPATH_CLIMATOLOGY, engine="netcdf4")
         # Build filepath for saving standard anomaly correlation coefficient
@@ -654,7 +649,6 @@ def calculate_statistics(ds_ref_filepath, ds_prediction_filepath):
             f"date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}/"
             f"anomaly_correlation_coefficient_standard_date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}.csv"
         )
-        
         # Compute anomaly correlation coefficient and save it to csv
         write_regional_summary_csv_for_acc_standard(
             ds_prediction=ds_prediction,

@@ -39,15 +39,15 @@ SEL_VERBOSE_LEVEL = 1
 # General analysis configurations
 #===================================================================================================
 # Prediction model to analyze (e.g. "monan", "gfs_analysis" (gfs forecast + assimilation), "gfs", "bam")
-PREDICTION_MODEL = "monan"
+PREDICTION_MODEL = "gfs"
 # Reference data (e.g. "gfs_analysis", "era5")
 REFERENCE_DATA = "gfs_analysis"
 # Date and forecast time window for analysis
 YEAR = "2026"
 MONTH = "06"
-DAY = "30"
+DAY = "01"
 HOUR = "00"
-TIME_WINDOW = "120"
+TIME_WINDOW = "216"
 # Domains for spatial analyses (maps)
 DOMAINS_TO_ANALYZE = [
     "global", 
@@ -200,17 +200,17 @@ PLOT_LIMITS_BY_VAR_METRIC_LEVEL = {
 #DIR_MONAN_PREOP = "/lustre/projetos/monan_adm/monan/ecf_PREOPER/MONAN-WorkFlow-OPER/MONAN_PRE_OPER/MONAN/scripts_CD-CT/dataout/flushout"
 DIR_MONAN_PREOP = "/lustre/projetos/ioper/models/MONAN-WorkFlow-OPER/MONAN_PRE_OPER/posTMP"
 DIR_GFS_ANALYSIS = "/lustre/projetos/monan_gam/andre.lyra/NetCDFs/vert_struct/GFS"
-DIR_GFS = "/lustre/projetos/monan_gam/andre.lyra/NetCDFs/vert_struct/GFS/"
-DIR_BAM = "/lustre/projetos/monan_gam/andre.lyra/NetCDFs/vert_struct/BAM/"
+DIR_GFS = "/lustre/projetos/monan_gam/andre.lyra/NetCDFs/vert_struct/GFS"
+DIR_BAM = "/lustre/projetos/monan_gam/andre.lyra/NetCDFs/vert_struct/BAM"
 DIR_CARTOPY_DATA = "/lustre/projetos/monan_gam/andre.lyra/cartopy"
-DIR_OUTPUT = f"{personal_config.DIR_PERSONAL_MONAN_ANALYSIS}/analyses/vertical_structure/output_{PREDICTION_MODEL}"
+DIR_OUTPUT = f"{personal_config.DIR_PERSONAL_MONAN_ANALYSIS}{personal_config.DIR_PERSONAL_OUTPUT_STRUCTURE}"
 DIR_OUTPUT_FIGS = f"{DIR_OUTPUT}/figs"
 DIR_OUTPUT_DATA = f"{DIR_OUTPUT}/data"
-DIR_INPUT = f"/lustre/projetos/monan_gam/Scripts/MONAN-analysis_clone_guilherme/analyses/vertical_structure/input_{PREDICTION_MODEL}"
+DIR_INPUT = f"{personal_config.DIR_PERSONAL_MONAN_ANALYSIS}{personal_config.DIR_PERSONAL_INPUT_STRUCTURE}"
 DIR_INPUT_INTERMEDIATE = f"{DIR_INPUT}/intermediate"
 DIR_INPUT_PROCESSED = f"{DIR_INPUT}/processed"
 DIR_INPUT_RAW = f"{DIR_INPUT}/raw"
-FILEPATH_CLIMATOLOGY = f"/lustre/projetos/monan_atm/guilherme.mendonca/scratch/data/ERA5/mon/nc_climatology/climatology_N_half_10_hour_UTC_0_1991_2020.nc"
+FILEPATH_CLIMATOLOGY = f"/lustre/projetos/monan_atm/guilherme.mendonca/scratch/data/ERA5/hourly/nc/climatology_N_half_10_hour_UTC_0_1991_2020.nc"
 #===================================================================================================
 # Pressure-level validity mask configurations
 #===================================================================================================

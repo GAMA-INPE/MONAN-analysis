@@ -210,16 +210,14 @@ def anomaly_correlation_coefficient_standard_spatial_field(predictions, observat
     if not isinstance(predictions, xr.Dataset) or not isinstance(observations, xr.Dataset) \
         or not isinstance(climatology, xr.Dataset):
         raise TypeError("Predictions, observations, and climatology must be xarray Datasets.")
-    
+
     # Get day from climatology, assuming hour UTC is already correct
     dayofyear = pd.Timestamp(year=int(date_YYYYMMDDHH_str[0:4]),month=int(date_YYYYMMDDHH_str[4:6]),day=int(date_YYYYMMDDHH_str[6:8])).dayofyear
     climatology_filtered = climatology.sel(dayofyear=dayofyear)
-    # Squeeze to remove unnecessary dayofyear dimension
-    climatology_filtered = climatology_filtered.squeeze(dim="dayofyear", drop=True)
     # Squeeze also predictions and observations to remove unnecessary Time dimension
-    predictions_filtered = predictions.sel(Time=date_YYYYMMDDHH_str).squeeze(dim="Time", drop=True)
-    observations_filtered = observations.sel(Time=date_YYYYMMDDHH_str).squeeze(dim="Time", drop=True)
-    
+    predictions_filtered = predictions.sel(Time=pd.to_datetime(date_YYYYMMDDHH_str, format='%Y%m%d%H'))
+    observations_filtered = observations.sel(Time=pd.to_datetime(date_YYYYMMDDHH_str, format='%Y%m%d%H'))
+
     # Calculate ACC for each variable
     for var in predictions.data_vars:
         # Check if var exists in all datasets
@@ -227,8 +225,8 @@ def anomaly_correlation_coefficient_standard_spatial_field(predictions, observat
             raise ValueError(f"The variable '{var}' must exist in predictions, observations, and climatology datasets.")
 
         # Compute anomalies
-        pred_anom = (predictions_filtered - climatology_filtered) - preprocess.spatial_mean(predictions_filtered - climatology_filtered)
-        obs_anom = (observations_filtered - climatology_filtered) - preprocess.spatial_mean(observations_filtered - climatology_filtered)
+        pred_anom = (predictions_filtered[var] - climatology_filtered[var]) - preprocess.spatial_mean(predictions_filtered[var] - climatology_filtered[var])
+        obs_anom = (observations_filtered[var] - climatology_filtered[var]) - preprocess.spatial_mean(observations_filtered[var] - climatology_filtered[var])
 
         # Create an empty dataset for the result
         result = xr.Dataset()
