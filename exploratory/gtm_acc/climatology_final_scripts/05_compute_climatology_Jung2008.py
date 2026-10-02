@@ -361,6 +361,17 @@ def test_calculate_climatology(N_Y, N_half, start_year, final_year, hour_UTC, va
             "lon": [0, 1],
         },
     )
+    ds = xr.Dataset(
+        {
+            var: (["time", "plev", "lat", "lon"], np.ones((len(time), len(level_list), 2, 2))) for var in var_list
+        },
+        coords={
+            "time": time,
+            "plev": level_list,
+            "lat": [0, 1],
+            "lon": [0, 1],
+        },
+    )
 
     
     # Compute weights for each day index j (weights are fixed for fixed N_Y and N_half)
@@ -370,8 +381,8 @@ def test_calculate_climatology(N_Y, N_half, start_year, final_year, hour_UTC, va
     ds_climatology = calculate_climatology(ds, j_weights_dict, N_Y, N_half, start_year, final_year, 
                                            hour_UTC, verbose=True, verbose_level2=True)
     
-    print ("Climatology dataset for test with all values equal to one:", ds_climatology)
-    print ("Climatology dataset values for test with all values equal to one:", ds_climatology[var_list[0]].values)
+    # print ("Climatology dataset for test with all values equal to one:", ds_climatology)
+    # print ("Climatology dataset values for test with all values equal to one:", ds_climatology[var_list[0]].values)
         
 
 if __name__ == "__main__":
