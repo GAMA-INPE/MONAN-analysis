@@ -24,6 +24,7 @@ This file was created with the assistance of GitHub Copilot.
 
 import xarray as xr
 import monan_analysis.preprocess as preprocess
+import pandas as pd
 
 def example_function_stats():
     print ("this is a function imported from the stats.py module.")
@@ -160,7 +161,8 @@ def rmse(predictions, observations, dim):
     
     return result
 
-def anomaly_correlation_coefficient_standard_spatial_field(predictions, observations, climatology, month_MM, ):
+def anomaly_correlation_coefficient_standard_spatial_field(predictions, observations, climatology, 
+                                                           date_YYYYMMDDHH_str):
     """
     Calculate the anomaly correlation coefficient (ACC) for a specific variable between monthly 
     predictions and observations. This definition differs from the standard definition employed in 
@@ -209,10 +211,14 @@ def anomaly_correlation_coefficient_standard_spatial_field(predictions, observat
         or not isinstance(climatology, xr.Dataset):
         raise TypeError("Predictions, observations, and climatology must be xarray Datasets.")
     
-    # Get monthly mean for predictions and observations
-    ## Filter data for the specific month_MM
-    predictions_filtered = predictions.sel(Time=predictions["Time"].dt.strftime("%m") == month_MM)
-    observations_filtered = observations.sel(Time=observations["Time"].dt.strftime("%m") == month_MM)
+    # Get day from climatology, assuming hour UTC is already correct
+    dayofyear = pd.Timestamp(year=int(date_YYYYMMDDHH_str[0:4]),month=int(date_YYYYMMDDHH_str[4:6]),day=int(date_YYYYMMDDHH_str[6:8])).dayofyear
+    climatology_filtered = climatology.sel(dayofyear=dayofyear)
+    # Squeeze to remove unnecessary dayofyear dimension
+    climatology_filtered = climatology_filtered.squeeze(dim="dayofyear", drop=True)
+    # Squeeze also predictions and observations to remove unnecessary Time dimension
+    predictions_filtered = predictions.sel(Time=date_YYYYMMDDHH_str).squeeze(dim="Time", drop=True)
+    observations_filtered = observations.sel(Time=date_YYYYMMDDHH_str).squeeze(dim="Time", drop=True)
     
     # Calculate ACC for each variable
     for var in predictions.data_vars:
@@ -220,17 +226,9 @@ def anomaly_correlation_coefficient_standard_spatial_field(predictions, observat
         if var not in predictions or var not in observations or var not in climatology:
             raise ValueError(f"The variable '{var}' must exist in predictions, observations, and climatology datasets.")
 
-        # Get monthly mean for the filtered predictions and observations
-        predictions_monthly = predictions_filtered[var].mean(dim="Time", keep_attrs=True)
-        observations_monthly = observations_filtered[var].mean(dim="Time", keep_attrs=True)
-        
-        # Get climatology for that month (assuming 1991-2020 period, with climatology time stamps 
-        # written as 2020-MM-01)
-        climatology_monthly = climatology[var].sel(Time=f"2020-{month_MM}-01")
-
         # Compute anomalies
-        pred_anom = (predictions_monthly - climatology_monthly) - preprocess.spatial_mean(predictions_monthly - climatology_monthly)
-        obs_anom = (observations_monthly - climatology_monthly) - preprocess.spatial_mean(observations_monthly - climatology_monthly)
+        pred_anom = (predictions_filtered - climatology_filtered) - preprocess.spatial_mean(predictions_filtered - climatology_filtered)
+        obs_anom = (observations_filtered - climatology_filtered) - preprocess.spatial_mean(observations_filtered - climatology_filtered)
 
         # Create an empty dataset for the result
         result = xr.Dataset()

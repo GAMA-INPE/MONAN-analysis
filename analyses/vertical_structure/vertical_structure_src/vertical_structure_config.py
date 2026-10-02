@@ -25,6 +25,9 @@ Acknowledgments
 ---------------
 This file was created with the assistance of GitHub Copilot.    
 """
+
+import monan_analysis.personal_config as personal_config
+
 #===================================================================================================
 # Selection of level of detail of log messages
 #===================================================================================================
@@ -36,13 +39,13 @@ SEL_VERBOSE_LEVEL = 1
 # General analysis configurations
 #===================================================================================================
 # Prediction model to analyze (e.g. "monan", "gfs_analysis" (gfs forecast + assimilation), "gfs", "bam")
-PREDICTION_MODEL = "gfs_analysis"
+PREDICTION_MODEL = "monan"
 # Reference data (e.g. "gfs_analysis", "era5")
 REFERENCE_DATA = "gfs_analysis"
 # Date and forecast time window for analysis
 YEAR = "2026"
-MONTH = "08"
-DAY = "31"
+MONTH = "06"
+DAY = "30"
 HOUR = "00"
 TIME_WINDOW = "120"
 # Domains for spatial analyses (maps)
@@ -102,8 +105,8 @@ INTERPOL_TYPE = "prediction_to_ref"
 # Single-time stats metrics (metrics that can be calculated for a single time instant), which can be 
 # spatially plotted over a map (e.g. bias, relative error)
 STATS_SPATIAL_METRICS_TO_ANALYZE = [
-    #"bias",
-    "relative_error"
+    "bias",
+    #"relative_error"
     ]
 # Single-time stats metrics (metrics that can be calculated for a single time instant), which cannot
 # be spatially plotted over a map (summary only)
@@ -200,7 +203,7 @@ DIR_GFS_ANALYSIS = "/lustre/projetos/monan_gam/andre.lyra/NetCDFs/vert_struct/GF
 DIR_GFS = "/lustre/projetos/monan_gam/andre.lyra/NetCDFs/vert_struct/GFS/"
 DIR_BAM = "/lustre/projetos/monan_gam/andre.lyra/NetCDFs/vert_struct/BAM/"
 DIR_CARTOPY_DATA = "/lustre/projetos/monan_gam/andre.lyra/cartopy"
-DIR_OUTPUT = f"/lustre/projetos/monan_gam/Scripts/MONAN-analysis_clone_guilherme/analyses/vertical_structure/output_{PREDICTION_MODEL}"
+DIR_OUTPUT = f"{personal_config.DIR_PERSONAL_MONAN_ANALYSIS}/analyses/vertical_structure/output_{PREDICTION_MODEL}"
 DIR_OUTPUT_FIGS = f"{DIR_OUTPUT}/figs"
 DIR_OUTPUT_DATA = f"{DIR_OUTPUT}/data"
 DIR_INPUT = f"/lustre/projetos/monan_gam/Scripts/MONAN-analysis_clone_guilherme/analyses/vertical_structure/input_{PREDICTION_MODEL}"
@@ -247,13 +250,12 @@ TIME_WINDOWS_TO_ANALYZE = [
 # e.g. RMSE, anomaly correlation coefficient), that can be spatially plotted over a map
 MULTI_TIME_STATS_SPATIAL_METRICS_TO_ANALYZE = [
     "rmse",
-    #"anomaly_correlation_coefficient",
     ]
 # Multi-time stats metrics (metrics that need multiple time instants for their definition, 
 # e.g. RMSE, anomaly correlation coefficient), that cannot be spatially plotted over a map 
 # (summary only)
 MULTI_TIME_STATS_SUMMARY_METRICS_TO_ANALYZE = [
-    #"anomaly_correlation_coefficient_standard"
+    #"anomaly_correlation_coefficient_standard_monthly"
     ]
 #===================================================================================================
 # Latitude-pressure profile plot configurations

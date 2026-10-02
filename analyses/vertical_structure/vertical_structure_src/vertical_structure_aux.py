@@ -589,7 +589,10 @@ def calculate_statistics(ds_ref_filepath, ds_prediction_filepath):
     # the whole grid and then subset it for different domains.
     if "bias" in vs_config.STATS_SPATIAL_METRICS_TO_ANALYZE:
         # Compute bias
-        ds_bias = stats.bias(predictions=ds_prediction, observations=ds_ref)
+        ds_bias = stats.bias(
+            predictions=ds_prediction,
+            observations=ds_ref
+        )
 
         # Save bias dataset in nc file
         bias_filepath = (
@@ -639,8 +642,113 @@ def calculate_statistics(ds_ref_filepath, ds_prediction_filepath):
             date_init=date_in_string,
             date_final=date_in_string,
         )
+    
+    if "anomaly_correlation_coefficient_standard" in vs_config.STATS_SUMMARY_METRICS_TO_ANALYZE:
+        # Get month for calculation
+        month_MM = utils.get_MM_str_from_YYYYMMDDHH_str(date_string=vs_config.DATE_INIT)
+        # Get climatology dataset
+        ds_climatology = xr.open_dataset(vs_config.FILEPATH_CLIMATOLOGY, engine="netcdf4")
+        # Build filepath for saving standard anomaly correlation coefficient
+        acc_standard_filepath = (
+            f"{vs_config.DIR_OUTPUT_DATA}/"
+            f"date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}/"
+            f"anomaly_correlation_coefficient_standard_date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}.csv"
+        )
+        
+        # Compute anomaly correlation coefficient and save it to csv
+        write_regional_summary_csv_for_acc_standard(
+            ds_prediction=ds_prediction,
+            ds_ref=ds_ref,
+            ds_climatology=ds_climatology,
+            metric="anomaly_correlation_coefficient_standard",
+            output_csv=acc_standard_filepath,
+            time_window=vs_config.TIME_WINDOW,
+            summary_type="instantaneous",
+            date=date_in_string
+        )
 
     return ds_stats_filepath_dict
+
+def write_regional_summary_csv_for_acc_standard(
+    ds_prediction,
+    ds_ref,
+    ds_climatology,
+    metric,
+    output_csv,
+    time_window,
+    summary_type,
+    date,
+):
+    if not getattr(vs_config, "WRITE_REGIONAL_SUMMARY_CSV", True):
+        return
+
+    # Initialize rows variable
+    rows = []
+
+    # Loop over regions, variables, levels, and time values to compute statistics and populate rows
+    for region in vs_config.SUMMARY_DOMAINS_TO_ANALYZE:
+        # Subset regions for prediction, ref, and climatology data
+        ds_prediction_region = preprocess.subset_region(ds_prediction, region)
+        ds_ref_region = preprocess.subset_region(ds_ref, region)
+        ds_climatology_region = preprocess.subset_region(ds_climatology, region)
+
+        # Calculate standard ACC as spatial field for the region
+        ds_acc_standard_spatial_field = stats.anomaly_correlation_coefficient_standard_spatial_field(
+            predictions=ds_prediction_region,
+            observations=ds_ref_region,
+            climatology=ds_climatology_region,
+            date_YYYYMMDDHH_str=date
+        )
+
+        # Loop over each var in vs_config.VARIABLES_TO_ANALYZE and check if it exists in 
+        # ds_acc_standard_region
+        for var in vs_config.VARIABLES_TO_ANALYZE:
+            if var not in ds_acc_standard_spatial_field:
+                if vs_config.SEL_VERBOSE_LEVEL >= 1:
+                    print(f"Variable {var} not found in ACC standard spatial field for region {region}. Skipping.")
+                continue
+
+            # Loop over each level in vs_config.VERTICAL_LEVELS_TO_ANALYZE
+            for level in vs_config.VERTICAL_LEVELS_TO_ANALYZE:
+                da = ds_acc_standard_spatial_field[var].sel(level=float(level))
+
+                # Compute spatial mean of ds_acc_standard_spatial_field, thus obtaining
+                # the standard ACC value for the region
+                mean_da = preprocess.spatial_mean(da)
+                min_da = preprocess.spatial_min(da)
+                max_da = preprocess.spatial_max(da)
+                std_da = preprocess.spatial_std(da)
+                # Get values as scalars
+                mean_value = utils.get_scalar_value(mean_da)
+                min_value = utils.get_scalar_value(min_da)
+                max_value = utils.get_scalar_value(max_da)
+                std_value = utils.get_scalar_value(std_da)
+                valid_date = None
+
+                # Add computed values to rows list
+                rows.append(
+                    {
+                        "summary_type": summary_type,
+                        "date": date,
+                        "time_window": time_window,
+                        "metric": metric,
+                        "variable": var,
+                        "level_pa": int(float(level)),
+                        "level_hpa": int(float(level) / 100.0),
+                        "region": region,
+                        "mean": mean_value,
+                        "min": min_value,
+                        "max": max_value,
+                        "std": std_value,
+                    }
+                )
+
+    # If not existent, create directory for output CSV and save the summary CSV
+    os.makedirs(os.path.dirname(output_csv), exist_ok=True)
+    # Save the summary CSV using pandas DataFrame
+    pd.DataFrame(rows).to_csv(output_csv, index=False)
+    if vs_config.SEL_VERBOSE_LEVEL >= 1:
+        print(f"Regional summary CSV saved: {output_csv}")
 
 def apply_pressure_level_mask_in_ref_and_prediction(ds_ref, ds_prediction):
     # Apply pressure-level validity mask based on prediction and ref surface pressure
@@ -1235,36 +1343,9 @@ def calculate_multi_time_metrics(time_window):
                 date_final=vs_config.DATE_FINAL,
             )
 
-        elif multi_time_spatial_metric == "anomaly_correlation_coefficient":
-            ds_acc = stats.anomaly_correlation_coefficient(
-                predictions=ds_var_prediction_concat,
-                observations=ds_var_ref_concat,
-                dim="Time"
-            )
-
-            acc_filepath = (
-                f"{vs_config.DIR_OUTPUT_DATA}/date_multiple_time_window_{time_window}/"
-                f"{multi_time_spatial_metric}_date_from_{vs_config.DATE_INIT}_to_"
-                f"{vs_config.DATE_FINAL}_time_window_{time_window}.nc"
-            )
-
-            ds_acc.to_netcdf(acc_filepath)
-
-            acc_summary_csv = acc_filepath.replace(".nc", "_summary.csv")
-
-            write_regional_summary_csv(
-                ds=ds_acc,
-                metric="anomaly_correlation_coefficient",
-                output_csv=acc_summary_csv,
-                time_window=time_window,
-                summary_type="mean_period",
-                date_init=vs_config.DATE_INIT,
-                date_final=vs_config.DATE_FINAL,
-            )
-
     for multi_time_summary_metric in vs_config.MULTI_TIME_STATS_SUMMARY_METRICS_TO_ANALYZE:
         
-        if multi_time_summary_metric == "anomaly_correlation_coefficient_standard":
+        if multi_time_summary_metric == "anomaly_correlation_coefficient_standard_monthly":
             # Get month for calculation
             month_MM = utils.get_MM_str_from_YYYYMMDDHH_str(date_string=vs_config.DATE_INIT)
             # Get climatology dataset
