@@ -238,16 +238,6 @@ def anomaly_correlation_coefficient_standard_spatial_field(predictions, observat
             (preprocess.spatial_mean(obs_anom ** 2)) ** 0.5
         )
 
-        # Plot maps of climatology_filtered, predictions_filtered, and observations_filtered
-        vmin=5000
-        vmax=6000
-        plots.plot_var_map(climatology_filtered, var, cartopy_data_dir="/lustre/projetos/monan_gam/andre.lyra/cartopy", vmin=vmin, vmax=vmax, output_filepath="climatology.png")
-        vmin=-500
-        vmax=500
-        plots.plot_var_map(predictions_filtered-climatology_filtered, var, cartopy_data_dir="/lustre/projetos/monan_gam/andre.lyra/cartopy", vmin=vmin, vmax=vmax,output_filepath="predictions.png")
-        plots.plot_var_map(observations_filtered-climatology_filtered, var, cartopy_data_dir="/lustre/projetos/monan_gam/andre.lyra/cartopy", vmin=vmin, vmax=vmax,output_filepath="observations.png")
-        plots.plot_var_map(result, var, cartopy_data_dir="/lustre/projetos/monan_gam/andre.lyra/cartopy", output_filepath="acc_spatial.png")
-
     return result
 
 def anomaly_correlation_coefficient_standard_monthly(predictions, observations, climatology, month_MM):
