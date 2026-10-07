@@ -563,7 +563,7 @@ def calculate_statistics(ds_ref_filepath, ds_prediction_filepath):
     )
 
     # Read datasets
-    # GFS reference data
+    # Reference data
     ds_ref = xr.open_dataset(ds_ref_filepath, engine="netcdf4")
 
     # Prediction model data

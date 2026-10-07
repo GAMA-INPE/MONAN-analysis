@@ -47,7 +47,7 @@ YEAR = "2026"
 MONTH = "06"
 DAY = "01"
 HOUR = "00"
-TIME_WINDOW = "216"
+TIME_WINDOW = "120"
 # Domains for spatial analyses (maps)
 DOMAINS_TO_ANALYZE = [
     "global", 
@@ -56,12 +56,12 @@ DOMAINS_TO_ANALYZE = [
     ]
 # Domains for summary analyses
 SUMMARY_DOMAINS_TO_ANALYZE = [
-    "global",
-    "south_america",
-    "central_america_and_caribbean",
+    #"global",
+    #"south_america",
+    #"central_america_and_caribbean",
     "northern_hemisphere_20_80",
-    "southern_hemisphere_20_80",
-    "tropics_20s_20n",
+    #"southern_hemisphere_20_80",
+    #"tropics_20s_20n",
 ]
 # Variables to analyze
 VARIABLES_TO_ANALYZE = [

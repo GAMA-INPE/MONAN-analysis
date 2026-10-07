@@ -25,6 +25,7 @@ This file was created with the assistance of GitHub Copilot.
 import xarray as xr
 import monan_analysis.preprocess as preprocess
 import pandas as pd
+import monan_analysis.plots as plots
 
 def example_function_stats():
     print ("this is a function imported from the stats.py module.")
@@ -219,7 +220,7 @@ def anomaly_correlation_coefficient_standard_spatial_field(predictions, observat
     observations_filtered = observations.sel(Time=pd.to_datetime(date_YYYYMMDDHH_str, format='%Y%m%d%H'))
 
     # Calculate ACC for each variable
-    for var in predictions.data_vars:
+    for var in predictions.data_vars:      
         # Check if var exists in all datasets
         if var not in predictions or var not in observations or var not in climatology:
             raise ValueError(f"The variable '{var}' must exist in predictions, observations, and climatology datasets.")
@@ -236,6 +237,16 @@ def anomaly_correlation_coefficient_standard_spatial_field(predictions, observat
             (preprocess.spatial_mean(pred_anom ** 2)) ** 0.5 *
             (preprocess.spatial_mean(obs_anom ** 2)) ** 0.5
         )
+
+        # Plot maps of climatology_filtered, predictions_filtered, and observations_filtered
+        vmin=5000
+        vmax=6000
+        plots.plot_var_map(climatology_filtered, var, cartopy_data_dir="/lustre/projetos/monan_gam/andre.lyra/cartopy", vmin=vmin, vmax=vmax, output_filepath="climatology.png")
+        vmin=-500
+        vmax=500
+        plots.plot_var_map(predictions_filtered-climatology_filtered, var, cartopy_data_dir="/lustre/projetos/monan_gam/andre.lyra/cartopy", vmin=vmin, vmax=vmax,output_filepath="predictions.png")
+        plots.plot_var_map(observations_filtered-climatology_filtered, var, cartopy_data_dir="/lustre/projetos/monan_gam/andre.lyra/cartopy", vmin=vmin, vmax=vmax,output_filepath="observations.png")
+        plots.plot_var_map(result, var, cartopy_data_dir="/lustre/projetos/monan_gam/andre.lyra/cartopy", output_filepath="acc_spatial.png")
 
     return result
 
