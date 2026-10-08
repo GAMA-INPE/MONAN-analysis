@@ -303,90 +303,6 @@ def read_and_preprocess_gfs_prediction_data():
 
     return ds_gfs_in_monan_format_filepath
 
-def read_and_preprocess_ref_data():
-    if vs_config.REFERENCE_DATA == "gfs_analysis":
-        if vs_config.SEL_VERBOSE_LEVEL >= 1:
-            print("Reading and preprocessing reference data: GFS analysis. Selected routine: "
-                  "read_and_preprocess_gfs_analysis_ref_data...")
-        return read_and_preprocess_gfs_analysis_ref_data()
-    else:
-        raise ValueError(f"Unsupported reference data: {vs_config.REFERENCE_DATA}")
-
-def read_and_preprocess_gfs_analysis_ref_data():
-    # Get date and write it into preprocessed filepath
-    date_in_string = utils.get_date_as_YYYYMMDDHH_str(
-        vs_config.YEAR,
-        vs_config.MONTH,
-        vs_config.DAY,
-        vs_config.HOUR
-    )
-
-    # Define verbosity
-    if vs_config.SEL_VERBOSE_LEVEL >= 2:
-        verbose = 'y'
-    else:
-        verbose = 'n'
-
-    # Read GFS pressure-level dataset
-    ds_gfs, gfs_filepath = io.read_ds_gfs_analysis(
-        year=vs_config.YEAR,
-        month=vs_config.MONTH,
-        day=vs_config.DAY,
-        hour=vs_config.HOUR,
-        base_dir=vs_config.DIR_GFS_ANALYSIS,
-        stream_name=vs_config.STREAM_NAME_GFS,
-        verbose=verbose
-    )
-
-    # Configure GFS dataset to match MONAN format
-    ds_gfs_in_monan_format = preprocess.get_gfs_data_in_monan_format(
-        ds_gfs=ds_gfs,
-        gfs_to_monan_var_dict=config.GFS_TO_MONAN_VAR_DICT
-    )
-
-    # Select pressure-level variables to be used for analysis
-    ds_gfs_in_monan_format = ds_gfs_in_monan_format[vs_config.VARIABLES_TO_ANALYZE].sel(
-        level=vs_config.VERTICAL_LEVELS_TO_ANALYZE)
-
-    # Include GFS surface pressure in the same preprocessed dataset when
-    # the pressure-level validity mask is enabled
-    if vs_config.APPLY_PRESSURE_LEVEL_VALIDITY_MASK:
-        ds_gfs_sp, gfs_sp_filepath = io.read_ds_gfs_analysis(
-            year=vs_config.YEAR,
-            month=vs_config.MONTH,
-            day=vs_config.DAY,
-            hour=vs_config.HOUR,
-            base_dir=vs_config.DIR_GFS_ANALYSIS,
-            stream_name="surface",
-            verbose=verbose
-        )
-
-        # Select and configure GFS surface pressure
-        surface_pressure = (
-            ds_gfs_sp["sp"]
-            .sortby("latitude")
-            .isel(time=0, drop=True)
-            .rename("surface_pressure")
-        )
-
-        # Include GFS surface pressure in the pressure-level dataset
-        ds_gfs_in_monan_format["surface_pressure"] = surface_pressure
-
-    # Save preprocessed GFS dataset
-    ds_gfs_in_monan_format_filepath = (
-        f"{vs_config.DIR_INPUT_INTERMEDIATE}/"
-        f"ref_{vs_config.REFERENCE_DATA}_in_monan_format_date_{date_in_string}_"
-        f"time_window_{vs_config.TIME_WINDOW}.nc"
-    )
-    ds_gfs_in_monan_format.to_netcdf(ds_gfs_in_monan_format_filepath)
-
-    # If needed, print preprocessed dataset
-    if vs_config.SEL_VERBOSE_LEVEL >= 1:
-        print("GFS ref dataset in MONAN data format:")
-        print(ds_gfs_in_monan_format)
-
-    return ds_gfs_in_monan_format_filepath
-
 def read_and_preprocess_bam_prediction_data():
     # Get date and write it into preprocessed filepath
     date_in_string = utils.get_date_as_YYYYMMDDHH_str(
@@ -473,6 +389,90 @@ def read_and_preprocess_bam_prediction_data():
         print(ds_bam_in_monan_format)
 
     return ds_bam_in_monan_format_filepath
+
+def read_and_preprocess_ref_data():
+    if vs_config.REFERENCE_DATA == "gfs_analysis":
+        if vs_config.SEL_VERBOSE_LEVEL >= 1:
+            print("Reading and preprocessing reference data: GFS analysis. Selected routine: "
+                  "read_and_preprocess_gfs_analysis_ref_data...")
+        return read_and_preprocess_gfs_analysis_ref_data()
+    else:
+        raise ValueError(f"Unsupported reference data: {vs_config.REFERENCE_DATA}")
+
+def read_and_preprocess_gfs_analysis_ref_data():
+    # Get date and write it into preprocessed filepath
+    date_in_string = utils.get_date_as_YYYYMMDDHH_str(
+        vs_config.YEAR,
+        vs_config.MONTH,
+        vs_config.DAY,
+        vs_config.HOUR
+    )
+
+    # Define verbosity
+    if vs_config.SEL_VERBOSE_LEVEL >= 2:
+        verbose = 'y'
+    else:
+        verbose = 'n'
+
+    # Read GFS pressure-level dataset
+    ds_gfs, gfs_filepath = io.read_ds_gfs_analysis(
+        year=vs_config.YEAR,
+        month=vs_config.MONTH,
+        day=vs_config.DAY,
+        hour=vs_config.HOUR,
+        base_dir=vs_config.DIR_GFS_ANALYSIS,
+        stream_name=vs_config.STREAM_NAME_GFS,
+        verbose=verbose
+    )
+
+    # Configure GFS dataset to match MONAN format
+    ds_gfs_in_monan_format = preprocess.get_gfs_data_in_monan_format(
+        ds_gfs=ds_gfs,
+        gfs_to_monan_var_dict=config.GFS_TO_MONAN_VAR_DICT
+    )
+
+    # Select pressure-level variables to be used for analysis
+    ds_gfs_in_monan_format = ds_gfs_in_monan_format[vs_config.VARIABLES_TO_ANALYZE].sel(
+        level=vs_config.VERTICAL_LEVELS_TO_ANALYZE)
+
+    # Include GFS surface pressure in the same preprocessed dataset when
+    # the pressure-level validity mask is enabled
+    if vs_config.APPLY_PRESSURE_LEVEL_VALIDITY_MASK:
+        ds_gfs_sp, gfs_sp_filepath = io.read_ds_gfs_analysis(
+            year=vs_config.YEAR,
+            month=vs_config.MONTH,
+            day=vs_config.DAY,
+            hour=vs_config.HOUR,
+            base_dir=vs_config.DIR_GFS_ANALYSIS,
+            stream_name="surface",
+            verbose=verbose
+        )
+
+        # Select and configure GFS surface pressure
+        surface_pressure = (
+            ds_gfs_sp["sp"]
+            .sortby("latitude")
+            .isel(time=0, drop=True)
+            .rename("surface_pressure")
+        )
+
+        # Include GFS surface pressure in the pressure-level dataset
+        ds_gfs_in_monan_format["surface_pressure"] = surface_pressure
+
+    # Save preprocessed GFS dataset
+    ds_gfs_in_monan_format_filepath = (
+        f"{vs_config.DIR_INPUT_INTERMEDIATE}/"
+        f"ref_{vs_config.REFERENCE_DATA}_in_monan_format_date_{date_in_string}_"
+        f"time_window_{vs_config.TIME_WINDOW}.nc"
+    )
+    ds_gfs_in_monan_format.to_netcdf(ds_gfs_in_monan_format_filepath)
+
+    # If needed, print preprocessed dataset
+    if vs_config.SEL_VERBOSE_LEVEL >= 1:
+        print("GFS ref dataset in MONAN data format:")
+        print(ds_gfs_in_monan_format)
+
+    return ds_gfs_in_monan_format_filepath
     
 def interpolate_prediction_ref(ds_prediction_model_filepath, ds_ref_data_filepath, output_nc=None,
                                force_interpolation = 'n'):
@@ -545,6 +545,81 @@ def interpolate_prediction_ref(ds_prediction_model_filepath, ds_ref_data_filepat
                 ds_interpolated = xr.open_dataset(ds_mapped_grid_filepath, engine="netcdf4")
                 print (f"{vs_config.REFERENCE_DATA} data mapped to {vs_config.PREDICTION_MODEL} grid:")
                 print (ds_interpolated)
+            return ds_ref_data_filepath, ds_prediction_model_filepath
+        else:
+            raise ValueError(
+                f"Unsupported interpolation type: {vs_config.INTERPOL_TYPE} for " 
+                f"combination of prediction model: {vs_config.PREDICTION_MODEL} and " 
+                f"reference data: {vs_config.REFERENCE_DATA}."
+                )
+
+def get_ref_and_prediction_filepath_from_dir_input_external():
+    # Get date
+    date_in_string = utils.get_date_as_YYYYMMDDHH_str(
+    vs_config.YEAR, vs_config.MONTH, vs_config.DAY, vs_config.HOUR
+    )
+    if (vs_config.PREDICTION_MODEL == vs_config.REFERENCE_DATA or (vs_config.PREDICTION_MODEL == 'gfs' and vs_config.REFERENCE_DATA == 'gfs_analysis')):
+        ds_ref_data_filepath = (
+            f"{vs_config.DIR_INPUT_EXTERNAL}/"
+            f"intermediate/"
+            f"ref_{vs_config.REFERENCE_DATA}_in_monan_format_date_{date_in_string}_"
+            f"time_window_{vs_config.TIME_WINDOW}.nc"
+        )
+        ds_prediction_model_filepath = (
+            f"{vs_config.DIR_INPUT_EXTERNAL}/"
+            f"intermediate/"
+            f"prediction_{vs_config.PREDICTION_MODEL}_in_monan_format_date_{date_in_string}_"
+            f"time_window_{vs_config.TIME_WINDOW}.nc"
+        )
+        if vs_config.SEL_VERBOSE_LEVEL >= 1:
+            print(f"prediction model: {vs_config.PREDICTION_MODEL} is the same as "
+                  f"reference data: {vs_config.REFERENCE_DATA}, so no interpolation was needed." 
+                  f"\nHence, we use the following filepaths for analysis: \n{ds_ref_data_filepath} "
+                  f"for reference data and \n{ds_prediction_model_filepath} for prediction model data.")
+        return ds_ref_data_filepath, ds_prediction_model_filepath
+    else:
+        if vs_config.INTERPOL_TYPE == 'prediction_to_ref':
+            if vs_config.SEL_VERBOSE_LEVEL >= 1:
+                print(f"Prediction model data interpolated to reference data grid because "
+                      f"INTERPOL_TYPE is set to 'prediction_to_ref' for "
+                      f"prediction model: {vs_config.PREDICTION_MODEL} and "
+                      f"reference data: {vs_config.REFERENCE_DATA}.")
+            # Now, the reference data is the original reference data, just converted to monan data 
+            # format, located in intermediate/
+            ds_ref_data_filepath = (
+            f"{vs_config.DIR_INPUT_EXTERNAL}/"
+            f"intermediate/"
+            f"ref_{vs_config.REFERENCE_DATA}_in_monan_format_date_{date_in_string}_"
+            f"time_window_{vs_config.TIME_WINDOW}.nc"
+            )
+            # The final prediction model filepath is that from the prediction model mapped
+            # to the reference data grid in processed/
+            ds_prediction_model_filepath = f"{vs_config.DIR_INPUT_EXTERNAL}/processed/prediction_{vs_config.PREDICTION_MODEL}_mapped_to_ref_{vs_config.REFERENCE_DATA}_date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}.nc"
+            if vs_config.SEL_VERBOSE_LEVEL >= 1:
+                print(f"\nUsing the following filepaths for analysis: \n{ds_ref_data_filepath} "
+                      f"for reference data and \n{ds_prediction_model_filepath} for prediction model data.")
+            return ds_ref_data_filepath, ds_prediction_model_filepath
+
+        elif vs_config.INTERPOL_TYPE == 'ref_to_prediction':
+            if vs_config.SEL_VERBOSE_LEVEL >= 1:
+                print(f"Interpolating reference data to prediction model grid because "
+                      f"INTERPOL_TYPE is set to 'ref_to_prediction' for "
+                      f"prediction model: {vs_config.PREDICTION_MODEL} and "
+                      f"reference data: {vs_config.REFERENCE_DATA}.")
+            # Now, the reference data is the original reference data, converted to monan data format
+            # and then mapped to the grid of the prediction model in processed/
+            ds_ref_data_filepath = f"{vs_config.DIR_INPUT_PROCESSED}/ref_{vs_config.REFERENCE_DATA}_mapped_to_prediction_{vs_config.PREDICTION_MODEL}_date_{date_in_string}_time_window_{vs_config.TIME_WINDOW}.nc"
+            # And the prediction model data is the original data from the prediction model, just 
+            # converted to monan data format, located in intermediate/
+            ds_prediction_model_filepath = (
+            f"{vs_config.DIR_INPUT_EXTERNAL}/"
+            f"intermediate/"
+            f"prediction_{vs_config.PREDICTION_MODEL}_in_monan_format_date_{date_in_string}_"
+            f"time_window_{vs_config.TIME_WINDOW}.nc"
+            )
+            if vs_config.SEL_VERBOSE_LEVEL >= 1:
+                print(f"\nUsing the following filepaths for analysis: \n{ds_ref_data_filepath} "
+                      f"for reference data and \n{ds_prediction_model_filepath} for prediction model data.")
             return ds_ref_data_filepath, ds_prediction_model_filepath
         else:
             raise ValueError(
