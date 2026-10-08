@@ -25,6 +25,9 @@ Acknowledgments
 ---------------
 This file was created with the assistance of GitHub Copilot.    
 """
+
+import monan_analysis.personal_config as personal_config
+
 #===================================================================================================
 # Selection of level of detail of log messages
 #===================================================================================================
@@ -33,46 +36,98 @@ This file was created with the assistance of GitHub Copilot.
 # 2: log messages from vertical_analysis_main.py + vertical_analysis_aux.py + monan_analysis modules
 SEL_VERBOSE_LEVEL = 0
 #===================================================================================================
-# MONAN configurations
+# General analysis configurations
 #===================================================================================================
+# Type of analysis (whole_pipeline or no_preprocessing)
+TYPE_OF_ANALYSIS = "whole_pipeline"
+# Prediction model to analyze (e.g. "monan", "gfs_analysis" (gfs forecast + assimilation), "gfs", "bam")
+PREDICTION_MODEL = "gfs"
+# Reference data (e.g. "gfs_analysis", "era5")
+REFERENCE_DATA = "gfs_analysis"
 # Date and forecast time window for analysis
-YEAR = "2026"
+YEAR = "2025"
 MONTH = "06"
-DAY = "30"
+DAY = "11"
 HOUR = "00"
-TIME_WINDOW = "120"
-# Grid specification
-GRID_SPEC = "10km_uniform"
-# Vertical level specification
-VERTICAL_LEVEL_SPEC = "55"
+TIME_WINDOW = "024"
+# Domains for spatial analyses (maps)
+DOMAINS_TO_ANALYZE = [
+    "global", 
+    #"south_america", 
+    #"central_america_and_caribbean"
+    ]
+# Domains for summary analyses
+SUMMARY_DOMAINS_TO_ANALYZE = [
+    #"global",
+    #"south_america",
+    #"central_america_and_caribbean",
+    "northern_hemisphere_20_80",
+    "southern_hemisphere_20_80",
+    #"tropics_20s_20n",
+]
 # Variables to analyze
 VARIABLES_TO_ANALYZE = [
-    "temperature",
-    "spechum",
+    #"temperature",
+    #"spechum",
     "zgeo",
-    "uzonal",
-    "umeridional",
+    #"uzonal",
+    #"umeridional",
     ]
 # Vertical levels (Pa) to analyze
 VERTICAL_LEVELS_TO_ANALYZE = [
 #    "92500", "85000", "70000", "50000", "40000", "30000", "25000", "20000", "15000", "10000", "7000", "5000", "3000", "2000", "1000", "300"
-    "92500", "85000", "70000", "50000", "40000", "30000", "25000", "10000", "3000", "300"
+    #"92500", "85000", "70000", "50000", "40000", "30000", "25000", "10000", "3000", "300"
+    "50000"
     ]
-# Domains to analyze
-DOMAINS_TO_ANALYZE = [
-    "global", 
-    "south_america", 
-    "central_america_and_caribbean"
+#===================================================================================================
+# MONAN configurations
+#===================================================================================================
+# Grid specification
+GRID_SPEC_MONAN = "10km_uniform"
+# Vertical level specification
+VERTICAL_LEVEL_SPEC_MONAN = "55"
+#===================================================================================================
+# GFS configurations
+#===================================================================================================
+# Name of data stream from GFS to read (e.g. "levels" or "surface")
+STREAM_NAME_GFS = "levels"
+#===================================================================================================
+# BAM configurations
+#===================================================================================================
+# Name of data stream from BAM to read (e.g. "levels" or "surface")
+STREAM_NAME_BAM = "levels"
+#===================================================================================================
+# Data interpolation configurations
+#===================================================================================================
+# Type of data interpolation (prediction_to_ref or ref_to_prediction)
+INTERPOL_TYPE = "prediction_to_ref"
+#===================================================================================================
+# Statistics configurations
+#===================================================================================================
+# Single-time stats metrics (metrics that can be calculated for a single time instant), which can be 
+# spatially plotted over a map (e.g. bias, relative error)
+STATS_SPATIAL_METRICS_TO_ANALYZE = [
+    #"bias",
+    #"relative_error"
     ]
-# Summary regions to analyze 
-SUMMARY_REGIONS_TO_ANALYZE = [
-    "global",
-    "south_america",
-    "central_america_and_caribbean",
-    "northern_hemisphere_20_80",
-    "southern_hemisphere_20_80",
-    "tropics_20s_20n",
-]
+# Single-time stats metrics (metrics that can be calculated for a single time instant), which cannot
+# be spatially plotted over a map (summary only)
+STATS_SUMMARY_METRICS_TO_ANALYZE = [
+    "anomaly_correlation_coefficient_standard"
+    ]
+# Whether to write a CSV file with the regional summary of statistics
+WRITE_REGIONAL_SUMMARY_CSV = True
+#===================================================================================================
+# Plot configurations
+#===================================================================================================
+# Divergin colormaps to use for each variable in plotting
+COLORMAP_DIVERGING_BY_VAR_DICT = {
+    "temperature": "coolwarm",
+    "spechum": "coolwarm_r",
+    "zgeo": "PiYG",
+    "uzonal": "PuOr",
+    "umeridional": "PuOr"
+}
 # Limits of plots for each variable, metric, and vertical level (if applicable) 
 PLOT_LIMITS_BY_VAR_METRIC_LAYER = {
     "temperature": {
@@ -142,49 +197,31 @@ PLOT_LIMITS_BY_VAR_METRIC_LEVEL = {
     },
 }
 #===================================================================================================
-# GFS configurations
-#===================================================================================================
-# Name of data stream from GFS to read (e.g. "levels" or "surface")
-GFS_STREAM_NAME = "levels"
-#===================================================================================================
-# Data interpolation configurations
-#===================================================================================================
-# Type of data interpolation
-INTERPOL_TYPE = "monan_to_gfs" # "monan_to_gfs" or "gfs_to_monan"
-#===================================================================================================
-# Statistics configurations
-#===================================================================================================
-STATS_METRICS_TO_ANALYZE = [
-    "bias",
-    "relative_error"
-    ]
-# Whether to write a CSV file with the regional summary of statistics
-WRITE_REGIONAL_SUMMARY_CSV = True
-#===================================================================================================
-# Plot configurations
-#===================================================================================================
-# Divergin colormaps to use for each variable in plotting
-COLORMAP_DIVERGING_BY_VAR_DICT = {
-    "temperature": "coolwarm",
-    "spechum": "coolwarm_r",
-    "zgeo": "PiYG",
-    "uzonal": "PuOr",
-    "umeridional": "PuOr"
-}
-#===================================================================================================
-# Directory paths
+# Directory and file paths
 #===================================================================================================
 #DIR_MONAN_PREOP = "/lustre/projetos/monan_adm/monan/ecf_PREOPER/MONAN-WorkFlow-OPER/MONAN_PRE_OPER/MONAN/scripts_CD-CT/dataout/flushout"
+# Operational MONAN data
 DIR_MONAN_PREOP = "/lustre/projetos/ioper/models/MONAN-WorkFlow-OPER/MONAN_PRE_OPER/posTMP"
+# Data for GFS analysis
 DIR_GFS_ANALYSIS = "/lustre/projetos/monan_gam/andre.lyra/NetCDFs/vert_struct/GFS"
+# Data for GFS forecasting
+DIR_GFS = "/lustre/projetos/monan_gam/andre.lyra/NetCDFs/vert_struct/GFS"
+# Data for BAM forecasting
+DIR_BAM = "/lustre/projetos/monan_gam/andre.lyra/NetCDFs/vert_struct/BAM"
+# Data for cartopy plots
 DIR_CARTOPY_DATA = "/lustre/projetos/monan_gam/andre.lyra/cartopy"
-DIR_OUTPUT = f"/lustre/projetos/monan_gam/Scripts/MONAN-analysis/analyses/vertical_structure/output_2026060100_to_2026063000"
+# Output and input directories for this analysis, based on personal_config.py
+DIR_OUTPUT = f"{personal_config.DIR_PERSONAL_MONAN_ANALYSIS}{personal_config.DIR_PERSONAL_OUTPUT_STRUCTURE}"
 DIR_OUTPUT_FIGS = f"{DIR_OUTPUT}/figs"
 DIR_OUTPUT_DATA = f"{DIR_OUTPUT}/data"
-DIR_INPUT = f"/lustre/projetos/monan_gam/Scripts/MONAN-analysis/analyses/vertical_structure/input_2026060100_to_2026063000"
+DIR_INPUT = f"{personal_config.DIR_PERSONAL_MONAN_ANALYSIS}{personal_config.DIR_PERSONAL_INPUT_STRUCTURE}"
 DIR_INPUT_INTERMEDIATE = f"{DIR_INPUT}/intermediate"
 DIR_INPUT_PROCESSED = f"{DIR_INPUT}/processed"
 DIR_INPUT_RAW = f"{DIR_INPUT}/raw"
+# Input directory containing preprocessed data (to be used if TYPE_OF_ANALYSIS = "no_preprocessing") 
+DIR_INPUT_EXTERNAL = "/lustre/projetos/monan_gam/Scripts/MONAN-analysis_clone_guilherme/analyses/vertical_structure/input_10d_gfs"
+# Filepath for preprocessed climatology (to be used e.g. for ACC calculation)
+FILEPATH_CLIMATOLOGY = f"/lustre/projetos/monan_atm/guilherme.mendonca/scratch/data/ERA5/hourly/nc/climatology_N_half_10_hour_UTC_0_1991_2020.nc"
 #===================================================================================================
 # Pressure-level validity mask configurations
 #===================================================================================================
@@ -192,34 +229,50 @@ DIR_INPUT_RAW = f"{DIR_INPUT}/raw"
 # The mask excludes grid points where the selected pressure level is greater than the surface pressure,
 # which indicates that the pressure level is below the ground surface.
 APPLY_PRESSURE_LEVEL_VALIDITY_MASK = True
+
+
+
+####################################################################################################
 #===================================================================================================
 # For analysis of mutiple dates and time windows only
 #===================================================================================================
+####################################################################################################
 # Initial date
-DATE_INIT = "2026060100"
+DATE_INIT = "2025060100"
 # Final date
-DATE_FINAL = "2026063000"
+DATE_FINAL = "2026053100"
 # Date time step in hours
 DATE_TIME_STEP = "24"
 # Time windows to analyze
 TIME_WINDOWS_TO_ANALYZE = [
-    #"00",
-    "24",
-    "48",
-    "72",
-    "96",
-    "120"
+    "00",
+    "024",
+    "048",
+    "072",
+    "096",
+    "120",
+    "144",
+    "168",
+    "192",
+    "216",
+    "240",
     ]
-# Multi-time stats metrics (metrics that need multiple time instants for their definition, e.g. RMSE, anomaly correlation coefficient)
-MULTI_TIME_STATS_METRICS_TO_ANALYZE = [
-    "rmse",
-    "anomaly_correlation_coefficient"
+# Multi-time stats metrics (metrics that need multiple time instants for their definition, 
+# e.g. RMSE, anomaly correlation coefficient), that can be spatially plotted over a map
+MULTI_TIME_STATS_SPATIAL_METRICS_TO_ANALYZE = [
+    #"rmse",
+    ]
+# Multi-time stats metrics (metrics that need multiple time instants for their definition, 
+# e.g. RMSE, anomaly correlation coefficient), that cannot be spatially plotted over a map 
+# (summary only)
+MULTI_TIME_STATS_SUMMARY_METRICS_TO_ANALYZE = [
+    #"anomaly_correlation_coefficient_standard_monthly"
     ]
 #===================================================================================================
 # Latitude-pressure profile plot configurations
 #===================================================================================================
 # Whether to generate latitude-pressure profile plots from concatenated datasets
-PLOT_LAT_PRESSURE_PROFILES = True
+PLOT_LAT_PRESSURE_PROFILES = False #True
 # Metrics to use in latitude-pressure profile plots.
 LAT_PRESSURE_PROFILE_METRICS_TO_PLOT = [
     "bias",

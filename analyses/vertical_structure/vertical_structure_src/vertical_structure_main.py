@@ -45,27 +45,38 @@ def main():
     #===============================================================================================
     print ("\n Initializing folder structure if not already existent...")
     vs_aux.create_folder_structure()
+    
+    if vs_config.TYPE_OF_ANALYSIS == "whole_pipeline":
+        print ("\n Running analysis in 'whole_pipeline' mode: reading, preprocessing, calculating statistics, and plotting...")
+        #===============================================================================================
+        # Read and preprocess prediction model data
+        #===============================================================================================
+        print (f"\n Reading and selecting prediction model {vs_config.PREDICTION_MODEL} data, and "
+            "converting it to standard MONAN data format (var names, lat and lev ordering)...")
+        ds_preprocessed_prediction_filepath = vs_aux.read_and_preprocess_prediction_data()
+    
+        #===============================================================================================
+        # Read and preprocess reference data (currently GFS analysis)
+        #===============================================================================================
+        print (f"\n Reading and selecting reference data {vs_config.REFERENCE_DATA}, and converting it "
+            "to standard MONAN data format (var names, lat and lev ordering)...")
+        ds_preprocessed_ref_filepath = vs_aux.read_and_preprocess_ref_data()
 
-    #===============================================================================================
-    # Read and preprocess MONAN data 
-    #===============================================================================================
-    print ("\n Reading and selecting MONAN data...")
-    ds_monan_selected_filepath = vs_aux.read_and_preprocess_monan_data()
-   
-    #===============================================================================================
-    # Read and preprocess GFS analysis data
-    #===============================================================================================
-    print ("\n Reading and selecting GFS data, and converting it to MONAN data format...")
-    ds_gfs_in_monan_format_filepath = vs_aux.read_and_preprocess_gfs_data()
-
-     #===============================================================================================
-    # Interpolate MONAN / GFS data for comparability
-    #===============================================================================================
-    print ("\n Interpolating MONAN / GFS data for comparability...")
-    ds_ref_filepath, ds_prediction_filepath = vs_aux.interpolate_monan_gfs(
-        ds_monan_selected_filepath=ds_monan_selected_filepath,
-        ds_gfs_in_monan_format_filepath=ds_gfs_in_monan_format_filepath
-    )
+        #===============================================================================================
+        # Interpolate forecast / ref data for comparability
+        #===============================================================================================
+        print ("\n Interpolating forecast / reference data for comparability...")
+        ds_ref_filepath, ds_prediction_filepath = vs_aux.interpolate_prediction_ref(
+            ds_prediction_model_filepath=ds_preprocessed_prediction_filepath,
+            ds_ref_data_filepath=ds_preprocessed_ref_filepath
+        )
+    elif vs_config.TYPE_OF_ANALYSIS == "no_preprocessing":
+        print ("\n Running analysis in 'no_preprocessing' mode: reading preprocessed prediction and reference data...")
+        #===============================================================================================
+        # Read preprocessed prediction and reference data
+        #===============================================================================================
+        print ("\n Reading preprocessed prediction and reference data...")
+        ds_ref_filepath, ds_prediction_filepath = vs_aux.get_ref_and_prediction_filepath_from_dir_input_external()
 
     #===============================================================================================
     # Calculate statistics

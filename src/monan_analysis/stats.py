@@ -23,6 +23,9 @@ This file was created with the assistance of GitHub Copilot.
 """
 
 import xarray as xr
+import monan_analysis.preprocess as preprocess
+import pandas as pd
+import monan_analysis.plots as plots
 
 def example_function_stats():
     print ("this is a function imported from the stats.py module.")
@@ -159,9 +162,253 @@ def rmse(predictions, observations, dim):
     
     return result
 
-def anomaly_correlation_coefficient(predictions, observations, dim):
+def anomaly_correlation_coefficient_standard_spatial_field(predictions, observations, climatology, 
+                                                           date_YYYYMMDDHH_str):
     """
-    Calculate the anomaly correlation coefficient between predictions and observations.
+    Calculate the anomaly correlation coefficient (ACC) for a specific variable between monthly 
+    predictions and observations. This definition differs from the standard definition employed in 
+    operational centers (1,2,3,4) in that it calculates the ACC for monthly values of predictions
+    and observations.
+    
+    The only difference between this function and anomaly_correlation_coefficient_standard_monthly() is that 
+    this function returns the ACC as a spatial field, i.e. the spatial mean is not calculated for 
+    the numerator. This may be useful when the user wants to first calculate the ACC for each grid 
+    point in a spatial field to only afterwards calculate the final spatial mean.
+
+    Mathematically:
+
+    ACC = (pred_anom * obs_anom) / ((pred_anom ** 2).mean(dim=space) ** 0.5 * (obs_anom ** 2).mean(dim=space) ** 0.5),
+
+    where
+    pred_anom = (predictions_monthly - climatology_monthly) - (predictions_monthly - climatology_monthly).mean(dim=space)
+    obs_anom = (observations_monthly - climatology_monthly) - (observations_monthly - climatology_monthly).mean(dim=space)
+
+    The climatology is calculated from ERA5 data [5] for the period 1991-2020, and is provided in the climatology dataset. 
+    The climatology time stamps are written as 2020-MM-01, where MM is the month number.
+
+    Parameters:
+        predictions_monthly (xr.Dataset): Dataset containing monthly-averaged predictions.
+        observations_monthly (xr.Dataset): Dataset containing monthly-averaged observations.
+        climatology_monthly (xr.Dataset): Dataset containing monthly-averaged climatology.
+        var (str): Variable name to calculate the anomaly correlation coefficient for.
+        dim (str or list): Dimension(s) over which to calculate the correlation.
+
+    Returns:
+        xr.Dataset: Dataset containing the anomaly correlation coefficient for the specified variable.
+
+    References:
+    1. Jolliffe and Stephenson, Forecast Verification: A Practitioner's Guide in Atmospheric Science, 2003
+    2. Hollingsworth et al, Comparison of Medium Range Forecasts Made with Two Parametrization Schemes, 1979
+    3. ECMWF Forecaster User Guide, available at: 
+    https://confluence.ecmwf.int/spaces/FUG/pages/673551834/Section+12.A+Statistical+Concepts+-+Deterministic+Data#Section12.AStatisticalConceptsDeterministicData-MeasureofSkill-theAnomalyCorrelationCoefficient(ACC)
+    4. Livezey et al, Verification of Official Monthly Mean 700-hPa Height Forecasts: An Update, 1995
+    5. ECMWF used to employ 20 years of ERA5 data for this, and is now using re-forecasts initialized
+    with ERA5 data:
+        https://charts.ecmwf.int/products/plwww_m_hr_ccafreachmulti_ts?area=NHem%20Extratropics&parameter=Geopotential%20500hPa
+        https://confluence.ecmwf.int/spaces/FUG/pages/673550781/Section+6.2.2+Anomaly+Correlation+Coefficient
+        (Owens, R G, Hewson, T D (2018). ECMWF Forecast User Guide. Reading: ECMWF. doi: 10.21957/m1cs7h)
+    """
+    if not isinstance(predictions, xr.Dataset) or not isinstance(observations, xr.Dataset) \
+        or not isinstance(climatology, xr.Dataset):
+        raise TypeError("Predictions, observations, and climatology must be xarray Datasets.")
+
+    # Get day from climatology, assuming hour UTC is already correct
+    dayofyear = pd.Timestamp(year=int(date_YYYYMMDDHH_str[0:4]),month=int(date_YYYYMMDDHH_str[4:6]),day=int(date_YYYYMMDDHH_str[6:8])).dayofyear
+    climatology_filtered = climatology.sel(dayofyear=dayofyear)
+    # Squeeze also predictions and observations to remove unnecessary Time dimension
+    predictions_filtered = predictions.sel(Time=pd.to_datetime(date_YYYYMMDDHH_str, format='%Y%m%d%H'))
+    observations_filtered = observations.sel(Time=pd.to_datetime(date_YYYYMMDDHH_str, format='%Y%m%d%H'))
+
+    # Calculate ACC for each variable
+    for var in predictions.data_vars:      
+        # Check if var exists in all datasets
+        if var not in predictions or var not in observations or var not in climatology:
+            raise ValueError(f"The variable '{var}' must exist in predictions, observations, and climatology datasets.")
+
+        # Compute anomalies
+        pred_anom = (predictions_filtered[var] - climatology_filtered[var]) - preprocess.spatial_mean(predictions_filtered[var] - climatology_filtered[var])
+        obs_anom = (observations_filtered[var] - climatology_filtered[var]) - preprocess.spatial_mean(observations_filtered[var] - climatology_filtered[var])
+
+        # Create an empty dataset for the result
+        result = xr.Dataset()
+
+        # Compute ACC and store in the result dataset
+        result[var] = (pred_anom * obs_anom) / (
+            (preprocess.spatial_mean(pred_anom ** 2)) ** 0.5 *
+            (preprocess.spatial_mean(obs_anom ** 2)) ** 0.5
+        )
+
+    return result
+
+def anomaly_correlation_coefficient_standard_monthly(predictions, observations, climatology, month_MM):
+    """
+    Calculate the anomaly correlation coefficient (ACC) for a specific variable between monthly 
+    predictions and observations. This definition differs from the standard definition employed in 
+    operational centers (1,2,3,4) in that it calculates the ACC for monthly values of predictions
+    and observations.
+
+    The ACC is here defined as the spatial mean of the product of the anomalies of the predictions 
+    and observations, divided by the product of the standard deviations of the anomalies of the 
+    predictions and observations.
+
+    Mathematically:
+
+    ACC = (pred_anom * obs_anom).mean(dim=space) / ((pred_anom ** 2).mean(dim=space) ** 0.5 * (obs_anom ** 2).mean(dim=space) ** 0.5),
+
+    where
+    pred_anom = (predictions_monthly - climatology_monthly) - (predictions_monthly - climatology_monthly).mean(dim=space)
+    obs_anom = (observations_monthly - climatology_monthly) - (observations_monthly - climatology_monthly).mean(dim=space)
+
+    The climatology is calculated from ERA5 data [5] for the period 1991-2020, and is provided in the climatology dataset. 
+    The climatology time stamps are written as 2020-MM-01, where MM is the month number.
+
+    Parameters:
+        predictions_monthly (xr.Dataset): Dataset containing monthly-averaged predictions.
+        observations_monthly (xr.Dataset): Dataset containing monthly-averaged observations.
+        climatology_monthly (xr.Dataset): Dataset containing monthly-averaged climatology.
+        var (str): Variable name to calculate the anomaly correlation coefficient for.
+        dim (str or list): Dimension(s) over which to calculate the correlation.
+
+    Returns:
+        xr.Dataset: Dataset containing the anomaly correlation coefficient for the specified variable.
+
+    References:
+    1. Jolliffe and Stephenson, Forecast Verification: A Practitioner's Guide in Atmospheric Science, 2003
+    2. Hollingsworth et al, Comparison of Medium Range Forecasts Made with Two Parametrization Schemes, 1979
+    3. ECMWF Forecaster User Guide, available at: 
+    https://confluence.ecmwf.int/spaces/FUG/pages/673551834/Section+12.A+Statistical+Concepts+-+Deterministic+Data#Section12.AStatisticalConceptsDeterministicData-MeasureofSkill-theAnomalyCorrelationCoefficient(ACC)
+    4. Livezey et al, Verification of Official Monthly Mean 700-hPa Height Forecasts: An Update, 1995
+    5. ECMWF used to employ 20 years of ERA5 data for this, and is now using re-forecasts initialized
+    with ERA5 data:
+        https://charts.ecmwf.int/products/plwww_m_hr_ccafreachmulti_ts?area=NHem%20Extratropics&parameter=Geopotential%20500hPa
+        https://confluence.ecmwf.int/spaces/FUG/pages/673550781/Section+6.2.2+Anomaly+Correlation+Coefficient
+        (Owens, R G, Hewson, T D (2018). ECMWF Forecast User Guide. Reading: ECMWF. doi: 10.21957/m1cs7h)
+    """
+    if not isinstance(predictions, xr.Dataset) or not isinstance(observations, xr.Dataset) \
+        or not isinstance(climatology, xr.Dataset):
+        raise TypeError("Predictions, observations, and climatology must be xarray Datasets.")
+    
+    # Get monthly mean for predictions and observations
+    ## Filter data for the specific month_MM
+    predictions_filtered = predictions.sel(Time=predictions["Time"].dt.strftime("%m") == month_MM)
+    observations_filtered = observations.sel(Time=observations["Time"].dt.strftime("%m") == month_MM)
+    
+    # Calculate ACC for each variable
+    for var in predictions.data_vars:
+        # Check if var exists in all datasets
+        if var not in predictions or var not in observations or var not in climatology:
+            raise ValueError(f"The variable '{var}' must exist in predictions, observations, and climatology datasets.")
+
+        # Get monthly mean for the filtered predictions and observations
+        predictions_monthly = predictions_filtered[var].mean(dim="Time", keep_attrs=True)
+        observations_monthly = observations_filtered[var].mean(dim="Time", keep_attrs=True)
+        
+        # Get climatology for that month (assuming 1991-2020 period, with climatology time stamps 
+        # written as 2020-MM-01)
+        climatology_monthly = climatology[var].sel(Time=f"2020-{month_MM}-01")
+
+        # Compute anomalies
+        pred_anom = (predictions_monthly - climatology_monthly) - preprocess.spatial_mean(predictions_monthly - climatology_monthly)
+        obs_anom = (observations_monthly - climatology_monthly) - preprocess.spatial_mean(observations_monthly - climatology_monthly)
+
+        # Create an empty dataset for the result
+        result = xr.Dataset()
+
+        # Compute ACC and store in the result dataset
+        result[var] = preprocess.spatial_mean(pred_anom * obs_anom) / (
+            (preprocess.spatial_mean(pred_anom ** 2)) ** 0.5 *
+            (preprocess.spatial_mean(obs_anom ** 2)) ** 0.5
+        )
+
+    return result
+
+def anomaly_correlation_coefficient_standard_monthly_spatial_field(predictions, observations, climatology, month_MM, ):
+    """
+    Calculate the anomaly correlation coefficient (ACC) for a specific variable between monthly 
+    predictions and observations. This definition differs from the standard definition employed in 
+    operational centers (1,2,3,4) in that it calculates the ACC for monthly values of predictions
+    and observations.
+    
+    The only difference between this function and anomaly_correlation_coefficient_standard_monthly() is that 
+    this function returns the ACC as a spatial field, i.e. the spatial mean is not calculated for 
+    the numerator. This may be useful when the user wants to first calculate the ACC for each grid 
+    point in a spatial field to only afterwards calculate the final spatial mean.
+
+    Mathematically:
+
+    ACC = (pred_anom * obs_anom) / ((pred_anom ** 2).mean(dim=space) ** 0.5 * (obs_anom ** 2).mean(dim=space) ** 0.5),
+
+    where
+    pred_anom = (predictions_monthly - climatology_monthly) - (predictions_monthly - climatology_monthly).mean(dim=space)
+    obs_anom = (observations_monthly - climatology_monthly) - (observations_monthly - climatology_monthly).mean(dim=space)
+
+    The climatology is calculated from ERA5 data [5] for the period 1991-2020, and is provided in the climatology dataset. 
+    The climatology time stamps are written as 2020-MM-01, where MM is the month number.
+
+    Parameters:
+        predictions_monthly (xr.Dataset): Dataset containing monthly-averaged predictions.
+        observations_monthly (xr.Dataset): Dataset containing monthly-averaged observations.
+        climatology_monthly (xr.Dataset): Dataset containing monthly-averaged climatology.
+        var (str): Variable name to calculate the anomaly correlation coefficient for.
+        dim (str or list): Dimension(s) over which to calculate the correlation.
+
+    Returns:
+        xr.Dataset: Dataset containing the anomaly correlation coefficient for the specified variable.
+
+    References:
+    1. Jolliffe and Stephenson, Forecast Verification: A Practitioner's Guide in Atmospheric Science, 2003
+    2. Hollingsworth et al, Comparison of Medium Range Forecasts Made with Two Parametrization Schemes, 1979
+    3. ECMWF Forecaster User Guide, available at: 
+    https://confluence.ecmwf.int/spaces/FUG/pages/673551834/Section+12.A+Statistical+Concepts+-+Deterministic+Data#Section12.AStatisticalConceptsDeterministicData-MeasureofSkill-theAnomalyCorrelationCoefficient(ACC)
+    4. Livezey et al, Verification of Official Monthly Mean 700-hPa Height Forecasts: An Update, 1995
+    5. ECMWF used to employ 20 years of ERA5 data for this, and is now using re-forecasts initialized
+    with ERA5 data:
+        https://charts.ecmwf.int/products/plwww_m_hr_ccafreachmulti_ts?area=NHem%20Extratropics&parameter=Geopotential%20500hPa
+        https://confluence.ecmwf.int/spaces/FUG/pages/673550781/Section+6.2.2+Anomaly+Correlation+Coefficient
+        (Owens, R G, Hewson, T D (2018). ECMWF Forecast User Guide. Reading: ECMWF. doi: 10.21957/m1cs7h)
+    """
+    if not isinstance(predictions, xr.Dataset) or not isinstance(observations, xr.Dataset) \
+        or not isinstance(climatology, xr.Dataset):
+        raise TypeError("Predictions, observations, and climatology must be xarray Datasets.")
+    
+    # Get monthly mean for predictions and observations
+    ## Filter data for the specific month_MM
+    predictions_filtered = predictions.sel(Time=predictions["Time"].dt.strftime("%m") == month_MM)
+    observations_filtered = observations.sel(Time=observations["Time"].dt.strftime("%m") == month_MM)
+    
+    # Calculate ACC for each variable
+    for var in predictions.data_vars:
+        # Check if var exists in all datasets
+        if var not in predictions or var not in observations or var not in climatology:
+            raise ValueError(f"The variable '{var}' must exist in predictions, observations, and climatology datasets.")
+
+        # Get monthly mean for the filtered predictions and observations
+        predictions_monthly = predictions_filtered[var].mean(dim="Time", keep_attrs=True)
+        observations_monthly = observations_filtered[var].mean(dim="Time", keep_attrs=True)
+        
+        # Get climatology for that month (assuming 1991-2020 period, with climatology time stamps 
+        # written as 2020-MM-01)
+        climatology_monthly = climatology[var].sel(Time=f"2020-{month_MM}-01")
+
+        # Compute anomalies
+        pred_anom = (predictions_monthly - climatology_monthly) - preprocess.spatial_mean(predictions_monthly - climatology_monthly)
+        obs_anom = (observations_monthly - climatology_monthly) - preprocess.spatial_mean(observations_monthly - climatology_monthly)
+
+        # Create an empty dataset for the result
+        result = xr.Dataset()
+
+        # Compute ACC and store in the result dataset
+        result[var] = (pred_anom * obs_anom) / (
+            (preprocess.spatial_mean(pred_anom ** 2)) ** 0.5 *
+            (preprocess.spatial_mean(obs_anom ** 2)) ** 0.5
+        )
+
+    return result
+
+def anomaly_correlation_coefficient_in_dim(predictions, observations, dim):
+    """
+    Calculate the anomaly correlation coefficient between predictions and observationsv along the
+    dimension defined by the user.
     
     The anomaly correlation coefficient is here defined as the mean of the product of the anomalies 
     of the predictions and observations, divided by the product of the standard deviations of the 
