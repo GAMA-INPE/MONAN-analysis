@@ -41,7 +41,7 @@ SEL_VERBOSE_LEVEL = 1
 # Type of analysis (whole_pipeline or no_preprocessing)
 TYPE_OF_ANALYSIS = "no_preprocessing"
 # Prediction model to analyze (e.g. "monan", "gfs_analysis" (gfs forecast + assimilation), "gfs", "bam")
-PREDICTION_MODEL = "gfs_analysis"
+PREDICTION_MODEL = "monan"
 # Reference data (e.g. "gfs_analysis", "era5")
 REFERENCE_DATA = "gfs_analysis"
 # Date and forecast time window for analysis
@@ -212,7 +212,7 @@ DIR_INPUT = f"{personal_config.DIR_PERSONAL_MONAN_ANALYSIS}{personal_config.DIR_
 DIR_INPUT_INTERMEDIATE = f"{DIR_INPUT}/intermediate"
 DIR_INPUT_PROCESSED = f"{DIR_INPUT}/processed"
 DIR_INPUT_RAW = f"{DIR_INPUT}/raw"
-DIR_INPUT_EXTERNAL = "/lustre/projetos/monan_gam/Scripts/MONAN-analysis_clone_guilherme/analyses/vertical_structure/input_10d_bam"
+DIR_INPUT_EXTERNAL = "/lustre/projetos/monan_gam/Scripts/MONAN-analysis_clone_guilherme/analyses/vertical_structure/input_10d_monan"
 FILEPATH_CLIMATOLOGY = f"/lustre/projetos/monan_atm/guilherme.mendonca/scratch/data/ERA5/hourly/nc/climatology_N_half_10_hour_UTC_0_1991_2020.nc"
 #===================================================================================================
 # Pressure-level validity mask configurations
