@@ -34,22 +34,22 @@ import monan_analysis.personal_config as personal_config
 # 0: log messages from vertical_analysis_main.py only
 # 1: log messages from vertical_analysis_main.py + vertical_analysis_aux.py
 # 2: log messages from vertical_analysis_main.py + vertical_analysis_aux.py + monan_analysis modules
-SEL_VERBOSE_LEVEL = 1
+SEL_VERBOSE_LEVEL = 0
 #===================================================================================================
 # General analysis configurations
 #===================================================================================================
 # Type of analysis (whole_pipeline or no_preprocessing)
-TYPE_OF_ANALYSIS = "no_preprocessing"
+TYPE_OF_ANALYSIS = "whole_pipeline"
 # Prediction model to analyze (e.g. "monan", "gfs_analysis" (gfs forecast + assimilation), "gfs", "bam")
-PREDICTION_MODEL = "monan"
+PREDICTION_MODEL = "gfs"
 # Reference data (e.g. "gfs_analysis", "era5")
 REFERENCE_DATA = "gfs_analysis"
 # Date and forecast time window for analysis
-YEAR = "2026"
+YEAR = "2025"
 MONTH = "06"
-DAY = "01"
+DAY = "11"
 HOUR = "00"
-TIME_WINDOW = "120"
+TIME_WINDOW = "024"
 # Domains for spatial analyses (maps)
 DOMAINS_TO_ANALYZE = [
     "global", 
@@ -62,7 +62,7 @@ SUMMARY_DOMAINS_TO_ANALYZE = [
     #"south_america",
     #"central_america_and_caribbean",
     "northern_hemisphere_20_80",
-    #"southern_hemisphere_20_80",
+    "southern_hemisphere_20_80",
     #"tropics_20s_20n",
 ]
 # Variables to analyze
@@ -107,7 +107,7 @@ INTERPOL_TYPE = "prediction_to_ref"
 # Single-time stats metrics (metrics that can be calculated for a single time instant), which can be 
 # spatially plotted over a map (e.g. bias, relative error)
 STATS_SPATIAL_METRICS_TO_ANALYZE = [
-    "bias",
+    #"bias",
     #"relative_error"
     ]
 # Single-time stats metrics (metrics that can be calculated for a single time instant), which cannot
@@ -200,11 +200,17 @@ PLOT_LIMITS_BY_VAR_METRIC_LEVEL = {
 # Directory and file paths
 #===================================================================================================
 #DIR_MONAN_PREOP = "/lustre/projetos/monan_adm/monan/ecf_PREOPER/MONAN-WorkFlow-OPER/MONAN_PRE_OPER/MONAN/scripts_CD-CT/dataout/flushout"
+# Operational MONAN data
 DIR_MONAN_PREOP = "/lustre/projetos/ioper/models/MONAN-WorkFlow-OPER/MONAN_PRE_OPER/posTMP"
+# Data for GFS analysis
 DIR_GFS_ANALYSIS = "/lustre/projetos/monan_gam/andre.lyra/NetCDFs/vert_struct/GFS"
+# Data for GFS forecasting
 DIR_GFS = "/lustre/projetos/monan_gam/andre.lyra/NetCDFs/vert_struct/GFS"
+# Data for BAM forecasting
 DIR_BAM = "/lustre/projetos/monan_gam/andre.lyra/NetCDFs/vert_struct/BAM"
+# Data for cartopy plots
 DIR_CARTOPY_DATA = "/lustre/projetos/monan_gam/andre.lyra/cartopy"
+# Output and input directories for this analysis, based on personal_config.py
 DIR_OUTPUT = f"{personal_config.DIR_PERSONAL_MONAN_ANALYSIS}{personal_config.DIR_PERSONAL_OUTPUT_STRUCTURE}"
 DIR_OUTPUT_FIGS = f"{DIR_OUTPUT}/figs"
 DIR_OUTPUT_DATA = f"{DIR_OUTPUT}/data"
@@ -212,7 +218,9 @@ DIR_INPUT = f"{personal_config.DIR_PERSONAL_MONAN_ANALYSIS}{personal_config.DIR_
 DIR_INPUT_INTERMEDIATE = f"{DIR_INPUT}/intermediate"
 DIR_INPUT_PROCESSED = f"{DIR_INPUT}/processed"
 DIR_INPUT_RAW = f"{DIR_INPUT}/raw"
-DIR_INPUT_EXTERNAL = "/lustre/projetos/monan_gam/Scripts/MONAN-analysis_clone_guilherme/analyses/vertical_structure/input_10d_monan"
+# Input directory containing preprocessed data (to be used if TYPE_OF_ANALYSIS = "no_preprocessing") 
+DIR_INPUT_EXTERNAL = "/lustre/projetos/monan_gam/Scripts/MONAN-analysis_clone_guilherme/analyses/vertical_structure/input_10d_gfs"
+# Filepath for preprocessed climatology (to be used e.g. for ACC calculation)
 FILEPATH_CLIMATOLOGY = f"/lustre/projetos/monan_atm/guilherme.mendonca/scratch/data/ERA5/hourly/nc/climatology_N_half_10_hour_UTC_0_1991_2020.nc"
 #===================================================================================================
 # Pressure-level validity mask configurations
@@ -230,18 +238,18 @@ APPLY_PRESSURE_LEVEL_VALIDITY_MASK = True
 #===================================================================================================
 ####################################################################################################
 # Initial date
-DATE_INIT = "2026080100"
+DATE_INIT = "2025060100"
 # Final date
-DATE_FINAL = "2026083100"
+DATE_FINAL = "2025063000"
 # Date time step in hours
 DATE_TIME_STEP = "24"
 # Time windows to analyze
 TIME_WINDOWS_TO_ANALYZE = [
-    "00",
-    "24",
-    "48",
-    "72",
-    "96",
+    #"00",
+    "024",
+    "048",
+    "072",
+    "096",
     "120",
     "144",
     "168",
@@ -252,7 +260,7 @@ TIME_WINDOWS_TO_ANALYZE = [
 # Multi-time stats metrics (metrics that need multiple time instants for their definition, 
 # e.g. RMSE, anomaly correlation coefficient), that can be spatially plotted over a map
 MULTI_TIME_STATS_SPATIAL_METRICS_TO_ANALYZE = [
-    "rmse",
+    #"rmse",
     ]
 # Multi-time stats metrics (metrics that need multiple time instants for their definition, 
 # e.g. RMSE, anomaly correlation coefficient), that cannot be spatially plotted over a map 

@@ -47,6 +47,7 @@ def main():
     vs_aux.create_folder_structure()
     
     if vs_config.TYPE_OF_ANALYSIS == "whole_pipeline":
+        print ("\n Running analysis in 'whole_pipeline' mode: reading, preprocessing, calculating statistics, and plotting...")
         #===============================================================================================
         # Read and preprocess prediction model data
         #===============================================================================================
@@ -70,35 +71,34 @@ def main():
             ds_ref_data_filepath=ds_preprocessed_ref_filepath
         )
     elif vs_config.TYPE_OF_ANALYSIS == "no_preprocessing":
+        print ("\n Running analysis in 'no_preprocessing' mode: reading preprocessed prediction and reference data...")
         #===============================================================================================
         # Read preprocessed prediction and reference data
         #===============================================================================================
         print ("\n Reading preprocessed prediction and reference data...")
         ds_ref_filepath, ds_prediction_filepath = vs_aux.get_ref_and_prediction_filepath_from_dir_input_external()
 
-    print ("\n Reference data filepath:", ds_ref_filepath)
-    print ("\n Prediction data filepath:", ds_prediction_filepath)
-    # #===============================================================================================
-    # # Calculate statistics
-    # #===============================================================================================
-    # print ("\n Calculating statistics...")
-    # ds_stats_filepath_dict = vs_aux.calculate_statistics(
-    #     ds_ref_filepath=ds_ref_filepath,
-    #     ds_prediction_filepath=ds_prediction_filepath
-    # )
+    #===============================================================================================
+    # Calculate statistics
+    #===============================================================================================
+    print ("\n Calculating statistics...")
+    ds_stats_filepath_dict = vs_aux.calculate_statistics(
+        ds_ref_filepath=ds_ref_filepath,
+        ds_prediction_filepath=ds_prediction_filepath
+    )
 
-    # #===============================================================================================
-    # # Plot statistics
-    # #===============================================================================================
-    # print ("\n Plotting statistics...")
-    # vs_aux.plot_statistics(ds_stats_filepath_dict=ds_stats_filepath_dict)
+    #===============================================================================================
+    # Plot statistics
+    #===============================================================================================
+    print ("\n Plotting statistics...")
+    vs_aux.plot_statistics(ds_stats_filepath_dict=ds_stats_filepath_dict)
     
-    # #============================
-    # # Copy config files
-    # #============================
-    # print ("\n Copying config files...")
-    # vs_aux.cp_config_files()
-    # print("\n Done.")
+    #============================
+    # Copy config files
+    #============================
+    print ("\n Copying config files...")
+    vs_aux.cp_config_files()
+    print("\n Done.")
 
 if __name__ == "__main__":
     main()

@@ -44,6 +44,7 @@ import pandas as pd
 import numpy as np
 import subprocess
 import importlib
+import time
 #from concurrent.futures import ProcessPoolExecutor, as_completed
 
 #===================================================================================================
@@ -558,6 +559,8 @@ def get_ref_and_prediction_filepath_from_dir_input_external():
     date_in_string = utils.get_date_as_YYYYMMDDHH_str(
     vs_config.YEAR, vs_config.MONTH, vs_config.DAY, vs_config.HOUR
     )
+    if vs_config.SEL_VERBOSE_LEVEL >= 1:
+        print (f"\n Getting reference and prediction model filepaths for {date_in_string}, time window {vs_config.TIME_WINDOW}...")
     if (vs_config.PREDICTION_MODEL == vs_config.REFERENCE_DATA or (vs_config.PREDICTION_MODEL == 'gfs' and vs_config.REFERENCE_DATA == 'gfs_analysis')):
         ds_ref_data_filepath = (
             f"{vs_config.DIR_INPUT_EXTERNAL}/"
@@ -882,6 +885,12 @@ def plot_statistics(ds_stats_filepath_dict):
         verbose = 'n'
 
     # Maps of statistics for each metric, domain, variable and level
+    ## Check first if dict is empty, in which case no plotting is done
+    if not ds_stats_filepath_dict:
+        if vs_config.SEL_VERBOSE_LEVEL >= 1:
+            print("No spatial metrics datasets to plot.")
+        return
+    ## If dict is not empty, proceed to plot each metric
     for metric in ds_stats_filepath_dict.keys():
         if vs_config.SEL_VERBOSE_LEVEL >= 1:
             print(f"Metric: {metric}")
@@ -1165,14 +1174,24 @@ def run_main_for_each_date_and_time_window(date_list):
             if vs_config.SEL_VERBOSE_LEVEL >= 1:
                 print (f"\n Date:{date}; time window: {time_window}")
                 print ("\n Updating analysis-specific config file...")
+            # Update config file
             update_config_file(
                 config_file_path=vs_config_file_path,
                 date=date, 
                 time_window=time_window
                 )      
+            # Ensure the file update is complete before reloading
+            # --- WAIT COMMAND (temporary solution) ---
+            # 1 second for the OS to finalize the file write
+            time.sleep(0.8) 
+            # TODO: To improve speed, use JSON and Atomic Replacement for the config file. In this
+            # way we will be able to remove this time.sleep command and get much faster performance.
+            # --------------------
             # Reload the updated config file
             importlib.reload(vs_config)
+            # Run main function
             vs_main.main()
+            # Collect garbage to free memory
             gc.collect()
 
 def update_config_file(config_file_path, date, time_window):
