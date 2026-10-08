@@ -76,27 +76,29 @@ def main():
         print ("\n Reading preprocessed prediction and reference data...")
         ds_ref_filepath, ds_prediction_filepath = vs_aux.get_ref_and_prediction_filepath_from_dir_input_external()
 
-    #===============================================================================================
-    # Calculate statistics
-    #===============================================================================================
-    print ("\n Calculating statistics...")
-    ds_stats_filepath_dict = vs_aux.calculate_statistics(
-        ds_ref_filepath=ds_ref_filepath,
-        ds_prediction_filepath=ds_prediction_filepath
-    )
+    print ("\n Reference data filepath:", ds_ref_filepath)
+    print ("\n Prediction data filepath:", ds_prediction_filepath)
+    # #===============================================================================================
+    # # Calculate statistics
+    # #===============================================================================================
+    # print ("\n Calculating statistics...")
+    # ds_stats_filepath_dict = vs_aux.calculate_statistics(
+    #     ds_ref_filepath=ds_ref_filepath,
+    #     ds_prediction_filepath=ds_prediction_filepath
+    # )
 
-    #===============================================================================================
-    # Plot statistics
-    #===============================================================================================
-    print ("\n Plotting statistics...")
-    vs_aux.plot_statistics(ds_stats_filepath_dict=ds_stats_filepath_dict)
+    # #===============================================================================================
+    # # Plot statistics
+    # #===============================================================================================
+    # print ("\n Plotting statistics...")
+    # vs_aux.plot_statistics(ds_stats_filepath_dict=ds_stats_filepath_dict)
     
-    #============================
-    # Copy config files
-    #============================
-    print ("\n Copying config files...")
-    vs_aux.cp_config_files()
-    print("\n Done.")
+    # #============================
+    # # Copy config files
+    # #============================
+    # print ("\n Copying config files...")
+    # vs_aux.cp_config_files()
+    # print("\n Done.")
 
 if __name__ == "__main__":
     main()
