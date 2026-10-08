@@ -240,12 +240,12 @@ APPLY_PRESSURE_LEVEL_VALIDITY_MASK = True
 # Initial date
 DATE_INIT = "2025060100"
 # Final date
-DATE_FINAL = "2025063000"
+DATE_FINAL = "2026053100"
 # Date time step in hours
 DATE_TIME_STEP = "24"
 # Time windows to analyze
 TIME_WINDOWS_TO_ANALYZE = [
-    #"00",
+    "00",
     "024",
     "048",
     "072",
