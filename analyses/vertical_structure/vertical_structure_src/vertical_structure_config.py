@@ -47,9 +47,9 @@ REFERENCE_DATA = "gfs_analysis"
 # Date and forecast time window for analysis
 YEAR = "2025"
 MONTH = "06"
-DAY = "11"
+DAY = "29"
 HOUR = "00"
-TIME_WINDOW = "024"
+TIME_WINDOW = "168"
 # Domains for spatial analyses (maps)
 DOMAINS_TO_ANALYZE = [
     "global", 
@@ -245,7 +245,7 @@ DATE_FINAL = "2026053100"
 DATE_TIME_STEP = "24"
 # Time windows to analyze
 TIME_WINDOWS_TO_ANALYZE = [
-    "00",
+    #"00",
     "024",
     "048",
     "072",
