@@ -40,9 +40,9 @@ SEL_VERBOSE_LEVEL = 2
 # =================================================================================================
 # Forecast cycle configuration
 # =================================================================================================
-YEAR = "2026"
-MONTH = "01"
-DAY = "10"
+YEAR = "2024"
+MONTH = "04"
+DAY = "20"
 HOUR = "00"
 
 FORECAST_TOTAL_H = 120
@@ -62,13 +62,27 @@ DATE_FORMAT_STRING = monan_config.DATE_FORMAT_STRING
 # =================================================================================================
 # MONAN input configuration
 # =================================================================================================
-MONAN_INPUT_MODE = "single_time_series" # Options: "single_time_series" or "flushout"
+MONAN_INPUT_MODE = "flushout" # Options: "single_time_series" or "flushout"
+
+# =================================================================================================
+# MONAN input for single_time_series mode
+# =================================================================================================
 MONAN_INPUT_FILE = (f"/lustre/projetos/monan_adm/saulo.freitas/for_AndreLyra/"
     f"ams_car_01to10Jan2026_5days_fcst/MONAN_NEW2/"
     f"for_dc_all_diag_dc.{YEAR}-{MONTH}-{DAY}_{HOUR}.00.00.nc"
 )
-MONAN_TIME_DIM_NAME = "Time"
-EXPERIMENT_TAG = "MONAN_NEW2_AMS_CAR"
+
+# =================================================================================================
+# MONAN input for flushout mode
+# =================================================================================================
+#DIR_MONAN_PREOP = ( "/lustre/projetos/monan_adm/monan/ecf_PREOPER/"
+#    "MONAN-WorkFlow-OPER/MONAN_PRE_OPER/MONAN/scripts_CD-CT/dataout/flushout" )
+DIR_MONAN_PREOP = ( "/p/projetos/monan_adm/monan/tc/1.4.4/P1_10km/" )
+
+# =================================================================================================
+# MONAN output configuration
+# =================================================================================================
+EXPERIMENT_TAG = "P1_v1.4.4"
 
 # =================================================================================================
 # Analysis switches
@@ -76,7 +90,7 @@ EXPERIMENT_TAG = "MONAN_NEW2_AMS_CAR"
 GENERATE_MONAN_24H_ACCUM = True
 RUN_PLOTTING = True
 RUN_REMAP = True
-OVERWRITE_REMAP = False
+OVERWRITE_REMAP = True
 OVERWRITE_OUTPUTS = True
 SAVE_INTERMEDIATE_NETCDF = True
 SAVE_SKILL_NETCDF = True
@@ -108,40 +122,40 @@ SKILL_METRICS_TO_SAVE = ["ACC", "POD", "POFD", "FAR", "CSI", "F1"]
 # lon is kept in 0 to 360 to match the current MONAN precipitation workflow
 # =================================================================================================
 DOMAINS = {
-#    "GLB": {
-#        "monan_domain_key": "global",
-#        "slice": None,
-#        "extent": None,
-#        "xticks": list(range(-180, 181, 60)),
-#        "yticks": list(range(-60, 61, 30)),
-#    },
-#    "AMS": {
-#        "monan_domain_key": "south_america",
-#        "slice": {
-#           "lat": slice(*monan_config.DOMAIN_DICT["south_america"]["lat"]),
-#            "lon": slice(*monan_config.DOMAIN_DICT["south_america"]["lon"]),
-#        },
-#        "extent": [-85, -20, -55, 20],
-#        "xticks": list(range(-80, -19, 10)),
-#        "yticks": list(range(-50, 21, 10)),
-#    },
-#    "ACC": {
-#        "monan_domain_key": "central_america_and_caribbean",
-#        "slice": {
-#            "lat": slice(*monan_config.DOMAIN_DICT["central_america_and_caribbean"]["lat"]),
-#            "lon": slice(*monan_config.DOMAIN_DICT["central_america_and_caribbean"]["lon"]),
-#        },
-#        "extent": [-118, -35, -10, 35],
-#        "xticks": list(range(-110, -34, 10)),
-#        "yticks": list(range(-10, 36, 10)),
-#    },
-    "REG": {
-        "monan_domain_key": None,
+    "GLB": {
+        "monan_domain_key": "global",
         "slice": None,
-        "extent": [-100, -25, -55, 35],
-        "xticks": list(range(-100, -24, 10)),
-        "yticks": list(range(-50, 31, 10)),
-    },    
+        "extent": None,
+        "xticks": list(range(-180, 181, 60)),
+        "yticks": list(range(-60, 61, 30)),
+    },
+    "AMS": {
+        "monan_domain_key": "south_america",
+        "slice": {
+           "lat": slice(*monan_config.DOMAIN_DICT["south_america"]["lat"]),
+            "lon": slice(*monan_config.DOMAIN_DICT["south_america"]["lon"]),
+        },
+        "extent": [-85, -20, -55, 20],
+        "xticks": list(range(-80, -19, 10)),
+        "yticks": list(range(-50, 21, 10)),
+    },
+    "ACC": {
+        "monan_domain_key": "central_america_and_caribbean",
+        "slice": {
+            "lat": slice(*monan_config.DOMAIN_DICT["central_america_and_caribbean"]["lat"]),
+            "lon": slice(*monan_config.DOMAIN_DICT["central_america_and_caribbean"]["lon"]),
+        },
+        "extent": [-118, -35, -10, 35],
+        "xticks": list(range(-110, -34, 10)),
+        "yticks": list(range(-10, 36, 10)),
+    },
+#    "REG": {
+#        "monan_domain_key": None,
+#        "slice": None,
+#        "extent": [-100, -25, -55, 35],
+#        "xticks": list(range(-100, -24, 10)),
+#        "yticks": list(range(-50, 31, 10)),
+#    },    
 }
 
 # =================================================================================================
@@ -200,11 +214,6 @@ FIGSIZE_REGIONAL = (10, 5)
 # Paths
 # Adjust these paths to your environment if needed.
 # =================================================================================================
-DIR_MONAN_PREOP = (
-    "/lustre/projetos/monan_adm/monan/ecf_PREOPER/"
-    "MONAN-WorkFlow-OPER/MONAN_PRE_OPER/MONAN/scripts_CD-CT/dataout/flushout"
-)
-DIR_NETCDF_MONAN_24H = f"precip_24h/{EXPERIMENT_TAG}"
 DIR_NETCDF_GPM_24H = "/lustre/projetos/monan_gam/andre.lyra/NetCDFs/precip_24h/GPM_IMERG"
 DIR_NETCDF_GSMAP_24H = "/lustre/projetos/monan_gam/andre.lyra/NetCDFs/precip_24h/GSMAP"
 DIR_NETCDF_MSWEP_24H = "/lustre/projetos/monan_gam/andre.lyra/NetCDFs/precip_24h/MSWEP"

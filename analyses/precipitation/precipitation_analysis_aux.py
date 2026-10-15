@@ -135,10 +135,13 @@ def get_obs_filepath(reference: str, valid_str: str) -> str:
 def get_monan_24h_filename(cycle_str: str, valid_str: str, lead: int) -> str:
     return f"MONAN_Precipitation_24h_acum_{cycle_str}_{valid_str}_{lead:03d}h.nc"
 
-
 def get_monan_24h_filepath(cycle_str: str, valid_str: str, lead: int) -> str:
-    return os.path.join(pa_config.DIR_NETCDF_MONAN_24H, cycle_str, get_monan_24h_filename(cycle_str, valid_str, lead))
-
+    return os.path.join(
+        pa_config.DIR_OUTPUT_DATA_MONAN,
+        get_yearmonth_str(),
+        cycle_str,
+        get_monan_24h_filename(cycle_str, valid_str, lead)
+    )
 
 def build_file_dict_for_lead(lead: int) -> dict:
     cycle_dt = get_cycle_datetime()
@@ -244,7 +247,20 @@ def _normalize_precip_coords(da: xr.DataArray) -> xr.DataArray:
         rename_map[lon_name] = "lon"
     if rename_map:
         da = da.rename(rename_map)
-    da = da.assign_coords(lon=((da["lon"] + 360.0) % 360.0)).sortby("lon")
+    # Preserve native longitude coordinates when already in 0..360
+    lon_min = float(da["lon"].min())
+    lon_max = float(da["lon"].max())
+    if lon_min < 0.0 or lon_max > 360.0:
+        da = da.assign_coords(
+            lon=((da["lon"].astype("float64") + 360.0) % 360.0)
+        )
+    da = da.sortby("lon")
+    # Check for duplicate longitude coordinates
+    lon_values = da["lon"].values
+    if np.any(np.diff(lon_values) <= 0):
+        raise ValueError(
+            "Duplicate or non-increasing longitude coordinates detected."
+        )
     if float(da["lat"][0]) > float(da["lat"][-1]):
         da = da.sortby("lat")
     return da
@@ -287,9 +303,33 @@ def compute_rmse_field(pred: xr.DataArray, obs: xr.DataArray) -> xr.DataArray:
 def save_precip_dataset(precip: xr.DataArray, output_nc: str, attrs: dict | None = None) -> None:
     os.makedirs(os.path.dirname(output_nc), exist_ok=True)
     ds = precip.to_dataset(name=pa_config.PRECIP_VAR_NAME)
+    # Geographic coordinate attributes
+    ds["lat"].attrs.update({
+        "units": "degrees_north",
+        "long_name": "Latitude",
+        "_CoordinateAxisType": "Lat",
+        "axis": "Y",
+    })
+    ds["lon"].attrs.update({
+        "units": "degrees_east",
+        "long_name": "Longitude",
+        "_CoordinateAxisType": "Lon",
+        "axis": "X",
+    })
     if attrs:
         ds.attrs.update(attrs)
-    ds.to_netcdf(output_nc)
+    # Encoding compatible with the pre-operational workflow
+    encoding = {
+        pa_config.PRECIP_VAR_NAME: {
+            "dtype": "float32",
+            "_FillValue": -999.0,
+        }
+    }
+    ds.to_netcdf(
+        output_nc,
+        encoding=encoding,
+        format="NETCDF4",
+    )
 
 
 def open_precip_datasets(file_dict: dict) -> Dict[str, xr.DataArray]:
@@ -721,7 +761,7 @@ def generate_monan_24h_accumulations_single_file() -> None:
                     "description": "MONAN 24 h accumulated precipitation",
                     "experiment": pa_config.EXPERIMENT_TAG,
                     "cycle": cycle_str,
-                    "lead_time_h": lead,
+                    "lead_time_h": np.int32(lead),
                     "start_time": start_str,
                     "end_time": end_str,
                     "accumulation_method": "sum of hourly rainc + rainnc fields",
@@ -785,29 +825,21 @@ def generate_monan_24h_accumulations_flushout() -> None:
         precip = _normalize_precip_coords((end_acc - start_acc).squeeze().rename(pa_config.PRECIP_VAR_NAME)).astype(
             "float32"
         )
-        out_dir = os.path.join(
-            pa_config.DIR_OUTPUT_DATA_MONAN,
-            get_yearmonth_str(),
-            get_cycle_str(),
-            )
-        os.makedirs(out_dir, exist_ok=True)
-
-        out_nc_copy = os.path.join(
-            out_dir,
-            f"monan_{get_cycle_str()}_{pair['end_str']}_{pair['lead']:03d}h.nc",
-        )
 
         save_precip_dataset(
             precip,
-            out_nc_copy,
+            output_nc,
             attrs={
                 "description": "MONAN 24 h accumulated precipitation",
-            "cycle": get_cycle_str(),
-                "lead_time_h": pair["lead"],
+                "experiment": pa_config.EXPERIMENT_TAG,
+                "cycle": get_cycle_str(),
+                "lead_time_h": np.int32(pair["lead"]),
                 "start_time": pair["start_str"],
                 "end_time": pair["end_str"],
             },
         )
+
+        log(f"Saved: {output_nc}", level=1)
 
         if pa_config.RUN_PLOTTING:
             fig_dir = os.path.join(pa_config.DIR_OUTPUT_FIG_MONAN, get_yearmonth_str(), get_cycle_str())
