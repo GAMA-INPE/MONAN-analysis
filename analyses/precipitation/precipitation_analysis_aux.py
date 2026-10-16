@@ -31,6 +31,7 @@ import shutil
 import subprocess
 from pathlib import Path
 from typing import Dict
+from datetime import datetime
 
 import numpy as np
 import xarray as xr
@@ -189,6 +190,56 @@ def check_required_inputs(file_dict: dict) -> None:
         raise FileNotFoundError("Required input files not found:\n" + "\n".join(missing))
 
 
+def add_valid_time_to_dataset(
+    ds: xr.Dataset,
+    valid_str: str,
+) -> xr.Dataset:
+    """
+    Add a singleton CF-compliant time dimension.
+
+    The time coordinate represents the forecast valid time,
+    corresponding to the end of the accumulation window.
+    """
+
+    if "time" in ds.dims or "time" in ds.coords:
+        raise ValueError("Dataset already contains a time coordinate.")
+
+    valid_dt = datetime.strptime(valid_str, "%Y%m%d%H")
+
+    ds = ds.expand_dims(
+        time=[np.datetime64(valid_dt, "ns")]
+    )
+
+    ds["time"].attrs.update({
+        "standard_name": "time",
+        "long_name": "Forecast valid time",
+        "axis": "T",
+    })
+
+    ds["time"].encoding.update({
+        "units": "hours since 1970-01-01 00:00:00",
+        "calendar": "standard",
+        "dtype": "float64",
+    })
+
+    return ds
+
+def remove_singleton_time(da: xr.DataArray) -> xr.DataArray:
+    """
+    Remove a singleton time dimension for spatial calculations.
+    """
+
+    for dim in ("time", "Time"):
+        if dim in da.dims:
+            if da.sizes[dim] != 1:
+                raise ValueError(
+                    f"Expected one time step, found {da.sizes[dim]}"
+                )
+
+            da = da.isel({dim: 0}, drop=True)
+
+    return da
+
 # =================================================================================================
 # MONAN 24 h accumulation generation
 # =================================================================================================
@@ -300,7 +351,13 @@ def compute_rmse_field(pred: xr.DataArray, obs: xr.DataArray) -> xr.DataArray:
     return np.sqrt(compute_sq_error(pred, obs))
 
 
-def save_precip_dataset(precip: xr.DataArray, output_nc: str, attrs: dict | None = None) -> None:
+def save_precip_dataset(
+    precip: xr.DataArray,
+    output_nc: str,
+    attrs: dict | None = None,
+    *,
+    valid_str: str,
+) -> None:
     os.makedirs(os.path.dirname(output_nc), exist_ok=True)
     ds = precip.to_dataset(name=pa_config.PRECIP_VAR_NAME)
     # Geographic coordinate attributes
@@ -316,8 +373,12 @@ def save_precip_dataset(precip: xr.DataArray, output_nc: str, attrs: dict | None
         "_CoordinateAxisType": "Lon",
         "axis": "X",
     })
+
     if attrs:
         ds.attrs.update(attrs)
+
+    ds = add_valid_time_to_dataset(ds, valid_str)
+
     # Encoding compatible with the pre-operational workflow
     encoding = {
         pa_config.PRECIP_VAR_NAME: {
@@ -333,10 +394,27 @@ def save_precip_dataset(precip: xr.DataArray, output_nc: str, attrs: dict | None
 
 
 def open_precip_datasets(file_dict: dict) -> Dict[str, xr.DataArray]:
-    data_dict = {"MONAN": _normalize_precip_coords(xr.open_dataset(file_dict["monan_nc"])[pa_config.PRECIP_VAR_NAME])}
+
+    ds_monan = xr.open_dataset(file_dict["monan_nc"])
+
+    monan = remove_singleton_time(
+        ds_monan[pa_config.PRECIP_VAR_NAME]
+    )
+
+    data_dict = {
+        "MONAN": _normalize_precip_coords(monan)
+    }
+
     for reference, ref_dict in file_dict["refs"].items():
+
         ds = xr.open_dataset(ref_dict["remap_nc"])
-        data_dict[reference] = _normalize_precip_coords(ds[pa_config.PRECIP_VAR_NAME])
+
+        obs = remove_singleton_time(
+            ds[pa_config.PRECIP_VAR_NAME]
+        )
+
+        data_dict[reference] = _normalize_precip_coords(obs)
+
     return data_dict
 
 
@@ -757,6 +835,7 @@ def generate_monan_24h_accumulations_single_file() -> None:
             save_precip_dataset(
                 precip,
                 output_nc,
+                valid_str=end_str,
                 attrs={
                     "description": "MONAN 24 h accumulated precipitation",
                     "experiment": pa_config.EXPERIMENT_TAG,
@@ -829,6 +908,7 @@ def generate_monan_24h_accumulations_flushout() -> None:
         save_precip_dataset(
             precip,
             output_nc,
+            valid_str=pair["end_str"],
             attrs={
                 "description": "MONAN 24 h accumulated precipitation",
                 "experiment": pa_config.EXPERIMENT_TAG,
@@ -1003,7 +1083,11 @@ def _save_metric_netcdf(metric_field, metric_name, reference, lead, file_dict):
         out_dir,
         f"{metric_name}_{reference}_{file_dict['cycle_str']}_{lead:03d}h.nc"
     )
-    save_precip_dataset(metric_field.rename(pa_config.PRECIP_VAR_NAME), out_nc)
+    save_precip_dataset(
+        metric_field.rename(pa_config.PRECIP_VAR_NAME),
+        out_nc,
+        valid_str=file_dict["valid_str"],
+    )
     return out_nc
 
 
@@ -1126,6 +1210,11 @@ def run_skill_analysis(lead: int, threshold_mm: float, file_dict: dict, data_dic
                     }
                 )
 
+                ds_out = add_valid_time_to_dataset(
+                    ds_out,
+                    file_dict["valid_str"]
+                )
+
                 ds_out.attrs.update(
                     {
                         "description": (
@@ -1137,7 +1226,7 @@ def run_skill_analysis(lead: int, threshold_mm: float, file_dict: dict, data_dic
                         "domain": domain_name,
                         "forecast_cycle": file_dict["cycle_str"],
                         "valid_time": file_dict["valid_str"],
-                        "lead_time_h": int(lead),
+                        "lead_time_h": np.int32(lead),
                         "threshold_mm_24h": float(threshold_mm),
                         "contingency_definition": (
                             "H=hit, M=miss, F=false alarm, "
