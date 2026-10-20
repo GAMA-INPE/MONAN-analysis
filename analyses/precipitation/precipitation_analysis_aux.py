@@ -251,7 +251,12 @@ def _get_flushout_filename(cycle_str: str, valid_str: str) -> str:
 
 
 def _get_flushout_filepath(cycle_str: str, valid_str: str) -> str:
-    return os.path.join(pa_config.DIR_MONAN_PREOP, cycle_str, _get_flushout_filename(cycle_str, valid_str))
+    return os.path.join(
+        pa_config.DIR_MONAN_PREOP,
+        cycle_str,
+        pa_config.MONAN_FLUSHOUT_SUBDIR,
+        _get_flushout_filename(cycle_str, valid_str),
+    )
 
 
 def build_monan_flushout_filepairs() -> list[dict]:

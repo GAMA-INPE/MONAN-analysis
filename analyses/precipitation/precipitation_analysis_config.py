@@ -42,10 +42,10 @@ SEL_VERBOSE_LEVEL = 2
 # =================================================================================================
 YEAR = "2024"
 MONTH = "04"
-DAY = "20"
+DAY = "21"
 HOUR = "00"
 
-FORECAST_TOTAL_H = 120
+FORECAST_TOTAL_H = 240
 LEAD_STEP_H = 24
 ACCUM_WINDOW_H = 24
 
@@ -77,12 +77,14 @@ MONAN_INPUT_FILE = (f"/lustre/projetos/monan_adm/saulo.freitas/for_AndreLyra/"
 # =================================================================================================
 #DIR_MONAN_PREOP = ( "/lustre/projetos/monan_adm/monan/ecf_PREOPER/"
 #    "MONAN-WorkFlow-OPER/MONAN_PRE_OPER/MONAN/scripts_CD-CT/dataout/flushout" )
-DIR_MONAN_PREOP = ( "/p/projetos/monan_adm/monan/tc/1.4.4/P1_10km/" )
+#DIR_MONAN_PREOP = ( "/p/projetos/monan_adm/monan/tc/1.4.4/P1_10km/" )
+DIR_MONAN_PREOP = "/p/projetos/monan_adm/monan/tc/2.0.0-rc/P1/"
+MONAN_FLUSHOUT_SUBDIR = "Post" # Options: "Post" if there is a subdirectory for flushout files, otherwise use ""
 
 # =================================================================================================
 # MONAN output configuration
 # =================================================================================================
-EXPERIMENT_TAG = "P1_v1.4.4"
+EXPERIMENT_TAG = "P1_v2.0.0-rc"
 
 # =================================================================================================
 # Analysis switches
