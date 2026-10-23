@@ -21,7 +21,7 @@ Methodological conventions
 - The aggregation period is defined by forecast INITIALIZATION cycles.
 - The same initialization cycles are used for every lead and both experiments.
 - No additional remapping, masking, or spatial cropping is performed here.
-  The script plots the full common REG grid already used by the aggregated
+  The script plots the full common domain grid already used by the aggregated
   verification products.
 - Bias and MAE panel values are cosine(latitude)-weighted spatial means.
 - RMSE maps use the aggregated RMSE field stored in ``prec``.
@@ -43,16 +43,29 @@ import numpy as np
 import xarray as xr
 from cartopy.mpl.gridliner import LATITUDE_FORMATTER, LONGITUDE_FORMATTER
 from matplotlib.colors import LinearSegmentedColormap
+import matplotlib.ticker as mticker
+
+from precipitation_analysis_config import DOMAINS as DOMAIN_CONFIG
 
 
 REFERENCES = ("GPM", "GSMAP", "MSWEP")
 
 EXPERIMENTS = (
-    ("MONAN_CTL_AMS_CAR", "CTL"),
-    ("MONAN_NEW_AMS_CAR", "NEW"),
+    ("P1_v1.4.4", "v1.4.4"),
+    ("P1_v2.0.0-rc", "v2.0.0-rc"),
 )
 
-DEFAULT_LEADS = (24, 48, 72, 96, 120)
+DOMAIN = "GLB"  # Options: GLB, AMS, ACC, REG
+
+if DOMAIN not in DOMAIN_CONFIG:
+    raise ValueError(
+        f"DOMAIN='{DOMAIN}' not found in precipitation_analysis_config.py. "
+        f"Available: {list(DOMAIN_CONFIG)}"
+    )
+
+DOMAIN_INFO = DOMAIN_CONFIG[DOMAIN]
+
+DEFAULT_LEADS = [24, 48, 72, 96, 120, 144, 168, 192, 216, 240]
 
 PRECIP_VAR_NAME = "prec"
 MEAN_SQERR_VAR_NAME = "mean_sqerr"
@@ -126,11 +139,11 @@ def input_path(
     )
 
     if metric == "Bias":
-        filename = f"bias_{reference}_REG_{period}_mean_{lead:03d}h.nc"
+        filename = f"bias_{reference}_{DOMAIN}_{period}_mean_{lead:03d}h.nc"
     elif metric == "MAE":
-        filename = f"mae_{reference}_REG_{period}_mean_{lead:03d}h.nc"
+        filename = f"mae_{reference}_{DOMAIN}_{period}_mean_{lead:03d}h.nc"
     elif metric == "RMSE":
-        filename = f"rmse_{reference}_REG_{period}_{lead:03d}h.nc"
+        filename = f"rmse_{reference}_{DOMAIN}_{period}_{lead:03d}h.nc"
     else:
         raise ValueError(f"Unsupported metric: {metric}")
 
@@ -266,19 +279,15 @@ def validate_experiment_grids(
 
 def configure_map_axis(
     ax,
-    field: xr.DataArray,
     row: int,
     col: int,
 ) -> None:
-    lon_min = float(field["lon"].min())
-    lon_max = float(field["lon"].max())
-    lat_min = float(field["lat"].min())
-    lat_max = float(field["lat"].max())
+    extent = DOMAIN_INFO["extent"]
 
-    ax.set_extent(
-        (lon_min, lon_max, lat_min, lat_max),
-        crs=ccrs.PlateCarree(),
-    )
+    if extent is None:
+        ax.set_global()
+    else:
+        ax.set_extent(extent, crs=ccrs.PlateCarree())
 
     ax.coastlines(resolution="110m", linewidth=0.8)
     ax.add_feature(cfeature.BORDERS, linewidth=0.4)
@@ -299,6 +308,28 @@ def configure_map_axis(
     gl.ylabel_style = {"size": 8}
     gl.xformatter = LONGITUDE_FORMATTER
     gl.yformatter = LATITUDE_FORMATTER
+
+    if DOMAIN_INFO["xticks"] is not None:
+        gl.xlocator = mticker.FixedLocator(DOMAIN_INFO["xticks"])
+    if DOMAIN_INFO["yticks"] is not None:
+        gl.ylocator = mticker.FixedLocator(DOMAIN_INFO["yticks"])
+
+
+def prepare_field_for_plot(field: xr.DataArray) -> tuple[xr.DataArray, np.ndarray]:
+    lon = np.asarray(field["lon"].values, dtype=float)
+
+    # Para mapas regionais com extent em -180..180,
+    # converter a longitude apenas para visualização.
+    if DOMAIN_INFO["extent"] is not None and np.nanmax(lon) > 180.0:
+        lon_plot = ((lon + 180.0) % 360.0) - 180.0
+        order = np.argsort(lon_plot)
+        field_plot = field.isel(lon=order)
+        lon_plot = lon_plot[order]
+    else:
+        field_plot = field
+        lon_plot = lon
+
+    return field_plot, lon_plot
 
 
 def plot_period_metric(
@@ -351,10 +382,12 @@ def plot_period_metric(
             field = fields[key]
             aggregate = aggregates[key]
 
+            field_plot, lon_plot = prepare_field_for_plot(field)
+
             last_image = ax.pcolormesh(
-                field["lon"],
-                field["lat"],
-                field,
+                lon_plot,
+                field_plot["lat"],
+                field_plot,
                 transform=ccrs.PlateCarree(),
                 cmap=cfg["cmap"],
                 vmin=cfg["vmin"],
@@ -364,7 +397,6 @@ def plot_period_metric(
 
             configure_map_axis(
                 ax=ax,
-                field=field,
                 row=row,
                 col=col,
             )
@@ -410,7 +442,7 @@ def plot_period_metric(
 
     output_file = output_dir / (
         f"{metric}_{EXPERIMENTS[0][1]}_vs_{EXPERIMENTS[1][1]}_"
-        f"REG_{period}_p{lead:03d}h.png"
+        f"{DOMAIN}_{period}_p{lead:03d}h.png"
     )
 
     fig.savefig(
@@ -503,7 +535,7 @@ def main() -> None:
     print("Continuous precipitation comparison: CTL vs NEW")
     print(f"Base directory: {base_dir}")
     print(
-        "Domain treatment: full REG grid from the aggregated products; "
+        "Domain treatment: full grid from the aggregated products; "
         "no additional crop or mask"
     )
     print(
