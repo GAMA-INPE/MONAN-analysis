@@ -42,8 +42,13 @@ python precipitation_analysis_period_aggregate.py \
     --start-cycle 2026010100 \
     --end-cycle 2026011000 \
     --experiments MONAN_CTL_AMS_CAR MONAN_NEW_AMS_CAR
-    --domain GLB
+    --domain REG
 
+python precipitation_analysis_period_aggregate.py   \
+     --start-cycle 2024042000     --end-cycle 2024050100 \
+     --experiments P1_v1.4.4 P1_v2.0.0-rc \
+     --domain GLB 
+    
 Optional:
     --allow-missing
     --base-dir /path/to/analyses/precipitation
@@ -75,9 +80,9 @@ DEFAULT_EXPERIMENTS = [
 DEFAULT_REFERENCES = ["GPM", "GSMAP", "MSWEP"]
 DEFAULT_LEADS = [24, 48, 72, 96, 120, 144, 168, 192, 216, 240]
 DEFAULT_THRESHOLDS = [1, 2, 5, 10, 20, 50]
-#DEFAULT_DOMAIN = "REG"  # Options: GLB, AMS, ACC, REG
-DEFAULT_DOMAIN = "GLB"
 
+DEFAULT_DOMAIN = "GLB"  # Source domain: GLB (global) or REG (regional)
+SOURCE_DOMAINS = ("GLB", "REG")
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
@@ -122,7 +127,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--domain",
         default=DEFAULT_DOMAIN,
-        help="Domain label used in output names. Current experiment uses REG.",
+        choices=SOURCE_DOMAINS,
+        help=(
+            "Source domain of daily skill fields and aggregated NetCDFs: "
+            "GLB for global experiments; REG for regional experiments. "
+            "AMS/ACC scores are obtained by spatially subsetting GLB fields "
+            "in the TXT generator."
+        ),
     )
     parser.add_argument(
         "--cycle-step-h",
@@ -852,6 +863,7 @@ def main() -> None:
     print(f"References: {args.references}")
     print(f"Leads: {args.leads}")
     print(f"Thresholds: {args.thresholds}")
+    print(f"Source domain: {args.domain}")
     print(f"Allow missing: {allow_missing}")
     print("Continuous temporal aggregation: CDO ensmean")
     print("Categorical temporal aggregation: CDO enssum")

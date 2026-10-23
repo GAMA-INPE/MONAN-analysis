@@ -21,6 +21,7 @@ from pathlib import Path
 import numpy as np
 import xarray as xr
 
+from precipitation_analysis_config import DOMAINS
 
 REFERENCES = ("GPM", "GSMAP", "MSWEP")
 EXPERIMENTS = (
@@ -34,7 +35,8 @@ EXPERIMENTS = (
 DEFAULT_LEADS = (24, 48, 72, 96, 120, 144, 168, 192, 216, 240)
 DEFAULT_THRESHOLDS = (1.0, 2.0, 5.0, 10.0, 20.0, 50.0)
 
-REGION_ANALYSIS = "GLB"  # Options: GLB, AMS, ACC, REG
+SOURCE_DOMAIN = "GLB"      # GLB: global source; REG: regional source
+REGION_ANALYSIS = "ACC"    # GLB/AMS/ACC when source=GLB; REG when source=REG
 
 def parse_cycle(cycle):
     return datetime.strptime(cycle, "%Y%m%d%H")
@@ -56,9 +58,25 @@ def skill_input_path(base_dir, experiment, period, reference, lead, threshold):
         / period
         / "data"
         / "Skill"
-        / f"skill_{reference}_{REGION_ANALYSIS}_{period}_{lead:03d}h_thr{thr}mm.nc"
+        / f"skill_{reference}_{SOURCE_DOMAIN}_{period}_{lead:03d}h_thr{thr}mm.nc"
     )
 
+def validate_domain_configuration():
+    """Do not confuse a source grid with the area being verified."""
+    if SOURCE_DOMAIN == "GLB" and REGION_ANALYSIS in ("GLB", "AMS", "ACC"):
+        if REGION_ANALYSIS not in DOMAINS:
+            raise ValueError(f"Domain {REGION_ANALYSIS!r} is not in DOMAINS.")
+        return
+
+    if SOURCE_DOMAIN == "REG" and REGION_ANALYSIS == "REG":
+        return
+
+    raise ValueError(
+        f"Unsupported SOURCE_DOMAIN={SOURCE_DOMAIN!r}, "
+        f"REGION_ANALYSIS={REGION_ANALYSIS!r}. "
+        "REG analyses must retain the existing regional coverage/mask. "
+        "Mixed GLB/REG comparisons require an explicit common-grid mask."
+    )
 
 def output_file_path(base_dir, period, experiment_label, threshold):
     thr = threshold_label(threshold)
@@ -98,6 +116,29 @@ def standardize_lat_lon(da):
 
     return da
 
+def subset_analysis_domain(da):
+    """Spatial subset on the existing grid, without remapping or changing masks."""
+    if REGION_ANALYSIS in ("GLB", "REG"):
+        return da
+
+    domain_slice = DOMAINS[REGION_ANALYSIS]["slice"]
+    if domain_slice is None:
+        raise ValueError(f"Missing spatial bounds for {REGION_ANALYSIS}.")
+
+    lat_bounds = domain_slice["lat"]
+    lat_min, lat_max = sorted((lat_bounds.start, lat_bounds.stop))
+
+    if float(da["lat"][0]) > float(da["lat"][-1]):
+        lat_slice = slice(lat_max, lat_min)
+    else:
+        lat_slice = slice(lat_min, lat_max)
+
+    sub = da.sel(lat=lat_slice, lon=domain_slice["lon"])
+
+    if sub.sizes.get("lat", 0) == 0 or sub.sizes.get("lon", 0) == 0:
+        raise ValueError(f"Empty spatial selection for {REGION_ANALYSIS}.")
+
+    return sub
 
 def load_contingencies(path):
     if not path.exists():
@@ -111,7 +152,9 @@ def load_contingencies(path):
                     f"Variable {name} not found in {path}. "
                     f"Available: {list(ds.data_vars)}"
                 )
-            contingency[name] = standardize_lat_lon(ds[name].load()).astype("float64")
+            field = standardize_lat_lon(ds[name])
+            field = subset_analysis_domain(field)
+            contingency[name] = field.load().astype("float64")
 
     ref = contingency["H"]
     for name in ("M", "F", "C"):
@@ -195,6 +238,7 @@ def write_txt(path, experiment_label, experiment_name, start_cycle, end_cycle,
         f.write("# Period-aggregated precipitation skill scores\n")
         f.write(f"# Experiment = {experiment_label} ({experiment_name})\n")
         f.write(f"# Region = {REGION_ANALYSIS} \n")
+        f.write(f"# Source domain = {SOURCE_DOMAIN}\n")
         f.write(f"# Threshold = {threshold:g} mm / 24 h\n")
         f.write(f"# Initialization cycles = {start_cycle} .. {end_cycle}\n")
         f.write("# Temporal aggregation = summed H/M/F/C over initialization cycles\n")
@@ -309,6 +353,7 @@ def parse_args():
 
 def main():
     args = parse_args()
+    validate_domain_configuration()
 
     start = parse_cycle(args.start_cycle)
     end = parse_cycle(args.end_cycle)
@@ -322,6 +367,7 @@ def main():
     print("Period-aggregated skill-score TXT generation")
     print(f"Start cycle: {args.start_cycle}")
     print(f"End cycle:   {args.end_cycle}")
+    print(f"Source domain: {SOURCE_DOMAIN}; analysis domain: {REGION_ANALYSIS}")
     print(f"Leads: {tuple(args.leads)}")
     print(f"Thresholds: {tuple(args.thresholds)}")
     print("Method: aggregated H/M/F/C -> cos(latitude) spatial totals -> scores")

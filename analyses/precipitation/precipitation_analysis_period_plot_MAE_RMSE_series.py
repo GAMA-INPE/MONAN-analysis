@@ -80,6 +80,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import xarray as xr
 
+from precipitation_analysis_config import DOMAINS
 
 # =============================================================================
 # Configuration
@@ -96,7 +97,8 @@ EXPERIMENTS = (
     ("P1_v2.0.0-rc", "v2.0.0-rc"),
 )
 
-REGION_ANALYSIS = "GLB"  # Options: GLB, AMS, ACC, REG
+SOURCE_DOMAIN = "GLB"
+REGION_ANALYSIS = "GLB"  # GLB, AMS, ACC
 
 REFERENCES = ("GPM", "GSMAP", "MSWEP")
 
@@ -222,11 +224,11 @@ def input_path(
 
     if metric == "MAE":
         filename = (
-            f"mae_{reference}_{REGION_ANALYSIS}_{period}_mean_{lead:03d}h.nc"
+            f"mae_{reference}_{SOURCE_DOMAIN}_{period}_mean_{lead:03d}h.nc"
         )
     elif metric == "RMSE":
         filename = (
-            f"rmse_{reference}_{REGION_ANALYSIS}_{period}_{lead:03d}h.nc"
+            f"rmse_{reference}_{SOURCE_DOMAIN}_{period}_{lead:03d}h.nc"
         )
     else:
         raise ValueError(
@@ -239,7 +241,6 @@ def input_path(
 # =============================================================================
 # Coordinate and spatial helpers
 # =============================================================================
-
 def standardize_lat_lon(da: xr.DataArray) -> xr.DataArray:
     """
     Rename latitude/longitude to lat/lon and normalize longitude to 0..360.
@@ -295,7 +296,7 @@ def subset_region(
     introduced.
     """
     if region_code == FULL_DOMAIN_CODE:
-        return da
+        return subset_analysis_domain(da)
 
     cfg = REGIONS[region_code]
 
@@ -340,6 +341,34 @@ def subset_region(
 
     return sub
 
+def subset_analysis_domain(da: xr.DataArray) -> xr.DataArray:
+    cfg = DOMAINS[REGION_ANALYSIS]
+    domain_slice = cfg["slice"]
+
+    if domain_slice is None:
+        return da
+
+    lat_start = domain_slice["lat"].start
+    lat_end = domain_slice["lat"].stop
+
+    if float(da.lat[0]) > float(da.lat[-1]):
+        lat_slice = slice(max(lat_start, lat_end),
+                          min(lat_start, lat_end))
+    else:
+        lat_slice = slice(min(lat_start, lat_end),
+                          max(lat_start, lat_end))
+
+    sub = da.sel(
+        lat=lat_slice,
+        lon=domain_slice["lon"],
+    )
+
+    if sub.sizes["lat"] == 0 or sub.sizes["lon"] == 0:
+        raise ValueError(
+            f"Empty subset for {REGION_ANALYSIS}"
+        )
+
+    return sub
 
 def latitude_weights(da: xr.DataArray) -> xr.DataArray:
     """Cosine(latitude) weights for a regular lat/lon grid."""
