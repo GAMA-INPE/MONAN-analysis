@@ -42,6 +42,7 @@ python precipitation_analysis_period_aggregate.py \
     --start-cycle 2026010100 \
     --end-cycle 2026011000 \
     --experiments MONAN_CTL_AMS_CAR MONAN_NEW_AMS_CAR
+    --domain GLB
 
 Optional:
     --allow-missing
@@ -72,9 +73,10 @@ DEFAULT_EXPERIMENTS = [
 ]
 
 DEFAULT_REFERENCES = ["GPM", "GSMAP", "MSWEP"]
-DEFAULT_LEADS = [24, 48, 72, 96, 120]
+DEFAULT_LEADS = [24, 48, 72, 96, 120, 144, 168, 192, 216, 240]
 DEFAULT_THRESHOLDS = [1, 2, 5, 10, 20, 50]
-DEFAULT_DOMAIN = "REG"
+#DEFAULT_DOMAIN = "REG"  # Options: GLB, AMS, ACC, REG
+DEFAULT_DOMAIN = "GLB"
 
 
 def parse_args() -> argparse.Namespace:
@@ -309,6 +311,29 @@ def cdo_enssum_skill(paths: list[Path], output_path: Path) -> None:
     _run_cdo_command(command)
 
 
+def remove_singleton_time(
+    data: xr.DataArray | xr.Dataset,
+    path: Path,
+) -> xr.DataArray | xr.Dataset:
+    """Remove the single valid-time axis from a period-aggregation field.
+
+    The verification time changes between forecast initialization cycles.
+    The 2-D spatial field is the quantity to aggregate for a fixed lead.
+    Never silently select a time if more than one is present.
+    """
+    if "time" not in data.dims:
+        return data.drop_vars("time", errors="ignore")
+
+    n_times = data.sizes["time"]
+    if n_times != 1:
+        raise ValueError(
+            f"Expected exactly one verification time in {path}; "
+            f"found {n_times}."
+        )
+
+    return data.isel(time=0, drop=True)
+
+
 def load_precip(path: Path) -> xr.DataArray:
     with xr.open_dataset(path) as ds:
         if PRECIP_VAR_NAME not in ds:
@@ -322,7 +347,7 @@ def load_precip(path: Path) -> xr.DataArray:
     if "longitude" in da.dims or "longitude" in da.coords:
         da = da.rename({"longitude": "lon"})
 
-    return da
+    return remove_singleton_time(da, path)
 
 
 def normalize_lat_lon_dataset(ds: xr.Dataset) -> xr.Dataset:
@@ -342,6 +367,11 @@ def assert_exact_grid(
     path: Path,
 ) -> None:
     try:
+        if reference.sizes != candidate.sizes:
+            raise ValueError(
+                f"Different spatial dimensions: "
+                f"{dict(reference.sizes)} vs {dict(candidate.sizes)}"
+            )
         xr.align(reference, candidate, join="exact", copy=False)
     except ValueError as exc:
         raise ValueError(
@@ -373,12 +403,12 @@ def count_valid_cases(paths: list[Path]) -> xr.DataArray:
 def validate_skill_grids(paths: list[Path]) -> None:
     with xr.open_dataset(paths[0]) as ds:
         ds = normalize_lat_lon_dataset(ds)
-        first = ds["H"].load()
+        first = remove_singleton_time(ds["H"].load(), paths[0])
 
     for path in paths[1:]:
         with xr.open_dataset(path) as ds:
             ds = normalize_lat_lon_dataset(ds)
-            candidate = ds["H"].load()
+            candidate = remove_singleton_time(ds["H"].load(), path)
         assert_exact_grid(first, candidate, path)
 
 
@@ -561,7 +591,9 @@ def aggregate_skill_with_cdo(
         cdo_enssum_skill(existing, tmp_path)
         with xr.open_dataset(tmp_path) as ds:
             ds = normalize_lat_lon_dataset(ds)
-            aggregated = ds[list(SKILL_FIELD_NAMES)].load()
+            aggregated = remove_singleton_time(
+                ds[list(SKILL_FIELD_NAMES)].load(), tmp_path
+            )
 
     for name in SKILL_FIELD_NAMES:
         aggregated[name] = aggregated[name].astype("int32")
@@ -651,6 +683,7 @@ def save_skill_dataset(
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
     ds = fields.copy()
+    ds.encoding.pop("unlimited_dims", None)
 
     ds["H_total"] = xr.DataArray(np.int64(raw_counts["H"]))
     ds["M_total"] = xr.DataArray(np.int64(raw_counts["M"]))

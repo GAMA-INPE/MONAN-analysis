@@ -2,13 +2,14 @@
 # -*- coding: utf-8 -*-
 
 """
-Generate period-aggregated precipitation skill-score TXT tables for CTL and NEW.
+Generate period-aggregated precipitation skill-score TXT tables for experiments.
 
 Reads aggregated H/M/F/C fields directly from NetCDF files in:
     output/<EXPERIMENT>/aggregated/<PERIOD>/data/Skill/
 
 Scores are recomputed from cos(latitude)-weighted contingency totals.
 
+Usage:  python precipitation_analysis_period_generate_skill_txt.py --start-cycle YYYYMMDDHH --end-cycle YYYYMMDDHH
 """
 
 from __future__ import annotations
@@ -23,17 +24,17 @@ import xarray as xr
 
 REFERENCES = ("GPM", "GSMAP", "MSWEP")
 EXPERIMENTS = (
-    ("MONAN_CTL_AMS_CAR", "CTL"),
-    ("MONAN_NEW_AMS_CAR", "NEW"),
-    ("MONAN_NEW2_AMS_CAR", "NEW2")
+#    ("MONAN_CTL_AMS_CAR", "CTL"),
+#    ("MONAN_NEW_AMS_CAR", "NEW"),
+#    ("MONAN_NEW2_AMS_CAR", "NEW2")
+    ("P1_v1.4.4", "v1.4.4"),
+    ("P1_v2.0.0-rc", "v2.0.0-rc"),
 )
 
-DEFAULT_LEADS = (24, 48, 72, 96, 120)
+DEFAULT_LEADS = (24, 48, 72, 96, 120, 144, 168, 192, 216, 240)
 DEFAULT_THRESHOLDS = (1.0, 2.0, 5.0, 10.0, 20.0, 50.0)
 
-REGION_ANALYSIS = "REG"
-REGION_DESCRIPTION = "full common REG grid used by CTL and NEW verification"
-
+REGION_ANALYSIS = "GLB"  # Options: GLB, AMS, ACC, REG
 
 def parse_cycle(cycle):
     return datetime.strptime(cycle, "%Y%m%d%H")
@@ -193,7 +194,7 @@ def write_txt(path, experiment_label, experiment_name, start_cycle, end_cycle,
     with path.open("w", encoding="utf-8") as f:
         f.write("# Period-aggregated precipitation skill scores\n")
         f.write(f"# Experiment = {experiment_label} ({experiment_name})\n")
-        f.write(f"# Region = {REGION_ANALYSIS} ({REGION_DESCRIPTION})\n")
+        f.write(f"# Region = {REGION_ANALYSIS} \n")
         f.write(f"# Threshold = {threshold:g} mm / 24 h\n")
         f.write(f"# Initialization cycles = {start_cycle} .. {end_cycle}\n")
         f.write("# Temporal aggregation = summed H/M/F/C over initialization cycles\n")

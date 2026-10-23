@@ -5,11 +5,11 @@
 precipitation_analysis_period_plot_continuous.py
 
 Compare period-aggregated continuous precipitation verification metrics
-between MONAN CTL and MONAN NEW experiments.
+between experiments.
 
 Layout
 ------
-rows:    CTL, NEW
+rows:    Exp 1, Exp 2
 columns: GPM, GSMAP, MSWEP
 
 Metrics
@@ -28,6 +28,8 @@ Methodological conventions
 - The scalar RMSE shown in each panel is:
       sqrt(weighted spatial mean(mean_sqerr))
   and is therefore not the spatial mean of the RMSE map.
+
+Usage:  python precipitation_analysis_period_plot_continuous.py --start-cycle YYYYMMDDHH --end-cycle YYYYMMDDHH
 """
 
 from __future__ import annotations
@@ -460,7 +462,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description=(
             "Plot period-aggregated Bias, MAE and RMSE "
-            "for MONAN CTL and NEW experiments."
+            "for experiments."
         )
     )
 
@@ -532,7 +534,7 @@ def main() -> None:
     )
 
     print("=" * 80)
-    print("Continuous precipitation comparison: CTL vs NEW")
+    print("Continuous precipitation comparison: Bias, MAE, RMSE")
     print(f"Base directory: {base_dir}")
     print(
         "Domain treatment: full grid from the aggregated products; "

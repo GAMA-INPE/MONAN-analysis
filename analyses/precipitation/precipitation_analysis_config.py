@@ -40,9 +40,9 @@ SEL_VERBOSE_LEVEL = 2
 # =================================================================================================
 # Forecast cycle configuration
 # =================================================================================================
-YEAR = "2024"
-MONTH = "04"
-DAY = "21"
+YEAR = "2026"
+MONTH = "10"
+DAY = "01"
 HOUR = "00"
 
 FORECAST_TOTAL_H = 240
@@ -77,19 +77,24 @@ MONAN_INPUT_FILE = (f"/lustre/projetos/monan_adm/saulo.freitas/for_AndreLyra/"
 # =================================================================================================
 #DIR_MONAN_PREOP = ( "/lustre/projetos/monan_adm/monan/ecf_PREOPER/"
 #    "MONAN-WorkFlow-OPER/MONAN_PRE_OPER/MONAN/scripts_CD-CT/dataout/flushout" )
-#DIR_MONAN_PREOP = ( "/p/projetos/monan_adm/monan/tc/1.4.4/P1_10km/" )
-DIR_MONAN_PREOP = "/p/projetos/monan_adm/monan/tc/2.0.0-rc/P1/"
-MONAN_FLUSHOUT_SUBDIR = "Post" # Options: "Post" if there is a subdirectory for flushout files, otherwise use ""
+
+# Use this for the MONAN 1.4.4 version, which is the one used in the P1 experiment
+DIR_MONAN_PREOP = "/p/projetos/monan_adm/monan/tc/1.4.4/P1_10km/"
+MONAN_FLUSHOUT_SUBDIR = "" # Options: "Post" if there is a subdirectory for flushout files, otherwise use ""
+
+# Use this for the MONAN 2.0.0-rc version, which is the one used in the P1 experiment
+#DIR_MONAN_PREOP = "/p/projetos/monan_adm/monan/tc/2.0.0-rc/P1/"
+#MONAN_FLUSHOUT_SUBDIR = "Post" # Options: "Post" if there is a subdirectory for flushout files, otherwise use ""
 
 # =================================================================================================
 # MONAN output configuration
 # =================================================================================================
-EXPERIMENT_TAG = "P1_v2.0.0-rc"
+EXPERIMENT_TAG = "P1_v1.4.4"  # Used to create output directories for this specific experiment
 
 # =================================================================================================
 # Analysis switches
 # =================================================================================================
-GENERATE_MONAN_24H_ACCUM = True
+GENERATE_MONAN_24H_ACCUM = False
 RUN_PLOTTING = True
 RUN_REMAP = True
 OVERWRITE_REMAP = True
@@ -108,7 +113,8 @@ MONAN_LAT_NAME = "latitude"
 MONAN_LON_NAME = "longitude"
 MONAN_TIME_DIM_NAME = "Time"
 
-OBS_REFERENCE_LIST = ["GPM", "GSMAP", "MSWEP"]
+#OBS_REFERENCE_LIST = ["GPM", "GSMAP", "MSWEP"]
+OBS_REFERENCE_LIST = ["MSWEP"]
 STATS_METRICS_TO_ANALYZE = [
     "bias",
     "mae",
