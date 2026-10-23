@@ -4,8 +4,8 @@
 """
 precipitation_analysis_period_plot_regional_series.py
 
-Generate lead-time series of period-aggregated MAE and RMSE for the MONAN
-CTL and NEW experiments, separately for South American sub-regions.
+Generate lead-time series of period-aggregated MAE and RMSE for the 
+experiments, separately for South American sub-regions.
 
 IMPORTANT
 ---------
@@ -53,7 +53,12 @@ Output
    2 metrics (MAE, RMSE) x 3 observational references.
 
    Each figure contains the selected regional subplots and two lines:
-   CTL and NEW.
+   Exp 1 and Exp 2.
+
+Usage
+-----
+python precipitation_analysis_period_plot_regional_series.py \
+    --start-cycle YYYYMMDDHH --end-cycle YYYYMMDDHH 
 
 Example
 -------
@@ -80,11 +85,18 @@ import xarray as xr
 # Configuration
 # =============================================================================
 
+#EXPERIMENTS = (
+#    ("MONAN_CTL_AMS_CAR", "CTL"),
+#    ("MONAN_NEW_AMS_CAR", "NEW"),
+#    ("MONAN_NEW2_AMS_CAR", "NEW2")    
+#)
+
 EXPERIMENTS = (
-    ("MONAN_CTL_AMS_CAR", "CTL"),
-    ("MONAN_NEW_AMS_CAR", "NEW"),
-    ("MONAN_NEW2_AMS_CAR", "NEW2")    
+    ("P1_v1.4.4", "v1.4.4"),
+    ("P1_v2.0.0-rc", "v2.0.0-rc"),
 )
+
+REGION_ANALYSIS = "GLB"  # Options: GLB, AMS, ACC, REG
 
 REFERENCES = ("GPM", "GSMAP", "MSWEP")
 
@@ -95,7 +107,7 @@ REFERENCE_LABELS = {
 }
 
 DEFAULT_METRICS = ("MAE", "RMSE")
-DEFAULT_LEADS = (24, 48, 72, 96, 120)
+DEFAULT_LEADS = (24, 48, 72, 96, 120, 144, 168, 192, 216, 240)
 
 PRECIP_VAR_NAME = "prec"
 MEAN_SQERR_VAR_NAME = "mean_sqerr"
@@ -146,7 +158,7 @@ REGIONS = {
 }
 
 FULL_DOMAIN_CODE = "FULL"
-FULL_DOMAIN_NAME = "Full REG domain"
+FULL_DOMAIN_NAME = "Full " + REGION_ANALYSIS + " domain"
 
 DEFAULT_REGIONS = tuple(REGIONS)
 
@@ -210,11 +222,11 @@ def input_path(
 
     if metric == "MAE":
         filename = (
-            f"mae_{reference}_REG_{period}_mean_{lead:03d}h.nc"
+            f"mae_{reference}_{REGION_ANALYSIS}_{period}_mean_{lead:03d}h.nc"
         )
     elif metric == "RMSE":
         filename = (
-            f"rmse_{reference}_REG_{period}_{lead:03d}h.nc"
+            f"rmse_{reference}_{REGION_ANALYSIS}_{period}_{lead:03d}h.nc"
         )
     else:
         raise ValueError(
@@ -279,7 +291,7 @@ def subset_region(
     """
     Crop a DataArray to one literature-defined rectangular sub-domain.
 
-    This only crops the existing common REG grid. No mask or remapping is
+    This only crops the existing common grid. No mask or remapping is
     introduced.
     """
     if region_code == FULL_DOMAIN_CODE:
@@ -714,7 +726,7 @@ def plot_full_domain_metric(
     )
 
     fig.suptitle(
-        f"Full REG domain {metric} by forecast lead | "
+        f"Full {REGION_ANALYSIS} domain {metric} by forecast lead | "
         f"{EXPERIMENT_TITLE_LABEL}\n"
         f"Initialization cycles: "
         f"{start_cycle}–{end_cycle}",
@@ -742,7 +754,7 @@ def plot_full_domain_metric(
 
     output_path = output_dir / (
         f"{metric}_{EXPERIMENT_FILENAME_LABEL}_"
-        f"full_REG_{period}.png"
+        f"full_{REGION_ANALYSIS}_{period}.png"
     )
 
     fig.savefig(
@@ -770,7 +782,7 @@ def plot_metric_reference(
     output_root: Path,
 ) -> Path:
     """
-    Plot CTL and NEW lead series for one metric/reference across regions.
+    Plot forecast lead series for one metric/reference across regions for experiments.
     """
     n_regions = len(region_codes)
     ncols = min(4, n_regions)
@@ -936,7 +948,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description=(
             "Calculate regional MAE/RMSE directly from period-aggregated "
-            "NetCDF fields and plot CTL-vs-NEW lead-time series."
+            "NetCDF fields and plot lead-time series for experiments."
         )
     )
 
