@@ -30,6 +30,7 @@ This file was created with the assistance of GitHub Copilot.
 PREFIX_MONAN_DIAG_STRING = "MONAN_DIAG_G_POS_GFS"
 # Strings for each grid configuration
 GRID_DICT = {
+    "5km_regional_AMS_CAR": "x23592962.REG.AMS_CAR",
     "10km_uniform": "x5898242",
     "24km_uniform": "x1024002"
     }

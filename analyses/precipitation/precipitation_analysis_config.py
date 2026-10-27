@@ -40,9 +40,9 @@ SEL_VERBOSE_LEVEL = 2
 # =================================================================================================
 # Forecast cycle configuration
 # =================================================================================================
-YEAR = "2026"
-MONTH = "10"
-DAY = "01"
+YEAR = "2024"
+MONTH = "04"
+DAY = "20"
 HOUR = "00"
 
 FORECAST_TOTAL_H = 240
@@ -50,36 +50,36 @@ LEAD_STEP_H = 24
 ACCUM_WINDOW_H = 24
 
 # =================================================================================================
-# MONAN configuration
+# MONAN file, grid and type configuration
 # =================================================================================================
-GRID_SPEC = "10km_uniform"
+MODEL_TYPE = "REGIONAL"  # Options: "GLOBAL" or "REGIONAL"
+GRID_SPEC = "5km_regional_AMS_CAR"  # Options: "5km_regional_AMS_CAR", "10km_uniform", "24km_uniform"
 VERTICAL_LEVEL_SPEC = "55"
-MONAN_FILE_PREFIX = monan_config.PREFIX_MONAN_DIAG_STRING
+MONAN_FILE_PREFIX = "MONAN_DIAG_R_POS_GFS" #Options: "MONAN_DIAG_G_POS_GFS" or "MONAN_DIAG_R_POS_GFS"
 MONAN_GRID_STRING = monan_config.GRID_DICT[GRID_SPEC]
 MONAN_VERTICAL_LEVEL_STRING = monan_config.VERTICAL_LEVEL_DICT[VERTICAL_LEVEL_SPEC]
 DATE_FORMAT_STRING = monan_config.DATE_FORMAT_STRING
+EXPERIMENT_TAG = "P1_v1.4.4_Reg"  # Used to create output directories for this specific experiment
 
 # =================================================================================================
 # MONAN input configuration
 # =================================================================================================
 MONAN_INPUT_MODE = "flushout" # Options: "single_time_series" or "flushout"
 
-# =================================================================================================
 # MONAN input for single_time_series mode
-# =================================================================================================
 MONAN_INPUT_FILE = (f"/lustre/projetos/monan_adm/saulo.freitas/for_AndreLyra/"
     f"ams_car_01to10Jan2026_5days_fcst/MONAN_NEW2/"
     f"for_dc_all_diag_dc.{YEAR}-{MONTH}-{DAY}_{HOUR}.00.00.nc"
 )
 
-# =================================================================================================
 # MONAN input for flushout mode
-# =================================================================================================
+# Use this for the MONAN pre-operational version
 #DIR_MONAN_PREOP = ( "/lustre/projetos/monan_adm/monan/ecf_PREOPER/"
 #    "MONAN-WorkFlow-OPER/MONAN_PRE_OPER/MONAN/scripts_CD-CT/dataout/flushout" )
 
 # Use this for the MONAN 1.4.4 version, which is the one used in the P1 experiment
-DIR_MONAN_PREOP = "/p/projetos/monan_adm/monan/tc/1.4.4/P1_10km/"
+#DIR_MONAN_PREOP = "/p/projetos/monan_adm/monan/tc/1.4.4/P1_10km/"
+DIR_MONAN_PREOP = "/p/projetos/monan_adm/monan/tc/1.4.4/P1_5km_regional_AMS_CAR/"
 MONAN_FLUSHOUT_SUBDIR = "" # Options: "Post" if there is a subdirectory for flushout files, otherwise use ""
 
 # Use this for the MONAN 2.0.0-rc version, which is the one used in the P1 experiment
@@ -87,21 +87,37 @@ MONAN_FLUSHOUT_SUBDIR = "" # Options: "Post" if there is a subdirectory for flus
 #MONAN_FLUSHOUT_SUBDIR = "Post" # Options: "Post" if there is a subdirectory for flushout files, otherwise use ""
 
 # =================================================================================================
-# MONAN output configuration
+# Paths Configuration
+# Adjust these paths to your environment if needed.
 # =================================================================================================
-EXPERIMENT_TAG = "P1_v1.4.4"  # Used to create output directories for this specific experiment
+DIR_NETCDF_GPM_24H = "/lustre/projetos/monan_gam/andre.lyra/NetCDFs/precip_24h/GPM_IMERG"
+DIR_NETCDF_GSMAP_24H = "/lustre/projetos/monan_gam/andre.lyra/NetCDFs/precip_24h/GSMAP"
+DIR_NETCDF_MSWEP_24H = "/lustre/projetos/monan_gam/andre.lyra/NetCDFs/precip_24h/MSWEP"
 
-# =================================================================================================
-# Analysis switches
-# =================================================================================================
-GENERATE_MONAN_24H_ACCUM = False
-RUN_PLOTTING = True
-RUN_REMAP = True
-OVERWRITE_REMAP = True
-OVERWRITE_OUTPUTS = True
-SAVE_INTERMEDIATE_NETCDF = True
-SAVE_SKILL_NETCDF = True
-SAVE_SKILL_TXT = True
+DIR_CARTOPY_DATA = "/lustre/projetos/monan_gam/andre.lyra/cartopy"
+
+BASE_ANALYSIS_DIR = "/lustre/projetos/monan_gam/Scripts/MONAN-analysis/analyses/precipitation"
+DIR_INPUT = f"{BASE_ANALYSIS_DIR}/input/{EXPERIMENT_TAG}"
+DIR_INPUT_RAW = f"{DIR_INPUT}/raw"
+DIR_INPUT_INTERMEDIATE = f"{DIR_INPUT}/intermediate"
+DIR_INPUT_PROCESSED = f"{DIR_INPUT}/processed"
+
+DIR_OUTPUT = f"{BASE_ANALYSIS_DIR}/output/{EXPERIMENT_TAG}"
+
+DIR_OUTPUT_DATA = f"{DIR_OUTPUT}/data"
+DIR_OUTPUT_DATA_BIAS = os.path.join(DIR_OUTPUT_DATA, "Bias")
+DIR_OUTPUT_DATA_MAE = os.path.join(DIR_OUTPUT_DATA, "MAE")
+DIR_OUTPUT_DATA_SQERR = os.path.join(DIR_OUTPUT_DATA, "SQERR")
+DIR_OUTPUT_DATA_SKILL = os.path.join(DIR_OUTPUT_DATA, "Skill")
+DIR_OUTPUT_DATA_MONAN = os.path.join(DIR_OUTPUT_DATA, "MONAN")
+
+DIR_OUTPUT_FIGS = os.path.join(DIR_OUTPUT, "figs")
+DIR_OUTPUT_FIG_MONAN = os.path.join(DIR_OUTPUT_FIGS, "MONAN")
+DIR_OUTPUT_FIG_BIAS = os.path.join(DIR_OUTPUT_FIGS, "Bias")
+DIR_OUTPUT_FIG_MAE = os.path.join(DIR_OUTPUT_FIGS, "MAE")
+DIR_OUTPUT_FIG_RMSE = os.path.join(DIR_OUTPUT_FIGS, "RMSE")
+
+DIR_OUTPUT_TXT_SKILL = os.path.join(DIR_OUTPUT, "txt", "Skill")
 
 # =================================================================================================
 # Variables and references
@@ -113,8 +129,7 @@ MONAN_LAT_NAME = "latitude"
 MONAN_LON_NAME = "longitude"
 MONAN_TIME_DIM_NAME = "Time"
 
-#OBS_REFERENCE_LIST = ["GPM", "GSMAP", "MSWEP"]
-OBS_REFERENCE_LIST = ["MSWEP"]
+OBS_REFERENCE_LIST = ["GPM", "GSMAP", "MSWEP"]
 STATS_METRICS_TO_ANALYZE = [
     "bias",
     "mae",
@@ -126,10 +141,14 @@ SKILL_THRESHOLDS_MM = [1, 2, 5, 10, 20, 50]
 SKILL_METRICS_TO_SAVE = ["ACC", "POD", "POFD", "FAR", "CSI", "F1"]
 
 # =================================================================================================
-# Domains
-# lon is kept in 0 to 360 to match the current MONAN precipitation workflow
+# Domains Configuration
 # =================================================================================================
-DOMAINS = {
+DOMAIN_GROUPS = {
+    "GLOBAL": ("GLB", "AMS", "ACC"),
+    "REGIONAL": ("REG",),
+}
+
+DOMAINS_CONFIG = {
     "GLB": {
         "monan_domain_key": "global",
         "slice": None,
@@ -157,14 +176,35 @@ DOMAINS = {
         "xticks": list(range(-110, -34, 10)),
         "yticks": list(range(-10, 36, 10)),
     },
-#    "REG": {
-#        "monan_domain_key": None,
-#        "slice": None,
-#        "extent": [-100, -25, -55, 35],
-#        "xticks": list(range(-100, -24, 10)),
-#        "yticks": list(range(-50, 31, 10)),
-#    },    
+    "REG": {
+        "monan_domain_key": None,
+        "slice": None,
+        "extent": [-100, -25, -55, 35],
+        "xticks": list(range(-100, -24, 10)),
+        "yticks": list(range(-50, 31, 10)),
+    },
 }
+
+# Active domains based on the selected model type
+if MODEL_TYPE not in DOMAIN_GROUPS:
+    raise ValueError(f"Invalid MODEL_TYPE: {MODEL_TYPE}")
+
+DOMAINS = {
+    name: DOMAINS_CONFIG[name]
+    for name in DOMAIN_GROUPS[MODEL_TYPE]
+}
+
+# =================================================================================================
+# Analysis switches
+# =================================================================================================
+GENERATE_MONAN_24H_ACCUM = True
+RUN_PLOTTING = True
+RUN_REMAP = True
+OVERWRITE_REMAP = True
+OVERWRITE_OUTPUTS = True
+SAVE_INTERMEDIATE_NETCDF = True
+SAVE_SKILL_NETCDF = True
+SAVE_SKILL_TXT = True
 
 # =================================================================================================
 # Plotting configuration
@@ -218,39 +258,6 @@ FIG_DPI = 300
 FIGSIZE_GLOBAL = (10, 5)
 FIGSIZE_REGIONAL = (10, 5)
 
-# =================================================================================================
-# Paths
-# Adjust these paths to your environment if needed.
-# =================================================================================================
-DIR_NETCDF_GPM_24H = "/lustre/projetos/monan_gam/andre.lyra/NetCDFs/precip_24h/GPM_IMERG"
-DIR_NETCDF_GSMAP_24H = "/lustre/projetos/monan_gam/andre.lyra/NetCDFs/precip_24h/GSMAP"
-DIR_NETCDF_MSWEP_24H = "/lustre/projetos/monan_gam/andre.lyra/NetCDFs/precip_24h/MSWEP"
 
-DIR_CARTOPY_DATA = "/lustre/projetos/monan_gam/andre.lyra/cartopy"
-
-BASE_ANALYSIS_DIR = "/lustre/projetos/monan_gam/Scripts/MONAN-analysis/analyses/precipitation"
-DIR_INPUT = f"{BASE_ANALYSIS_DIR}/input/{EXPERIMENT_TAG}"
-DIR_INPUT_RAW = f"{DIR_INPUT}/raw"
-DIR_INPUT_INTERMEDIATE = f"{DIR_INPUT}/intermediate"
-DIR_INPUT_PROCESSED = f"{DIR_INPUT}/processed"
-
-DIR_OUTPUT = f"{BASE_ANALYSIS_DIR}/output/{EXPERIMENT_TAG}"
-
-DIR_OUTPUT_DATA = f"{DIR_OUTPUT}/data"
-DIR_OUTPUT_DATA_BIAS = os.path.join(DIR_OUTPUT_DATA, "Bias")
-DIR_OUTPUT_DATA_MAE = os.path.join(DIR_OUTPUT_DATA, "MAE")
-DIR_OUTPUT_DATA_SQERR = os.path.join(DIR_OUTPUT_DATA, "SQERR")
-DIR_OUTPUT_DATA_SKILL = os.path.join(DIR_OUTPUT_DATA, "Skill")
-DIR_OUTPUT_DATA_MONAN = os.path.join(DIR_OUTPUT_DATA, "MONAN")
-
-DIR_OUTPUT_TXT = f"{DIR_OUTPUT}/txt"
-DIR_OUTPUT_TXT_SKILL = os.path.join(DIR_OUTPUT_TXT, "Skill")
-
-DIR_OUTPUT_FIGS = os.path.join(DIR_OUTPUT, "figs")
-DIR_OUTPUT_FIG_MONAN = os.path.join(DIR_OUTPUT_FIGS, "MONAN")
-DIR_OUTPUT_FIG_BIAS = os.path.join(DIR_OUTPUT_FIGS, "Bias")
-DIR_OUTPUT_FIG_MAE = os.path.join(DIR_OUTPUT_FIGS, "MAE")
-DIR_OUTPUT_FIG_RMSE = os.path.join(DIR_OUTPUT_FIGS, "RMSE")
-DIR_OUTPUT_TXT = os.path.join(DIR_OUTPUT, "txt")
 
 

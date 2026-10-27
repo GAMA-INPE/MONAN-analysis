@@ -101,7 +101,7 @@ def create_folder_structure() -> None:
         pa_config.DIR_OUTPUT,
         pa_config.DIR_OUTPUT_DATA,
         pa_config.DIR_OUTPUT_FIGS,
-        pa_config.DIR_OUTPUT_TXT,
+        pa_config.DIR_OUTPUT_TXT_SKILL,
     ]:
         os.makedirs(folder, exist_ok=True)
 
