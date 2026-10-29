@@ -41,8 +41,8 @@ SEL_VERBOSE_LEVEL = 2
 # Forecast cycle configuration
 # =================================================================================================
 YEAR = "2024"
-MONTH = "04"
-DAY = "20"
+MONTH = "05"
+DAY = "01"
 HOUR = "00"
 
 FORECAST_TOTAL_H = 240
@@ -52,14 +52,25 @@ ACCUM_WINDOW_H = 24
 # =================================================================================================
 # MONAN file, grid and type configuration
 # =================================================================================================
-MODEL_TYPE = "REGIONAL"  # Options: "GLOBAL" or "REGIONAL"
-GRID_SPEC = "5km_regional_AMS_CAR"  # Options: "5km_regional_AMS_CAR", "10km_uniform", "24km_uniform"
+MODEL_TYPE = "REGIONAL"         # Options: "GLOBAL" or "REGIONAL"
+INITIAL_CONDITION_TYPE = "GFS"  # Options: "GFS" or "ERA5"
+MONAN_FILE_TYPE = "POS"         # Options: "POS" or "MOD"
+
+GRID_SPEC = "5km_regional_AMS_CAR"
 VERTICAL_LEVEL_SPEC = "55"
-MONAN_FILE_PREFIX = "MONAN_DIAG_R_POS_GFS" #Options: "MONAN_DIAG_G_POS_GFS" or "MONAN_DIAG_R_POS_GFS"
+
+EXPERIMENT_TAG = "P1_v1.4.4_Reg"  # Used to create output directories for this specific experiment
+
+MONAN_FILE_PREFIX = (
+    f"{monan_config.PREFIX_MONAN_SHORT}_"
+    f"{monan_config.DOMAIN_TYPE_DICT[MODEL_TYPE.lower()]}_"
+    f"{MONAN_FILE_TYPE}_"
+    f"{monan_config.INITIAL_CONDITIONS_TYPE_DICT[INITIAL_CONDITION_TYPE]}"
+)
+
 MONAN_GRID_STRING = monan_config.GRID_DICT[GRID_SPEC]
 MONAN_VERTICAL_LEVEL_STRING = monan_config.VERTICAL_LEVEL_DICT[VERTICAL_LEVEL_SPEC]
 DATE_FORMAT_STRING = monan_config.DATE_FORMAT_STRING
-EXPERIMENT_TAG = "P1_v1.4.4_Reg"  # Used to create output directories for this specific experiment
 
 # =================================================================================================
 # MONAN input configuration
@@ -179,7 +190,7 @@ DOMAINS_CONFIG = {
     "REG": {
         "monan_domain_key": None,
         "slice": None,
-        "extent": [-100, -25, -55, 35],
+        "extent": None,
         "xticks": list(range(-100, -24, 10)),
         "yticks": list(range(-50, 31, 10)),
     },

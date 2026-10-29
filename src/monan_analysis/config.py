@@ -27,12 +27,25 @@ This file was created with the assistance of GitHub Copilot.
 # Standard settings for MONAN data
 #===================================================================================================
 # Standard prefix in MONAN output filenames
+PREFIX_MONAN_SHORT = "MONAN_DIAG"
+# Global or regional domain specifications
+DOMAIN_TYPE_DICT = {
+    "global": "G",
+    "regional": "R"
+}
+INITIAL_CONDITIONS_TYPE_DICT = {
+    "GFS": "GFS",
+    "ERA5": "ERA"
+}
+# Standard prefix in MONAN output filenames
 PREFIX_MONAN_DIAG_STRING = "MONAN_DIAG_G_POS_GFS"
 # Strings for each grid configuration
 GRID_DICT = {
     "5km_regional_AMS_CAR": "x23592962.REG.AMS_CAR",
     "10km_uniform": "x5898242",
-    "24km_uniform": "x1024002"
+    "24km_uniform": "x1024002",
+    "30km_uniform": "x655362",
+    "30km_uniform_Amazonia": "x655362_AMAZONIA"    
     }
 # Strings for each vertical level configuration
 VERTICAL_LEVEL_DICT = {
