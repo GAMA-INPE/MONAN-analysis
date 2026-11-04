@@ -392,7 +392,6 @@ def main():
             / "period_comparison_figures"
             / period
             / COMPARISON_NAME
-            / SPATIAL_METHOD
             / "Skill_heatmap"
         )
     )

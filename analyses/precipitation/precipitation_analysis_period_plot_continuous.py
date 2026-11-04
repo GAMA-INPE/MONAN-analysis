@@ -70,7 +70,7 @@ EXPERIMENTS = {
 
 # Used when every experiment is global. If a regional is present, the smaller
 # regional coverage is automatically selected instead of DOMAIN.
-DOMAIN = "GLB"  # Options for global-only comparisons: GLB, AMS, ACC, REG
+DOMAIN = "ACC"  # Options for global-only comparisons: GLB, AMS, ACC, REG
 
 SOURCE_DOMAINS = {cfg["source_domain"] for cfg in EXPERIMENTS.values()}
 if not SOURCE_DOMAINS.issubset({"GLB", "REG"}):
@@ -710,10 +710,18 @@ def plot_period_metric(
         y=0.98,
     )
 
-    output_dir = output_root / period / "Continuous" / metric
+    experiments_label = "_vs_".join(EXPERIMENTS.keys())
+
+    output_dir = (
+        output_root
+        / period
+        / experiments_label
+        / "Continuous"
+        / metric
+    )
+
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    experiments_label = "_vs_".join(EXPERIMENTS.keys())
     output_file = output_dir / (
         f"{metric}_{experiments_label}_"
         f"{COMPARISON_DOMAIN}_{period}_p{lead:03d}h.png"
