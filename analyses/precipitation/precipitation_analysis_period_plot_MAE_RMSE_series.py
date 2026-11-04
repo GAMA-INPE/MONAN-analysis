@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-precipitation_analysis_period_plot_regional_series.py
+precipitation_analysis_period_plot_MAE_RMSE_series.py
 
 Generate lead-time series of period-aggregated MAE and RMSE for the 
 experiments, separately for South American sub-regions.
@@ -52,17 +52,16 @@ Output
 2. Six figures by default:
    2 metrics (MAE, RMSE) x 3 observational references.
 
-   Each figure contains the selected regional subplots and two lines:
-   Exp 1 and Exp 2.
+   Each figure contains the selected regional subplots and one line per experiment.
 
 Usage
 -----
-python precipitation_analysis_period_plot_regional_series.py \
+python precipitation_analysis_period_plot_MAE_RMSE_series.py \
     --start-cycle YYYYMMDDHH --end-cycle YYYYMMDDHH 
 
 Example
 -------
-python precipitation_analysis_period_plot_regional_series.py \
+python precipitation_analysis_period_plot_MAE_RMSE_series.py \
     --start-cycle 2026010100 \
     --end-cycle 2026011000 \
     --strict
@@ -80,7 +79,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import xarray as xr
 
-from precipitation_analysis_config import DOMAINS
+from precipitation_analysis_config import DOMAINS_CONFIG as DOMAIN_CONFIG
 
 # =============================================================================
 # Configuration
@@ -92,13 +91,33 @@ from precipitation_analysis_config import DOMAINS
 #    ("MONAN_NEW2_AMS_CAR", "NEW2")    
 #)
 
-EXPERIMENTS = (
-    ("P1_v1.4.4", "v1.4.4"),
-    ("P1_v2.0.0-rc", "v2.0.0-rc"),
+EXPERIMENTS = {
+    "P1_v1.4.4": {
+        "label": "Global v1.4.4",
+        "source_domain": "GLB",
+    },
+    # "P1_v1.4.4_Reg": {
+    #     "label": "Regional v1.4.4",
+    #     "source_domain": "REG",
+    # },
+    "P1_v2.0.0-rc": {
+        "label": "Global v2.0.0-rc",
+        "source_domain": "GLB",
+    },
+}
+
+DOMAIN = "GLB" # Options: "GLB", "AMS", "CAR", "REG"
+
+SOURCE_DOMAINS = {
+    config["source_domain"]
+    for config in EXPERIMENTS.values()
+}
+
+COMPARISON_DOMAIN = (
+    "REG" if "REG" in SOURCE_DOMAINS else DOMAIN
 )
 
-SOURCE_DOMAIN = "GLB"
-REGION_ANALYSIS = "GLB"  # GLB, AMS, ACC
+COMPARISON_NAME = "_vs_".join(EXPERIMENTS.keys())
 
 REFERENCES = ("GPM", "GSMAP", "MSWEP")
 
@@ -160,21 +179,17 @@ REGIONS = {
 }
 
 FULL_DOMAIN_CODE = "FULL"
-FULL_DOMAIN_NAME = "Full " + REGION_ANALYSIS + " domain"
-
+FULL_DOMAIN_NAME = "Full " + COMPARISON_DOMAIN + " domain"
 DEFAULT_REGIONS = tuple(REGIONS)
+EXPERIMENT_LABELS = tuple(cfg["label"] for cfg in EXPERIMENTS.values())
+EXPERIMENT_FILENAME_LABEL = COMPARISON_NAME
+EXPERIMENT_TITLE_LABEL = " vs ".join(EXPERIMENT_LABELS)
 
-EXPERIMENT_LABELS = tuple(
-    label for _, label in EXPERIMENTS
-)
+if not EXPERIMENTS or not SOURCE_DOMAINS.issubset({"GLB", "REG"}):
+    raise ValueError("At least one experiment and valid GLB/REG source domains required")
+if COMPARISON_DOMAIN not in DOMAIN_CONFIG:
+    raise ValueError(f"Unsupported comparison domain: {COMPARISON_DOMAIN}")
 
-EXPERIMENT_FILENAME_LABEL = "_vs_".join(
-    EXPERIMENT_LABELS
-)
-
-EXPERIMENT_TITLE_LABEL = " vs ".join(
-    EXPERIMENT_LABELS
-)
 
 # Date helpers
 def parse_cycle(cycle: str) -> datetime:
@@ -224,11 +239,11 @@ def input_path(
 
     if metric == "MAE":
         filename = (
-            f"mae_{reference}_{SOURCE_DOMAIN}_{period}_mean_{lead:03d}h.nc"
+            f"mae_{reference}_{EXPERIMENTS[experiment]['source_domain']}_{period}_mean_{lead:03d}h.nc"
         )
     elif metric == "RMSE":
         filename = (
-            f"rmse_{reference}_{SOURCE_DOMAIN}_{period}_{lead:03d}h.nc"
+            f"rmse_{reference}_{EXPERIMENTS[experiment]['source_domain']}_{period}_{lead:03d}h.nc"
         )
     else:
         raise ValueError(
@@ -341,34 +356,112 @@ def subset_region(
 
     return sub
 
-def subset_analysis_domain(da: xr.DataArray) -> xr.DataArray:
-    cfg = DOMAINS[REGION_ANALYSIS]
-    domain_slice = cfg["slice"]
+def determine_comparison_extent(base_dir: Path, period: str, metric: str,
+                                reference: str, lead: int):
+    """Return [west, east, south, north] in -180..180 or None for global."""
+    cfg = DOMAIN_CONFIG[COMPARISON_DOMAIN]
+    if "REG" not in SOURCE_DOMAINS:
+        if COMPARISON_DOMAIN == "GLB":
+            return None
+        if COMPARISON_DOMAIN == "REG":
+            return list(cfg["comparison_extent"])
+        sl = cfg["slice"]
+        lon_min, lon_max = sorted((float(sl["lon"].start), float(sl["lon"].stop)))
+        lat_min, lat_max = sorted((float(sl["lat"].start), float(sl["lat"].stop)))
+        # longitude may be in 0..360; convert for spatial region inclusion
+        return [((lon_min + 180) % 360) - 180,
+                ((lon_max + 180) % 360) - 180, lat_min, lat_max]
 
-    if domain_slice is None:
+    bounds = []
+    for experiment, config in EXPERIMENTS.items():
+        if config["source_domain"] != "REG":
+            continue
+        path = input_path(base_dir, experiment, period, metric, reference, lead)
+        if not path.exists():
+            raise FileNotFoundError(path)
+        with xr.open_dataset(path) as ds:
+            lat_name = "lat" if "lat" in ds.coords else "latitude"
+            lon_name = "lon" if "lon" in ds.coords else "longitude"
+            lat = np.asarray(ds[lat_name].values, dtype=float)
+            lon = np.asarray(ds[lon_name].values, dtype=float)
+        if lat.ndim != 1 or lon.ndim != 1 or not np.isfinite(lat).all() or not np.isfinite(lon).all():
+            raise ValueError(f"Invalid 1-D REG coordinates: {path}")
+        lon = (lon + 180) % 360 - 180
+        if np.ptp(lon) > 180:
+            raise ValueError(f"Regional longitude crosses -180/180 seam: {path}")
+        bounds.append([lon.min(), lon.max(), lat.min(), lat.max()])
+
+    extent = [max(x[0] for x in bounds), min(x[1] for x in bounds),
+              max(x[2] for x in bounds), min(x[3] for x in bounds)]
+    requested = cfg.get("comparison_extent")
+    if requested is not None:
+        extent = [max(extent[0], requested[0]), min(extent[1], requested[1]),
+                  max(extent[2], requested[2]), min(extent[3], requested[3])]
+    if extent[0] >= extent[1] or extent[2] >= extent[3]:
+        raise ValueError(f"Empty geographic overlap for REG: {extent}")
+    return list(map(float, extent))
+
+
+def region_inside_extent(region_code: str, extent, tol=1e-6) -> bool:
+    """Only accept fully contained rectangular regions, not partial crops."""
+    if region_code == FULL_DOMAIN_CODE or extent is None:
+        return True
+    west, east, south, north = extent
+    r = REGIONS[region_code]
+    return (r["lon"][0] >= west - tol and r["lon"][1] <= east + tol
+            and r["lat"][0] >= south - tol and r["lat"][1] <= north + tol)
+
+
+def select_available_regions(region_codes, extent):
+    included = tuple(code for code in region_codes if region_inside_extent(code, extent))
+    excluded = tuple(code for code in region_codes if code not in included)
+    if excluded:
+        print(f"  Skipping regions not fully contained in comparison extent: {excluded}")
+    return included
+
+
+def crop_extent(da: xr.DataArray, extent):
+    if extent is None:
         return da
-
-    lat_start = domain_slice["lat"].start
-    lat_end = domain_slice["lat"].stop
-
+    west, east, south, north = extent
     if float(da.lat[0]) > float(da.lat[-1]):
-        lat_slice = slice(max(lat_start, lat_end),
-                          min(lat_start, lat_end))
+        da = da.sortby("lat")
+    da = da.sel(lat=slice(south, north))
+    w, e = west % 360, east % 360
+    if east - west >= 360:
+        pass
+    elif w <= e:
+        da = da.sel(lon=slice(w, e))
     else:
-        lat_slice = slice(min(lat_start, lat_end),
-                          max(lat_start, lat_end))
+        da = da.where((da.lon >= w) | (da.lon <= e), drop=True)
+    if not da.sizes.get("lat") or not da.sizes.get("lon"):
+        raise ValueError(f"Empty geographic crop for {extent}")
+    return da
 
-    sub = da.sel(
-        lat=lat_slice,
-        lon=domain_slice["lon"],
-    )
 
-    if sub.sizes["lat"] == 0 or sub.sizes["lon"] == 0:
-        raise ValueError(
-            f"Empty subset for {REGION_ANALYSIS}"
-        )
+def common_validity_masks(fields):
+    """Transfer only Boolean masks by nearest neighbour, never actual metrics."""
+    validity = {experiment: np.isfinite(field) for experiment, field in fields.items()}
+    if "REG" not in SOURCE_DOMAINS:
+        return validity
+    masks = {}
+    for experiment, target in validity.items():
+        common = target.copy()
+        for other_exp, other in validity.items():
+            if experiment == other_exp:
+                continue
+            if target.lat.equals(other.lat) and target.lon.equals(other.lon):
+                matched = other
+            else:
+                matched = (other.astype("float32").interp(
+                    lat=target.lat, lon=target.lon, method="nearest",
+                    kwargs={"fill_value": 0.0}) > 0.5)
+            common = common & matched
+        if not bool(common.any().item()):
+            raise ValueError(f"No valid common cells for {experiment}")
+        masks[experiment] = common
+    return masks
 
-    return sub
 
 def latitude_weights(da: xr.DataArray) -> xr.DataArray:
     """Cosine(latitude) weights for a regular lat/lon grid."""
@@ -395,185 +488,89 @@ def weighted_mean(da: xr.DataArray) -> float:
 # Metric calculation directly from aggregated NetCDF fields
 # =============================================================================
 
-def regional_metric_value(
-    base_dir: Path,
-    experiment: str,
-    period: str,
-    metric: str,
-    reference: str,
-    lead: int,
-    region_code: str,
-) -> tuple[float, int, Path]:
-    """
-    Calculate one regional scalar directly from an aggregated NetCDF.
-
-    MAE:
-        area-weighted mean of the aggregated MAE field.
-
-    RMSE:
-        sqrt(area-weighted mean of the aggregated mean squared error).
-    """
-    path = input_path(
-        base_dir=base_dir,
-        experiment=experiment,
-        period=period,
-        metric=metric,
-        reference=reference,
-        lead=lead,
-    )
-
-    if not path.exists():
-        raise FileNotFoundError(path)
-
-    with xr.open_dataset(path) as ds:
-        if metric == "MAE":
-            if PRECIP_VAR_NAME not in ds:
-                raise KeyError(
-                    f"Variable '{PRECIP_VAR_NAME}' not found in {path}. "
-                    f"Available: {list(ds.data_vars)}"
-                )
-
-            field = standardize_lat_lon(
-                ds[PRECIP_VAR_NAME].load()
-            ).astype("float64")
-
-            region = subset_region(
-                field,
-                region_code,
-            )
-
-            value = weighted_mean(region)
-            n_valid_gridpoints = int(
-                np.isfinite(region).sum().item()
-            )
-
-        elif metric == "RMSE":
-            if MEAN_SQERR_VAR_NAME not in ds:
-                raise KeyError(
-                    f"Variable '{MEAN_SQERR_VAR_NAME}' not found in {path}. "
-                    "RMSE will not be approximated from the spatial mean of "
-                    "the RMSE map because that changes the metric definition."
-                )
-
-            mean_sqerr = standardize_lat_lon(
-                ds[MEAN_SQERR_VAR_NAME].load()
-            ).astype("float64")
-
-            region = subset_region(
-                mean_sqerr,
-                region_code,
-            )
-
-            mse_regional = weighted_mean(region)
-
-            if mse_regional < 0.0:
-                # Numerical noise could theoretically produce a tiny
-                # negative value, but a substantial negative value is invalid.
-                if mse_regional < -1.0e-10:
-                    raise ValueError(
-                        f"Negative regional mean squared error "
-                        f"({mse_regional}) in {path}, region {region_code}."
-                    )
-                mse_regional = 0.0
-
-            value = float(np.sqrt(mse_regional))
-            n_valid_gridpoints = int(
-                np.isfinite(region).sum().item()
-            )
-
-        else:
-            raise ValueError(metric)
-
-    return value, n_valid_gridpoints, path
-
-
 def calculate_all_values(
-    base_dir: Path,
-    start_cycle: str,
-    end_cycle: str,
-    metrics: tuple[str, ...],
-    leads: tuple[int, ...],
-    region_codes: tuple[str, ...],
-    strict: bool,
-) -> list[dict]:
-    """Calculate all regional values from aggregated NetCDF fields."""
+    base_dir: Path, start_cycle: str, end_cycle: str,
+    metrics: tuple[str, ...], leads: tuple[int, ...],
+    region_codes: tuple[str, ...], strict: bool,
+) -> tuple[list[dict], tuple[str, ...]]:
+    """Open each experiment file once per metric/reference/lead and compare masks."""
     period = f"{start_cycle}_{end_cycle}"
-    rows: list[dict] = []
-
+    rows = []
+    available_by_combo = []
     for metric in metrics:
         for reference in REFERENCES:
-            for experiment, experiment_label in EXPERIMENTS:
-                for region_code in region_codes:
-
-                    if region_code == FULL_DOMAIN_CODE:
-                        region_name = FULL_DOMAIN_NAME
-                        lat_limits = (None, None)
-                        lon_limits = (None, None)
-                    else:
-                        region_cfg = REGIONS[region_code]
-                        region_name = region_cfg["name"]
-                        lat_limits = region_cfg["lat"]
-                        lon_limits = region_cfg["lon"]
-
-                    for lead in leads:
-                        first_valid, last_valid = valid_period(
-                            start_cycle,
-                            end_cycle,
-                            lead,
-                        )
-
-                        try:
-                            value, n_valid, path = regional_metric_value(
-                                base_dir=base_dir,
-                                experiment=experiment,
-                                period=period,
-                                metric=metric,
-                                reference=reference,
-                                lead=lead,
-                                region_code=region_code,
-                            )
-                        except Exception as exc:
-                            if strict:
-                                raise
-
-                            print(
-                                "WARNING: skipped "
-                                f"{metric} {reference} {experiment_label} "
-                                f"{region_code} F{lead:03d}: {exc}"
-                            )
-                            continue
-
-                        rows.append(
-                            {
+            for lead in leads:
+                try:
+                    extent = determine_comparison_extent(base_dir, period, metric, reference, lead)
+                    available = select_available_regions(region_codes, extent)
+                    available_by_combo.append(set(available))
+                    fields, paths = {}, {}
+                    for experiment in EXPERIMENTS:
+                        path = input_path(base_dir, experiment, period, metric, reference, lead)
+                        if not path.exists():
+                            raise FileNotFoundError(path)
+                        var_name = PRECIP_VAR_NAME if metric == "MAE" else MEAN_SQERR_VAR_NAME
+                        with xr.open_dataset(path) as ds:
+                            if var_name not in ds:
+                                raise KeyError(f"Missing {var_name} in {path}")
+                            field = crop_extent(standardize_lat_lon(ds[var_name]), extent)
+                            field = field.load().astype("float64")
+                            if "n_valid_cases" in ds:
+                                n_valid = crop_extent(standardize_lat_lon(ds["n_valid_cases"]), extent).load()
+                                xr.align(field, n_valid, join="exact", copy=False)
+                                field = field.where(n_valid > 0)
+                        fields[experiment] = field
+                        paths[experiment] = path
+                    masks = common_validity_masks(fields)
+                    first_valid, last_valid = valid_period(start_cycle, end_cycle, lead)
+                    for experiment, field in fields.items():
+                        field = field.where(masks[experiment])
+                        for region_code in (*available, FULL_DOMAIN_CODE):
+                            region = field if region_code == FULL_DOMAIN_CODE else subset_region(field, region_code)
+                            if not np.isfinite(region).any().item():
+                                raise ValueError(f"No valid data: {experiment}, {region_code}")
+                            value = weighted_mean(region)
+                            if metric == "RMSE":
+                                if value < -1e-10:
+                                    raise ValueError(f"Negative mean squared error: {value}")
+                                value = float(np.sqrt(max(value, 0.0)))
+                            cfg = REGIONS.get(region_code)
+                            exp_info = EXPERIMENTS[experiment]
+                            rows.append({
                                 "metric": metric,
                                 "reference": reference,
                                 "experiment": experiment,
-                                "experiment_label": experiment_label,
+                                "experiment_label": exp_info["label"],
                                 "region": region_code,
-                                "region_name": region_name,
-                                "lat_min": lat_limits[0],
-                                "lat_max": lat_limits[1],
-                                "lon_min": lon_limits[0],
-                                "lon_max": lon_limits[1],
+                                "region_name": cfg["name"] if cfg else FULL_DOMAIN_NAME,
+                                "lat_min": cfg["lat"][0] if cfg else None,
+                                "lat_max": cfg["lat"][1] if cfg else None,
+                                "lon_min": cfg["lon"][0] if cfg else None,
+                                "lon_max": cfg["lon"][1] if cfg else None,
                                 "lead_h": lead,
                                 "start_cycle": start_cycle,
                                 "end_cycle": end_cycle,
                                 "first_valid_time": first_valid,
                                 "last_valid_time": last_valid,
-                                "value_mm": value,
-                                "n_valid_gridpoints": n_valid,
-                                "source_file": str(path),
-                            }
-                        )
-
-                        print(
-                            f"{metric:4s} | {reference:5s} | "
-                            f"{experiment_label:3s} | {region_code:4s} | "
-                            f"F{lead:03d} | {value:7.3f} mm | "
-                            f"Ngrid={n_valid}"
-                        )
-
-    return rows
+                                "value_mm": float(value),
+                                "n_valid_gridpoints": int(np.isfinite(region).sum().item()),
+                                "source_file": str(paths[experiment]),
+                            })
+                            print(f"{metric:4s} | {reference:5s} | {exp_info['label']} "
+                                  f"| {region_code:4s} | F{lead:03d} | {value:.3f} mm")
+                except Exception as exc:
+                    if strict:
+                        raise
+                    print(f"WARNING: skipping {metric}, {reference}, F{lead:03d}: {exc}")
+    # Only show regions available for every successfully evaluated combination.
+    if available_by_combo:
+        common_regions = set.intersection(*available_by_combo)
+        selected = tuple(code for code in region_codes if code in common_regions)
+    else:
+        selected = ()
+    if not rows:
+        raise RuntimeError("No valid metrics calculated")
+    return rows, selected
 
 
 # =============================================================================
@@ -692,7 +689,7 @@ def plot_full_domain_metric(
 
         ax = axes[col]
 
-        for exp_index, (_, experiment_label) in enumerate(EXPERIMENTS):
+        for exp_index, experiment_label in enumerate(EXPERIMENT_LABELS):
 
             series_rows = select_rows(
                 rows=rows,
@@ -755,7 +752,7 @@ def plot_full_domain_metric(
     )
 
     fig.suptitle(
-        f"Full {REGION_ANALYSIS} domain {metric} by forecast lead | "
+        f"Full {COMPARISON_DOMAIN} domain {metric} by forecast lead | "
         f"{EXPERIMENT_TITLE_LABEL}\n"
         f"Initialization cycles: "
         f"{start_cycle}–{end_cycle}",
@@ -772,6 +769,7 @@ def plot_full_domain_metric(
     output_dir = (
         output_root
         / period
+        / COMPARISON_NAME
         / "Full_domain_series"
         / metric
     )
@@ -783,7 +781,7 @@ def plot_full_domain_metric(
 
     output_path = output_dir / (
         f"{metric}_{EXPERIMENT_FILENAME_LABEL}_"
-        f"full_{REGION_ANALYSIS}_{period}.png"
+        f"full_{COMPARISON_DOMAIN}_{period}.png"
     )
 
     fig.savefig(
@@ -871,7 +869,7 @@ def plot_metric_reference(
         ax = axes_flat[idx]
         cfg = REGIONS[region_code]
 
-        for exp_index, (_, experiment_label) in enumerate(EXPERIMENTS):
+        for exp_index, experiment_label in enumerate(EXPERIMENT_LABELS):
             series_rows = select_rows(
                 rows=rows,
                 metric=metric,
@@ -945,6 +943,7 @@ def plot_metric_reference(
     output_dir = (
         output_root
         / period
+        / COMPARISON_NAME
         / "Regional_series"
         / metric
     )
@@ -955,7 +954,7 @@ def plot_metric_reference(
 
     output_path = output_dir / (
         f"{metric}_{reference}_{EXPERIMENT_FILENAME_LABEL}_"
-        f"regional_series_{period}.png"
+        f"regional_series_{COMPARISON_DOMAIN}_{period}.png"
     )
 
     fig.savefig(
@@ -1084,11 +1083,6 @@ def main() -> None:
 
     region_codes = tuple(args.regions)
 
-    calculation_domains = (
-        *region_codes,
-        FULL_DOMAIN_CODE,
-    )
-
     print("=" * 80)
     print("Regional continuous-metric lead series: " f"{EXPERIMENT_TITLE_LABEL}")
     print(f"Period definition: forecast initialization cycles")
@@ -1107,20 +1101,21 @@ def main() -> None:
     )
     print("=" * 80)
 
-    rows = calculate_all_values(
+    rows, available_regions = calculate_all_values(
         base_dir=base_dir,
         start_cycle=args.start_cycle,
         end_cycle=args.end_cycle,
         metrics=metrics,
         leads=leads,
-        region_codes=calculation_domains,
+        region_codes=region_codes,
         strict=args.strict,
     )
 
     csv_path = (
         summary_root
         / period
-        / "continuous_metrics_regional_by_lead.csv"
+        / COMPARISON_NAME
+        / f"continuous_metrics_regional_by_lead_{COMPARISON_DOMAIN}.csv"
     )
 
     write_csv(
@@ -1130,11 +1125,14 @@ def main() -> None:
 
     for metric in metrics:
         for reference in REFERENCES:
+            if not available_regions:
+                print("WARNING: no fully contained regions for regional series")
+                break
             plot_metric_reference(
                 rows=rows,
                 metric=metric,
                 reference=reference,
-                region_codes=region_codes,
+                region_codes=available_regions,
                 start_cycle=args.start_cycle,
                 end_cycle=args.end_cycle,
                 output_root=output_root,
