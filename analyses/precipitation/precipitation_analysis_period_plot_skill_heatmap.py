@@ -31,12 +31,16 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
+from precipitation_analysis_period_generate_skill_txt import (
+    EXPERIMENTS,
+    REFERENCES,
+    COMPARISON_DOMAIN,
+    COMPARISON_NAME,
+    SPATIAL_METHOD,
+    skill_summary_root,
+)
 
-REGION_ANALYSIS = "GLB"  # Options: GLB, AMS, ACC, REG
-REFERENCES = ("GPM", "GSMAP", "MSWEP")
-
-#EXPERIMENTS = ("CTL", "NEW2")
-EXPERIMENTS = ("v1.4.4", "v2.0.0-rc")
+REGION_ANALYSIS = COMPARISON_DOMAIN
 
 METRICS = (
     "ETS",
@@ -100,8 +104,11 @@ def parse_txt_file(file_path, period):
     name = os.path.basename(file_path)
 
     match = re.match(
-        rf"Skill_({'|'.join(re.escape(exp) for exp in EXPERIMENTS)})_{REGION_ANALYSIS}_"
-        rf"{re.escape(period)}_thr([0-9]+(?:p[0-9]+)?)mm\.txt$",
+        rf"Skill_("
+        rf"{'|'.join(re.escape(exp) for exp in EXPERIMENTS.keys())}"
+        rf")_{REGION_ANALYSIS}_"
+        rf"{re.escape(period)}_"
+        rf"thr([0-9]+(?:p[0-9]+)?)mm\.txt$",
         name,
     )
 
@@ -168,13 +175,11 @@ def parse_txt_file(file_path, period):
 
 
 def load_skill_dataframe(base_dir, period):
+
     pattern = str(
-        base_dir
-        / "output"
-        / "period_comparison_summary"
-        / period
+        skill_summary_root(base_dir, period)
         / "Skill_txt_thr*mm"
-        / f"{period}"
+        / period
         / f"Skill_*_{REGION_ANALYSIS}_{period}_thr*mm.txt"
     )
 
@@ -210,15 +215,22 @@ def plot_metric_2x3(df, period, metric, output_dir):
     cfg = get_metric_plot_config(df, metric)
 
     fig, axes = plt.subplots(
-        nrows=2,
-        ncols=3,
-        figsize=(16, 8.5),
+        nrows=len(EXPERIMENTS),
+        ncols=len(REFERENCES),
+        figsize=(16, 4.25 * len(EXPERIMENTS)),
+        squeeze=False,
         gridspec_kw={"hspace": 0.22, "wspace": 0.18},
     )
 
     last_im = None
 
-    for row, experiment in enumerate(EXPERIMENTS):
+    all_leads = sorted(df["lead_h"].unique())
+    all_thresholds = sorted(df["threshold_mm"].unique())
+
+    for row, (experiment, config) in enumerate(EXPERIMENTS.items()):
+
+        experiment_label = config["label"]
+
         for col, reference in enumerate(REFERENCES):
             ax = axes[row, col]
 
@@ -236,13 +248,16 @@ def plot_metric_2x3(df, period, metric, output_dir):
                     ha="center", va="center",
                     fontsize=12, transform=ax.transAxes
                 )
-                ax.set_title(f"{experiment} | {reference}", fontsize=11)
+                ax.set_title(f"{experiment_label} | {reference}", fontsize=11)
                 continue
 
             table = dfp.pivot_table(
                 index="lead_h",
                 columns="threshold_mm",
                 values="value",
+            ).reindex(
+                index=all_leads,
+                columns=all_thresholds,
             )
 
             table = table.sort_index().sort_index(axis=1)
@@ -267,13 +282,13 @@ def plot_metric_2x3(df, period, metric, output_dir):
             ax.set_yticks(range(len(table.index)))
             ax.set_yticklabels(table.index.astype(int))
 
-            if row == 1:
+            if row == len(EXPERIMENTS) - 1:
                 ax.set_xlabel("Threshold (mm / 24 h)", fontsize=10)
 
             if col == 0:
                 ax.set_ylabel("Forecast lead (h)", fontsize=10)
 
-            ax.set_title(f"{experiment} | {reference}", fontsize=11)
+            ax.set_title(f"{experiment_label} | {reference}", fontsize=11)
 
             for i, lead in enumerate(table.index):
                 for j, threshold in enumerate(table.columns):
@@ -304,19 +319,28 @@ def plot_metric_2x3(df, period, metric, output_dir):
         )
         cbar.set_label(metric, fontsize=11)
 
+    experiments_title = " vs ".join(
+        config["label"]
+        for config in EXPERIMENTS.values()
+    )
+
+    experiments_label = "_vs_".join(
+        EXPERIMENTS.keys()
+    )
+
     fig.suptitle(
-        f"{metric} heatmap | {' vs '.join(EXPERIMENTS)} | {REGION_ANALYSIS}\n"
+        f"{metric} heatmap | {experiments_title} | "
+        f"{REGION_ANALYSIS}\n"
         f"Initialization cycles: {period.replace('_', '–')}",
         fontsize=15,
         y=0.98,
     )
-    
+
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    experiments_label = "_vs_".join(EXPERIMENTS)
-
     out = output_dir / (
-        f"heatmap_{metric}_{experiments_label}_{REGION_ANALYSIS}_{period}.png"
+        f"heatmap_{metric}_{experiments_label}_"
+        f"{REGION_ANALYSIS}_{period}.png"
     )
 
     fig.savefig(
@@ -367,6 +391,8 @@ def main():
             / "output"
             / "period_comparison_figures"
             / period
+            / COMPARISON_NAME
+            / SPATIAL_METHOD
             / "Skill_heatmap"
         )
     )

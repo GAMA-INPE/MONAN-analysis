@@ -193,6 +193,7 @@ DOMAINS_CONFIG = {
         "extent": None,
         "xticks": list(range(-100, -24, 10)),
         "yticks": list(range(-50, 31, 10)),
+        "comparison_extent": [-106, -16, -64, 42],
     },
 }
 
