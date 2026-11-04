@@ -70,7 +70,7 @@ EXPERIMENTS = {
 
 # Used when every experiment is global. If a regional is present, the smaller
 # regional coverage is automatically selected instead of DOMAIN.
-DOMAIN = "ACC"  # Options for global-only comparisons: GLB, AMS, ACC, REG
+DOMAIN = "GLB"  # Options for global-only comparisons: GLB, AMS, ACC, REG
 
 SOURCE_DOMAINS = {cfg["source_domain"] for cfg in EXPERIMENTS.values()}
 if not SOURCE_DOMAINS.issubset({"GLB", "REG"}):
