@@ -106,7 +106,7 @@ EXPERIMENTS = {
     },
 }
 
-DOMAIN = "GLB" # Options: "GLB", "AMS", "CAR", "REG"
+DOMAIN = "GLB" # Options: "GLB", "AMS", "ACC", "REG"
 
 SOURCE_DOMAINS = {
     config["source_domain"]
@@ -500,10 +500,11 @@ def calculate_all_values(
     for metric in metrics:
         for reference in REFERENCES:
             for lead in leads:
+                combo_rows = []
+
                 try:
                     extent = determine_comparison_extent(base_dir, period, metric, reference, lead)
                     available = select_available_regions(region_codes, extent)
-                    available_by_combo.append(set(available))
                     fields, paths = {}, {}
                     for experiment in EXPERIMENTS:
                         path = input_path(base_dir, experiment, period, metric, reference, lead)
@@ -536,7 +537,7 @@ def calculate_all_values(
                                 value = float(np.sqrt(max(value, 0.0)))
                             cfg = REGIONS.get(region_code)
                             exp_info = EXPERIMENTS[experiment]
-                            rows.append({
+                            combo_rows.append({
                                 "metric": metric,
                                 "reference": reference,
                                 "experiment": experiment,
@@ -558,10 +559,19 @@ def calculate_all_values(
                             })
                             print(f"{metric:4s} | {reference:5s} | {exp_info['label']} "
                                   f"| {region_code:4s} | F{lead:03d} | {value:.3f} mm")
+
+                    # Save only complete and successfully processed combinations.
+                    rows.extend(combo_rows)
+                    available_by_combo.append(set(available))
+
                 except Exception as exc:
                     if strict:
                         raise
-                    print(f"WARNING: skipping {metric}, {reference}, F{lead:03d}: {exc}")
+                    print(
+                        f"WARNING: skipping {metric}, {reference}, "
+                        f"F{lead:03d}: {exc}"
+                    )
+            
     # Only show regions available for every successfully evaluated combination.
     if available_by_combo:
         common_regions = set.intersection(*available_by_combo)
