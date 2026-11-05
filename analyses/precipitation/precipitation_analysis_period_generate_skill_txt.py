@@ -449,16 +449,6 @@ def mask_for_common_coverage(contingencies):
 
     validity = {}
 
-    for experiment, valid in validity.items():
-        valid_cases = contingencies[experiment]["VALID"].where(valid)
-
-        print(
-            f"  {experiment}: "
-            f"valid_cells={int(valid.sum().item())}, "
-            f"VALID_min={float(valid_cases.min(skipna=True).item()):.0f}, "
-            f"VALID_max={float(valid_cases.max(skipna=True).item()):.0f}"
-        )
-
     for experiment, cont in contingencies.items():
 
         valid = (
@@ -470,6 +460,16 @@ def mask_for_common_coverage(contingencies):
             valid = valid & np.isfinite(cont[name])
 
         validity[experiment] = valid
+
+    for experiment, valid in validity.items():
+        valid_cases = contingencies[experiment]["VALID"].where(valid)
+
+        print(
+            f"  {experiment}: "
+            f"valid_cells={int(valid.sum().item())}, "
+            f"VALID_min={float(valid_cases.min(skipna=True).item()):.0f}, "
+            f"VALID_max={float(valid_cases.max(skipna=True).item()):.0f}"
+        )
 
     common_masks = {}
 
